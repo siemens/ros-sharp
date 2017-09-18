@@ -1,4 +1,4 @@
-# [URDF Importer](https://code.siemens.com/CTIsimulation/ROSsharp/tree/master/URDFImporter) #
+# [URDF Importer](https://github.com/siemens/ros-sharp/tree/master/URDFsharp) #
 ... is an import interface for [URDF](http://wiki.ros.org/urdf) files.
 
 ## External Dependencies
@@ -23,15 +23,15 @@
     * `UnityEngine.dll` and `.xml`
     * `UnityEditor.UI.dll` and `.xml`
     * `UnityEngine.UI.dll` and `.xml`
-2. [ROSBridge Client](../ROSbridgeClient): `RosBridgeClient.dll`
+2. [ROSBridge Client](https://github.com/siemens/ros-sharp/tree/master/ROSbridgeClient): `RosBridgeClient.dll`
 3. [Websocket Sharp](https://github.com/sta/websocket-sharp): `websocket-sharp.dll`
 4. [NewtonSoft Json.Net](http://www.newtonsoft.com/json): `NewtonSoft.Json.dll`
 
- 
-### Please see the [Wiki](https://code.siemens.com/CTIsimulation/ROSsharp/wikis/home) for further info. ###
+
+### Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info. ###
 
 ---
- 
+
 © Siemens AG, 2017
 
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)

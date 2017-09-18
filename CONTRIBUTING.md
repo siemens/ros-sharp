@@ -1,9 +1,9 @@
 © Siemens AG, 2017
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
-## How to contribute to [ROS\#](./README.md)
+## How to contribute to [ROS\#](https://github.com/siemens/ros-sharp/blob/master/README.md)
 
-Contributions to [ROS\#](./README.md) are always welcome!
+Contributions to [ROS\#](https://github.com/siemens/ros-sharp/blob/master/README.md) are always welcome!
 
 #### **Did you find a bug?**
 
@@ -25,7 +25,7 @@ Contributions to [ROS\#](./README.md) are always welcome!
 
 #### **Do you have questions about the source code?**
 
-* Ask any question about how to use [ROS\# ](./README.md) by contacting the [project team](mailto:martin.bischoff@siemens.com).
+* Ask any question about how to use [ROS\# ](https://github.com/siemens/ros-sharp/blob/master/README.md) by contacting the [project team](mailto:martin.bischoff@siemens.com).
 
 #### **Do you want to contribute to the ROS\# documentation?**
 
