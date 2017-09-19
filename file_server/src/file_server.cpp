@@ -1,4 +1,4 @@
-*/
+/*
 © Siemens AG, 2017
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
