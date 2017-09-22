@@ -1,7 +1,7 @@
 © Siemens AG, 2017
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
-## How to contribute to [ROS\#](https://github.com/siemens/ros-sharp/blob/master/README.md)
+## How to contribute to [ROS\#](https://github.com/siemens/ros-sharp)
 
 Contributions to [ROS\#](https://github.com/siemens/ros-sharp/blob/master/README.md) are always welcome!
 

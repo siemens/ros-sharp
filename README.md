@@ -1,7 +1,5 @@
-# [ROS#](https://github.com/siemens/ros-sharp/blob/master/README.md) #
+# [![ROS#](https://github.com/siemens/ros-sharp/wiki/img/ROSsharpLogo.jpg "ROS#")](https://github.com/siemens/ros-sharp) #
 ... is a set of open source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular  [Unity3D](https://unity3d.com/).
-
-![ROS#](https://github.com/siemens/ros-sharp/wiki/img/ROSsharpLogo.jpg "ROS#")
 
 ## Contents: ##
 
