@@ -1,10 +1,10 @@
 # [URDF Importer](https://github.com/siemens/ros-sharp/tree/master/URDFsharp) #
 ... consists of:
 
-## [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp)##
+## [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) ##
 ...  an import interface for [URDF](http://wiki.ros.org/urdf) files for .NET Applications.
 
-## [UrdfSharpUnity3D](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp)##
+## [UrdfSharpUnity3D](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) ##
 ...  Unity3D-specific extensions to [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) for importing [URDF](http://wiki.ros.org/urdf) in Unity3D.
 
 # Dependencies #
