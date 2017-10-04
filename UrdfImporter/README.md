@@ -1,33 +1,20 @@
 # [URDF Importer](https://github.com/siemens/ros-sharp/tree/master/URDFsharp) #
-... is an import interface for [URDF](http://wiki.ros.org/urdf) files.
+... consists of:
 
-## External Dependencies ##
-1. Unity specific DLLs and configs (can be obtained from an empty Unity project)
-    * `UnityEngine.Timeline.dll` and `.xml`
-    * `UnityEngine.Networking.dll` and `.xml`
-    * `UnityEngine.Analytics.dll` and `.xml`
-    * `UnityEditor.HoloLens.dll` and `.xml`
-    * `UnityEditor.Graphs.dll` and `.xml`
-    * `UnityEditor.Timeline.dll` and `.xml`
-    * `UnityEditor.Purchasing.dll` and `.xml`
-    * `UnityEditor.Analytics.dll` and `.xml`
-    * `UnityEngine.TestRunner.dll` and `.xml`
-    * `UnityEditor.Advertisements.dll` and `.xml`
-    * `UnityEngine.HoloLens.dll` and `.xml`
-    * `UnityEditor.Networking.dll` and `.xml`
-    * `UnityEditor.VR.dll` and `.xml`
-    * `UnityEditor.TreeEditor.dll` and `.xml`
-    * `UnityEditor.TestRunner.dll` and `.xml`
-    * `UnityEditor.dll` and `.xml`
-    * `UnityEditor.WindowsStandalone.Extensions.dll` and `.xml`
-    * `UnityEngine.dll` and `.xml`
-    * `UnityEditor.UI.dll` and `.xml`
-    * `UnityEngine.UI.dll` and `.xml`
-2. [Websocket Sharp](https://github.com/sta/websocket-sharp): `websocket-sharp.dll`
-3. [NewtonSoft Json.Net](http://www.newtonsoft.com/json): `NewtonSoft.Json.dll`
+## [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp)##
+...  an import interface for [URDF](http://wiki.ros.org/urdf) files for .NET Applications.
 
-## [ROS#](https://github.com/siemens/ros-sharp) Internal Dependencies ##
-1. [ROSBridgeClient](https://github.com/siemens/ros-sharp/tree/master/ROSbridgeClient): `RosBridgeClient.dll`
+## [UrdfSharpUnity3D](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp)##
+...  Unity3D-specific extensions to [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) for importing [URDF](http://wiki.ros.org/urdf) in Unity3D.
+
+# Dependencies #
+
+* [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) has no external dependencies.
+* [UrdfSharpUnity3D](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) requires:
+    1. Unity3D libraries
+    2. [Websocket Sharp](https://github.com/sta/websocket-sharp): `websocket-sharp.dll`
+    3. [NewtonSoft Json.Net](http://www.newtonsoft.com/json): `NewtonSoft.Json.dll`
+    4. [ROSBridgeClient](https://github.com/siemens/ros-sharp/tree/master/ROSbridgeClient): `RosBridgeClient.dll`
 
 ### Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info. ###
 
