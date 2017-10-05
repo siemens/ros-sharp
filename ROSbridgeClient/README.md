@@ -1,4 +1,4 @@
-# [ROSbridgeClient](https://github.com/siemens/ros-sharp/tree/master/ROSbridgeClient) #
+# [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) #
 ... provides a [.NET](https://www.microsoft.com/net) API to [ROS](http://www.ros.org/) via [rosbridge_suite](http://wiki.ros.org/rosbridge_suite).
 
 ## External Dependencies ##
