@@ -17,7 +17,6 @@
 
 ### Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info. ###
 
-
 ---
 
 © Siemens AG, 2017
