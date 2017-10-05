@@ -15,22 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Linq;
+using System.Xml.Linq;
+using System.Globalization;
 
-using UnityEngine;
-
-public static class OdometryPatcher
-{
-
-    private static string OdometryObjectName = "base_footprint";
-
-    public static void patch(GameObject UrdfModel)
+namespace Urdf
+{ 
+    public static class XAttributeExtensions
     {
-        GameObject gameObject = UrdfModel.transform.Find(OdometryObjectName).gameObject;
-        OdometryTransformManager odometryTransformApplyer = gameObject.GetComponent<OdometryTransformManager>();
+        public static double[] ReadDoubleArray(this XAttribute attribute)
+        {
+            return Array.ConvertAll(
+                ((string)attribute).Split(' ').Where(x => !string.IsNullOrEmpty(x)).ToArray(),
+                i => Convert.ToDouble(i, CultureInfo.InvariantCulture));
+        }
 
-        if (odometryTransformApplyer != null)
-            Object.DestroyImmediate(odometryTransformApplyer);
-
-        gameObject.AddComponent<OdometryTransformManager>();
+        public static double ReadOptionalDouble(this XAttribute attribute)
+        {
+            return (attribute != null) ? (double)attribute : double.NaN;
+        }
     }
 }
