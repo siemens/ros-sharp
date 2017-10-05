@@ -15,16 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Xml.Linq;
 
-using UnityEngine;
-
-public class SpotLightManager : MonoBehaviour
+namespace Urdf
 {
-
-    public Transform Target;
-
-    private void Update()
+    public class Origin
     {
-        transform.LookAt(Target);
+        public double[] Xyz;
+        public double[] Rpy;
+
+        public Origin(XElement node)
+        {
+            Xyz = node.Attribute("xyz") != null ? node.Attribute("xyz").ReadDoubleArray() : null;
+            Rpy = node.Attribute("rpy") != null ? node.Attribute("rpy").ReadDoubleArray() : null;
+        }
+
     }
 }
