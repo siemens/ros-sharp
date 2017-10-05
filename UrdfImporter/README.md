@@ -1,4 +1,4 @@
-# [URDF Importer](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) #
+# [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) #
 ... consists of:
 
 ## [UrdfSharp](https://github.com/analogtwin/ros-sharp/tree/master/UrdfImporter/UrdfSharp) ##
