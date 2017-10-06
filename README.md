@@ -10,7 +10,9 @@
 ... is an import interface for [URDF](http://wiki.ros.org/urdf) files.
 
 ### [file_server](https://github.com/siemens/ros-sharp/tree/master/file_server) ###
-... provides a [ROS](http://www.ros.org/) node with a service to send file contents. [file_server](https://github.com/siemens/ros-sharp/tree/master/file_server) is required for accessing meshes and textures referenced in a  [URDF](http://wiki.ros.org/urdf) file from [ROS](http://www.ros.org/).
+... provides a [ROS](http://www.ros.org/) node with a service to send file contents.
+
+ ... is required for receiving meshes and textures referenced in a  [URDF](http://wiki.ros.org/urdf) via [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter).
 
 ### [Example](https://github.com/siemens/ros-sharp/tree/master/Example)
 ... provides additional sources to run the example projects described in the [Wiki](https://github.com/siemens/ros-sharp/wiki).
