@@ -23,7 +23,6 @@ namespace Urdf
 {
     public static class UrdfAssetDatabase
     {
-
         private const string defaultMaterialName = "Default";
         private const string materialFolderName = "Materials";
         private static string assetPath;
@@ -39,7 +38,6 @@ namespace Urdf
             foreach (Link.Visual.Material material in robot.materials)
                 createMaterialAsset(material);
         }
-
 
         #region SetAssetPath
         public static string GetAssetPath(this string urdfFile)
@@ -64,7 +62,7 @@ namespace Urdf
 
         private static string getMaterialAssetPath(string materialName)
         {
-            string path = Path.Combine(materialFolderName, materialName + ".mat");
+            string path = Path.Combine(materialFolderName, Path.GetFileName(materialName) + ".mat");
             return Path.Combine(assetPath,path);
         }
         #endregion
@@ -85,14 +83,14 @@ namespace Urdf
                 material.color = urdfMaterial.color.CreateColor();
             else if (urdfMaterial.texture != null)
                 material.mainTexture = LoadTexture(urdfMaterial.texture.filename);
-            
+
             AssetDatabase.CreateAsset(material, getMaterialAssetPath(urdfMaterial.name));
             return material;
         }
 
         private static Texture LoadTexture(string filename)
         {
-            string path = Path.Combine(assetPath, filename);
+            string path = Path.Combine(assetPath, filename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             if (path == null)
                 return null;
             return AssetDatabase.LoadAssetAtPath<Texture>(path);
