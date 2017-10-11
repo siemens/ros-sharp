@@ -51,7 +51,7 @@ public static class UrdfAssetPackageExporter
 
         string fileName = EditorUtility.SaveFilePanel(
                  "Save URDF Unity Asset Package",
-                 Application.dataPath + "/../",
+                 Application.dataPath,
                  "UrdfImporter.unitypackage",
                  "unitypackage");
 
