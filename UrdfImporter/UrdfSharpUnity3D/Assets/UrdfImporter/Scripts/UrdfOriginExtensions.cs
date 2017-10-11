@@ -40,9 +40,9 @@ namespace Urdf
         {
             if (origin.Rpy != null)
                 return new Vector3(
-                    (float)-origin.Rpy[1] * Mathf.Rad2Deg,
-                    (float)+origin.Rpy[2] * Mathf.Rad2Deg,
-                    (float)+origin.Rpy[0] * Mathf.Rad2Deg);
+                    (float)+origin.Rpy[1] * Mathf.Rad2Deg,
+                    (float)-origin.Rpy[2] * Mathf.Rad2Deg,
+                    (float)-origin.Rpy[0] * Mathf.Rad2Deg);
             else
                 return Vector3.zero;
         }

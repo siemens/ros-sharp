@@ -47,9 +47,9 @@ public class ColladaImportAssetPostProcessor : AssetPostprocessor
     {
         switch (orientation)
         {
-            case "X_UP": return new Vector3(-90, 90, 90);//(-90, 90, 90);
-            case "Y_UP": return new Vector3(-90, 90, 0);//(-90, 90, 0);
-            case "Z_UP": return new Vector3(0, -90, 0);  //  fix
+           case "X_UP": return new Vector3(-90, 90, 90);
+            case "Y_UP": return new Vector3(-90, 90, 0);
+            case "Z_UP": return new Vector3(0, 90, 0);
             default: return Vector3.zero;
         }
     }
