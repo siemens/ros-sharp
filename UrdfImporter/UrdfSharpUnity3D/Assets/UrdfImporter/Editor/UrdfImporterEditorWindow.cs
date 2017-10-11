@@ -46,7 +46,6 @@ public class UrdfImporterEditorWindow : EditorWindow
         { "databaseRefreshStarted", new ManualResetEvent(false) },
         { "databaseRefreshed", new ManualResetEvent(false) },
         { "importModelDialogShown", new ManualResetEvent(false) },
-        { "jointStatesMapped", new ManualResetEvent(false) },
     };
 
     [MenuItem("ROSbridge/Import URDF Assets...")]
@@ -89,7 +88,6 @@ public class UrdfImporterEditorWindow : EditorWindow
         drawLabelField("4. Resource Files Received:", "resourceFilesReceived");
         drawLabelField("5. ROSBridge_server Disconnected:", "disconnected");
         drawLabelField("6. Asset Database Refresh Completed:", "databaseRefreshed");
-        drawLabelField("7. Joint States Mapping Completed:", "jointStatesMapped");
     }
 
     private void drawLabelField(string label, string stage)
@@ -106,7 +104,7 @@ public class UrdfImporterEditorWindow : EditorWindow
         foreach (ManualResetEvent manualResetEvent in status.Values)
             manualResetEvent.Reset();
 
-        // connectto ROSbridge
+        // connect to ROSbridge
         RosSocket rosSocket = new RosSocket(address);
         status["connected"].Set();
 
@@ -127,32 +125,6 @@ public class UrdfImporterEditorWindow : EditorWindow
         // close the ROSBridge socket
         rosSocket.Close();
         status["disconnected"].Set();
-
-    }
-
-    private void TeleoperationPatcher()
-    {
-        GameObject robot = GameObject.Find(urdfImporter.robotName);
-        
-        if (robot != null)
-        {
-          /*  SpotLightPatcher.patch(robot);
-            KinematicPatcher.patch(robot);
-            OdometryPatcher.patch(robot);
-            JointStatePatcher.patch(robot);
-
-            var rosConnector = new GameObject("ROSConnector");
-            rosConnector.AddComponent<RosConnector>().RosBridgeServerUrl = address;
-            rosConnector.AddComponent<JointStateSubscriber>();
-            */
-            Application.runInBackground = true;
-
-            status["jointStatesMapped"].Set();
-        }
-        else
-        {
-            Debug.LogWarning("Joint States Patching did not work! Robot not found...");
-        }
     }
 
     private void OnInspectorUpdate()
@@ -172,9 +144,7 @@ public class UrdfImporterEditorWindow : EditorWindow
                 "Yes", "No"))
             {
                 RobotCreator.Create(Path.Combine(urdfImporter.LocalDirectory, "robot_description.urdf"));
-                TeleoperationPatcher();
             }
-                
         }
 
         // refresh Asset Database 
