@@ -48,7 +48,7 @@ public class UrdfImporterEditorWindow : EditorWindow
         { "importModelDialogShown", new ManualResetEvent(false) },
     };
 
-    [MenuItem("ROSbridge/Import URDF Assets...")]
+    [MenuItem("RosBridge/Import URDF Assets...")]
     private static void Init()
     {
         UrdfImporterEditorWindow editorWindow = GetWindow<UrdfImporterEditorWindow>();
