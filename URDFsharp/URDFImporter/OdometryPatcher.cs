@@ -21,7 +21,7 @@ using UnityEngine;
 public static class OdometryPatcher
 {
 
-    private static string OdometryObjectName = "base_footprint";
+    private static string OdometryObjectName = "world";
 
     public static void patch(GameObject UrdfModel)
     {
