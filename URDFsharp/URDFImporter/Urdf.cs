@@ -87,7 +87,7 @@ namespace Urdf
             Undo.RegisterCreatedObjectUndo(gameObject, "Create " + gameObject.name);
             Selection.activeObject = gameObject;
 
-            Rigidbody[] rb = Rigidbody.FindObjectsOfType(typeof(Rigidbody)) as Rigidbody[];
+            Rigidbody[] rb = UnityEngine.Object.FindObjectsOfType(typeof(Rigidbody)) as Rigidbody[];
             foreach (Rigidbody body in rb)
             {
                 body.isKinematic = true;

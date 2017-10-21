@@ -28,9 +28,9 @@ using Urdf;
 
 public class UrdfImporterEditorWindow : EditorWindow
 {
-    private string address = "ws://192.168.56.56:9090";
+    private string address = "ws://192.168.64.3:9090";
     private string timeout = "10";
-    private string urdfAssetPath = Path.GetFullPath(".") + "\\Assets\\Urdf\\";
+    private string urdfAssetPath = "/Users/warriermac/ros_ws/KinovaROSSharp/Assets/Urdf/";
 
     private Thread rosSocketConnectThread;
     private Thread urdfImportThread;
@@ -111,7 +111,7 @@ public class UrdfImporterEditorWindow : EditorWindow
         status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
         status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
         status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
-        Thread urdfImportThread = new Thread(() => urdfImporter.Import());
+        urdfImportThread = new Thread(() => urdfImporter.Import());
         urdfImportThread.Start();
 
         // import URDF assets:

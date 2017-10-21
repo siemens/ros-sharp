@@ -27,7 +27,7 @@ public static class StringExtensions
     public static string getAssetPath(this string absolutePath)
     {
         string absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        if (absolutePathUnityFormat.StartsWith(Application.dataPath))
+        if (absolutePathUnityFormat.StartsWith(Application.dataPath, System.StringComparison.CurrentCulture))
             return "Assets" + absolutePath.Substring(Application.dataPath.Length);
         else return null;
     }

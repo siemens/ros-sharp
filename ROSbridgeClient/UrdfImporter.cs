@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
+using UnityEngine;
 
 namespace RosBridgeClient
 {
@@ -80,46 +81,47 @@ namespace RosBridgeClient
 
         public bool Import(int maxTimeOut = int.MaxValue)
         {
-            rosSocket.CallService("/rosapi/get_param", typeof(ParamValueString), receiveRobotName, new ParamName("/robot/name"));
-            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new ParamName("/robot_description"), "\\robot_description.urdf", typeof(ParamValueString));
-            robotDescriptionReceiver.ReceiveEventHandler += receiveRobotDescription;
+            rosSocket.CallService("/rosapi/get_param", typeof(ParamValueString), ReceiveRobotName, new ParamName("/robot/name"));
+            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new ParamName("/robot_description"), "/robot_description.urdf", typeof(ParamValueString));
+            robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;
 
             return (WaitHandle.WaitAll(Status.Values.ToArray(), maxTimeOut));
         }
 
-        private void receiveRobotName(object serviceResponse)
+        private void ReceiveRobotName(object serviceResponse)
         {
-            robotName = formatTextFileContents(((ParamValueString)serviceResponse).value);
+            robotName = FormatTextFileContents(((ParamValueString)serviceResponse).value);
             Status["robotNameReceived"].Set();
         }
 
-        private void receiveRobotDescription(ServiceReceiver serviceReciever, object serviceResponse)
+        private void ReceiveRobotDescription(ServiceReceiver serviceReciever, object serviceResponse)
         {
-            string robotDescription = formatTextFileContents(((ParamValueString)serviceResponse).value);
+            string robotDescription = FormatTextFileContents(((ParamValueString)serviceResponse).value);
 
-            Thread importResourceFilesThread = new Thread(() => importResourceFiles(robotDescription));
+            Thread importResourceFilesThread = new Thread(() => ImportResourceFiles(robotDescription));
             importResourceFilesThread.Start();
 
-            Thread writeTextFileThread = new Thread(() => writeTextFile((string)serviceReciever.HandlerParameter, robotDescription));
+            Thread writeTextFileThread = new Thread(() => WriteTextFile((string)serviceReciever.HandlerParameter, robotDescription));
             writeTextFileThread.Start();
 
             Status["robotDescriptionReceived"].Set();
         }
 
-        private void importResourceFiles(string fileContents)
+        private void ImportResourceFiles(string fileContents)
         {
-            List<ServiceReceiver> serviceReceivers = requestResourceFiles(readResourceFileUris(fileContents));
+            List<ServiceReceiver> serviceReceivers = RequestResourceFiles(ReadResourceFileUris(fileContents));
+
             foreach (ServiceReceiver serviceReceiver in serviceReceivers)
-                serviceReceiver.ReceiveEventHandler += receiveResourceFile;
+                serviceReceiver.ReceiveEventHandler += ReceiveResourceFile;
         }
 
-        private static List<Uri> readResourceFileUris(string robotDescription)
+        private static List<Uri> ReadResourceFileUris(string robotDescription)
         {
             XElement root = XElement.Parse(robotDescription);
             return (from seg in root.Descendants("mesh") where seg.Attribute("filename") != null select new Uri(seg.Attribute("filename").Value)).ToList();
         }
 
-        private List<ServiceReceiver> requestResourceFiles(List<Uri> resourceFileUris)
+        private List<ServiceReceiver> RequestResourceFiles(List<Uri> resourceFileUris)
         {
             List<ServiceReceiver> serviceReceivers = new List<ServiceReceiver>();
             foreach (Uri resourceFilePath in resourceFileUris)
@@ -127,80 +129,82 @@ namespace RosBridgeClient
                 if (!RequestedResourceFiles.ContainsKey(resourceFilePath))
                 {
                     RequestedResourceFiles.Add(resourceFilePath, false);
-                    serviceReceivers.Add(new ServiceReceiver(rosSocket, "/file_server/get_file", new ParamName(resourceFilePath.ToString()), getLocalFilename(resourceFilePath), typeof(ParamValueByte)));
+                    serviceReceivers.Add(new ServiceReceiver(rosSocket, "/file_server/get_file", new ParamName(resourceFilePath.ToString()), GetLocalFilename(resourceFilePath), typeof(ParamValueByte)));
                 }
             }
             return serviceReceivers;
         }
 
-        private void receiveResourceFile(ServiceReceiver serviceReceiver, object serviceResponse)
+        private void ReceiveResourceFile(ServiceReceiver serviceReceiver, object serviceResponse)
         {
             string fileContents = System.Text.Encoding.UTF8.GetString(((ParamValueByte)serviceResponse).value);
+
             Uri resourceFileUri = new Uri(((ParamName)serviceReceiver.ServiceParameter).name);
 
-            if (isColladaFile(resourceFileUri))
+            if (IsColladaFile(resourceFileUri))
             {
-                Thread importResourceFilesThread = new Thread(() => importDaeTextureFiles(resourceFileUri, fileContents));
+                Thread importResourceFilesThread = new Thread(() => ImportDaeTextureFiles(resourceFileUri, fileContents));
                 importResourceFilesThread.Start();
             }
-            Thread writeTextFileThread = new Thread(() => writeTextFile((string)serviceReceiver.HandlerParameter, fileContents));
+            Thread writeTextFileThread = new Thread(() => WriteTextFile((string)serviceReceiver.HandlerParameter, fileContents));
             writeTextFileThread.Start();
 
-            updateFileRequestStatus(resourceFileUri);
+            UpdateFileRequestStatus(resourceFileUri);
         }
 
-        private void updateFileRequestStatus(Uri resourceFileUri)
+        private void UpdateFileRequestStatus(Uri resourceFileUri)
         {
             RequestedResourceFiles[resourceFileUri] = true;
             if (RequestedResourceFiles.Values.All(x => x == true))
                 Status["resourceFilesReceived"].Set();
         }
 
-        private static bool isColladaFile(Uri uri)
+        private static bool IsColladaFile(Uri uri)
         {
             return Path.GetExtension(uri.LocalPath) == ".dae";
         }
-        private void importDaeTextureFiles(Uri daeFileUri, string fileContents)
+
+        private void ImportDaeTextureFiles(Uri daeFileUri, string fileContents)
         {
-            List<ServiceReceiver> serviceReceivers = requestResourceFiles(readDaeTextureUris(daeFileUri, fileContents));
+            List<ServiceReceiver> serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, fileContents));
             foreach (ServiceReceiver serviceReceiver in serviceReceivers)
-                serviceReceiver.ReceiveEventHandler += receiveTextureFiles;
+                serviceReceiver.ReceiveEventHandler += ReceiveTextureFiles;
         }
 
-        private List<Uri> readDaeTextureUris(Uri resourceFileUri, string fileContents)
+        private List<Uri> ReadDaeTextureUris(Uri resourceFileUri, string fileContents)
         {
             XElement root = XElement.Parse(fileContents);
             return (from x in root.Elements() where x.Name.LocalName == "library_images" select new Uri(resourceFileUri, x.Value)).ToList();
         }
 
-        private void receiveTextureFiles(ServiceReceiver serviceReceiver, object serviceResponse)
+        private void ReceiveTextureFiles(ServiceReceiver serviceReceiver, object serviceResponse)
         {
-            writeBinaryResponseToFile((string)serviceReceiver.HandlerParameter, ((ParamValueByte)serviceResponse).value);
-            updateFileRequestStatus(new Uri(((ParamName)serviceReceiver.ServiceParameter).name));
+            WriteBinaryResponseToFile((string)serviceReceiver.HandlerParameter, ((ParamValueByte)serviceResponse).value);
+            UpdateFileRequestStatus(new Uri(((ParamName)serviceReceiver.ServiceParameter).name));
         }
 
-        private void writeBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)
+        private void WriteBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)
         {
             string filename = LocalDirectory + relativeLocalFilename;
             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllBytes(filename, fileContents);
         }
 
-        private void writeTextFile(string relativeLocalFilename, string fileContents)
+        private void WriteTextFile(string relativeLocalFilename, string fileContents)
         {
             string filename = LocalDirectory + relativeLocalFilename;
             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllText(filename, fileContents);
         }
 
-        private static string getLocalFilename(Uri resourceFilePath)
+        private static string GetLocalFilename(Uri resourceFilePath)
         {
             return Path.DirectorySeparatorChar
-                + resourceFilePath.Host
-                + resourceFilePath.LocalPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                       + resourceFilePath.Host
+                       + resourceFilePath.LocalPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
 
-        private static string formatTextFileContents(string fileContents)
+        private static string FormatTextFileContents(string fileContents)
         {
             // remove enclosing quotations if existend:
             if (fileContents.Substring(0, 1) == "\"" && fileContents.Substring(fileContents.Length - 1, 1) == "\"")
