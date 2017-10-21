@@ -16,7 +16,7 @@
 
 ## Issues: ##
 
-1. In `URDFSharp/URDFImporter/OdomoteryPatcher.cs`, the name of the root node needs to be generalized - either pull it from the urdf, or specify as a requirement that the root node be named "root".
+1. In `URDFSharp/URDFImporter/OdomoteryPatcher.cs`, the name of the root node needs to be generalized - either pull it from the urdf, or specify as a requirement that the root node be named "world".
 2. In `URDFSharp/URDFImporterEditor/UrdfImporterEditorWindow.cs`, `urdfAssetPath` needs to be generalized using full path to Project folder (Windows method of finding current folder does not work in Mac OSX).
 
 ---
