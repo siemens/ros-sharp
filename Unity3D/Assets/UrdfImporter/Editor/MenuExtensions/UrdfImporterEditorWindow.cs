@@ -33,7 +33,7 @@ namespace RosSharp.UrdfImporter
 
         private Thread rosSocketConnectThread;
         private Thread urdfImportThread;
-        private UrdfImporter urdfImporter;
+        private RosBridgeClient.UrdfImporter urdfImporter;
 
         private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>
     {
@@ -108,7 +108,7 @@ namespace RosSharp.UrdfImporter
             status["connected"].Set();
 
             // setup urdfImporter
-            urdfImporter = new UrdfImporter(rosSocket, urdfAssetPath);
+            urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, urdfAssetPath);
             status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];

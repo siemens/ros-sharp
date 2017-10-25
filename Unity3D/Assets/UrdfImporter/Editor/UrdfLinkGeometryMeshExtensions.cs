@@ -18,7 +18,7 @@ limitations under the License.
 using UnityEngine;
 using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 {
     public static class UrdfLinkGeometryMeshExtensions
     {
