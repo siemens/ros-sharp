@@ -15,25 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Linq;
 using System.Xml.Linq;
-using System.Globalization;
 
-namespace Urdf
-{ 
-    public static class XAttributeExtensions
+namespace RosSharp.Urdf
+{
+    public class Origin
     {
-        public static double[] ReadDoubleArray(this XAttribute attribute)
+        public double[] Xyz;
+        public double[] Rpy;
+
+        public Origin(XElement node)
         {
-            return Array.ConvertAll(
-                ((string)attribute).Split(' ').Where(x => !string.IsNullOrEmpty(x)).ToArray(),
-                i => Convert.ToDouble(i, CultureInfo.InvariantCulture));
+            Xyz = node.Attribute("xyz") != null ? node.Attribute("xyz").ReadDoubleArray() : null;
+            Rpy = node.Attribute("rpy") != null ? node.Attribute("rpy").ReadDoubleArray() : null;
         }
 
-        public static double ReadOptionalDouble(this XAttribute attribute)
-        {
-            return (attribute != null) ? (double)attribute : double.NaN;
-        }
     }
 }

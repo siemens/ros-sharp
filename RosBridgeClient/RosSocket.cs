@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
-namespace RosBridgeClient
+namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {

@@ -17,7 +17,7 @@ limitations under the License.
 
 using System.Xml.Linq;
 
-namespace Urdf
+namespace RosSharp.Urdf
 {
     public class Joint
     {

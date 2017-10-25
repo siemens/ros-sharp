@@ -15,11 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-
-namespace RosBridgeClient
+namespace RosSharp.RosBridgeClient
 {
 public class Operation
     {
