@@ -7,8 +7,8 @@
     <ProjectGuid>{D33101DA-7196-4545-B708-C8E0C308C5FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Urdf</RootNamespace>
-    <AssemblyName>Urdf</AssemblyName>
+    <RootNamespace>RosSharp.UrdfImporter</RootNamespace>
+    <AssemblyName>UrdfImporter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>

@@ -19,7 +19,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 {
     public class UrdfGeneratorEditorWindow
     {

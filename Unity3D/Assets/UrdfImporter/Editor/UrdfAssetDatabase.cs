@@ -19,7 +19,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 {
     public static class UrdfAssetDatabase
     {

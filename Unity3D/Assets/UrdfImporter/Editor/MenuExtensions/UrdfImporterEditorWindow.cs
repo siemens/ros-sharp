@@ -22,7 +22,7 @@ using UnityEngine;
 using UnityEditor;
 using RosSharp.RosBridgeClient;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 {
 
     public class UrdfImporterEditorWindow : EditorWindow

@@ -20,7 +20,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Globalization;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 { 
     public static class XAttributeExtensions
     {

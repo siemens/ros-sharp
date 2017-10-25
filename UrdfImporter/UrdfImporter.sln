@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urdf", "Urdf.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfImporter", "UrdfImporter.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

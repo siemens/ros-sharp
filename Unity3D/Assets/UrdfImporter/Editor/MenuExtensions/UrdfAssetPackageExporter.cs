@@ -21,7 +21,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.UrdfImporter
 {
     public static class UrdfAssetPackageExporter
     {
@@ -35,7 +35,7 @@ namespace RosSharp.Urdf
             
             string fileName = EditorUtility.SaveFilePanel(
                      "Save URDF Unity Asset Package",
-                     GetDefaultDirectory(),
+                     Directory.GetParent(Application.dataPath).FullName,
                      "RosSharp.unitypackage",
                      "unitypackage");
 
@@ -53,11 +53,6 @@ namespace RosSharp.Urdf
                     select ("Assets" + assetFile.Substring(Application.dataPath.Length))
                     .Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)).ToList();
         }
-        private static string GetDefaultDirectory()
-        {
-            return Directory.GetParent(Directory.GetParent(Application.dataPath).FullName).FullName;
-        }
 
     }
-
 }
