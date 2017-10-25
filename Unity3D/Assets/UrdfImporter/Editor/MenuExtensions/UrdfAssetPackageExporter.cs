@@ -32,10 +32,10 @@ namespace RosSharp.UrdfImporter
             Assets.AddRange(GetAssetsAtPath("UrdfImporter"));
             Assets.AddRange(GetAssetsAtPath("RosBridgeClient"));
             Assets.AddRange(GetAssetsAtPath("MeshImporter"));
-            
+
             string fileName = EditorUtility.SaveFilePanel(
                      "Save URDF Unity Asset Package",
-                     Directory.GetParent(Application.dataPath).FullName,
+                     GetDefaultDirectory(),
                      "RosSharp.unitypackage",
                      "unitypackage");
 
@@ -48,11 +48,17 @@ namespace RosSharp.UrdfImporter
         {
             string[] assetFiles = Directory.GetFiles(Path.Combine(Application.dataPath, path), "*", SearchOption.AllDirectories);
             string[] metaFiles = Directory.GetFiles(Path.Combine(Application.dataPath, path), "*.meta", SearchOption.AllDirectories);
-            
+
             return (from assetFile in assetFiles.Except(metaFiles)
                     select ("Assets" + assetFile.Substring(Application.dataPath.Length))
                     .Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)).ToList();
         }
+
+        private static string GetDefaultDirectory()
+        {
+            return Path.Combine(Directory.GetParent(Directory.GetParent(Application.dataPath).FullName).FullName, "bin");
+        }
+
 
     }
 }
