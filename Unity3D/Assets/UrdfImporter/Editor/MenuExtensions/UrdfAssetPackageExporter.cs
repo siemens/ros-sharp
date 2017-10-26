@@ -56,7 +56,7 @@ namespace RosSharp.UrdfImporter
 
         private static string GetDefaultDirectory()
         {
-            return Path.Combine(Directory.GetParent(Directory.GetParent(Application.dataPath).FullName).FullName, "bin");
+            return Path.Combine(Directory.GetParent(Directory.GetParent(Application.dataPath).FullName).FullName, "Release");
         }
 
 
