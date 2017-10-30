@@ -1,6 +1,6 @@
 ﻿/*
 © Siemens AG, 2017
-Author: Dr.Martin Bischoff(martin.bischoff @siemens.com)
+Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,41 +16,34 @@ limitations under the License.
 */
 
 using UnityEngine;
-
 namespace RosSharp
 {
     [RequireComponent(typeof(HingeJoint))]
-    public class JointStateManager : MonoBehaviour
+    public class JointMotorManager : MonoBehaviour
     {
-        public int JointStateId;
         private HingeJoint _hingeJoint;
-
-        private float newAngle;
-        private float prevAngle;
-        private bool doUpdate;
+        public string AxisName;
+        public float MaxVelocity;
+        public float ControlInputValue;
 
         private void Start()
         {
             _hingeJoint = GetComponent<HingeJoint>();
-            newAngle = 0;
-            prevAngle = 0;
         }
 
         private void Update()
         {
-            if (doUpdate)
-            {
-                Vector3 anchor = transform.TransformPoint(_hingeJoint.anchor);
-                Vector3 axis = transform.TransformDirection(_hingeJoint.axis);
-                transform.RotateAround(anchor, axis, (newAngle - prevAngle));
-                prevAngle = newAngle;
-                doUpdate = false;
-            }
+            UpdateAxisInput();            
+            JointMotor jointMotor = _hingeJoint.motor;
+            jointMotor.targetVelocity = ControlInputValue * MaxVelocity;
+            _hingeJoint.motor = jointMotor;
+            ControlInputValue = 0;
         }
-        public void UpdateJointState(float angle)
+
+        private void UpdateAxisInput()
         {
-            newAngle = angle;
-            doUpdate = true;
+            if (Input.GetAxis(AxisName) != 0)
+                ControlInputValue = Input.GetAxis(AxisName);
         }
     }
 }

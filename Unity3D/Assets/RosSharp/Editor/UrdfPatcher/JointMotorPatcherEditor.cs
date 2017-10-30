@@ -15,29 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 using UnityEngine;
 using UnityEditor;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp
 {
-    [CustomEditor(typeof(JointStateSubscriber))]
-    public class JointStateSubscriberEditor : Editor
+    [CustomEditor(typeof(JointMotorPatcher))]
+    public class JointMotorPatcherEditor : Editor
     {
-        private JointStateSubscriber jointStateSubscriber;
-
-        private string jointStateSubscriberButtonLabel = "Subscribe to joint states";
+        private JointMotorPatcher jointMotorPatcher;
 
         public override void OnInspectorGUI()
         {
-            jointStateSubscriber = (JointStateSubscriber)target;
+            jointMotorPatcher = (JointMotorPatcher)target;
             DrawDefaultInspector();
 
-            if (GUILayout.Button(jointStateSubscriberButtonLabel))
-            {
-                jointStateSubscriber.Start();
+            if (GUILayout.Button("apply JointMotorManagers"))
+                jointMotorPatcher.patch();
 
-            }
             Application.runInBackground = true;
         }
     }

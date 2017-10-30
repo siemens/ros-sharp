@@ -18,6 +18,7 @@ limitations under the License.
 using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
+    [RequireComponent(typeof(RosSocket))]
     public class JointStateSubscriber : MonoBehaviour
     {
         private JointStateManager[] jointStateManagers;
