@@ -16,24 +16,19 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEditor;
 
 namespace RosSharp
 {
-    [CustomEditor(typeof(JointStatePatcher))]
-    public class JointStatePatcherEditor : Editor
+    public class ConvexMeshPatcher : MonoBehaviour
     {
-        private JointStatePatcher jointStatePatcher;
-
-        public override void OnInspectorGUI()
+        public GameObject UrdfModel;
+        public void SetConvex(bool value)
         {
-            jointStatePatcher = (JointStatePatcher)target;
-            DrawDefaultInspector();
-
-            if (GUILayout.Button("Apply JointStateManagers"))
-                jointStatePatcher.patch();
-
-            Application.runInBackground = true;
+            foreach (MeshCollider meshCollider in UrdfModel.GetComponentsInChildren<MeshCollider>())
+            {
+                Debug.Log(meshCollider.name);
+                meshCollider.convex = value;
+            }
         }
     }
 }

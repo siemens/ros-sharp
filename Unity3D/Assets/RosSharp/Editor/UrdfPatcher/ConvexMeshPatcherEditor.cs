@@ -20,38 +20,38 @@ using UnityEditor;
 
 namespace RosSharp
 {
-    [CustomEditor(typeof(KinematicPatcher))]
-    public class KinematicPatcherEditor : Editor
+    [CustomEditor(typeof(ConvexMeshPatcher))]
+    public class ConvexMeshPatcherEditor : Editor
     {
-        private KinematicPatcher kinematicPatcher;
+        private ConvexMeshPatcher kinematicPatcher;
 
-        private bool isKinematic = true;
-
-        private string kinematicButtonLabel
+        private bool isConvex = true;
+        private string convexButtonLabel
         {
             get
             {
-                return (isKinematic ? "Set Rigidbodies Non-Kinematic" : "Set Rigidbodies Kinematic");
+                return (isConvex ? "Set Mesh Colliders Non-Convex" : "Set Mesh Colliders Convex");
             }
         }
 
         public override void OnInspectorGUI()
         {
-            kinematicPatcher = (KinematicPatcher)target;
+            kinematicPatcher = (ConvexMeshPatcher)target;
             DrawDefaultInspector();
 
-            if (GUILayout.Button(kinematicButtonLabel))
+            if (GUILayout.Button(convexButtonLabel))
             {
-                if (isKinematic)
+                if (isConvex)
                 {
-                    isKinematic = false;
-                    kinematicPatcher.SetKinematic(false);
+                    isConvex = false;
+                    kinematicPatcher.SetConvex(false);                    
                 }
                 else
                 {
-                    isKinematic = true;
-                    kinematicPatcher.SetKinematic(true);
+                    isConvex = true;
+                    kinematicPatcher.SetConvex(true);                    
                 }
+
             }
         }
     }

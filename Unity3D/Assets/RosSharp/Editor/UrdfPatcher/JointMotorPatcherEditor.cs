@@ -30,7 +30,7 @@ namespace RosSharp
             jointMotorPatcher = (JointMotorPatcher)target;
             DrawDefaultInspector();
 
-            if (GUILayout.Button("apply JointMotorManagers"))
+            if (GUILayout.Button("Apply JointMotorManagers"))
                 jointMotorPatcher.patch();
 
             Application.runInBackground = true;

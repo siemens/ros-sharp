@@ -28,10 +28,13 @@ namespace RosSharp
 
         private bool useGravity = true;
 
-        private static string gravityButtonOn = "Don't Use Gravity for Rigidbodies";
-        private static string gravityButtonOff = "Use Gravity for Rigidbodies";
-
-        private string gravityButtonLabel = gravityButtonOff;
+        private string gravityButtonLabel
+        {
+            get
+            {
+                return (useGravity ? "Deactivate Gravity for Rigidbodies" : "Activate Gravity for Rigidbodies");
+            }
+        }
 
         public override void OnInspectorGUI()
         {
@@ -43,14 +46,12 @@ namespace RosSharp
                 if (useGravity)
                 {
                     useGravity = false;
-                    gravityPatcher.SetGravity(false);
-                    gravityButtonLabel = gravityButtonOn;
+                    gravityPatcher.SetGravity(false);                    
                 }
                 else
                 {
                     useGravity = true;
-                    gravityPatcher.SetGravity(true);
-                    gravityButtonLabel = gravityButtonOff;
+                    gravityPatcher.SetGravity(true);                    
                 }
 
             }
