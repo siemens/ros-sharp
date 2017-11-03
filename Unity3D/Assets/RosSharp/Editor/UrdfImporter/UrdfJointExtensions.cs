@@ -68,8 +68,23 @@ namespace RosSharp.UrdfImporter
 
             // limits:        
             if (joint.type == "revolute" && joint.limit != null)
+            {
                 hingeJoint.limits = joint.limit.GetJointLimits();
-
+                
+                // large joint limits:
+                if (hingeJoint.limits.min < -180 || hingeJoint.limits.max > 180)
+                { 
+                    LargeJointLimitsFix largeJointLimitFix = gameObject.AddComponent<LargeJointLimitsFix>();
+                    largeJointLimitFix.LargeAngleLimitMin = hingeJoint.limits.min;
+                    largeJointLimitFix.LargeAngleLimitMax = hingeJoint.limits.max;
+                    JointLimits jointLimits = hingeJoint.limits;
+                    jointLimits.min = -180;
+                    jointLimits.max = +180;
+                    hingeJoint.limits = jointLimits;                   
+                }
+                else
+                    hingeJoint.useLimits = true;
+            }
             return hingeJoint;
         }
 
