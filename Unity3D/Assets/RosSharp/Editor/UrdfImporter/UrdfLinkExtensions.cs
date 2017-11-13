@@ -35,6 +35,9 @@ namespace RosSharp.UrdfImporter
                 if (joint != null)
                     joint.Create(gameObject, parent);
             }
+            else if (joint != null)
+                Debug.LogWarning("No Joint Component will be created in GameObject \"" + gameObject.name + "\" as it has no Rigidbody Component.\n"
+                    + "Please define an Inertial for Link \"" + link.name + "\" in the URDF file to create a Rigidbody Component.\n");
 
             GameObject visualGameObject = new GameObject("Visuals");
             visualGameObject.transform.SetParentAndAlign(gameObject.transform);
