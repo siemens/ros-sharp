@@ -33,8 +33,12 @@ ROS# is open source under the Apache 2.0 license and is free for commercial use.
 ## External Dependencies: ##
 
 [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) uses the following 3rd party libraries:
-* `websocket-sharp.dll` from the project [websocket-sharp](https://github.com/sta/websocket-sharp) provided under The MIT License.
-* `NewtonSoft.Json.dll` from the project [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under The MIT License.
+* `websocket-sharp.dll` from [websocket-sharp](https://github.com/sta/websocket-sharp) provided under MIT License.
+* `NewtonSoft.Json.dll` from [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under MIT License.
+
+[UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) uses the following 3rd party libraries:
+* `MathNet.Numerics.dll` from [Math.NET Numerics](https://numerics.mathdotnet.com/) provided under MIT License.
+* `System.Threading.dll` from [TaskParallelLibrary for .NET 3.5](https://www.nuget.org/packages/TaskParallelLibrary/1.0.2856) provided under [MS-EULA License](https://msdn.microsoft.com/en-us/hh295787).
 
 ## Special Thanks: ##
 
