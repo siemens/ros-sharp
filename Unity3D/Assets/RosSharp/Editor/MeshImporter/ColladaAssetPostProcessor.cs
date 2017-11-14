@@ -38,6 +38,8 @@ namespace RosSharp
 
             modelImporter.globalScale = readGlobalScale(getAbsolutePath(modelImporter.assetPath));
             modelImporter.animationType = ModelImporterAnimationType.None;
+            modelImporter.importCameras = false;
+            modelImporter.importLights = false;
             orientation = readColladaOrientation(getAbsolutePath(modelImporter.assetPath));
         }
 
@@ -46,7 +48,9 @@ namespace RosSharp
             if (!isCollada)
                 return;
 
-            gameObject.transform.Rotate(getColladaOrientationFix(orientation));
+            gameObject.transform.SetPositionAndRotation(
+                getColladaPositionFix(gameObject.transform.position, orientation),
+                Quaternion.Euler(getColladaRotationFix(orientation)) * gameObject.transform.rotation);
         }
 
         private static string getAbsolutePath(string relativeAssetPath)
@@ -54,13 +58,24 @@ namespace RosSharp
             return Path.Combine(Path.GetDirectoryName(Application.dataPath), relativeAssetPath);
         }
 
-        private Vector3 getColladaOrientationFix(string orientation)
-        {
+        private Vector3 getColladaPositionFix(Vector3 position, string orientation)
+        { 
             switch (orientation)
             {
-                case "X_UP": return new Vector3(-90, 90, 90);
-                case "Y_UP": return new Vector3(-90, 90, 0);
-                case "Z_UP": return new Vector3(0, 90, 0);
+                case "X_UP": return position; // not tested
+                case "Y_UP": return position; // not tested
+                case "Z_UP": return new Vector3(-position.z, position.y, -position.x); // tested
+                default: return Vector3.zero;
+            }
+        }
+
+        private static Vector3 getColladaRotationFix(string orientation)
+        {
+            switch (orientation)
+            { 
+                case "X_UP": return new Vector3(-90, 90, 90); // not tested
+                case "Y_UP": return new Vector3(-90, 90, 0);  // tested
+                case "Z_UP": return new Vector3(0, 90, 0);    // tested
                 default: return Vector3.zero;
             }
         }
@@ -75,7 +90,7 @@ namespace RosSharp
             }
             catch
             {
-                return "Z_UP";
+                return "";
             }
         }
 
