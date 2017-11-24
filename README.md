@@ -41,6 +41,14 @@ ROS# is open source under the Apache 2.0 license and is free for commercial use.
 * `MathNet.Numerics.dll` from [Math.NET Numerics](https://numerics.mathdotnet.com/) provided under MIT License.
 * `System.Threading.dll` from [TaskParallelLibrary for .NET 3.5](https://www.nuget.org/packages/TaskParallelLibrary/1.0.2856) provided under [MS-EULA License](https://msdn.microsoft.com/en-us/hh295787).
 
+## .NET Standard 2.0: ##
+Both [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient)
+and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter)
+are running on .NET Framework 3.5 as this is the .NET platform currently supported by official Unity3D releases.
+
+For Non-Unity3D-Applications [blommers](https://github.com/blommers) kindly provides a
+[.NET Standard 2.0 version of UrdfImporter](https://github.com/blommers/UdrfImporter).
+
 ## Special Thanks: ##
 
 * [Rahul Warrier](https://github.com/jaguar243) for adjusting the code to enable its open source publication.
