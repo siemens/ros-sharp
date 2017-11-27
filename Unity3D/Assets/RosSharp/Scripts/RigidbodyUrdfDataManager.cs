@@ -22,7 +22,7 @@ namespace RosSharp.UrdfImporter
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(Rigidbody))]
-    public class RigidbodyData : MonoBehaviour
+    public class RigidBodyUrdfDataManager : MonoBehaviour
     {
         public bool UseUrdfData;
         public Vector3 CenterOfMass;

@@ -70,12 +70,14 @@ namespace RosSharp.UrdfImporter
 
             inertial.inertia.SetInertia(rigidbody);
 
-            RigidbodyData rigidbodyData = gameObject.AddComponent<RigidbodyData>();
-            rigidbodyData.GetValuesFromUrdf(
+            RigidBodyUrdfDataManager rigidBodyUrdfDataManager
+                = gameObject.AddComponent<RigidBodyUrdfDataManager>();
+
+            rigidBodyUrdfDataManager.GetValuesFromUrdf(
                 rigidbody.centerOfMass,
                 rigidbody.inertiaTensor,
                 rigidbody.inertiaTensorRotation);
-            rigidbodyData.UseUrdfData = true;
+            rigidBodyUrdfDataManager.UseUrdfData = true;
 
             return rigidbody;
         }

@@ -21,7 +21,7 @@ namespace RosSharp
 {
     [RequireComponent(typeof(HingeJoint))]
     [ExecuteInEditMode]
-    public class LargeJointLimitsFix : MonoBehaviour
+    public class JointLimitsManager : MonoBehaviour
     {
         public float LargeAngleLimitMin;
         public float LargeAngleLimitMax;

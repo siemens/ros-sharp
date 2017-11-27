@@ -73,10 +73,10 @@ namespace RosSharp.UrdfImporter
                 
                 // large joint limits:
                 if (hingeJoint.limits.min < -180 || hingeJoint.limits.max > 180)
-                { 
-                    LargeJointLimitsFix largeJointLimitFix = gameObject.AddComponent<LargeJointLimitsFix>();
-                    largeJointLimitFix.LargeAngleLimitMin = hingeJoint.limits.min;
-                    largeJointLimitFix.LargeAngleLimitMax = hingeJoint.limits.max;
+                {
+                    JointLimitsManager jointLimitsManager = gameObject.AddComponent<JointLimitsManager>();
+                    jointLimitsManager.LargeAngleLimitMin = hingeJoint.limits.min;
+                    jointLimitsManager.LargeAngleLimitMax = hingeJoint.limits.max;
                     JointLimits jointLimits = hingeJoint.limits;
                     jointLimits.min = -180;
                     jointLimits.max = +180;
