@@ -20,9 +20,9 @@ using UnityEngine;
 
 namespace RosSharp.UrdfImporter
 {
-    [ExecuteInEditMode]
+  //  [ExecuteInEditMode]
     [RequireComponent(typeof(Rigidbody))]
-    public class RigidBodyUrdfDataManager : MonoBehaviour
+    public class RigidbodyUrdfDataManager : MonoBehaviour
     {
         public bool UseUrdfData;
         public Vector3 CenterOfMass;
