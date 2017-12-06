@@ -1,0 +1,11 @@
+<launch>
+
+  <node pkg="joy" type="joy_node" name="joy">
+    <param name="dev" value="/dev/input/js1"/>
+  </node>
+
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="port" value="9090"/>
+  </include>
+
+</launch>
