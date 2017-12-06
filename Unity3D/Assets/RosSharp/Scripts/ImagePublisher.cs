@@ -19,28 +19,31 @@ namespace RosSharp.RosBridgeClient
 		private RosSocket rosSocket;
 		private int pub_id;
 
+		private Texture2D screenShot;
+		private RenderTexture rt;
+		private Rect viewport;
+		private SensorCompressedImage message;
 
 		void Start () {
 			rosSocket = transform.GetComponent<RosConnector>().RosSocket;
 			pub_id = rosSocket.Advertize (baseTopic + "/compressed", "sensor_msgs/CompressedImage");
+			screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
+			viewport = new Rect (0, 0, resWidth, resHeight);
+			rt = new RenderTexture(resWidth, resHeight, 24);
+			message = new SensorCompressedImage ();
 		}
 
 		void Update () {
 
 			//
-			RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
 			cameraToPublish.targetTexture = rt;
-
-			Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
 			cameraToPublish.Render();
 			RenderTexture.active = rt;
-			screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
+			screenShot.ReadPixels(viewport, 0, 0);
 			cameraToPublish.targetTexture = null;
 			RenderTexture.active = null; // JC: added to avoid errors
-			Destroy(rt);
 
 			// Build up the message and publish
-			SensorCompressedImage message = new SensorCompressedImage ();
 			message.header.frame_id = "test";
 			message.format = "jpeg";
 			message.data = screenShot.EncodeToJPG (qualityLevel);
