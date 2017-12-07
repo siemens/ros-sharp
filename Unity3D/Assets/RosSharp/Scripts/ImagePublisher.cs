@@ -4,50 +4,59 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-	[RequireComponent(typeof(RosConnector))]
-	public class ImagePublisher : MonoBehaviour {
+    [RequireComponent(typeof(RosConnector))]
+    public class ImagePublisher : MonoBehaviour {
 		
-		public Camera cameraToPublish;
-		public string baseTopic = "/image_raw";
+	public Camera camera;
+	public string topic = "/image_raw/compressed";
+	public string frameId = "camera";
 
-		public int resWidth = 640; 
-		public int resHeight = 480;
+	public int resolutionWidth = 640; 
+	public int resolutionHeight = 480;
 
-		[Range(0, 100)]
-		public int qualityLevel = 50;
+	[Range(0, 100)]
+	public int qualityLevel = 50;
 
-		private RosSocket rosSocket;
-		private int pub_id;
+	private RosSocket rosSocket;
+	private int publicationId;
+	private SensorCompressedImage message;
+	private int sequenceId;
 
-		private Texture2D screenShot;
-		private RenderTexture rt;
-		private Rect viewport;
-		private SensorCompressedImage message;
+	private Texture2D texture2D;
+	private RenderTexture renderTexture;
+	private Rect rect;
 
-		void Start () {
-			rosSocket = transform.GetComponent<RosConnector>().RosSocket;
-			pub_id = rosSocket.Advertize (baseTopic + "/compressed", "sensor_msgs/CompressedImage");
-			screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
-			viewport = new Rect (0, 0, resWidth, resHeight);
-			rt = new RenderTexture(resWidth, resHeight, 24);
-			message = new SensorCompressedImage ();
-		}
+	void Start () {
+	    // The ROS part
+	    rosSocket = transform.GetComponent<RosConnector>().RosSocket;
+	    publicationId = rosSocket.Advertize (topic, "sensor_msgs/CompressedImage");
+	    message = new SensorCompressedImage ();
+	    sequenceId = 0;
 
-		void Update () {
-
-			//
-			cameraToPublish.targetTexture = rt;
-			cameraToPublish.Render();
-			RenderTexture.active = rt;
-			screenShot.ReadPixels(viewport, 0, 0);
-			cameraToPublish.targetTexture = null;
-			RenderTexture.active = null; // JC: added to avoid errors
-
-			// Build up the message and publish
-			message.header.frame_id = "test";
-			message.format = "jpeg";
-			message.data = screenShot.EncodeToJPG (qualityLevel);
-			rosSocket.Publish (pub_id, message);
-		}
+	    // The Unity part for rendering the image 
+	    texture2D = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
+	    rect = new Rect (0, 0, resolutionWidth, resolutionHeight);
+	    renderTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
 	}
+
+	void Update () {
+
+	    // Render the image 
+	    camera.targetTexture = renderTexture;
+	    camera.Render();
+	    RenderTexture.active = renderTexture;
+	    texture2D.ReadPixels(rect, 0, 0);
+	    camera.targetTexture = null;
+	    RenderTexture.active = null;
+
+	    // Build up the message and publish
+	    message.header.frame_id = frameId;
+	    message.header.seq = sequenceId;
+	    message.format = "jpeg";
+	    message.data = texture2D.EncodeToJPG (qualityLevel);
+	    rosSocket.Publish (publicationId, message);
+
+	    ++sequenceId;
+	}
+    }
 }
