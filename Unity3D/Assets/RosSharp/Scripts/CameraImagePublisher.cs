@@ -8,8 +8,6 @@ namespace RosSharp.RosBridgeClient
     public class CameraImagePublisher : MonoBehaviour {
 
 	public string topic = "/image_raw/compressed";
-	public int resolutionWidth = 640; 
-	public int resolutionHeight = 480;
 
 	[Range(0, 100)]
 	public int qualityLevel = 50;
