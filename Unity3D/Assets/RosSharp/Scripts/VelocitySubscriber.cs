@@ -7,12 +7,12 @@ namespace RosSharp.RosBridgeClient
 	[RequireComponent(typeof(RosConnector))]
 	public class VelocitySubscriber : MonoBehaviour
 	{
-		public GameObject Model;
+		public GameObject UrdfModel;
 
 		public string topic = "/cmd_vel";
 
-		private TransformManager transformManager;
 		private RosSocket rosSocket;
+		private VelocityTransformManager velocityTransformManager;
 
 		public int UpdateTime = 1;
 
@@ -20,25 +20,34 @@ namespace RosSharp.RosBridgeClient
 		void Start ()
 		{
 			rosSocket = transform.GetComponent<RosConnector>().RosSocket;
-			rosSocket.Subscribe(topic, "geometry_msgs/Twist", updateCmdVel, UpdateTime);
+			rosSocket.Subscribe(topic, "geometry_msgs/Twist", updateVelocity, UpdateTime);
 
-			transformManager = Model.GetComponent<TransformManager>();		
+			velocityTransformManager = UrdfModel.GetComponent<VelocityTransformManager>();		
 		}
 
-		private void updateCmdVel(Message message)
+		private void updateVelocity(Message message)
 		{
-			GeometryTwist twist_msg = (GeometryTwist)message;
-			// In ROS conventions : 
-			// x points forward
-			// y points to the left
-			// z points to the top
+			GeometryTwist geometryTwist = (GeometryTwist)message;
+			// In ROS conventions, the coordinate system is right-handed with 
+			// x pointing forward
+			// y pointing to the left
+			// z pointing to the top
 
-			// In Unity conventions: 
-			// x points to the right
-			// y points to the top
-			// z points forward
-			transformManager.updateTransform (new Vector3 (twist_msg.linear.y, twist_msg.linear.z , twist_msg.linear.x ),
-				new Vector3 (-twist_msg.angular.y, -twist_msg.angular.z, -twist_msg.angular.x));
+			// In Unity conventions, the coordinate system is left-handed with 
+			// x pointing to the right
+			// y pointing to the top
+			// z pointing forward
+
+			// Hopefully, the conversion below should handle the transformation between
+			// the two coordinate systems
+			// But I'm not completely sure :)
+			velocityTransformManager.updateTransform (
+								  new Vector3 (-geometryTwist.linear.y,
+									       geometryTwist.linear.z ,
+									       geometryTwist.linear.x ),
+								  new Vector3 (geometryTwist.angular.y,
+									       -geometryTwist.angular.z,
+									       -geometryTwist.angular.x));
 		}
 	}
 
