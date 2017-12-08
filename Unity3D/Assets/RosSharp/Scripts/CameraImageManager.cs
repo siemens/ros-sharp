@@ -1,5 +1,5 @@
 /*
-© CentraleSupelec AG, 2017
+© CentraleSupelec, 2017
 Author: Dr. Jeremy Fix (jeremy.fix@centralesupelec.fr)
 
 Licensed under the Apache License, Version 2.0 (the "License");
