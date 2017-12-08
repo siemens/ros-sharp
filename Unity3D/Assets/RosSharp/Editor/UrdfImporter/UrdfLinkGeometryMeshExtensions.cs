@@ -25,8 +25,8 @@ namespace RosSharp.UrdfImporter
         public static GameObject CreateVisual(this Link.Geometry.Mesh mesh, GameObject parent)
         {            
             GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
-            gameObject.transform.SetParentAndAlign(parent.transform);
             mesh.setScale(gameObject);
+            gameObject.transform.SetParentAndAlign(parent.transform);            
             return gameObject;
         }
 
@@ -44,8 +44,8 @@ namespace RosSharp.UrdfImporter
                 Object.DestroyImmediate(meshFilter);
                 
             }
-            gameObject.transform.SetParentAndAlign(parent.transform);
-
+            mesh.setScale(gameObject);
+            gameObject.transform.SetParentAndAlign(parent.transform);            
             return gameObject;
         }
 
@@ -55,8 +55,8 @@ namespace RosSharp.UrdfImporter
             {
                 Vector3 scale = new Vector3((float)mesh.scale[0], (float)mesh.scale[1], (float)mesh.scale[2]);
                 gameObject.transform.localScale = Vector3.Scale(gameObject.transform.localScale, scale);
+                gameObject.transform.localPosition = Vector3.Scale(gameObject.transform.localPosition, scale);
             }
-
         }
     }
 }
