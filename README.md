@@ -10,10 +10,8 @@
 ### [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) ###
 ... provides a [URDF](http://wiki.ros.org/urdf) file parser for [.NET](https://www.microsoft.com/net) applications.
 
-### [file_server](https://github.com/siemens/ros-sharp/tree/master/file_server) ###
-... provides a [ROS](http://www.ros.org/) node with a service to send file contents.
-
- ... is required for receiving meshes and textures referenced in a  [URDF](http://wiki.ros.org/urdf) via [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter).
+### [ROS](https://github.com/siemens/ros-sharp/tree/master/ROS) ###
+... contains code for [ROS](http://wiki.ros.org/) nodes and [ROS](http://wiki.ros.org/) launch files which are useful to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) and/or [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter).
  
 ### [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) ###
 ... is a [Unity3D](https://unity3d.com/) reference project providing [Unity3D](https://unity3d.com/)-specifc extensions to 
@@ -54,6 +52,7 @@ For Non-Unity3D-Applications [blommers](https://github.com/blommers) kindly prov
 * [Rahul Warrier](https://github.com/jaguar243) for adjusting the code to enable its open source publication.
 * [Verena Roehrl](https://github.com/roehrlverena) for providing the Wiki pages and the tutorial projects.
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity3D STL mesh importer used in this project.
+* [Jeremy Fix](https://github.com/jeremyfix) for providing the [CameraImagePublisher](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/CameraImagePublisher.cs) and [VelocitySubscriber](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/VelocitySubscriber.cs)
 
 ### Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info. ###
 
