@@ -1,6 +1,3 @@
-© Siemens AG, 2017
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
-
 # Code of Conduct
 
 ## Our Pledge
@@ -58,7 +55,8 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by e-mailing [Dr. Martin Bischoff](mailto:martin.bischoff@siemens.com). To report an issue involing him please email [Dr. Thomas Vontz](mailto:thomas.vontz@siemens.com). All
+reported by e-mailing [Dr. Martin Bischoff](mailto:martin.bischoff@siemens.com).
+To report an issue involing him please email [Dr. Thomas Vontz](mailto:thomas.vontz@siemens.com). All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
@@ -75,3 +73,8 @@ available at [http://contributor-covenant.org/version/1/4][version]
 
 [homepage]: http://contributor-covenant.org
 [version]: http://contributor-covenant.org/version/1/4/
+---
+
+© Siemens AG, 2017
+
+Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)

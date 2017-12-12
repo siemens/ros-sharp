@@ -54,7 +54,10 @@ For Non-Unity3D-Applications [blommers](https://github.com/blommers) kindly prov
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity3D STL mesh importer used in this project.
 * [Jeremy Fix](https://github.com/jeremyfix) for providing the [CameraImagePublisher](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/CameraImagePublisher.cs) and [VelocitySubscriber](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/VelocitySubscriber.cs)
 
-### Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info. ###
+
+### Read the [Wiki](https://github.com/siemens/ros-sharp/wiki).###
+
+### Contact the [Project Team](mailto:ros-sharp@siemens.com).###
 
 ---
 
