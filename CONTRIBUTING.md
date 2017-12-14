@@ -1,4 +1,4 @@
-#Contributions to [ROS\#](https://github.com/siemens/ros-sharp) are always welcome!#
+# Contributions to [ROS\#](https://github.com/siemens/ros-sharp) are always welcome! #
 
 ## Did you find a bug? ##
 
@@ -25,7 +25,7 @@ Please send your suggested documentation, preferably in markdown format, to the 
 ## Do you have questions? ##
 
 * Ensure that the [Wiki](https://github.com/siemens/ros-sharp/wiki) does not answer your question.
-* If you are unable to find your answer in the Wiki, contact the [project team](mailto:ros-sharp@siemens.com).
+* If you are unable to find your answer in the Wiki, contact the [project team](mailto:ros-sharp.ct@siemens.com).
 
 # Thank you! #
 

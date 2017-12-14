@@ -55,9 +55,9 @@ For Non-Unity3D-Applications [blommers](https://github.com/blommers) kindly prov
 * [Jeremy Fix](https://github.com/jeremyfix) for providing the [CameraImagePublisher](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/CameraImagePublisher.cs) and [VelocitySubscriber](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/VelocitySubscriber.cs)
 
 
-### Read the [Wiki](https://github.com/siemens/ros-sharp/wiki).###
+### Read the [Wiki](https://github.com/siemens/ros-sharp/wiki). ###
 
-### Contact the [Project Team](mailto:ros-sharp@siemens.com).###
+### Contact the [Project Team](mailto:ros-sharp.ct@siemens.com). ###
 
 ---
 
