@@ -1,4 +1,24 @@
-﻿using RosSharp.RosBridgeClient;
+﻿/*
+© Federal Univerity of Minas Gerais (Brazil), 2017
+Author: Lucas Coelho Figueiredo (me@lucascoelho.net)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+<http://www.apache.org/licenses/LICENSE-2.0>.
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+
+using RosSharp.RosBridgeClient;
+using System;
 using UnityEngine;
 
 namespace RosSharp
@@ -39,16 +59,15 @@ namespace RosSharp
 
         public void UpdateTexture(SensorImage sensorImage)
         {
-            TextureFormat rosEncoding;
-            try
-            {
-                rosEncoding = GetEncoding(sensorImage.encoding);
-            }
-            catch (System.NotImplementedException)
-            {
-                Debug.Log("Image encoding " + sensorImage.encoding + " not supported. Please change it to rgb8 if possible.");
+            Nullable<TextureFormat> rosEncoding = null;
+
+            rosEncoding = GetEncoding(sensorImage.encoding);
+
+            if(rosEncoding == null) {
+                Debug.Log("Encoding " + sensorImage.encoding + " not implemented. Please change to rgb8.");
                 return;
             }
+
             if (sensorImage.width != width || sensorImage.height != heigth || rosEncoding != encoding)
             {
                 recreateTexture = true;
@@ -56,7 +75,7 @@ namespace RosSharp
                 sensorImage.data.CopyTo(data, 0);
                 width = sensorImage.width;
                 heigth = sensorImage.height;
-                encoding = rosEncoding;
+                encoding = rosEncoding.Value;
             }
             else
             {
@@ -65,20 +84,12 @@ namespace RosSharp
             doUpdate = true;
         }
 
-        public static TextureFormat GetEncoding(string ros_encoding) 
+        private static TextureFormat? GetEncoding(string ros_encoding) 
         {
             if (ros_encoding.Equals("rgb8"))
-            {
                 return TextureFormat.RGB24;
-            }
             else
-            {
-                throw new System.NotImplementedException();
-            }
-            /** TODO: Add more encoding types, I added just the one I needed, which is the most common encoding type 
-             *        When adding more types, we might also need to convert them to a format which Unity can understand,
-             *        so it will be necessary to pass the sensorImage.data too for conversion.
-             *        Unity does not read BGR24 format by default. **/
+                return null;
         }
     }
 }
