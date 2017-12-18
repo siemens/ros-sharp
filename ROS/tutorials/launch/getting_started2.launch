@@ -1,0 +1,18 @@
+<launch>
+	<arg name="gui" default="true"/>
+
+	<param name="robot/name" value="NextageOpen"/>
+	<param name="robot_description" textfile="$(find nextage_description)/urdf/NextageOpen.urdf"/>
+	<param name="use_gui" value="$(arg gui)"/>
+
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+		<param name="port" value="9090"/>
+	</include>
+	
+	<include file="$(find file_server)/launch/file_server.launch">
+	</include>
+
+</launch>

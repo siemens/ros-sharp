@@ -1,0 +1,15 @@
+<launch>
+
+	<param name="robot/name" value="Turtlebot2"/>
+
+	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+		<param name="port" value="9090"/>
+	</include>
+
+	<include file="$(find file_server)/launch/file_server.launch">
+	</include>
+
+	<include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch">
+	</include>
+	
+</launch>
