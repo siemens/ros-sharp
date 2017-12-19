@@ -2,6 +2,8 @@
 
 ... is a set of open source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular [Unity3D](https://unity3d.com/).
 
+Find some examples what you can do with ROS# [here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases).
+
 ## Contents: ##
 
 ### [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) ###
@@ -27,7 +29,7 @@ the latest package of [ROS#](https://github.com/siemens/ros-sharp) assets from t
 
 ## Licensing: ##
 
-ROS# is open source under the Apache 2.0 license and is free for commercial use.
+ROS# is open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) and is free for commercial use.
 
 ## External Dependencies: ##
 
@@ -54,10 +56,11 @@ For Non-Unity3D-Applications [blommers](https://github.com/blommers) kindly prov
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity3D STL mesh importer used in this project.
 * [Jeremy Fix](https://github.com/jeremyfix) for providing the [CameraImagePublisher](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/CameraImagePublisher.cs) and [VelocitySubscriber](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/VelocitySubscriber.cs)
 
+* [Interested in contributing as well?](CONTRIBUTING.md)
 
-### Read the [Wiki](https://github.com/siemens/ros-sharp/wiki). ###
-
-### Contact the [Project Team](mailto:ros-sharp.ct@siemens.com). ###
+## Further Info: ##
+* [Read the Wiki](https://github.com/siemens/ros-sharp/wiki).
+* [Contact the Project Team](mailto:ros-sharp.ct@siemens.com).
 
 ---
 

@@ -11,8 +11,8 @@
 
 * Before opening a pull request, please check:
     * Is your contribution in accordance with the [Developer Documentation](https://github.com/siemens/ros-sharp/wiki)?
-    * Is your contribution hardware-independent?
-    * Do all files of your contribution have a proper license header?
+    * Is your contribution [hardware-independent](https://github.com/siemens/ros-sharp/wiki/Dev_HardwareIndependence)?
+    * Do all files of your contribution have a proper [license header](https://github.com/siemens/ros-sharp/wiki/Dev_LicenseHeaders)?
 
 * If you are unsure about your contribution, please contact the [project team](mailto:ros-sharp@siemens.com).
 * When opening a pull request please provide a clear description of your contribution.
