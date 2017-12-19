@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient
@@ -45,6 +46,20 @@ namespace RosSharp.RosBridgeClient
             data = "";
         }
     }
+
+    public class GeometryAccel : Message
+    {
+        [JsonIgnore]
+        public const string type = "geometry_msgs/Accel";
+        public GeometryVector3 linear;
+        public GeometryVector3 angular;
+        public GeometryAccel()
+        {
+            linear = new GeometryVector3();
+            angular = new GeometryVector3();
+        }
+    }
+
     public class SensorJointStates : Message
     {
         [JsonIgnore]
@@ -77,6 +92,19 @@ namespace RosSharp.RosBridgeClient
             z = 0f;
         }
     }
+    public class SensorJoy : Message
+    {
+        [JsonIgnore]
+        public const string type = "sensor_msgs/Joy";
+        public float[] axes;
+        public long[] buttons;
+
+        public SensorJoy()
+        {
+            axes = new float[0];
+            buttons = new long[0];
+        }
+    }
     public class NavigationOdometry : Message
     {
         [JsonIgnore]
@@ -107,6 +135,7 @@ namespace RosSharp.RosBridgeClient
             frame_id = "";
         }
     }
+
     public class GeometryPoseWithCovariance : Message
     {
         [JsonIgnore]
@@ -144,6 +173,20 @@ namespace RosSharp.RosBridgeClient
             orientation = new GeometryQuaternion();
         }
     }
+    
+    public class GeometryPoseStamped : Message
+    {
+        [JsonIgnore]
+        public const string type = "geometry_msgs/PoseStamped";
+        public StandardHeader header;
+        public GeometryPose pose;
+        public GeometryPoseStamped()
+        {
+            header = new StandardHeader();
+            pose = new GeometryPose();
+        }
+    }
+
     public class GeometryPoint : Message
     {
         [JsonIgnore]

@@ -15,7 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
+// Topic is now public, allowing editing (C) Federal Univerity of Minas Gerais (Brazil), 2017
+// Author: Lucas Coelho Figueiredo(me@lucascoelho.net)
 
 using UnityEngine;
 
@@ -28,12 +29,14 @@ namespace RosSharp.RosBridgeClient
         public GameObject UrdfModel;
         private OdometryTransformManager odometryTransformManager;
         private RosSocket rosSocket;
+
+        public string topic = "/odom";
         public int UpdateTime = 1;
 
         public void Start()
         {
             rosSocket = transform.GetComponent<RosConnector>().RosSocket;
-            rosSocket.Subscribe("/odom", "nav_msgs/Odometry", updateOdometry, UpdateTime);
+            rosSocket.Subscribe(topic, "nav_msgs/Odometry", updateOdometry, UpdateTime);
 
             odometryTransformManager = UrdfModel.GetComponent<OdometryTransformManager>();
         }
