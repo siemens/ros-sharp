@@ -27,16 +27,15 @@ namespace RosSharp.UrdfImporter
 
     public class UrdfImporterEditorWindow : EditorWindow
     {
-        private string address = "ws://192.168.0.1:9090";
-        private string timeout = "10";
-        private string urdfAssetPath = Path.GetFullPath(".") + "\\Assets\\Urdf\\";
+        private static string address;
+        private static int timeout;
+        private static string assetPath;
 
         private Thread rosSocketConnectThread;
         private Thread urdfImportThread;
         private RosBridgeClient.UrdfImporter urdfImporter;
 
-        private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>
-    {
+        private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
         { "connected", new ManualResetEvent(false) },
         { "robotNameReceived",new ManualResetEvent(false) },
         { "robotDescriptionReceived", new ManualResetEvent(false) },
@@ -45,7 +44,7 @@ namespace RosSharp.UrdfImporter
         { "databaseRefreshStarted", new ManualResetEvent(false) },
         { "databaseRefreshed", new ManualResetEvent(false) },
         { "importModelDialogShown", new ManualResetEvent(false) },
-    };
+        };
 
         [MenuItem("RosBridgeClient/Import URDF Assets...")]
         private static void Init()
@@ -54,17 +53,65 @@ namespace RosSharp.UrdfImporter
             editorWindow.minSize = new Vector2(150, 300);
             editorWindow.Show();
         }
+        private void OnFocus()
+        {
+            GetEditorPrefs();
+        }
+
+        private void OnLostFocus()
+        {
+            SetEditorPrefs();
+        }
+
+        private void OnDestroy()
+        {
+            SetEditorPrefs();
+        }
+        private void DeleteEditorPrefs()
+        {
+            EditorPrefs.DeleteKey("UrdfImporterAddress");
+            EditorPrefs.DeleteKey("UrdfImporterAssetPath");
+            EditorPrefs.DeleteKey("UrdfImporterTimeout");
+        }
+        private void GetEditorPrefs()
+        {
+            address = (EditorPrefs.HasKey("UrdfImporterAddress") ?
+                EditorPrefs.GetString("UrdfImporterAddress") :
+                "ws://192.168.0.1:9090");
+
+            assetPath = (EditorPrefs.HasKey("UrdfImporterAssetPath") ?
+                EditorPrefs.GetString("UrdfImporterAssetPath") :
+                Path.GetFullPath(".") + "\\Assets\\Urdf\\");
+
+            timeout = (EditorPrefs.HasKey("UrdfImporterTimeout") ?
+                EditorPrefs.GetInt("UrdfImporterTimeout") :
+                10);
+        }
+        private void SetEditorPrefs()
+        {
+            EditorPrefs.SetString("UrdfImporterAddress", address);
+            EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
+            EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
+        }
 
         private void OnGUI()
         {
-            GUILayout.Label("ROSbridge WebSocket", EditorStyles.boldLabel);
+            GUILayout.Label("URDF Asset Importer", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 100;
             address = EditorGUILayout.TextField("Address", address);
-            timeout = EditorGUILayout.TextField("Timeout [s]", timeout);
+            timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            urdfAssetPath = EditorGUILayout.TextField("Asset Path", urdfAssetPath);
+            assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
+            {
+                DeleteEditorPrefs();
+                GetEditorPrefs();
+            }
             EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(20);
@@ -72,6 +119,7 @@ namespace RosSharp.UrdfImporter
 
             if (GUILayout.Button("Read Robot Description."))
             {
+                SetEditorPrefs();
                 rosSocketConnectThread = new Thread(() => rosSocketConnect());
                 rosSocketConnectThread.Start();
             }
@@ -81,11 +129,11 @@ namespace RosSharp.UrdfImporter
 
             EditorGUIUtility.labelWidth = 300;
 
-            drawLabelField("1. ROSbridge_server Connected:", "connected");
+            drawLabelField("1. rosbridge_server Connected:", "connected");
             drawLabelField("2. Robot Name Received:", "robotNameReceived");
             drawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
             drawLabelField("4. Resource Files Received:", "resourceFilesReceived");
-            drawLabelField("5. ROSBridge_server Disconnected:", "disconnected");
+            drawLabelField("5. rosbridge_server Disconnected:", "disconnected");
             drawLabelField("6. Asset Database Refresh Completed:", "databaseRefreshed");
         }
 
@@ -108,7 +156,7 @@ namespace RosSharp.UrdfImporter
             status["connected"].Set();
 
             // setup urdfImporter
-            urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, urdfAssetPath);
+            urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
             status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
@@ -116,7 +164,7 @@ namespace RosSharp.UrdfImporter
             urdfImportThread.Start();
 
             // import URDF assets:
-            if (status["resourceFilesReceived"].WaitOne(int.Parse(timeout) * 1000))
+            if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
