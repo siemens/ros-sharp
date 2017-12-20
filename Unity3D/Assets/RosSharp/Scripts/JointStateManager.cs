@@ -42,7 +42,7 @@ namespace RosSharp
             {
                 Vector3 anchor = transform.TransformPoint(_hingeJoint.anchor);
                 Vector3 axis = transform.TransformDirection(_hingeJoint.axis);
-                transform.RotateAround(anchor, axis, (newAngle - prevAngle));
+                transform.RotateAround(anchor, axis, (prevAngle - newAngle));
                 prevAngle = newAngle;
                 doUpdate = false;
             }
