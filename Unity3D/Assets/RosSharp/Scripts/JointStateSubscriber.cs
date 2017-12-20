@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 using UnityEngine;
+
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosSocket))]
@@ -39,7 +40,6 @@ namespace RosSharp.RosBridgeClient
             numberOfJoints = jointStateManagers.Length;
             JointPositions = new float[numberOfJoints];
             JointVelocities = new float[numberOfJoints];
-            Debug.Log("Subscribed to joint states");
         }
 
         private void updateJointStates(Message message)

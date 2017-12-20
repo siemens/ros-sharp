@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -60,20 +58,5 @@ namespace RosSharp.RosBridgeClient
                 navigationOdometry.pose.pose.orientation.y,
                 navigationOdometry.pose.pose.orientation.w);
         }
-        /*
-        private static Vector3 getLinearTwist(NavigationOdometry navigationOdometry)
-        {
-            return new Vector3(
-                -navigationOdometry.twist.twist.linear.y,
-                navigationOdometry.twist.twist.linear.z,
-                navigationOdometry.twist.twist.linear.x);
-        }
-        private static Vector3 getAngularTwist(NavigationOdometry navigationOdometry)
-        {
-            return new Vector3(
-                -navigationOdometry.twist.twist.angular.y,
-                navigationOdometry.twist.twist.angular.z,
-                navigationOdometry.twist.twist.angular.x);
-        }*/
     }
 }
