@@ -26,12 +26,10 @@ namespace RosSharp.UrdfImporter
         [MenuItem("GameObject/3D Object/URDF Model")]
         private static void CreateUrdfObject()
         {
-            string urdfFile = EditorUtility.OpenFilePanel("Generate Urdf Model",
-                Path.Combine(
-                    Path.GetDirectoryName(Application.dataPath),
-                    Path.Combine("Assets", "Urdf")
-                    ),
-                "urdf;*.urdf");
+            string urdfFile = EditorUtility.OpenFilePanel(
+                "Import local URDF",
+                Path.Combine(Path.GetDirectoryName(Application.dataPath),"Assets"),
+                "urdf");
 
             if (urdfFile != "")
                 RobotCreator.Create(urdfFile);
