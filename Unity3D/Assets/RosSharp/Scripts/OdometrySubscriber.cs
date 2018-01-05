@@ -23,8 +23,7 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(RosConnector))]
     public class OdometrySubscriber : MonoBehaviour
     {
-        public GameObject UrdfModel;
-        private OdometryTransformManager odometryTransformManager;
+        public OdometryTransformManager odometryTransformManager;
         private RosSocket rosSocket;
         public int UpdateTime = 1;
 
@@ -32,8 +31,6 @@ namespace RosSharp.RosBridgeClient
         {
             rosSocket = transform.GetComponent<RosConnector>().RosSocket;
             rosSocket.Subscribe("/odom", "nav_msgs/Odometry", updateOdometry, UpdateTime);
-
-            odometryTransformManager = UrdfModel.GetComponent<OdometryTransformManager>();
         }
 
         private void updateOdometry(Message message)
