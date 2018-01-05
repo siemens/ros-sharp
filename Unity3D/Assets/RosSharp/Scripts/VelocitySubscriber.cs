@@ -23,22 +23,16 @@ namespace RosSharp.RosBridgeClient
 	[RequireComponent(typeof(RosConnector))]
 	public class VelocitySubscriber : MonoBehaviour
 	{
-		public GameObject UrdfModel;
-
 		public string topic = "/cmd_vel";
+        public VelocityTransformManager velocityTransformManager;
+        public int UpdateTime = 1;
 
-		private RosSocket rosSocket;
-		private VelocityTransformManager velocityTransformManager;
+        private RosSocket rosSocket;
 
-		public int UpdateTime = 1;
-
-		// Use this for initialization
-		void Start ()
+        void Start ()
 		{
 			rosSocket = transform.GetComponent<RosConnector>().RosSocket;
 			rosSocket.Subscribe(topic, "geometry_msgs/Twist", updateVelocity, UpdateTime);
-
-			velocityTransformManager = UrdfModel.GetComponent<VelocityTransformManager>();		
 		}
 
 		private void updateVelocity(Message message)
@@ -66,5 +60,4 @@ namespace RosSharp.RosBridgeClient
 									       -geometryTwist.angular.x));
 		}
 	}
-
 }
