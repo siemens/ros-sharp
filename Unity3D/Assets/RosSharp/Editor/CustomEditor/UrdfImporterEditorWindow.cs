@@ -81,7 +81,7 @@ namespace RosSharp.UrdfImporter
 
             assetPath = (EditorPrefs.HasKey("UrdfImporterAssetPath") ?
                 EditorPrefs.GetString("UrdfImporterAssetPath") :
-                Path.Combine (Path.Combine(Path.GetFullPath ("."), "Assets"), "Urdf");
+                Path.Combine(Path.Combine(Path.GetFullPath("."), "Assets"), "Urdf"));
 
             timeout = (EditorPrefs.HasKey("UrdfImporterTimeout") ?
                 EditorPrefs.GetInt("UrdfImporterTimeout") :
