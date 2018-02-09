@@ -166,8 +166,10 @@ namespace RosSharp.RosBridgeClient
 
         private List<Uri> readDaeTextureUris(Uri resourceFileUri, string fileContents)
         {
+            XNamespace xmlns = "http://www.collada.org/2005/11/COLLADASchema";
             XElement root = XElement.Parse(fileContents);
-            return (from x in root.Elements() where x.Name.LocalName == "library_images" select new Uri(resourceFileUri, x.Value)).ToList();
+            return (from x in root.Elements() where x.Name.LocalName == "library_images"
+                    select new Uri(resourceFileUri, x.Element(xmlns + "image").Element(xmlns + "init_from").Value)).ToList();
         }
 
         private void receiveTextureFiles(ServiceReceiver serviceReceiver, object serviceResponse)
