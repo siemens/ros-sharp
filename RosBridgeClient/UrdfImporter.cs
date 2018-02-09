@@ -1,13 +1,11 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
 <http://www.apache.org/licenses/LICENSE-2.0>.
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -134,15 +132,15 @@ namespace RosSharp.RosBridgeClient
 
         private void receiveResourceFile(ServiceReceiver serviceReceiver, object serviceResponse)
         {
-            string fileContents = System.Text.Encoding.UTF8.GetString(((ParamValueByte)serviceResponse).value);
+            byte[] fileContents = ((ParamValueByte)serviceResponse).value;
             Uri resourceFileUri = new Uri(((ParamName)serviceReceiver.ServiceParameter).name);
 
             if (isColladaFile(resourceFileUri))
             {
-                Thread importResourceFilesThread = new Thread(() => importDaeTextureFiles(resourceFileUri, fileContents));
+                Thread importResourceFilesThread = new Thread(() => importDaeTextureFiles(resourceFileUri, System.Text.Encoding.UTF8.GetString(fileContents)));
                 importResourceFilesThread.Start();
             }
-            Thread writeTextFileThread = new Thread(() => writeTextFile((string)serviceReceiver.HandlerParameter, fileContents));
+            Thread writeTextFileThread = new Thread(() => writeBinaryResponseToFile((string)serviceReceiver.HandlerParameter, fileContents));
             writeTextFileThread.Start();
 
             updateFileRequestStatus(resourceFileUri);
@@ -168,8 +166,10 @@ namespace RosSharp.RosBridgeClient
 
         private List<Uri> readDaeTextureUris(Uri resourceFileUri, string fileContents)
         {
+            XNamespace xmlns = "http://www.collada.org/2005/11/COLLADASchema";
             XElement root = XElement.Parse(fileContents);
-            return (from x in root.Elements() where x.Name.LocalName == "library_images" select new Uri(resourceFileUri, x.Value)).ToList();
+            return (from x in root.Elements() where x.Name.LocalName == "library_images"
+                    select new Uri(resourceFileUri, x.Element(xmlns + "image").Element(xmlns + "init_from").Value)).ToList();
         }
 
         private void receiveTextureFiles(ServiceReceiver serviceReceiver, object serviceResponse)
@@ -181,14 +181,14 @@ namespace RosSharp.RosBridgeClient
         private void writeBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)
         {
             string filename = LocalDirectory + relativeLocalFilename;
-            System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllBytes(filename, fileContents);
         }
 
         private void writeTextFile(string relativeLocalFilename, string fileContents)
         {
             string filename = LocalDirectory + relativeLocalFilename;
-            System.IO.Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllText(filename, fileContents);
         }
 

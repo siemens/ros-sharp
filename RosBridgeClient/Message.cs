@@ -1,13 +1,11 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
 <http://www.apache.org/licenses/LICENSE-2.0>.
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,18 +13,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient
 {
     public class Message
     {
+        public string RosMessageType
+        {
+            get { return MessageTypes.RosMessageType(GetType()); }
+        }
     }
 
     public class GeometryTwist : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/Twist";
         public GeometryVector3 linear;
         public GeometryVector3 angular;
         public GeometryTwist()
@@ -37,18 +35,26 @@ namespace RosSharp.RosBridgeClient
     }
     public class StandardString : Message
     {
-        [JsonIgnore]
-        public const string type = "std_msgs/String";
         public string data;
         public StandardString()
         {
             data = "";
         }
     }
+
+    public class GeometryAccel : Message
+    {
+        public GeometryVector3 linear;
+        public GeometryVector3 angular;
+        public GeometryAccel()
+        {
+            linear = new GeometryVector3();
+            angular = new GeometryVector3();
+        }
+    }
+
     public class SensorJointStates : Message
     {
-        [JsonIgnore]
-        public const string type = "sensor_msgs/JointState";
         public StandardHeader header;
         public string[] name;
         public float[] position;
@@ -65,8 +71,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class GeometryVector3 : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/Vector3";
         public float x;
         public float y;
         public float z;
@@ -77,10 +81,22 @@ namespace RosSharp.RosBridgeClient
             z = 0f;
         }
     }
+    public class SensorJoy : Message
+    {
+        public StandardHeader header;
+        public float[] axes;
+        public int[] buttons;
+
+        public SensorJoy()
+        {
+            header = new StandardHeader();
+            axes = new float[0];
+            buttons = new int[0];
+        }
+    }
+
     public class NavigationOdometry : Message
     {
-        [JsonIgnore]
-        public const string type = "nav_msgs/Odometry";
         public StandardHeader header;
         public string child_frame_id;
         public GeometryPoseWithCovariance pose;
@@ -95,8 +111,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class StandardHeader : Message
     {
-        [JsonIgnore]
-        public const string type = "std_msgs/Header";
         public int seq;
         public StandardTime stamp;
         public string frame_id;
@@ -107,10 +121,9 @@ namespace RosSharp.RosBridgeClient
             frame_id = "";
         }
     }
+
     public class GeometryPoseWithCovariance : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/PoseWithCovariance";
         public GeometryPose pose;
         public float[] covariance;
         public GeometryPoseWithCovariance()
@@ -121,8 +134,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class GeometryTwistWithCovariance : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/TwistWithCovariance";
         public GeometryTwist twist;
         public float[] covariance;
         public GeometryTwistWithCovariance()
@@ -134,8 +145,6 @@ namespace RosSharp.RosBridgeClient
 
     public class GeometryPose : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/Pose";
         public GeometryPoint position;
         public GeometryQuaternion orientation;
         public GeometryPose()
@@ -144,10 +153,20 @@ namespace RosSharp.RosBridgeClient
             orientation = new GeometryQuaternion();
         }
     }
+
+    public class GeometryPoseStamped : Message
+    {
+        public StandardHeader header;
+        public GeometryPose pose;
+        public GeometryPoseStamped()
+        {
+            header = new StandardHeader();
+            pose = new GeometryPose();
+        }
+    }
+
     public class GeometryPoint : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/Point";
         public float x;
         public float y;
         public float z;
@@ -160,8 +179,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class GeometryQuaternion : Message
     {
-        [JsonIgnore]
-        public const string type = "geometry_msgs/Quaternion";
         public float x;
         public float y;
         public float z;
@@ -176,8 +193,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class SensorPointCloud2 : Message
     {
-        [JsonIgnore]
-        public const string type = "sensor_msgs/PointCloud2";
         public StandardHeader header;
         public int height;
         public int width;
@@ -203,8 +218,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class SensorPointField : Message
     {
-        [JsonIgnore]
-        public const string type = "sensor_msgs/PointField";
         public int datatype;
         public string name;
         public int offset;
@@ -219,8 +232,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class SensorImage : Message
     {
-        [JsonIgnore]
-        public const string type = "sensor_msgs/Image";
         public StandardHeader header;
         public int height;
         public int width;
@@ -241,8 +252,6 @@ namespace RosSharp.RosBridgeClient
     }
     public class SensorCompressedImage : Message
     {
-        [JsonIgnore]
-        public const string type = "sensor_msgs/CompressedImage";
         public StandardHeader header;
         public string format;
         public byte[] data;
@@ -256,8 +265,6 @@ namespace RosSharp.RosBridgeClient
 
     public class StandardTime : Message
     {
-        [JsonIgnore]
-        public const string type = "std_msgs/Time";
         public int secs;
         public int nsecs;
         public StandardTime()
@@ -269,8 +276,6 @@ namespace RosSharp.RosBridgeClient
 
     public class NavigationMapMetaData : Message
     {
-        [JsonIgnore]
-        public const string type = "nav_msgs/MapMetaData";
         public StandardTime map_load_time;
         public float resolution;
         public uint width;
@@ -289,8 +294,6 @@ namespace RosSharp.RosBridgeClient
 
     public class NavigationOccupancyGrid : Message
     {
-        [JsonIgnore]
-        public const string type = "nav_msgs/OccupancyGrid";
         public StandardHeader header;
         public NavigationMapMetaData info;
         public sbyte[] data;
@@ -315,7 +318,7 @@ namespace RosSharp.RosBridgeClient
     {
         public string name;
         public string value;
-        public SetParam(string _name,string _value)
+        public SetParam(string _name, string _value)
         {
             name = _name;
             value = _value;
