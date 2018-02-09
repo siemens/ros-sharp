@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageTypes.cs" />
     <Compile Include="JObjectExtensions.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="PointCloud.cs" />
