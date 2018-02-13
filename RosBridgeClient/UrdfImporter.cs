@@ -78,7 +78,7 @@ namespace RosSharp.RosBridgeClient
         public bool Import(int maxTimeOut = int.MaxValue)
         {
             rosSocket.CallService("/rosapi/get_param", typeof(ParamValueString), receiveRobotName, new ParamName("/robot/name"));
-            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new ParamName("/robot_description"), "\\robot_description.urdf", typeof(ParamValueString));
+            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new ParamName("/robot_description"), Path.DirectorySeparatorChar + "robot_description.urdf", typeof(ParamValueString));
             robotDescriptionReceiver.ReceiveEventHandler += receiveRobotDescription;
 
             return (WaitHandle.WaitAll(Status.Values.ToArray(), maxTimeOut));
@@ -168,7 +168,8 @@ namespace RosSharp.RosBridgeClient
         {
             XNamespace xmlns = "http://www.collada.org/2005/11/COLLADASchema";
             XElement root = XElement.Parse(fileContents);
-            return (from x in root.Elements() where x.Name.LocalName == "library_images"
+            return (from x in root.Elements()
+                    where x.Name.LocalName == "library_images"
                     select new Uri(resourceFileUri, x.Element(xmlns + "image").Element(xmlns + "init_from").Value)).ToList();
         }
 
