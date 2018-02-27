@@ -41,7 +41,7 @@ namespace RosSharp.RosBridgeClient
                 if (joyButtonWriters[i]!=null)
                 joyButtonWriters[i].Write(message.buttons[i]);
 
-            I = joyAxisWriters.Length < message.buttons.Length ? joyAxisWriters.Length : message.buttons.Length;
+            I = joyAxisWriters.Length < message.axes.Length ? joyAxisWriters.Length : message.axes.Length;
             for (int i = 0; i < I; i++)
                 if (joyAxisWriters[i] != null)
                     joyAxisWriters[i].Write(message.axes[i]);
