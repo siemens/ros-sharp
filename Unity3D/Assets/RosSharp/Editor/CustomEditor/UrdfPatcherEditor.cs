@@ -26,9 +26,29 @@ namespace RosSharp.RosBridgeClient
         public override void OnInspectorGUI()
         {
             urdfPatcher = (UrdfPatcher)target;
-            DrawDefaultInspector();
 
-            if (GUILayout.Button("Patch URDF"))
+            //DrawDefaultInspector();
+            
+            urdfPatcher.UrdfModel = (GameObject)EditorGUILayout.ObjectField("Urdf Model", urdfPatcher.UrdfModel, typeof(GameObject), true);
+            GUILayout.Space(10);
+            urdfPatcher.EnableRigidbodiesGravity = GUILayout.Toggle(urdfPatcher.EnableRigidbodiesGravity, "Enable Gravity for Rigidbodies");
+            urdfPatcher.SetRigidbodiesKinematic = GUILayout.Toggle(urdfPatcher.SetRigidbodiesKinematic, "Set Rigidbodies Kinematic");
+            urdfPatcher.SetMeshCollidersConvex = GUILayout.Toggle(urdfPatcher.SetMeshCollidersConvex, "Set Mesh Colliders Convex");
+            GUILayout.Space(10);
+            urdfPatcher.AddPoseProvider = GUILayout.Toggle(urdfPatcher.AddPoseProvider, "Publish Pose (Add Pose Provider)");
+            urdfPatcher.AddPoseReceiver = GUILayout.Toggle(urdfPatcher.AddPoseReceiver, "Subscribe Pose (Add Pose Receiver)");
+
+            GUILayout.Space(10);
+            urdfPatcher.AddJointStateReaders = GUILayout.Toggle(urdfPatcher.AddJointStateReaders, "Publish Joint States (Add Joint State Readers)");
+            if (urdfPatcher.AddJointStateReaders)
+                urdfPatcher.jointStateProvider = (JointStateProvider) EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStateProvider, typeof(JointStateProvider), true);
+
+            urdfPatcher.AddJointStateWriters = GUILayout.Toggle(urdfPatcher.AddJointStateWriters, "Subscribe Joint States (Add Joint State Writers)");
+            if (urdfPatcher.AddJointStateWriters)
+                urdfPatcher.jointStateReceiver = (JointStateReceiver) EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateReceiver, typeof(JointStateReceiver), true);
+
+            GUILayout.Space(10);
+            if (GUILayout.Button("Apply"))
                 urdfPatcher.Patch();
         }
     }

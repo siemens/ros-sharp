@@ -25,23 +25,34 @@ namespace RosSharp.RosBridgeClient
     {
 
         public GameObject UrdfModel;
-        public bool SetMeshCollidersConvex;
+        
         public bool EnableRigidbodiesGravity;
         public bool SetRigidbodiesKinematic;
+        public bool SetMeshCollidersConvex;
+
+        public bool AddPoseProvider;
+        public bool AddPoseReceiver;
         public bool AddJointStateReaders;
         public JointStateProvider jointStateProvider;
         public bool AddJointStateWriters;
         public JointStateReceiver jointStateReceiver;
-        public bool AddPoseReceiver;
-        public bool AddPoseProvider;
+
 
         Dictionary<Transform, JointStateHandler.JointTypes> jointTypeDictionary;
 
         public void Patch()
         {
             RemoveExistingComponents();
-            PatchMeshColliders(SetMeshCollidersConvex);
+
             PatchRigidbodies(EnableRigidbodiesGravity, SetRigidbodiesKinematic);
+
+            PatchMeshColliders(SetMeshCollidersConvex);
+
+            if (AddPoseProvider)
+                UrdfModel.AddComponent<PoseProvider>();
+
+            if (AddPoseReceiver)
+                UrdfModel.AddComponent<PoseReceiver>();
 
             if (AddJointStateReaders || AddJointStateWriters)
                 GetSingleDimensionalJoints();
@@ -51,13 +62,6 @@ namespace RosSharp.RosBridgeClient
 
             if (AddJointStateWriters)
                 jointStateReceiver.JointStateWriters = PatchJoints<JointStateWriter>();
-
-            if (AddPoseReceiver)
-                UrdfModel.AddComponent<PoseReceiver>();
-
-            if (AddPoseProvider)
-                UrdfModel.AddComponent<PoseProvider>();
-
         }
 
         private void GetSingleDimensionalJoints()
