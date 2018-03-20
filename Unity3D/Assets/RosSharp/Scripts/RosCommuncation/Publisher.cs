@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClient
         {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
-            publicationId = rosSocket.Advertize(Topic, MessageTypes.RosMessageType(MessageProvider.MessageType));
+            publicationId = rosSocket.Advertise(Topic, MessageTypes.RosMessageType(MessageProvider.MessageType));
             PublicationEvent += ReadMessage;
         }
 

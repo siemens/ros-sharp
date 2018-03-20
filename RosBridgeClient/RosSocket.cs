@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClient
         public delegate void ServiceHandler(object obj);
         public delegate void MessageHandler(Message message);
 
-        public int Advertize(string topic, string type)
+        public int Advertise(string topic, string type)
         {
             int id = generateId();
             publishers.Add(id, new Publisher(topic));
