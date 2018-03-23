@@ -27,8 +27,7 @@ namespace RosSharp.RosBridgeClient
 
         public MessageReceiver MessageReceiver;
 
-        protected RosSocket rosSocket;
-        protected int publicationId;
+        private RosSocket rosSocket;
 
         private void Start()
         {
