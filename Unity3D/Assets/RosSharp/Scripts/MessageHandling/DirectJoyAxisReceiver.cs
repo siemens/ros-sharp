@@ -27,7 +27,7 @@ namespace RosSharp.RosBridgeClient
         {
             joyAxisWriter = GetComponent<JoyAxisWriter>();
         }
-        private void OnMouseXXX()
+        private void Update()
         {
             joyAxisWriter.Write(Input.GetAxis(AxisName));
         }
