@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 © Siemens AG, 2018
 Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
@@ -24,7 +24,7 @@ limitations under the License.
 
 	<node name="file_server" pkg="file_server" type="file_server" output="screen"/>
 
-	<node name="joy_to_twist.py" pkg="gazebo_simulation_scene" type="joy_to_twist.py" output="screen"/>
+	<node name="joy_to_twist" pkg="gazebo_simulation_scene" type="joy_to_twist.py" output="screen"/>
 
 	<node name="rqt_graph" pkg="rqt_graph" type="rqt_graph" output="screen"/>
 	
