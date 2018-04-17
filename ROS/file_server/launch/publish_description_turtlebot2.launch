@@ -26,6 +26,7 @@ limitations under the License.
 	<arg name="3d_sensor"  default="$(env TURTLEBOT_3D_SENSOR)"/>
 	<arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
 	
+	<param name="robot/name" value="Turtlebot2"/>	
 	<param name="robot_description" command="$(arg urdf_file)" />
 
 </launch>
