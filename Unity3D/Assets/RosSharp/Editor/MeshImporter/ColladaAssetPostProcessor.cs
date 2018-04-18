@@ -65,7 +65,7 @@ namespace RosSharp
                 case "X_UP": return position; // not tested
                 case "Y_UP": return position; // not tested
                 case "Z_UP": return new Vector3(-position.z, position.y, -position.x); // tested
-                default: return Vector3.zero;
+                default: return position; // not tested  
             }
         }
 
@@ -76,7 +76,7 @@ namespace RosSharp
                 case "X_UP": return new Vector3(-90, 90, 90); // not tested
                 case "Y_UP": return new Vector3(-90, 90, 0);  // tested
                 case "Z_UP": return new Vector3(0, 90, 0);    // tested
-                default: return Vector3.zero;
+                default: return new Vector3(-90, 90, 0);    // tested                      
             }
         }
 
@@ -90,7 +90,7 @@ namespace RosSharp
             }
             catch
             {
-                return "";
+                return "undefined";
             }
         }
 
