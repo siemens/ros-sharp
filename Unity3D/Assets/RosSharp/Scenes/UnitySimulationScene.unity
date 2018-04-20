@@ -4175,7 +4175,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 599168025}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02e4b22539e587a4d8045ec15d287fca, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e509749f1aa45c47b8d959c52a353ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   joyButtonWriters: []
@@ -4852,15 +4852,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UrdfModel: {fileID: 582172443}
-  SetMeshCollidersConvex: 1
   EnableRigidbodiesGravity: 1
   SetRigidbodiesKinematic: 0
+  SetMeshCollidersConvex: 1
+  AddPoseProvider: 0
+  AddPoseReceiver: 0
   AddJointStateReaders: 0
   jointStateProvider: {fileID: 0}
   AddJointStateWriters: 0
   jointStateReceiver: {fileID: 0}
-  AddPoseReceiver: 0
-  AddPoseProvider: 0
 --- !u!114 &689480928
 MonoBehaviour:
   m_ObjectHideFlags: 0
