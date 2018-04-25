@@ -132,7 +132,7 @@ namespace RosSharp.RosBridgeClient
         public GeometryPoseWithCovariance()
         {
             pose = new GeometryPose();
-            covariance = new float[32];
+            covariance = new float[36];
         }
     }
     public class GeometryTwistWithCovariance : Message
@@ -142,7 +142,7 @@ namespace RosSharp.RosBridgeClient
         public GeometryTwistWithCovariance()
         {
             twist = new GeometryTwist();
-            covariance = new float[32];
+            covariance = new float[36];
         }
     }
 
