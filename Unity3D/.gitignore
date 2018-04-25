@@ -5,6 +5,9 @@
 # ignoring Visual Studio project file (*.VD.db)
 # © Siemens AG, 2017-2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
+# Visual Studio cache directory
+.vs/
+
 ### Unity ###
 [Ll]ibrary/
 [Tt]emp/
