@@ -55,9 +55,16 @@ namespace RosSharp.UrdfImporter
 
         #region GetAssetPath
         public static string GetAssetPathFromPackagePath(string packagePath)
-        {
-            string path = packagePath.Substring(10).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        {            
+            string path = packagePath.Substring(10); // Remove 'package://'
 
+            // both path and asset path contain the root urdf folder, so remove it from path variable
+            char[] separators = { Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar };
+            path = path.Remove(0, path.IndexOfAny(separators) + 1);
+
+            path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            
             if (path.Substring(path.Length - 3, 3).ToLowerInvariant() == "stl")
                 path = path.Substring(0, path.Length - 3) + "prefab";
 
