@@ -188,9 +188,8 @@ namespace RosSharp.RosBridgeClient
         {
             JObject operation = Deserialize(e.RawData);
 
-#if DEBUG
-            Console.WriteLine("Received " + operation.GetOperation());
-            Console.WriteLine(JsonConvert.SerializeObject(operation, Formatting.Indented));
+#if DEBUG            
+            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");
 #endif
 
             switch (operation.GetOperation())
@@ -228,8 +227,6 @@ namespace RosSharp.RosBridgeClient
             sendOperation(serviceResponse);
         }
 
-
-
         private void receivedServiceResponse(JObject serviceResponse, byte[] rawData)
         {
             ServiceCaller serviceCaller;
@@ -261,7 +258,7 @@ namespace RosSharp.RosBridgeClient
         private void sendOperation(Operation operation)
         {
 #if DEBUG
-            Console.WriteLine(JsonConvert.SerializeObject(operation, Formatting.Indented));
+            Console.WriteLine("Sending:\n" +  JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");           
 #endif
             webSocket.SendAsync(Serialize(operation), null);
         }
