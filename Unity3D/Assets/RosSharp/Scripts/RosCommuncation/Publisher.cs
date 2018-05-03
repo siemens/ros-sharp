@@ -27,7 +27,7 @@ namespace RosSharp.RosBridgeClient
         public event EventHandler PublicationEvent;
 
         protected RosSocket rosSocket;
-        protected int publicationId;
+        protected string publicationId;
 
         protected virtual void Start()
         {
