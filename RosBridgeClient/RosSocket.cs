@@ -32,60 +32,75 @@ namespace RosSharp.RosBridgeClient
         public RosSocket(string url)
         {
             webSocket = new WebSocket(url);
-            webSocket.OnMessage += (sender, e) => recievedOperation((WebSocket)sender, e);
+            webSocket.OnMessage += (sender, e) => receivedOperation((WebSocket)sender, e);
             webSocket.Connect();
         }
 
         public void Close()
         {
             while (publishers.Count > 0)
-                Unadvertize(publishers.First().Key);
+                Unadvertise(publishers.First().Key);
 
             while (subscribers.Count > 0)
                 Unsubscribe(subscribers.First().Key);
+
+            while (serviceProviders.Count > 0)
+                UnadvertiseService(serviceProviders.First().Key);
 
             webSocket.Close();
         }
 
         public delegate void ServiceHandler(object obj);
         public delegate void MessageHandler(Message message);
+        public delegate bool ServiceCallHandler(JObject arguments, out JObject reult);
 
-        public int Advertise(string topic, string type)
+        public string Advertise(string topic, string type)
         {
-            int id = generateId();
+            string id = generateId();
             publishers.Add(id, new Publisher(topic));
 
             sendOperation(new Adverisement(id, topic, type));
             return id;
         }
 
-        public void Publish(int id, Message msg)
+        public string AdvertiseService(string service, string argumentType, ServiceCallHandler serviceCallHandler)
+        {
+            string id = generateId();
+            serviceProviders.Add(id, new ServiceProvider(service, argumentType, serviceCallHandler));
+
+            sendOperation(new ServiceAdvertisement(id, service, argumentType));
+            return id;
+        }
+
+        public void Publish(string id, Message msg)
         {
             Publisher publisher;
             if (publishers.TryGetValue(id, out publisher))
                 sendOperation(new Publication(id, publisher.Topic, msg));
         }
 
-        public void Unadvertize(int id)
+        public void Unadvertise(string id)
         {
             sendOperation(new Unadverisement(id, publishers[id].Topic));
             publishers.Remove(id);
         }
 
-
-
-        public int Subscribe(string topic, string rosMessageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
+        public void UnadvertiseService(string id)
         {
+            sendOperation(new ServiceUnadvertisement(id, serviceProviders[id].Service));
+            serviceProviders.Remove(id);
+        }
 
+        public string Subscribe(string topic, string rosMessageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
+        {
             Type messageType = MessageTypes.MessageType(rosMessageType);
-            if (messageType==null)
-                return 0;
+            if (messageType == null)
+                return null;
 
-            int id = generateId();
+            string id = generateId();
             subscribers.Add(id, new Subscriber(topic, messageType, messageHandler));
             sendOperation(new Subscription(id, topic, rosMessageType, throttle_rate, queue_length, fragment_size, compression));
             return id;
-
         }
 
         public int Subscribe(string topic, Type messageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
@@ -97,20 +112,21 @@ namespace RosSharp.RosBridgeClient
             return Subscribe(topic, messageType, messageHandler, throttle_rate, queue_length, fragment_size, compression);
         }
 
-        public void Unsubscribe(int id)
+        public void Unsubscribe(string id)
         {
             sendOperation(new Unsubscription(id, subscribers[id].topic));
             subscribers.Remove(id);
         }
 
-        public int CallService(string service, Type objectType, ServiceHandler serviceHandler, object args = null)
+        public string CallService(string service, Type objectType, ServiceHandler serviceHandler, object args = null)
         {
-            int id = generateId();
+            string id = generateId();
             serviceCallers.Add(id, new ServiceCaller(service, objectType, serviceHandler));
 
             sendOperation(new ServiceCall(id, service, args));
             return id;
         }
+        
         #endregion
 
         #region Private
@@ -121,6 +137,19 @@ namespace RosSharp.RosBridgeClient
             internal Publisher(string topic)
             {
                 Topic = topic;
+            }
+        }
+
+        internal struct ServiceProvider
+        {
+            internal string Service;
+            internal string ArgumentType;
+            internal ServiceCallHandler ServiceCallHandler;
+            internal ServiceProvider(string service, string argumentType, ServiceCallHandler serviceCallHandler)
+            {
+                Service = service;
+                ArgumentType = argumentType;
+                ServiceCallHandler = serviceCallHandler;
             }
         }
 
@@ -138,64 +167,83 @@ namespace RosSharp.RosBridgeClient
         }
         internal struct ServiceCaller
         {
-            internal string service;
-            internal Type objectType;
-            internal ServiceHandler serviceHandler;
-            internal ServiceCaller(string Service, Type ObjectType, ServiceHandler ServiceHandler)
+            internal string Service;
+            internal Type ResponseType;
+            internal ServiceHandler ServiceHandler;
+            internal ServiceCaller(string service, Type responseType, ServiceHandler serviceHandler)
             {
-                service = Service;
-                objectType = ObjectType;
-                serviceHandler = ServiceHandler;
+                Service = service;
+                ResponseType = responseType;
+                ServiceHandler = serviceHandler;
             }
         }
 
         private WebSocket webSocket;
-        private Dictionary<int, Publisher> publishers = new Dictionary<int, Publisher>();
-        private Dictionary<int, Subscriber> subscribers = new Dictionary<int, Subscriber>();
-        private Dictionary<int, ServiceCaller> serviceCallers = new Dictionary<int, ServiceCaller>();
+        private Dictionary<string, ServiceProvider> serviceProviders = new Dictionary<string, ServiceProvider>();
+        private Dictionary<string, Publisher> publishers = new Dictionary<string, Publisher>();
+        private Dictionary<string, Subscriber> subscribers = new Dictionary<string, Subscriber>();
+        private Dictionary<string, ServiceCaller> serviceCallers = new Dictionary<string, ServiceCaller>();
 
-        private void recievedOperation(object sender, MessageEventArgs e)
+        private void receivedOperation(object sender, MessageEventArgs e)
         {
             JObject operation = Deserialize(e.RawData);
 
-#if DEBUG
-            Console.WriteLine("Recieved " + operation.GetOperation());
-            Console.WriteLine(JsonConvert.SerializeObject(operation, Formatting.Indented));
+#if DEBUG            
+            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");
 #endif
 
             switch (operation.GetOperation())
             {
                 case "publish":
                     {
-                        recievedPublish(operation, e.RawData);
+                        receivedPublish(operation, e.RawData);
                         return;
                     }
                 case "service_response":
                     {
-                        recievedServiceResponse(operation, e.RawData);
+                        receivedServiceResponse(operation, e.RawData);
+                        return;
+                    }
+                case "call_service":
+                    {
+                        receivedServiceCall(operation, e.RawData);
                         return;
                     }
             }
         }
 
-        private void recievedServiceResponse(JObject serviceResponse, byte[] rawData)
+        private void receivedServiceCall(JObject serviceCall, byte[] rawData)
+        {
+            JObject result;
+            ServiceProvider serviceProvider = serviceProviders.Values.FirstOrDefault(x => x.Service.Equals(serviceCall.GetService()));
+
+            bool isSuccess = serviceProvider.ServiceCallHandler.Invoke(serviceCall.GetArguments(), out result);
+
+            ServiceResponse serviceResponse = new ServiceResponse(
+                serviceCall.GetServiceId(),
+                serviceCall.GetService(),
+                result,
+                isSuccess);
+            sendOperation(serviceResponse);
+        }
+
+        private void receivedServiceResponse(JObject serviceResponse, byte[] rawData)
         {
             ServiceCaller serviceCaller;
             bool foundById = serviceCallers.TryGetValue(serviceResponse.GetServiceId(), out serviceCaller);
 
             if (!foundById)
-                serviceCaller = serviceCallers.Values.FirstOrDefault(x => x.service.Equals(serviceResponse.GetService()));
-
+                serviceCaller = serviceCallers.Values.FirstOrDefault(x => x.Service.Equals(serviceResponse.GetService()));
 
             JObject jObject = serviceResponse.GetValues();
-            Type type = serviceCaller.objectType;
+            Type type = serviceCaller.ResponseType;
             if (type != null)
-                serviceCaller.serviceHandler?.Invoke(jObject.ToObject(type));
+                serviceCaller.ServiceHandler?.Invoke(jObject.ToObject(type));
             else
-                serviceCaller.serviceHandler?.Invoke(jObject);
+                serviceCaller.ServiceHandler?.Invoke(jObject);
         }
 
-        private void recievedPublish(JObject publication, byte[] rawData)
+        private void receivedPublish(JObject publication, byte[] rawData)
         {
             Subscriber subscriber;
 
@@ -210,7 +258,7 @@ namespace RosSharp.RosBridgeClient
         private void sendOperation(Operation operation)
         {
 #if DEBUG
-            Console.WriteLine(JsonConvert.SerializeObject(operation, Formatting.Indented));
+            Console.WriteLine("Sending:\n" +  JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");           
 #endif
             webSocket.SendAsync(Serialize(operation), null);
         }
@@ -231,9 +279,9 @@ namespace RosSharp.RosBridgeClient
             return JsonConvert.DeserializeObject<JObject>(ascii);
         }
 
-        private static int generateId()
+        private static string generateId()
         {
-            return Guid.NewGuid().GetHashCode();
+            return Guid.NewGuid().GetHashCode().ToString();
         }
         #endregion       
     }
