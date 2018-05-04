@@ -52,7 +52,7 @@ namespace RosSharp.RosBridgeClient
 
         public delegate void ServiceHandler(object obj);
         public delegate void MessageHandler(Message message);
-        public delegate bool ServiceCallHandler(JObject arguments, out JObject reult);
+        public delegate bool ServiceCallHandler(JObject arguments, out JObject result);
 
         public string Advertise(string topic, string type)
         {
