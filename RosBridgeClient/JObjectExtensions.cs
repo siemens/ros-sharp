@@ -27,7 +27,8 @@ namespace RosSharp.RosBridgeClient
         }
         public static string GetServiceId(this JObject jObject)
         {
-            return jObject.GetValue("id").ToString();
+            JToken jToken = jObject.GetValue("id");
+            return (jToken == null ? "" : jToken.ToString());
         }
         public static string GetTopic(this JObject jObject)
         {
