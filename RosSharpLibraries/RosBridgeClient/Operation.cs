@@ -17,12 +17,12 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-public class Operation
+    public class Operation
     {
         public virtual string op { get { return "undefined"; } } // required
         public string id; // optional
 
-        public Operation(string Id=null)
+        public Operation(string Id = null)
         {
             id = Id;
         }
