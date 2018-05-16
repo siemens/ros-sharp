@@ -1,11 +1,16 @@
 ﻿using System;
 using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Messages;
 using Newtonsoft.Json.Linq;
 
 // commands on ROS system:
+// launch before starting:
 // roslaunch rosbridge_server rosbridge_websocket.launch
-// rostopic echo /talker
-// rostopic pub /listener std_msgs/String "World!"
+// rostopic echo /publication_test
+// rostopic pub /subscription_test std_msgs/String "subscription test message data"
+
+// launch after starting:
+// rosservice call /service_response_test
 
 public class RosSocketConsole
 {
@@ -17,16 +22,14 @@ public class RosSocketConsole
 
         // Publication:
         string publication_id = rosSocket.Advertise("/publication_test", "std_msgs/String");
-
-        StandardString message = new StandardString();
-        message.data = "Hello!";
+        StandardString message = new StandardString("publication test message data");
         rosSocket.Publish(publication_id, message);
 
         // Subscription:
         string subscription_id = rosSocket.Subscribe("/subscription_test", "std_msgs/String", SubscriptionHandler);
 
         // Service Call:
-        rosSocket.CallService("/rosapi/get_param", typeof(ParamValueString), ServiceCallHandler, new ParamName("/rosdistro"));
+        rosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
 
         // Service Response:
         rosSocket.AdvertiseService("/service_response_test", "std_srvs/Trigger", ServiceResponseHandler);
@@ -42,9 +45,9 @@ public class RosSocketConsole
         Console.WriteLine(standardString.data);
     }
 
-    private static void ServiceCallHandler(object message)
+    private static void ServiceCallHandler(Message message)
     {
-        Console.WriteLine("ROS distro: " + ((ParamValueString)message).value);
+        Console.WriteLine("ROS distro: " + ((RosApiGetParamResponse)message).value);
     }
 
     private static bool ServiceResponseHandler(JObject arguments, out JObject result)

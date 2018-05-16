@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 
 using RosSharp.RosBridgeClient.Protocols;
+using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {    
@@ -36,15 +37,10 @@ namespace RosSharp.RosBridgeClient
         
         // standardize in- and output objects: either JObject or proper Type
 
-        // provide bool values for successfull communication? SendAsync -> Actions?
-
         // split message file into individual classes
         // split operator file into individual classes
 
         // define proper IDs and dictionary lookups for all communications
-
-        // check if/where outcommented method is needed
-        // check if/where PointCloud.cs is needed
         
 
         private IProtocol Protocol;
@@ -124,15 +120,6 @@ namespace RosSharp.RosBridgeClient
             return id;
         }
 
-  /*      public int Subscribe(string topic, Type messageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
-        {
-            string rosMessageType = MessageTypes.RosMessageType(messageType);
-            if (rosMessageType == null)
-                return 0;
-
-            return Subscribe(topic, messageType, messageHandler, throttle_rate, queue_length, fragment_size, compression);
-        }*/
-
         public void Unsubscribe(string id)
         {
             sendOperation(new Unsubscription(id, Subscribers[id].topic));
@@ -197,15 +184,8 @@ namespace RosSharp.RosBridgeClient
             ServiceCaller serviceCaller;
             bool foundById = ServiceCallers.TryGetValue(serviceResponse.GetServiceId(), out serviceCaller);
 
-           /* if (!foundById)
-                serviceCaller = serviceCallers.Values.FirstOrDefault(x => x.Service.Equals(serviceResponse.GetService()));*/
-
             JObject jObject = serviceResponse.GetValues();
-            Type type = serviceCaller.ResponseType;
-            if (type != null)
-                serviceCaller.ServiceHandler?.Invoke(jObject.ToObject(type));
-            else
-                serviceCaller.ServiceHandler?.Invoke(jObject);
+            serviceCaller.ServiceHandler?.Invoke((Message) jObject.ToObject(serviceCaller.ResponseType)); 
         }
 
         private void receivedPublish(JObject publication)

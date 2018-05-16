@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Threading;
 using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Messages;
 using Newtonsoft.Json.Linq;
 
 namespace RosSharp.RosBridgeClientTest
@@ -39,8 +40,7 @@ namespace RosSharp.RosBridgeClientTest
         public void PublicationTest()
         {
             string id = RosSocket.Advertise("/publication_test", "std_msgs/String");
-            StandardString message = new StandardString();
-            message.data = "publication test message data";
+            StandardString message = new StandardString("publication test message data");
             RosSocket.Publish(id, message);
             RosSocket.Unadvertise(id);
             Thread.Sleep(100);
@@ -61,7 +61,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceCallTest()
         {
-            RosSocket.CallService("/rosapi/get_param", typeof(StandardString), ServiceCallHandler, new ParamName("/rosdistro"));
+            RosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
             OnServiceReceived.WaitOne();
             OnServiceReceived.Reset();
             Assert.IsTrue(true);
@@ -92,7 +92,5 @@ namespace RosSharp.RosBridgeClientTest
             OnServiceProvided.Set();
             return true;
         }
-
-
     }
 }

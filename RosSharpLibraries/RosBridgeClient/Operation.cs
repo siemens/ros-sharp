@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -22,9 +23,9 @@ namespace RosSharp.RosBridgeClient
         public virtual string op { get { return "undefined"; } } // required
         public string id; // optional
 
-        public Operation(string Id = null)
+        public Operation(string id = null)
         {
-            id = Id;
+            this.id = id;
         }
     }
 
@@ -34,10 +35,10 @@ namespace RosSharp.RosBridgeClient
         public string topic; // required
         public string type; // required
 
-        public Adverisement(string Id, string Topic, string Type) : base(Id)
+        public Adverisement(string id, string topic, string type) : base(id)
         {
-            topic = Topic;
-            type = Type;
+            this.topic = topic;
+            this.type = type;
         }
     }
 
@@ -46,9 +47,9 @@ namespace RosSharp.RosBridgeClient
         public override string op { get { return "unadvertise"; } } // required
         public string topic; // required
 
-        public Unadverisement(string Id, string Topic) : base(Id)
+        public Unadverisement(string id, string topic) : base(id)
         {
-            topic = Topic;
+            this.topic = topic;
         }
     }
 
@@ -58,10 +59,10 @@ namespace RosSharp.RosBridgeClient
         public string topic; // required
         public Message msg; // required
 
-        public Publication(string Id, string Topic, Message MessageContents) : base(Id)
+        public Publication(string id, string topic, Message msg) : base(id)
         {
-            topic = Topic;
-            msg = MessageContents;
+            this.topic = topic;
+            this.msg = msg;
         }
     }
 
@@ -75,14 +76,14 @@ namespace RosSharp.RosBridgeClient
         public int fragment_size; // optional
         public string compression; // optional
 
-        public Subscription(string Id, string Topic, string Type, int Throttle_rate = 0, int Queue_length = 1, int Fragment_size = int.MaxValue, string Compression = "none") : base(Id)
+        public Subscription(string id, string topic, string type, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
-            topic = Topic;
-            type = Type;
-            throttle_rate = Throttle_rate;
-            queue_length = Queue_length;
-            fragment_size = Fragment_size;
-            compression = Compression;
+            this.topic = topic;
+            this.type = type;
+            this.throttle_rate = throttle_rate;
+            this.queue_length = queue_length;
+            this.fragment_size = fragment_size;
+            this.compression = compression;
         }
     }
 
@@ -91,9 +92,9 @@ namespace RosSharp.RosBridgeClient
         public override string op { get { return "unsubscribe"; } } // required
         public string topic; // required
 
-        public Unsubscription(string Id, string Topic) : base(Id)
+        public Unsubscription(string id, string topic) : base(id)
         {
-            topic = Topic;
+            this.topic = topic;
         }
     }
 
@@ -105,12 +106,12 @@ namespace RosSharp.RosBridgeClient
         public int fragment_size; // optional
         public string compression; // optional
 
-        public ServiceCall(string Id, string Service, object Args = null, int Fragment_size = int.MaxValue, string Compression = "none") : base(Id)
+        public ServiceCall(string id, string service, object args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
-            service = Service;
-            args = Args;
-            fragment_size = Fragment_size;
-            compression = Compression;
+            this.service = service;
+            this.args = args;
+            this.fragment_size = fragment_size;
+            this.compression = compression;
         }
     }
 
@@ -121,10 +122,10 @@ namespace RosSharp.RosBridgeClient
         public object values; // optional
         public bool result;
 
-        public ServiceResponse(string Id, string Service, object Values, bool Result) : base(Id)
+        public ServiceResponse(string id, string service, object values, bool Result) : base(id)
         {
-            service = Service;
-            values = Values;
+            this.service = service;
+            this.values = values;
             result = Result;
         }
     }
@@ -135,11 +136,10 @@ namespace RosSharp.RosBridgeClient
         public string service; // required
 
 
-        public ServiceAdvertisement(string Id, string Service, string Type) : base(Id)
+        public ServiceAdvertisement(string id, string service, string type) : base(id)
         {
-            service = Service;
-            type = Type;
-            Id = id;
+            this.service = service;
+            this.type = type;
         }
     }
     public class ServiceUnadvertisement : Operation

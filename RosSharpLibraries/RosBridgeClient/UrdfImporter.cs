@@ -20,6 +20,9 @@ using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
 
+using RosSharp.RosBridgeClient.Messages;
+
+
 namespace RosSharp.RosBridgeClient
 {
     public delegate void ReceiveEventHandler(ServiceReceiver sender, object ServiceResponse);
@@ -77,8 +80,8 @@ namespace RosSharp.RosBridgeClient
 
         public bool Import(int maxTimeOut = int.MaxValue)
         {
-            rosSocket.CallService("/rosapi/get_param", typeof(ParamValueString), receiveRobotName, new ParamName("/robot/name"));
-            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new ParamName("/robot_description"), Path.DirectorySeparatorChar + "robot_description.urdf", typeof(ParamValueString));
+            rosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), receiveRobotName, new RosApiGetParamRequest("/robot/name"));
+            ServiceReceiver robotDescriptionReceiver = new ServiceReceiver(rosSocket, "/rosapi/get_param", new RosApiGetParamRequest("/robot_description"), Path.DirectorySeparatorChar + "robot_description.urdf", typeof(RosApiGetParamResponse));
             robotDescriptionReceiver.ReceiveEventHandler += receiveRobotDescription;
 
             return (WaitHandle.WaitAll(Status.Values.ToArray(), maxTimeOut));
@@ -86,13 +89,13 @@ namespace RosSharp.RosBridgeClient
 
         private void receiveRobotName(object serviceResponse)
         {
-            robotName = formatTextFileContents(((ParamValueString)serviceResponse).value);
+            robotName = formatTextFileContents(((RosApiGetParamResponse)serviceResponse).value);
             Status["robotNameReceived"].Set();
         }
 
         private void receiveRobotDescription(ServiceReceiver serviceReciever, object serviceResponse)
         {
-            string robotDescription = formatTextFileContents(((ParamValueString)serviceResponse).value);
+            string robotDescription = formatTextFileContents(((RosApiGetParamResponse)serviceResponse).value);
 
             Thread importResourceFilesThread = new Thread(() => importResourceFiles(robotDescription));
             importResourceFilesThread.Start();
@@ -124,7 +127,7 @@ namespace RosSharp.RosBridgeClient
                 if (!RequestedResourceFiles.ContainsKey(resourceFilePath))
                 {
                     RequestedResourceFiles.Add(resourceFilePath, false);
-                    serviceReceivers.Add(new ServiceReceiver(rosSocket, "/file_server/get_file", new ParamName(resourceFilePath.ToString()), getLocalFilename(resourceFilePath), typeof(ParamValueByte)));
+                    serviceReceivers.Add(new ServiceReceiver(rosSocket, "/file_server/get_file", new FileServerGetBinaryFileRequest(resourceFilePath.ToString()), getLocalFilename(resourceFilePath), typeof(FileServerGetBinaryFileResponse)));
                 }
             }
             return serviceReceivers;
@@ -132,8 +135,8 @@ namespace RosSharp.RosBridgeClient
 
         private void receiveResourceFile(ServiceReceiver serviceReceiver, object serviceResponse)
         {
-            byte[] fileContents = ((ParamValueByte)serviceResponse).value;
-            Uri resourceFileUri = new Uri(((ParamName)serviceReceiver.ServiceParameter).name);
+            byte[] fileContents = ((FileServerGetBinaryFileResponse)serviceResponse).value;
+            Uri resourceFileUri = new Uri(((FileServerGetBinaryFileRequest)serviceReceiver.ServiceParameter).name);
 
             if (isColladaFile(resourceFileUri))
             {
@@ -175,8 +178,8 @@ namespace RosSharp.RosBridgeClient
 
         private void receiveTextureFiles(ServiceReceiver serviceReceiver, object serviceResponse)
         {
-            writeBinaryResponseToFile((string)serviceReceiver.HandlerParameter, ((ParamValueByte)serviceResponse).value);
-            updateFileRequestStatus(new Uri(((ParamName)serviceReceiver.ServiceParameter).name));
+            writeBinaryResponseToFile((string)serviceReceiver.HandlerParameter, ((FileServerGetBinaryFileResponse)serviceResponse).value);
+            updateFileRequestStatus(new Uri(((FileServerGetBinaryFileRequest)serviceReceiver.ServiceParameter).name));
         }
 
         private void writeBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)

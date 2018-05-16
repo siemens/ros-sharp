@@ -13,17 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Messages
 {
-    public class Message
+    public abstract class Message
     {
-        [JsonIgnore]
-        public string RosMessageType
-        {
-            get { return MessageTypes.RosMessageType(GetType()); }
-        }
     }
 
     public class GeometryTwist : Message
@@ -39,9 +32,9 @@ namespace RosSharp.RosBridgeClient
     public class StandardString : Message
     {
         public string data;
-        public StandardString()
+        public StandardString(string data)
         {
-            data = "";
+            this.data = data;
         }
     }
 
@@ -308,32 +301,29 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    public class ParamName : Message
+    public class RosApiGetParamRequest : Message
     {
         public string name;
-        public ParamName(string _name)
+        public RosApiGetParamRequest(string name)
         {
-            name = _name;
+            this.name = name;
         }
     }
-
-    public class SetParam : Message
-    {
-        public string name;
-        public string value;
-        public SetParam(string _name, string _value)
-        {
-            name = _name;
-            value = _value;
-        }
-    }
-
-    public class ParamValueString : Message
+    public class RosApiGetParamResponse : Message
     {
         public string value;
     }
 
-    public class ParamValueByte : Message
+    public class FileServerGetBinaryFileRequest : Message
+    {
+        public string name;
+        public FileServerGetBinaryFileRequest(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    public class FileServerGetBinaryFileResponse : Message
     {
         public byte[] value;
     }

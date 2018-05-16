@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Messages
 {
     public static class MessageTypes
     {

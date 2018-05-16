@@ -1,9 +1,10 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
+using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {
-    public delegate void ServiceHandler(object obj);
+    public delegate void ServiceHandler(Message message);
     public delegate void MessageHandler(Message message);
     public delegate bool ServiceCallHandler(JObject arguments, out JObject result);
 
