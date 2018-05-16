@@ -106,8 +106,16 @@ namespace RosSharp.RosBridgeClient
         private void importResourceFiles(string fileContents)
         {
             List<ServiceReceiver> serviceReceivers = requestResourceFiles(readResourceFileUris(fileContents));
-            foreach (ServiceReceiver serviceReceiver in serviceReceivers)
-                serviceReceiver.ReceiveEventHandler += receiveResourceFile;
+            if (serviceReceivers.Count > 0)
+            {
+                foreach (ServiceReceiver serviceReceiver in serviceReceivers)
+                    serviceReceiver.ReceiveEventHandler += receiveResourceFile;
+            }
+            else
+            {
+                // no files to receive
+                Status["resourceFilesReceived"].Set();
+            }
         }
 
         private static List<Uri> readResourceFileUris(string robotDescription)
