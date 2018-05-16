@@ -300,6 +300,19 @@ namespace RosSharp.RosBridgeClient.Messages
             data = null;
         }
     }
+    public class StandardServiceTriggerRequest : Message
+    {        
+    }
+    public class StandardServiceTriggerResponse: Message
+    {
+        bool success;
+        string message;
+        public StandardServiceTriggerResponse(bool success, string message)
+        {
+            this.success = success;
+            this.message = message;
+        }
+    }
 
     public class RosApiGetParamRequest : Message
     {
@@ -322,7 +335,6 @@ namespace RosSharp.RosBridgeClient.Messages
             this.name = name;
         }
     }
-
     public class FileServerGetBinaryFileResponse : Message
     {
         public byte[] value;

@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Operator.cs" />
     <Compile Include="Messages\MessageTypes.cs" />
-    <Compile Include="JObjectExtensions.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />

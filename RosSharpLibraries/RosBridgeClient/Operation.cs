@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
@@ -57,9 +59,9 @@ namespace RosSharp.RosBridgeClient
     {
         public override string op { get { return "publish"; } } // required
         public string topic; // required
-        public Message msg; // required
+        public JObject msg; // required
 
-        public Publication(string id, string topic, Message msg) : base(id)
+        public Publication(string id, string topic, JObject msg) : base(id)
         {
             this.topic = topic;
             this.msg = msg;
@@ -102,11 +104,11 @@ namespace RosSharp.RosBridgeClient
     {
         public override string op { get { return "call_service"; } } // required
         public string service; // required
-        public object args; // optional
+        public JObject args; // optional
         public int fragment_size; // optional
         public string compression; // optional
 
-        public ServiceCall(string id, string service, object args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
+        public ServiceCall(string id, string service, JObject args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
             this.service = service;
             this.args = args;
@@ -119,10 +121,10 @@ namespace RosSharp.RosBridgeClient
     {
         public override string op { get { return "service_response"; } } // required
         public string service; // required
-        public object values; // optional
+        public JObject values; // optional
         public bool result;
 
-        public ServiceResponse(string id, string service, object values, bool Result) : base(id)
+        public ServiceResponse(string id, string service, JObject values, bool Result) : base(id)
         {
             this.service = service;
             this.values = values;

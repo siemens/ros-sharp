@@ -21,39 +21,40 @@ namespace RosSharp.RosBridgeClient.Messages
 {
     public static class MessageTypes
     {
-        public static readonly Dictionary<string, Type> Dictionary = new Dictionary<string, Type>
+        public static readonly Dictionary<Type, string> Dictionary = new Dictionary<Type, string>
         {
-            { "geometry_msgs/Twist", typeof(GeometryTwist) },
-            { "std_msgs/String", typeof(StandardString) },
-            { "geometry_msgs/Accel", typeof(GeometryAccel) },
-            { "sensor_msgs/JointState", typeof(SensorJointStates) },
-            { "geometry_msgs/Vector3", typeof(GeometryVector3) },
-            { "sensor_msgs/Joy", typeof(SensorJoy) },
-            { "nav_msgs/Odometry", typeof(NavigationOdometry) },
-            { "std_msgs/Header", typeof(StandardHeader) },
-            { "geometry_msgs/PoseWithCovariance",typeof(GeometryPoseWithCovariance) },
-            { "geometry_msgs/TwistWithCovariance", typeof(GeometryTwistWithCovariance) },
-            { "geometry_msgs/Pose", typeof(GeometryPose) },
-            { "geometry_msgs/PoseStamped", typeof(GeometryPoseStamped) },
-            { "geometry_msgs/Point", typeof(GeometryPoint) },
-            { "geometry_msgs/Quaternion",typeof(GeometryQuaternion) },
-            { "sensor_msgs/PointCloud2",typeof(SensorPointCloud2) },
-            { "sensor_msgs/PointField", typeof(SensorPointField) },
-            { "sensor_msgs/Image", typeof(SensorImage) },
-            { "sensor_msgs/CompressedImage", typeof(SensorCompressedImage) },
-            { "std_msgs/Time", typeof(StandardTime)    },
-            { "nav_msgs/MapMetaData", typeof(NavigationMapMetaData) },
-            { "nav_msgs/OccupancyGrid", typeof(NavigationOccupancyGrid)}
+            {typeof(GeometryTwist), "geometry_msgs/Twist"  },
+            {typeof(StandardString), "std_msgs/String"  },
+            {typeof(GeometryAccel), "geometry_msgs/Accel"  },
+            {typeof(SensorJointStates), "sensor_msgs/JointState"  },
+            {typeof(GeometryVector3),  "geometry_msgs/Vector3"},
+            {typeof(SensorJoy),  "sensor_msgs/Joy"  },
+            { typeof(NavigationOdometry), "nav_msgs/Odometry" },
+            {typeof(StandardHeader), "std_msgs/Header"  },
+            {typeof(GeometryPoseWithCovariance), "geometry_msgs/PoseWithCovariance" },
+            { typeof(GeometryTwistWithCovariance),  "geometry_msgs/TwistWithCovariance" },
+            {typeof(GeometryPose), "geometry_msgs/Pose"  },
+            {typeof(GeometryPoseStamped) ,  "geometry_msgs/PoseStamped" },
+            {typeof(GeometryPoint),  "geometry_msgs/Point"  },
+            {typeof(GeometryQuaternion) ,  "geometry_msgs/Quaternion"},
+            {typeof(SensorPointCloud2),  "sensor_msgs/PointCloud2" },
+            {typeof(SensorPointField),  "sensor_msgs/PointField"  },
+            {typeof(SensorImage), "sensor_msgs/Image"  },
+            { typeof(SensorCompressedImage),  "sensor_msgs/CompressedImage" },
+            {typeof(StandardTime),  "std_msgs/Time"    },
+            { typeof(NavigationMapMetaData),  "nav_msgs/MapMetaData" },
+            {typeof(NavigationOccupancyGrid),  "nav_msgs/OccupancyGrid" },
+            {typeof(StandardServiceTriggerRequest), "std_srvs/Trigger" }
         };
-        public static string RosMessageType(Type messageType)
-        {
-            return Dictionary.FirstOrDefault(x => x.Value == messageType).Key;
-        }
-        public static Type MessageType(string rosMessageType)
-        {
-            Type messageType;
-            Dictionary.TryGetValue(rosMessageType, out messageType);
-            return messageType;
-        }
+        /*    public static string RosMessageType(Type messageType)
+            {
+                return Dictionary.FirstOrDefault(x => x.Value == messageType).Key;
+            }
+            public static Type MessageType(string rosMessageType)
+            {
+                Type messageType;
+                Dictionary.TryGetValue(rosMessageType, out messageType);
+                return messageType;
+            }*/
     }
 }

@@ -6,7 +6,7 @@ namespace RosSharp.RosBridgeClient
 {
     public delegate void ServiceHandler(Message message);
     public delegate void MessageHandler(Message message);
-    public delegate bool ServiceCallHandler(JObject arguments, out JObject result);
+    public delegate bool ServiceCallHandler(Message arguments, out Message result);
 
     public class Operator
     {
@@ -24,9 +24,9 @@ namespace RosSharp.RosBridgeClient
     public class ServiceResponder: Operator
     {
         internal string Service;
-        internal string ArgumentType;
+        internal Type ArgumentType;
         internal ServiceCallHandler ServiceCallHandler;
-        internal ServiceResponder(string service, string argumentType, ServiceCallHandler serviceCallHandler)
+        internal ServiceResponder(string service, Type argumentType, ServiceCallHandler serviceCallHandler)
         {
             Service = service;
             ArgumentType = argumentType;
@@ -36,14 +36,14 @@ namespace RosSharp.RosBridgeClient
 
     public class Subscriber : Operator
     {
-        internal string topic;
-        internal Type messageType;
-        internal MessageHandler messageHandler;
-        internal Subscriber(string Topic, Type MessageType, MessageHandler MessageHandler)
+        internal string Topic;
+        internal Type MessageType;
+        internal MessageHandler MessageHandler;
+        internal Subscriber(string topic, Type messageType, MessageHandler messageHandler)
         {
-            topic = Topic;
-            messageType = MessageType;
-            messageHandler = MessageHandler;
+            Topic = topic;
+            MessageType = messageType;
+            MessageHandler = messageHandler;
         }
     }
     public class ServiceCaller : Operator

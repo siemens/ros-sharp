@@ -32,15 +32,12 @@ namespace RosSharp.RosBridgeClient
 
         // TODO:
 
-        // merge oerations as methods in operator classes
-        // move JObject extensions to proper classes
-        
-        // standardize in- and output objects: either JObject or proper Type
+       // implement message type selection as generics
+       // implement thread for service response
+       // remove messagetypes class
 
         // split message file into individual classes
         // split operator file into individual classes
-
-        // define proper IDs and dictionary lookups for all communications
         
 
         private IProtocol Protocol;
@@ -80,11 +77,11 @@ namespace RosSharp.RosBridgeClient
             return id;
         }
         
-        public void Publish(string id, Message msg)
+        public void Publish(string id, Message message)
         {
             Publisher publisher;
             if (Publishers.TryGetValue(id, out publisher))
-                sendOperation(new Publication(id, publisher.Topic, msg));
+                sendOperation(new Publication(id, publisher.Topic, JObject.FromObject(message)));
         }
 
         public void Unadvertise(string id)
@@ -93,12 +90,12 @@ namespace RosSharp.RosBridgeClient
             Publishers.Remove(id);
         }
 
-        public string AdvertiseService(string service, string argumentType, ServiceCallHandler serviceCallHandler)
+        public string AdvertiseService(string service, Type argumentType, ServiceCallHandler serviceCallHandler)
         {
             string id = service;
             ServiceResponders.Add(id, new ServiceResponder(service, argumentType, serviceCallHandler));
 
-            sendOperation(new ServiceAdvertisement(id, service, argumentType));
+            sendOperation(new ServiceAdvertisement(id, service, MessageTypes.Dictionary[argumentType]));
             return id;
         }
 
@@ -108,96 +105,94 @@ namespace RosSharp.RosBridgeClient
             ServiceResponders.Remove(id);
         }
 
-        public string Subscribe(string topic, string rosMessageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
+        public string Subscribe(string topic, Type messageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
         {
-            Type messageType = MessageTypes.MessageType(rosMessageType);
-            if (messageType == null)
-                return null;
-
             string id = topic;
             Subscribers.Add(topic, new Subscriber(topic, messageType, messageHandler));
-            sendOperation(new Subscription(id, topic, rosMessageType, throttle_rate, queue_length, fragment_size, compression));
+            sendOperation(new Subscription(id, topic, MessageTypes.Dictionary[messageType], throttle_rate, queue_length, fragment_size, compression));
             return id;
         }
 
         public void Unsubscribe(string id)
         {
-            sendOperation(new Unsubscription(id, Subscribers[id].topic));
+            sendOperation(new Unsubscription(id, Subscribers[id].Topic));
             Subscribers.Remove(id);
         }
 
-        public string CallService(string service, Type objectType, ServiceHandler serviceHandler, object args = null)
+        public string CallService(string service, Type objectType, ServiceHandler serviceHandler, Message serviceArguments = null)
         {
             string id = service;
             ServiceCallers.Add(id, new ServiceCaller(service, objectType, serviceHandler));
 
-            sendOperation(new ServiceCall(id, service, args));
+            sendOperation(new ServiceCall(id, service, JObject.FromObject(serviceArguments)));
             return id;
         }
 
         private void receivedOperation(object sender, EventArgs e)
         {
             
-            JObject operation = Deserialize(((MessageEventArgs)e).RawData);
+            JObject jObject = Deserialize(((MessageEventArgs)e).RawData);
 
 #if DEBUG            
-            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");
+            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(jObject, Formatting.Indented) + "\n");
 #endif
+            string id = jObject.GetValue("id")?.ToString();
 
-            switch (operation.GetOperation())
+            switch (jObject.GetValue("op").ToString())
             {
                 case "publish":
-                    {
-                        receivedPublish(operation);
+                    {                        
+                        receivedPublish(jObject.ToObject<Publication>());
                         return;
                     }
                 case "service_response":
                     {
-                        receivedServiceResponse(operation);
+                        receivedServiceResponse(jObject.ToObject<ServiceResponse>());
                         return;
                     }
                 case "call_service":
                     {
-                        receivedServiceCall(operation);
+                        receivedServiceCall(jObject.ToObject<ServiceCall>());
                         return;
                     }
             }
         }
-
-        private void receivedServiceCall(JObject serviceCall)
-        {
-            JObject result;
-            ServiceResponder serviceProvider = ServiceResponders.Values.FirstOrDefault(x => x.Service.Equals(serviceCall.GetService()));
-
-            bool isSuccess = serviceProvider.ServiceCallHandler.Invoke(serviceCall.GetArguments(), out result);
-
-            ServiceResponse serviceResponse = new ServiceResponse(
-                serviceCall.GetServiceId(),
-                serviceCall.GetService(),
-                result,
-                isSuccess);
-            sendOperation(serviceResponse);
-        }
-
-        private void receivedServiceResponse(JObject serviceResponse)
-        {
-            ServiceCaller serviceCaller;
-            bool foundById = ServiceCallers.TryGetValue(serviceResponse.GetServiceId(), out serviceCaller);
-
-            JObject jObject = serviceResponse.GetValues();
-            serviceCaller.ServiceHandler?.Invoke((Message) jObject.ToObject(serviceCaller.ResponseType)); 
-        }
-
-        private void receivedPublish(JObject publication)
+        private void receivedPublish(Publication publication)
         {
             Subscriber subscriber;
+            if (!Subscribers.TryGetValue(publication.topic, out subscriber))
+                return;
 
-            bool foundById = Subscribers.TryGetValue(publication.GetServiceId(), out subscriber);
+            subscriber.MessageHandler?.Invoke((Message)publication.msg.ToObject(subscriber.MessageType));
+        }
+        private void receivedServiceResponse(ServiceResponse serviceResponse)
+        {
+            ServiceCaller serviceCaller;
+            if (!ServiceCallers.TryGetValue(serviceResponse.id, out serviceCaller))
+                return;
 
-            if (!foundById)
-                subscriber = Subscribers.Values.FirstOrDefault(x => x.topic.Equals(publication.GetTopic()));
+            serviceCaller.ServiceHandler?.Invoke((Message)serviceResponse.values.ToObject(serviceCaller.ResponseType));
+        }
 
-            subscriber.messageHandler?.Invoke((Message)publication.GetMessage().ToObject(subscriber.messageType));
+        private void receivedServiceCall(ServiceCall serviceCall)
+        {
+            ServiceResponder serviceResponder;
+            if (!ServiceResponders.TryGetValue(serviceCall.service, out serviceResponder))
+                return;
+
+            Message result;
+            bool isSuccess = serviceResponder.ServiceCallHandler.Invoke((Message)serviceCall.args.ToObject(serviceResponder.ArgumentType), out result);
+
+
+            // data is lost when parsing as message
+
+            // implement thread here
+            sendOperation(
+                new ServiceResponse(
+                serviceCall.id,
+                serviceCall.service,
+                JObject.FromObject(result),
+                isSuccess));
         }
 
         private void sendOperation(Operation operation)

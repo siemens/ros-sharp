@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void SubscriptionTest()
         {
-            string id = RosSocket.Subscribe("/subscription_test", "std_msgs/String", SubscriptionHandler);
+            string id = RosSocket.Subscribe("/subscription_test", typeof(StandardString), SubscriptionHandler);
             OnMessageReceived.WaitOne();
             OnMessageReceived.Reset();
             RosSocket.Unsubscribe(id);
@@ -70,7 +70,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceResponseTest()
         {
-            RosSocket.AdvertiseService("/service_response_test", "std_srvs/Trigger", ServiceResponseHandler);
+            RosSocket.AdvertiseService("/service_response_test", typeof(StandardServiceTriggerRequest), ServiceResponseHandler);
             OnServiceProvided.WaitOne();
             OnServiceProvided.Reset();
             Assert.IsTrue(true);
@@ -86,9 +86,9 @@ namespace RosSharp.RosBridgeClientTest
             OnServiceReceived.Set();
         }
 
-        private bool ServiceResponseHandler(JObject arguments, out JObject result)
+        private bool ServiceResponseHandler(Message arguments, out Message result)
         {
-            result = JObject.FromObject(new { success = true, message = "service response message" });
+            result = new StandardServiceTriggerResponse(true, "service response message");
             OnServiceProvided.Set();
             return true;
         }

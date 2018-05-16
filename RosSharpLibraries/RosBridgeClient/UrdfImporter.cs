@@ -30,11 +30,11 @@ namespace RosSharp.RosBridgeClient
     public class ServiceReceiver
     {
         public string ServiceName { get; private set; }
-        public object ServiceParameter { get; private set; }
+        public Message ServiceParameter { get; private set; }
         public object HandlerParameter { get; set; }
         public event ReceiveEventHandler ReceiveEventHandler;
 
-        public ServiceReceiver(RosSocket rosSocket, string service, object parameter, object handlerParameter, Type responseType)
+        public ServiceReceiver(RosSocket rosSocket, string service, Message parameter, object handlerParameter, Type responseType)
         {
             ServiceName = service;
             ServiceParameter = parameter;

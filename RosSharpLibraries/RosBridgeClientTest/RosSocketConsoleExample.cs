@@ -26,23 +26,21 @@ public class RosSocketConsole
         rosSocket.Publish(publication_id, message);
 
         // Subscription:
-        string subscription_id = rosSocket.Subscribe("/subscription_test", "std_msgs/String", SubscriptionHandler);
+        string subscription_id = rosSocket.Subscribe("/subscription_test",typeof(StandardString), SubscriptionHandler);
 
         // Service Call:
         rosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
 
         // Service Response:
-        rosSocket.AdvertiseService("/service_response_test", "std_srvs/Trigger", ServiceResponseHandler);
+        rosSocket.AdvertiseService("/service_response_test", typeof(StandardServiceTriggerRequest), ServiceResponseHandler);
 
         Console.WriteLine("Press any key to close...");
         Console.ReadKey(true);
         rosSocket.Close();
     }
     private static void SubscriptionHandler(Message message)
-    {
-        
-        StandardString standardString = (StandardString)message;
-        Console.WriteLine(standardString.data);
+    {        
+        Console.WriteLine(((StandardString)message).data);
     }
 
     private static void ServiceCallHandler(Message message)
@@ -50,9 +48,9 @@ public class RosSocketConsole
         Console.WriteLine("ROS distro: " + ((RosApiGetParamResponse)message).value);
     }
 
-    private static bool ServiceResponseHandler(JObject arguments, out JObject result)
+    private static bool ServiceResponseHandler(Message arguments, out Message result)
     {
-        result = JObject.FromObject(new { success = true ,  message = "service response message" });
+        result = new StandardServiceTriggerResponse(true, "service response message");
         return true;
     }
 
