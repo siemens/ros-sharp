@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
-
 using RosSharp.RosBridgeClient.Messages;
 
 
@@ -109,16 +108,15 @@ namespace RosSharp.RosBridgeClient
         private void importResourceFiles(string fileContents)
         {
             List<ServiceReceiver> serviceReceivers = requestResourceFiles(readResourceFileUris(fileContents));
-            if (serviceReceivers.Count > 0)
+            if (serviceReceivers.Count == 0)
             {
-                foreach (ServiceReceiver serviceReceiver in serviceReceivers)
-                    serviceReceiver.ReceiveEventHandler += receiveResourceFile;
-            }
-            else
-            {
-                // no files to receive
                 Status["resourceFilesReceived"].Set();
+                return;
             }
+
+            foreach (ServiceReceiver serviceReceiver in serviceReceivers)
+                serviceReceiver.ReceiveEventHandler += receiveResourceFile;
+
         }
 
         private static List<Uri> readResourceFileUris(string robotDescription)
