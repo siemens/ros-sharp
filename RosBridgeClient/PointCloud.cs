@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient
             for (int i = 0; i < I; i++)
             {
                 Array.Copy(sensorPointCloud2.data, i * sensorPointCloud2.point_step, byteSlice, 0, sensorPointCloud2.point_step);
-                Points[i] = new Point(byteSlice);
+                Points[i] = new Point(byteSlice, sensorPointCloud2.fields);
             }
         }
 
@@ -75,17 +75,29 @@ namespace RosSharp.RosBridgeClient
             public float z;
             public int[] rgb;
 
-            public Point(byte[] bytes)
+            public Point(byte[] bytes, SensorPointField[] fields)
             {
-                byte[] slice = new byte[4];
-                Array.Copy(bytes, 0, slice, 0, 4);
-                x = getValue(slice);
-                Array.Copy(bytes, 4, slice, 0, 4);
-                y = getValue(slice);
-                Array.Copy(bytes, 8, slice, 0, 4);
-                z = getValue(slice);
-                Array.Copy(bytes, 16, slice, 0, 4);
-                rgb = getRGB(slice);
+                foreach(var field in fields)
+                {
+                    byte[] slice = new byte[field.count * 4];
+                    Array.Copy(bytes, field.offset, slice, 0, field.count * 4);
+                    
+                    switch (field.name)
+                    {
+                        case "x":
+                            x = getValue(slice);
+                            break;
+                        case "y":
+                            y = getValue(slice);
+                            break;
+                        case "z":
+                            z = getValue(slice);
+                            break;
+                        case "rgb":
+                            rgb = getRGB(slice);
+                            break;
+                    }
+                }
             }
 
             public override string ToString()
