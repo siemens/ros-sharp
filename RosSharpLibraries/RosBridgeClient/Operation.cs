@@ -29,6 +29,7 @@ namespace RosSharp.RosBridgeClient
         {
             this.id = id;
         }
+
     }
 
     public class Adverisement : Operation
@@ -55,17 +56,18 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    public class Publication : Operation
+    public class Publication<T> : Operation where T: Message
     {
         public override string op { get { return "publish"; } } // required
         public string topic; // required
-        public JObject msg; // required
+        public T msg; // required
 
-        public Publication(string id, string topic, JObject msg) : base(id)
+        public Publication(string id, string topic, T msg) : base(id)
         {
             this.topic = topic;
             this.msg = msg;
         }
+
     }
 
     public class Subscription : Operation
@@ -100,15 +102,15 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    public class ServiceCall : Operation
+    public class ServiceCall<T> : Operation where T : Message
     {
         public override string op { get { return "call_service"; } } // required
         public string service; // required
-        public JObject args; // optional
+        public T args; // optional
         public int fragment_size; // optional
         public string compression; // optional
 
-        public ServiceCall(string id, string service, JObject args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
+        public ServiceCall(string id, string service, T args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
             this.service = service;
             this.args = args;
@@ -117,14 +119,14 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    public class ServiceResponse : Operation
+    public class ServiceResponse<T> : Operation where T : Message
     {
         public override string op { get { return "service_response"; } } // required
         public string service; // required
-        public JObject values; // optional
+        public T values; // optional
         public bool result;
 
-        public ServiceResponse(string id, string service, JObject values, bool Result) : base(id)
+        public ServiceResponse(string id, string service, T values, bool Result) : base(id)
         {
             this.service = service;
             this.values = values;
@@ -136,7 +138,6 @@ namespace RosSharp.RosBridgeClient
         public override string op { get { return "advertise_service"; } } // required
         public string type; // required
         public string service; // required
-
 
         public ServiceAdvertisement(string id, string service, string type) : base(id)
         {

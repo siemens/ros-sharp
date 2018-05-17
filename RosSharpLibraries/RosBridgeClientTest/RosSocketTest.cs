@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void SubscriptionTest()
         {
-            string id = RosSocket.Subscribe("/subscription_test", typeof(StandardString), SubscriptionHandler);
+            string id = RosSocket.Subscribe<StandardString>("/subscription_test", SubscriptionHandler);
             OnMessageReceived.WaitOne();
             OnMessageReceived.Reset();
             RosSocket.Unsubscribe(id);
@@ -61,7 +61,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceCallTest()
         {
-            RosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
+            RosSocket.CallService<RosApiGetParamRequest, RosApiGetParamResponse>("/rosapi/get_param", ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
             OnServiceReceived.WaitOne();
             OnServiceReceived.Reset();
             Assert.IsTrue(true);
@@ -70,23 +70,23 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceResponseTest()
         {
-            RosSocket.AdvertiseService("/service_response_test", typeof(StandardServiceTriggerRequest), ServiceResponseHandler);
+            RosSocket.AdvertiseService<StandardServiceTriggerRequest, StandardServiceTriggerResponse>("/service_response_test", ServiceResponseHandler);
             OnServiceProvided.WaitOne();
             OnServiceProvided.Reset();
             Assert.IsTrue(true);
         }
 
-        private void SubscriptionHandler(Message message)
+        private void SubscriptionHandler(StandardString message)
         {
             OnMessageReceived.Set();
         }
 
-        private void ServiceCallHandler(object message)
+        private void ServiceCallHandler(RosApiGetParamResponse message)
         {
             OnServiceReceived.Set();
         }
 
-        private bool ServiceResponseHandler(Message arguments, out Message result)
+        private bool ServiceResponseHandler(StandardServiceTriggerRequest arguments, out StandardServiceTriggerResponse result)
         {
             result = new StandardServiceTriggerResponse(true, "service response message");
             OnServiceProvided.Set();

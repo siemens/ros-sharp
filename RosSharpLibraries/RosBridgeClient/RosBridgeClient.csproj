@@ -53,10 +53,12 @@
     <Compile Include="Operator.cs" />
     <Compile Include="Messages\MessageTypes.cs" />
     <Compile Include="Messages\Message.cs" />
+    <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\WebsocketProtocol.cs" />
+    <Compile Include="Register.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Operation.cs" />
     <Compile Include="UrdfImporter.cs" />

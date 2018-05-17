@@ -26,29 +26,29 @@ public class RosSocketConsole
         rosSocket.Publish(publication_id, message);
 
         // Subscription:
-        string subscription_id = rosSocket.Subscribe("/subscription_test",typeof(StandardString), SubscriptionHandler);
+        string subscription_id = rosSocket.Subscribe<StandardString>("/subscription_test", SubscriptionHandler);
 
         // Service Call:
-        rosSocket.CallService("/rosapi/get_param", typeof(RosApiGetParamResponse), ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
+        rosSocket.CallService<RosApiGetParamRequest, RosApiGetParamResponse>("/rosapi/get_param", ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
 
         // Service Response:
-        rosSocket.AdvertiseService("/service_response_test", typeof(StandardServiceTriggerRequest), ServiceResponseHandler);
+        rosSocket.AdvertiseService< StandardServiceTriggerRequest, StandardServiceTriggerResponse>("/service_response_test", ServiceResponseHandler);
 
         Console.WriteLine("Press any key to close...");
         Console.ReadKey(true);
         rosSocket.Close();
     }
-    private static void SubscriptionHandler(Message message)
+    private static void SubscriptionHandler(StandardString message)
     {        
-        Console.WriteLine(((StandardString)message).data);
+        Console.WriteLine((message).data);
     }
 
-    private static void ServiceCallHandler(Message message)
+    private static void ServiceCallHandler(RosApiGetParamResponse message)
     {
-        Console.WriteLine("ROS distro: " + ((RosApiGetParamResponse)message).value);
+        Console.WriteLine("ROS distro: " + message.value);
     }
 
-    private static bool ServiceResponseHandler(Message arguments, out Message result)
+    private static bool ServiceResponseHandler(StandardServiceTriggerRequest arguments, out StandardServiceTriggerResponse result)
     {
         result = new StandardServiceTriggerResponse(true, "service response message");
         return true;
