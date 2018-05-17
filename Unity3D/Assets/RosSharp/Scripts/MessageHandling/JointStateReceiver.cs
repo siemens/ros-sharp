@@ -35,8 +35,18 @@ namespace RosSharp.RosBridgeClient
         {
             message = (SensorJointStates)e.Message;
             for (int i = 0; i < JointStateWriters.Length; i++)
-                JointStateWriters[i].Write(message.position[i]);   
+            {
+                string jointName = JointStateWriters[i].JointName;
+
+                for (int j = 0; j < message.name.Length; j++)
+                {
+                    if (message.name[j] == jointName)
+                    {
+                        JointStateWriters[i].Write(message.position[j]);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
-

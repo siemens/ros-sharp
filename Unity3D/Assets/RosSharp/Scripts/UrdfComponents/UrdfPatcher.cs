@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -37,8 +38,13 @@ namespace RosSharp.RosBridgeClient
         public bool AddJointStateWriters;
         public JointStateReceiver jointStateReceiver;
 
+        public struct JointInfo
+        {
+            public JointStateHandler.JointTypes jointType;
+            public string jointName;
+        };
 
-        Dictionary<Transform, JointStateHandler.JointTypes> jointTypeDictionary;
+        Dictionary<Transform, JointInfo> jointTypeDictionary;
 
         public void Patch()
         {
@@ -66,13 +72,13 @@ namespace RosSharp.RosBridgeClient
 
         private void GetSingleDimensionalJoints()
         {
-            jointTypeDictionary =  new Dictionary<Transform, JointStateHandler.JointTypes>();
+            jointTypeDictionary =  new Dictionary<Transform, JointInfo>();
 
-            JointStateHandler.JointTypes jointType;
+            JointInfo jointInfo;
 
             foreach (Transform child in UrdfModel.GetComponentsInChildren<Transform>())            
-                if (HasSingleDimensionalJoint(child, out jointType))
-                    jointTypeDictionary.Add(child, jointType);
+                if (HasSingleDimensionalJoint(child, out jointInfo))
+                    jointTypeDictionary.Add(child, jointInfo);
         
         }
 
@@ -81,10 +87,11 @@ namespace RosSharp.RosBridgeClient
             int jointID = 0;
             T[] jointStateHandlers = new T[jointTypeDictionary.Count];
             
-            foreach (KeyValuePair<Transform,JointStateHandler.JointTypes> jointTypeEntry in jointTypeDictionary)
+            foreach (KeyValuePair<Transform, JointInfo> jointInfoEntry in jointTypeDictionary)
             {
-                jointStateHandlers[jointID] = jointTypeEntry.Key.gameObject.AddComponent<T>();
-                jointStateHandlers[jointID].JointType = jointTypeEntry.Value;
+                jointStateHandlers[jointID] = jointInfoEntry.Key.gameObject.AddComponent<T>();
+                jointStateHandlers[jointID].JointType = jointInfoEntry.Value.jointType;
+                jointStateHandlers[jointID].JointName = jointInfoEntry.Value.jointName;
                 jointStateHandlers[jointID].JointID = jointID++;
                 
             }
@@ -92,16 +99,27 @@ namespace RosSharp.RosBridgeClient
         }
 
 
-        private bool HasSingleDimensionalJoint(Transform child, out JointStateReader.JointTypes jointType)
+        private bool HasSingleDimensionalJoint(Transform child, out JointInfo jointInfo)
         {
-            jointType = JointStateHandler.JointTypes.continuous;
+            jointInfo.jointType = JointStateHandler.JointTypes.continuous;
+            jointInfo.jointName = null;
+
+            string linkName = null;
+            string jointTypeName = null;
+            Match match = Regex.Match(child.name, @"^([^(\s]+)\s+[(]([^):]+):\s+([^)\s]+)[)]$");
+            if (match.Success)
+            {
+                linkName = match.Groups[1].Value;
+                jointTypeName = match.Groups[2].Value;
+                jointInfo.jointName = match.Groups[3].Value;
+            }
 
             if (child.name.Contains("continuous Joint"))
-                jointType = JointStateHandler.JointTypes.continuous;
+                jointInfo.jointType = JointStateHandler.JointTypes.continuous;
             else if (child.name.Contains("revolute Joint"))
-                jointType = JointStateHandler.JointTypes.revolute;
+                jointInfo.jointType = JointStateHandler.JointTypes.revolute;
             else if (child.name.Contains("prismatic Joint"))
-                jointType = JointStateHandler.JointTypes.prismatic;
+                jointInfo.jointType = JointStateHandler.JointTypes.prismatic;
             else
                 return false;
 

@@ -21,6 +21,7 @@ namespace RosSharp.RosBridgeClient
     {
         public enum JointTypes { continuous, revolute, prismatic };
         public JointTypes JointType;
+        public string JointName;
         public int JointID;
     }
 }
