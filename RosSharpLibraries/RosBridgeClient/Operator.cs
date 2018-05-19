@@ -1,5 +1,4 @@
 ﻿using RosSharp.RosBridgeClient.Messages;
-using System;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -7,67 +6,123 @@ namespace RosSharp.RosBridgeClient
     public delegate void SubscriptionHandler<T>(T t) where T : Message;
     public delegate bool ServiceCallHandler<Tin, Tout>(Tin tin, out Tout tout) where Tin : Message where Tout : Message;
 
-    public abstract class Operator
+    public abstract class Publisher
     {
-        public abstract string Name { get; }
-        public virtual Type MessageType { get; }
-        public abstract void Receive(Message message);
-    }
+        public abstract string Id { get; }
+        public abstract string Topic { get; }
 
-    public class Publisher : Operator
+        public abstract Operation Publish(Message message);
+
+        public Unadverisement Unadvertise()
+        {
+            return new Unadverisement(Id, Topic);
+        }
+
+    }
+    public class Publisher<T> : Publisher where T : Message
     {
-        public override string Name { get { return Topic; } }
-        public string Topic;
-        public Publisher(string topic)
+        public override string Id { get; }
+        public override string Topic { get; }
+
+        public Publisher(string id, string topic, out Advertisement advertisement)
         {
             Topic = topic;
+            Id = id;
+            advertisement = new Advertisement(Id, Topic, MessageTypes.Dictionary[typeof(T)]);
         }
-        public override void Receive(Message message) { }
-    }
 
-    public class ServiceResponder<Tin, Tout> : Operator where Tin : Message where Tout : Message
-    {
-        public override string Name { get { return Service; } }
-        public string Service;
-        public ServiceCallHandler<Tin, Tout> ServiceCallHandler;
-        public ServiceResponder(string service, ServiceCallHandler<Tin, Tout> serviceCallHandler)
+        public override Operation Publish(Message message)
         {
-            Service = service;
-            ServiceCallHandler = serviceCallHandler;
+            return new Publication<T>(Id, Topic, (T)message);
         }
-        public override void Receive(Message message) { }
     }
 
-
-    public class Subscriber<T> : Operator where T : Message
+    public abstract class Subscriber
     {
-        public override string Name { get { return Topic; } }
-        public override Type MessageType { get { return typeof(T); } }
-        public string Topic;
-        public SubscriptionHandler<T> SubscriptionHandler;
-        public Subscriber(string topic, SubscriptionHandler<T> subscriptionHandler)
+        public abstract string Id { get; }
+        public abstract string Topic { get; }
+
+        public abstract void Receive(Message message);
+
+        public Unsubscription Unsubscribe()
+        {
+            return new Unsubscription(Id, Topic);
+        }
+    }
+
+    public class Subscriber<T> : Subscriber where T : Message
+    {
+        public override string Id { get; }
+        public override string Topic { get; }
+
+        public SubscriptionHandler<T> SubscriptionHandler { get; }
+
+        public Subscriber(string id, string topic, SubscriptionHandler<T> subscriptionHandler, out Subscription subscription, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
         {
             Topic = topic;
             SubscriptionHandler = subscriptionHandler;
+            subscription = new Subscription(Id, Topic, MessageTypes.Dictionary[typeof(T)], throttle_rate, queue_length, fragment_size, compression);
         }
+
         public override void Receive(Message message)
         {
-            SubscriptionHandler.Invoke(message as T);
+            SubscriptionHandler.Invoke((T)message);
         }
     }
 
-    public class ServiceCaller<T> : Operator where T : Message
+    public abstract class ServiceProvider
     {
-        public override string Name { get { return Service; } }
-        public string Service;
-        public Type ServiceResponseType;
-        public ServiceResponseHandler<T> ServiceResponseHandler;
-        public ServiceCaller(string service, ServiceResponseHandler<T> serviceResponseHandler)
+        public abstract string Service { get; }
+
+        public abstract Operation Respond(string id, Message args);
+
+        public ServiceUnadvertisement UnadvertiseService()
+        {
+            return new ServiceUnadvertisement(Service);
+        }
+    }
+
+    public class ServiceProvider<Tin, Tout> : ServiceProvider where Tin : Message where Tout : Message
+    {
+        public override string Service { get; }
+        public ServiceCallHandler<Tin, Tout> ServiceCallHandler;
+        public ServiceProvider(string service, ServiceCallHandler<Tin, Tout> serviceCallHandler, out ServiceAdvertisement serviceAdvertisement)
         {
             Service = service;
-            ServiceResponseHandler = serviceResponseHandler;
-            ServiceResponseType = typeof(T);
+            ServiceCallHandler = serviceCallHandler;
+            serviceAdvertisement = new ServiceAdvertisement(service, MessageTypes.Dictionary[typeof(Tin)]);
         }
-        public override void Receive(Message message) { }
+
+        public override Operation Respond(string id, Message args)
+        {
+            bool isSuccess = ServiceCallHandler.Invoke((Tin)args, out Tout result);
+            return new ServiceResponse<Tout>(id, Service, result, isSuccess);
+        }
+    }
+
+    public abstract class ServiceConsumer
+    {
+        public abstract string Id { get; }
+        public abstract string Service { get; }
+        public abstract void Consume(Message result);
+    }
+
+    public class ServiceConsumer<Tin, Tout> : ServiceConsumer where Tin : Message where Tout : Message
+    {
+        public override string Id { get; }
+        public override string Service { get; }
+        public ServiceResponseHandler<Tout> ServiceResponseHandler;
+
+        public ServiceConsumer(string id, string service, ServiceResponseHandler<Tout> serviceResponseHandler, out Operation serviceCall, Tin serviceArguments = null)
+        {
+            Id = id;
+            Service = service;
+            ServiceResponseHandler = serviceResponseHandler;
+            serviceCall = new ServiceCall<Tin>(id, service, serviceArguments);
+        }
+        public override void Consume(Message result)
+        {
+            ServiceResponseHandler.Invoke((Tout)result);
+        }
     }
 }

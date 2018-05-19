@@ -15,30 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class Operation
+    public abstract class Operation
     {
-        public virtual string op { get { return "undefined"; } } // required
-        public string id; // optional
+        public abstract string op { get; } // required
+        public virtual string id { get; } // optional
 
         public Operation(string id = null)
         {
             this.id = id;
         }
-
     }
 
-    public class Adverisement : Operation
+    public class Advertisement : Operation
     {
         public override string op { get { return "advertise"; } } // required
         public string topic; // required
         public string type; // required
 
-        public Adverisement(string id, string topic, string type) : base(id)
+        public Advertisement(string id, string topic, string type) : base(id)
         {
             this.topic = topic;
             this.type = type;
@@ -124,7 +122,7 @@ namespace RosSharp.RosBridgeClient
         public override string op { get { return "service_response"; } } // required
         public string service; // required
         public T values; // optional
-        public bool result;
+        public bool result; // required
 
         public ServiceResponse(string id, string service, T values, bool Result) : base(id)
         {
@@ -139,7 +137,7 @@ namespace RosSharp.RosBridgeClient
         public string type; // required
         public string service; // required
 
-        public ServiceAdvertisement(string id, string service, string type) : base(id)
+        public ServiceAdvertisement(string service, string type) 
         {
             this.service = service;
             this.type = type;
@@ -150,8 +148,8 @@ namespace RosSharp.RosBridgeClient
         public override string op { get { return "unadvertise_service"; } } // required
         public string service; // required
 
-        public ServiceUnadvertisement(string Id, string Service) : base(Id)
-        {
+        public ServiceUnadvertisement(string Service)
+        { 
             service = Service;
         }
     }

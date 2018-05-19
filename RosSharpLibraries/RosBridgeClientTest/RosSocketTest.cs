@@ -2,7 +2,6 @@
 using System.Threading;
 using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.Messages;
-using Newtonsoft.Json.Linq;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -27,7 +26,7 @@ namespace RosSharp.RosBridgeClientTest
         [SetUp]
         public void Setup()
         {
-            RosSocket = new RosSocket(Url);
+            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebsocketProtocol("ws://192.168.56.102:9090"));
         }
 
         [TearDown]
@@ -39,7 +38,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void PublicationTest()
         {
-            string id = RosSocket.Advertise("/publication_test", "std_msgs/String");
+            string id = RosSocket.Advertise<StandardString>("/publication_test");
             StandardString message = new StandardString("publication test message data");
             RosSocket.Publish(id, message);
             RosSocket.Unadvertise(id);

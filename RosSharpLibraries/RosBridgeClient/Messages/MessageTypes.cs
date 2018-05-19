@@ -20,6 +20,15 @@ namespace RosSharp.RosBridgeClient.Messages
 {
     public static class MessageTypes
     {
+        public static void GetRosMessageType(Type t, string method)
+        {
+            var methodInfo = t.GetField("RosMessageType");
+            if (methodInfo != null)
+            {
+                methodInfo.GetRawConstantValue();
+            }
+        }
+
         public static readonly Dictionary<Type, string> Dictionary = new Dictionary<Type, string>
         {
             {typeof(GeometryTwist), "geometry_msgs/Twist"  },
@@ -54,6 +63,7 @@ namespace RosSharp.RosBridgeClient.Messages
                 Type messageType;
                 Dictionary.TryGetValue(rosMessageType, out messageType);
                 return messageType;
-            }*/
+            
+    }*/
     }
 }
