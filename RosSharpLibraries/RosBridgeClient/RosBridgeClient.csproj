@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Operator.cs" />
-    <Compile Include="Messages\MessageTypes.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

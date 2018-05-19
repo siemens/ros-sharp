@@ -5,9 +5,7 @@ Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
 <http://www.apache.org/licenses/LICENSE-2.0>.
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +19,6 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.Messages;
 
@@ -32,7 +29,9 @@ namespace RosSharp.RosBridgeClient
     {
         // TODO:
 
-        // remove messagetypes class
+        // implement websocket_upw Protocol
+        // implement .NET Websocket Protocol
+
         // combine service request and response messages in one service class?
 
         // split message file into individual classes
@@ -45,8 +44,9 @@ namespace RosSharp.RosBridgeClient
         private Dictionary<string, ServiceProvider> ServiceProvider = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
 
-        public RosSocket(IProtocol Protocol)
+        public RosSocket(IProtocol protocol)
         {
+            Protocol = protocol;
             Protocol.OnMessage += (sender, e) => Receive(sender, e);
             Protocol.Connect();
         }

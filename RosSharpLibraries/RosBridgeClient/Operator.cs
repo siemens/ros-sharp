@@ -1,4 +1,19 @@
-﻿using RosSharp.RosBridgeClient.Messages;
+﻿/*
+© Siemens AG, 2017-2018
+Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+<http://www.apache.org/licenses/LICENSE-2.0>.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using RosSharp.RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -28,7 +43,7 @@ namespace RosSharp.RosBridgeClient
         {
             Topic = topic;
             Id = id;
-            advertisement = new Advertisement(Id, Topic, MessageTypes.Dictionary[typeof(T)]);
+            advertisement = new Advertisement(Id, Topic, Message.GetRosName(typeof(T)) );
         }
 
         public override Operation Publish(Message message)
@@ -61,7 +76,7 @@ namespace RosSharp.RosBridgeClient
         {
             Topic = topic;
             SubscriptionHandler = subscriptionHandler;
-            subscription = new Subscription(Id, Topic, MessageTypes.Dictionary[typeof(T)], throttle_rate, queue_length, fragment_size, compression);
+            subscription = new Subscription(Id, Topic, Message.GetRosName(typeof(T)), throttle_rate, queue_length, fragment_size, compression);
         }
 
         public override void Receive(Message message)
@@ -90,7 +105,7 @@ namespace RosSharp.RosBridgeClient
         {
             Service = service;
             ServiceCallHandler = serviceCallHandler;
-            serviceAdvertisement = new ServiceAdvertisement(service, MessageTypes.Dictionary[typeof(Tin)]);
+            serviceAdvertisement = new ServiceAdvertisement(service, Message.GetRosName(typeof(Tin)));
         }
 
         public override Operation Respond(string id, Message args)
