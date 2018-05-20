@@ -13,16 +13,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Services.FileServer
 {
-    public class MessageEventArgs : EventArgs
+    public class GetBinaryFileRequest : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "file_server/GetBinaryFile"; } }
+        public string name;
+        public GetBinaryFileRequest(string name)
         {
-            RawData = rawData;
+            this.name = name;
         }
+    }
+
+    public class GetBinaryFileResponse : Message
+    {
+        [JsonIgnore]
+        public override string RosMessageName { get { return "file_server/GetBinaryFile"; } }
+        public byte[] value;
     }
 }

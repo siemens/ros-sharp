@@ -1,13 +1,11 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
 <http://www.apache.org/licenses/LICENSE-2.0>.
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,34 +14,34 @@ limitations under the License.
 */
 
 using System;
-using RosSharp.RosBridgeClient.Messages;
+using RosSharp.RosBridgeClient.Messages.Sensor;
 
 namespace RosSharp.RosBridgeClient
 {
     public class PointCloud
     {
-        public Point[] Points;
+        public RgbPoint3[] Points;
 
-        public PointCloud(SensorPointCloud2 sensorPointCloud2)
+        public PointCloud(PointCloud2 pointCloud2)
         {
-            int I = sensorPointCloud2.data.Length / sensorPointCloud2.point_step;
-            Points = new Point[I];
-            byte[] byteSlice = new byte[sensorPointCloud2.point_step];
+            int I = pointCloud2.data.Length / pointCloud2.point_step;
+            Points = new RgbPoint3[I];
+            byte[] byteSlice = new byte[pointCloud2.point_step];
             for (int i = 0; i < I; i++)
             {
-                Array.Copy(sensorPointCloud2.data, i * sensorPointCloud2.point_step, byteSlice, 0, sensorPointCloud2.point_step);
-                Points[i] = new Point(byteSlice, sensorPointCloud2.fields);
+                Array.Copy(pointCloud2.data, i * pointCloud2.point_step, byteSlice, 0, pointCloud2.point_step);
+                Points[i] = new RgbPoint3(byteSlice, pointCloud2.fields);
             }
         }
 
-        public PointCloud(SensorImage depthImage, SensorImage rgbImage, float focal)
+        public PointCloud(Image depthImage, Image rgbImage, float focal)
         {
 
             int width = depthImage.width;
             int height = depthImage.height;
             float invFocal = 1.0f / focal;
 
-            Points = new Point[width * height];
+            Points = new RgbPoint3[width * height];
 
             for (int v = 0; v < height; v++)
             {
@@ -62,20 +60,20 @@ namespace RosSharp.RosBridgeClient
                         Points[u + v * width].z = depth * invFocal;
                         Points[u + v * width].x = u * depth * invFocal;
                         Points[u + v * width].y = v * depth * invFocal;
-                        Points[u + v * width].rgb = new int[] { 0, 0, 0 };// rgbImage[u,v];
+                        Points[u + v * width].rgb = new int[] { 0, 0, 0 };// rgbImage[u, v];
                     }
                 }
             }
         }
     }
-    public class Point
+    public class RgbPoint3
     {
         public float x;
         public float y;
         public float z;
         public int[] rgb;
 
-        public Point(byte[] bytes, SensorPointField[] fields)
+        public RgbPoint3(byte[] bytes, PointField[] fields)
         {
             foreach (var field in fields)
             {
@@ -85,16 +83,16 @@ namespace RosSharp.RosBridgeClient
                 switch (field.name)
                 {
                     case "x":
-                        x = getValue(slice);
+                        x = GetValue(slice);
                         break;
                     case "y":
-                        y = getValue(slice);
+                        y = GetValue(slice);
                         break;
                     case "z":
-                        z = getValue(slice);
+                        z = GetValue(slice);
                         break;
                     case "rgb":
-                        rgb = getRGB(slice);
+                        rgb = GetRGB(slice);
                         break;
                 }
             }
@@ -105,7 +103,7 @@ namespace RosSharp.RosBridgeClient
             return "xyz=(" + x.ToString() + ", " + y.ToString() + ", " + z.ToString() + ")"
                 + "  rgb=(" + rgb[0].ToString() + ", " + rgb[1].ToString() + ", " + rgb[2].ToString() + ")";
         }
-        private static float getValue(byte[] bytes)
+        private static float GetValue(byte[] bytes)
         {
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
@@ -113,7 +111,7 @@ namespace RosSharp.RosBridgeClient
             float result = BitConverter.ToSingle(bytes, 0);
             return result;
         }
-        private static int[] getRGB(byte[] bytes)
+        private static int[] GetRGB(byte[] bytes)
         {
             int[] rgb = new int[3];
             rgb[0] = Convert.ToInt16(bytes[0]);
@@ -122,5 +120,4 @@ namespace RosSharp.RosBridgeClient
             return rgb;
         }
     }
-
 }

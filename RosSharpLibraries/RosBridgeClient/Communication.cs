@@ -15,9 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using RosSharp.RosBridgeClient.Messages;
 
-namespace RosSharp.RosBridgeClient.Processing
+namespace RosSharp.RosBridgeClient
 {
     internal abstract class Communication
     {

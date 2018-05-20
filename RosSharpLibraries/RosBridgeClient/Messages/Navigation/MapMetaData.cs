@@ -13,16 +13,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
-    public class MessageEventArgs : EventArgs
+    public class MapMetaData : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "nav_msgs/MapMetaData"; } }
+        public Standard.Time map_load_time;
+        public float resolution;
+        public uint width;
+        public uint height;
+        public Geometry.Pose origin;
+
+        public MapMetaData()
         {
-            RawData = rawData;
+            map_load_time = null;
+            resolution = 0;
+            width = 0;
+            height = 0;
+            origin = new Geometry.Pose();
         }
     }
 }

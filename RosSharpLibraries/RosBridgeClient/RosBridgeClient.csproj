@@ -48,8 +48,29 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageProcessing\Communicators.cs" />
-    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\Geometry\Accel.cs" />
+    <Compile Include="Messages\Geometry\Point.cs" />
+    <Compile Include="Messages\Geometry\Pose.cs" />
+    <Compile Include="Messages\Geometry\PoseStamped.cs" />
+    <Compile Include="Messages\Geometry\PoseWithCovariance.cs" />
+    <Compile Include="Messages\Geometry\Quaternion.cs" />
+    <Compile Include="Messages\Geometry\Twist.cs" />
+    <Compile Include="Messages\Geometry\TwistWithCovariance.cs" />
+    <Compile Include="Messages\Geometry\Vector3.cs" />
+    <Compile Include="Messages\Navigation\MapMetaData.cs" />
+    <Compile Include="Messages\Navigation\OccupancyGrid.cs" />
+    <Compile Include="Messages\Navigation\Odometry.cs" />
+    <Compile Include="Messages\Sensor\CompressedImage.cs" />
+    <Compile Include="Messages\Sensor\Image.cs" />
+    <Compile Include="Messages\Sensor\JointState.cs" />
+    <Compile Include="Messages\Sensor\Joy.cs" />
+    <Compile Include="Messages\Sensor\PointCloud2.cs" />
+    <Compile Include="Messages\Sensor\PointField.cs" />
+    <Compile Include="Messages\Standard\Header.cs" />
+    <Compile Include="Messages\Standard\String.cs" />
+    <Compile Include="Messages\Standard\Time.cs" />
+    <Compile Include="Communicators.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
@@ -57,12 +78,16 @@
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
     <Compile Include="RosSocket.cs" />
-    <Compile Include="MessageProcessing\Communication.cs" />
+    <Compile Include="Communication.cs" />
+    <Compile Include="Services\FileServer\GetBinaryFile.cs" />
+    <Compile Include="Services\RosApi\GetParam.cs" />
+    <Compile Include="Services\Standard\Trigger.cs" />
     <Compile Include="UrdfImporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

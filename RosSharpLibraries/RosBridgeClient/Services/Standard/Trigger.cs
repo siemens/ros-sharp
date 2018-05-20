@@ -13,16 +13,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Services.Standard
 {
-    public class MessageEventArgs : EventArgs
+    public class TriggerRequest : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "std_srvs/Trigger"; } }
+    }
+
+    public class TriggerResponse : Message
+    {
+        [JsonIgnore]
+        public override string RosMessageName { get { return "std_srvs/Trigger"; } }
+        bool success;
+        string message;
+        public TriggerResponse(bool success, string message)
         {
-            RawData = rawData;
+            this.success = success;
+            this.message = message;
         }
     }
 }

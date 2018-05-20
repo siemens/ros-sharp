@@ -13,16 +13,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
-    public class MessageEventArgs : EventArgs
+    public class PoseStamped : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "geometry_msgs/PoseStamped"; } }
+        public Standard.Header header;
+        public Pose pose;
+        public PoseStamped()
         {
-            RawData = rawData;
+            header = new Standard.Header();
+            pose = new Pose();
         }
     }
 }

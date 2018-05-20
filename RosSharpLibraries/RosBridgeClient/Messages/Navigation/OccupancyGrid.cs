@@ -13,16 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
-    public class MessageEventArgs : EventArgs
+    public class OccupancyGrid : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "nav_msgs/OccupancyGrid"; } }
+        public Standard.Header header;
+        public MapMetaData info;
+        public sbyte[] data;
+        public OccupancyGrid()
         {
-            RawData = rawData;
+            header = new Standard.Header();
+            info = new MapMetaData();
+            data = null;
         }
     }
 }

@@ -13,9 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using RosSharp.RosBridgeClient.Messages;
-
-namespace RosSharp.RosBridgeClient.Processing
+namespace RosSharp.RosBridgeClient
 {
     public delegate void ServiceResponseHandler<T>(T t) where T : Message;
     public delegate void SubscriptionHandler<T>(T t) where T : Message;

@@ -13,16 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
-    public class MessageEventArgs : EventArgs
+    public class Vector3 : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "geometry_msgs/Vector3"; } }
+        public float x;
+        public float y;
+        public float z;
+        public Vector3()
         {
-            RawData = rawData;
+            x = 0f;
+            y = 0f;
+            z = 0f;
         }
     }
 }

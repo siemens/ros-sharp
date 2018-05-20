@@ -13,16 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Standard
 {
-    public class MessageEventArgs : EventArgs
+    public class Header : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "std_msgs/Header"; } }
+        public int seq;
+        public Time stamp;
+        public string frame_id;
+        public Header()
         {
-            RawData = rawData;
+            seq = 0;
+            stamp = new Time();
+            frame_id = "";
         }
     }
 }

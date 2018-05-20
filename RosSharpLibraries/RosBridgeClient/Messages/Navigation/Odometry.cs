@@ -13,16 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
-    public class MessageEventArgs : EventArgs
+   public class Odometry : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "nav_msgs/Odometry"; } }
+        public Standard.Header header;
+        public string child_frame_id;
+        public Geometry.PoseWithCovariance pose;
+        public Geometry.TwistWithCovariance twist;
+        public Odometry()
         {
-            RawData = rawData;
+            header = new Standard.Header();
+            child_frame_id = "";
+            pose = new Geometry.PoseWithCovariance();
+            twist = new Geometry.TwistWithCovariance();
         }
     }
 }

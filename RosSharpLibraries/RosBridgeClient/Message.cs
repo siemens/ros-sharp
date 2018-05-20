@@ -13,16 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient
 {
-    public class MessageEventArgs : EventArgs
+    public abstract class Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        public abstract string RosMessageName { get; }
+
+        public static string GetRosName(System.Type t)
         {
-            RawData = rawData;
+            return (string)t.GetField("RosMessageName")?.GetRawConstantValue();
         }
     }
 }

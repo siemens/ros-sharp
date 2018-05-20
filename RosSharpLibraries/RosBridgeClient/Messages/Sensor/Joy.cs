@@ -13,16 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
-    public class MessageEventArgs : EventArgs
+    public class Joy : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "sensor_msgs/Joy"; } }
+        public Standard.Header header;
+        public float[] axes;
+        public int[] buttons;
+
+        public Joy()
         {
-            RawData = rawData;
+            header = new Standard.Header();
+            axes = new float[0];
+            buttons = new int[0];
         }
     }
 }

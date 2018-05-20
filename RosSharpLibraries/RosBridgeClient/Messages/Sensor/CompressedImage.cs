@@ -13,16 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
-    public class MessageEventArgs : EventArgs
+    public class CompressedImage : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "sensor_msgs/CompressedImage"; } }
+        public Standard.Header header;
+        public string format;
+        public byte[] data;
+        public CompressedImage()
         {
-            RawData = rawData;
+            header = new Standard.Header();
+            format = "";
+            data = new byte[0];
         }
     }
 }

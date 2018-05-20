@@ -15,7 +15,11 @@ limitations under the License.
 
 using System;
 using RosSharp.RosBridgeClient;
-using RosSharp.RosBridgeClient.Messages;
+
+using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
+using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
+using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+
 
 // commands on ROS system:
 // launch before starting:
@@ -35,36 +39,36 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol("ws://192.168.56.102:9090"));
 
             // Publication:
-            string publication_id = rosSocket.Advertise<StandardString>("/publication_test");
-            StandardString message = new StandardString("publication test message data");
+            string publication_id = rosSocket.Advertise<std_msgs.String>("/publication_test");
+            std_msgs.String message = new std_msgs.String("publication test message data");
             rosSocket.Publish(publication_id, message);
 
             // Subscription:
-            string subscription_id = rosSocket.Subscribe<StandardString>("/subscription_test", SubscriptionHandler);
+            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
 
             // Service Call:
-            rosSocket.CallService<RosApiGetParamRequest, RosApiGetParamResponse>("/rosapi/get_param", ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
+            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro"));
 
             // Service Response:
-            rosSocket.AdvertiseService<StandardServiceTriggerRequest, StandardServiceTriggerResponse>("/service_response_test", ServiceResponseHandler);
+            rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
 
             Console.WriteLine("Press any key to close...");
             Console.ReadKey(true);
             rosSocket.Close();
         }
-        private static void SubscriptionHandler(StandardString message)
+        private static void SubscriptionHandler(std_msgs.String message)
         {
             Console.WriteLine((message).data);
         }
 
-        private static void ServiceCallHandler(RosApiGetParamResponse message)
+        private static void ServiceCallHandler(rosapi.GetParamResponse message)
         {
             Console.WriteLine("ROS distro: " + message.value);
         }
 
-        private static bool ServiceResponseHandler(StandardServiceTriggerRequest arguments, out StandardServiceTriggerResponse result)
+        private static bool ServiceResponseHandler(std_srvs.TriggerRequest arguments, out std_srvs.TriggerResponse result)
         {
-            result = new StandardServiceTriggerResponse(true, "service response message");
+            result = new std_srvs.TriggerResponse(true, "service response message");
             return true;
         }
     }

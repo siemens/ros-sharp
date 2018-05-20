@@ -13,16 +13,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Services.RosApi
 {
-    public class MessageEventArgs : EventArgs
+    public class GetParamRequest : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "ros_api/GetParam"; } }
+        public string name;
+        public GetParamRequest(string name)
         {
-            RawData = rawData;
+            this.name = name;
         }
+    }
+
+    public class GetParamResponse : Message
+    {
+        [JsonIgnore]
+        public override string RosMessageName { get { return "ros_api/GetParam"; } }
+        public string value;
     }
 }

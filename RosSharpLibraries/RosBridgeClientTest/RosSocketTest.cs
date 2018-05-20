@@ -16,7 +16,10 @@ limitations under the License.
 using NUnit.Framework;
 using System.Threading;
 using RosSharp.RosBridgeClient;
-using RosSharp.RosBridgeClient.Messages;
+
+using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
+using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
+using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -53,8 +56,8 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void PublicationTest()
         {
-            string id = RosSocket.Advertise<StandardString>("/publication_test");
-            StandardString message = new StandardString("publication test message data");
+            string id = RosSocket.Advertise<std_msgs.String>("/publication_test");
+            std_msgs.String message = new std_msgs.String("publication test message data");
             RosSocket.Publish(id, message);
             RosSocket.Unadvertise(id);
             Thread.Sleep(100);
@@ -64,7 +67,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void SubscriptionTest()
         {
-            string id = RosSocket.Subscribe<StandardString>("/subscription_test", SubscriptionHandler);
+            string id = RosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
             OnMessageReceived.WaitOne();
             OnMessageReceived.Reset();
             RosSocket.Unsubscribe(id);
@@ -75,7 +78,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceCallTest()
         {
-            RosSocket.CallService<RosApiGetParamRequest, RosApiGetParamResponse>("/rosapi/get_param", ServiceCallHandler, new RosApiGetParamRequest("/rosdistro"));
+            RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro"));
             OnServiceReceived.WaitOne();
             OnServiceReceived.Reset();
             Assert.IsTrue(true);
@@ -84,25 +87,25 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceResponseTest()
         {
-            RosSocket.AdvertiseService<StandardServiceTriggerRequest, StandardServiceTriggerResponse>("/service_response_test", ServiceResponseHandler);
+            RosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
             OnServiceProvided.WaitOne();
             OnServiceProvided.Reset();
             Assert.IsTrue(true);
         }
 
-        private void SubscriptionHandler(StandardString message)
+        private void SubscriptionHandler(std_msgs.String message)
         {
             OnMessageReceived.Set();
         }
 
-        private void ServiceCallHandler(RosApiGetParamResponse message)
+        private void ServiceCallHandler(rosapi.GetParamResponse message)
         {
             OnServiceReceived.Set();
         }
 
-        private bool ServiceResponseHandler(StandardServiceTriggerRequest arguments, out StandardServiceTriggerResponse result)
+        private bool ServiceResponseHandler(std_srvs.TriggerRequest arguments, out std_srvs.TriggerResponse result)
         {
-            result = new StandardServiceTriggerResponse(true, "service response message");
+            result = new std_srvs.TriggerResponse(true, "service response message");
             OnServiceProvided.Set();
             return true;
         }

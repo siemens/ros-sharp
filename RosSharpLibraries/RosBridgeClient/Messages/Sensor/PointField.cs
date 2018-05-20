@@ -13,16 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Protocols
+namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
-    public class MessageEventArgs : EventArgs
+    public class PointField : Message
     {
-        public byte[] RawData;
-        public MessageEventArgs(byte[] rawData)
+        [JsonIgnore]
+        public override string RosMessageName { get { return "sensor_msgs/PointField"; } }
+        public int datatype;
+        public string name;
+        public int offset;
+        public int count;
+        public PointField()
         {
-            RawData = rawData;
+            datatype = 0;
+            name = "";
+            offset = 0;
+            count = 0;
         }
     }
 }

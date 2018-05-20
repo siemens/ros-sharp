@@ -20,8 +20,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Protocols;
-using RosSharp.RosBridgeClient.Messages;
-using RosSharp.RosBridgeClient.Processing;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -30,9 +28,7 @@ namespace RosSharp.RosBridgeClient
         // TODO:
 
         // combine service request and response messages in one service class?
-
-        // split message file into individual classes
-        // split operator file into individual classes
+        // see todos below
 
         private IProtocol Protocol;
 
@@ -91,6 +87,7 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
+            // todo add increasing number to topic id
             string id = topic;
             Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out Subscription subscription, throttle_rate, queue_length, fragment_size, compression));
             Send(subscription);
@@ -126,6 +123,7 @@ namespace RosSharp.RosBridgeClient
 
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments = null) where Tin : Message where Tout : Message
         {
+            // todo add increasing number to topic id
             string id = service;
             ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments = null));
             Send(serviceCall);
