@@ -21,15 +21,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.Messages;
-
+using RosSharp.RosBridgeClient.Processing;
 
 namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {
         // TODO:
-
-        // implement websocket_upw Protocol
 
         // combine service request and response messages in one service class?
 
@@ -129,19 +127,19 @@ namespace RosSharp.RosBridgeClient
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments = null) where Tin : Message where Tout : Message
         {
             string id = service;
-            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Operation serviceCall, serviceArguments = null));
+            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments = null));
             Send(serviceCall);
             return id;
         }
 
         #endregion
 
-        private void Send(Operation operation)
+        private void Send(Communication operation)
         {
 #if DEBUG
             Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");
 #endif
-            Protocol.SendAsync(Serialize(operation), null);
+            Protocol.Send(Serialize(operation));
             return;
         }
 
