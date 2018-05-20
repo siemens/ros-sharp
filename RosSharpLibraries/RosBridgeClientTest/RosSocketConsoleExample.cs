@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClientTest
     {
         public static void Main(string[] args)
         {
-            RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebsocketProtocol("ws://192.168.56.102:9090"));
+            RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol("ws://192.168.56.102:9090"));
 
             // Publication:
             string publication_id = rosSocket.Advertise<StandardString>("/publication_test");

@@ -18,16 +18,16 @@ using WebSocketSharp;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebsocketProtocol: IProtocol
+    public class WebSocketSharpProtocol: IProtocol
     {
-        public event EventHandler OnMessage;
+        public event EventHandler OnReceive;
 
         private WebSocket WebSocket;
 
-        public WebsocketProtocol(string url)
+        public WebSocketSharpProtocol(string url)
         {
             WebSocket = new WebSocket(url);
-            WebSocket.OnMessage += OnWebsocketMessage;                
+            WebSocket.OnMessage += Receive;                
         }
                 
         public void Connect()
@@ -45,14 +45,14 @@ namespace RosSharp.RosBridgeClient.Protocols
             return WebSocket.IsAlive;
         }
 
-        public void SendAsync(byte[] data, Action<bool> completed)
+        public void Send(byte[] data)
         {
-            WebSocket.SendAsync(data, completed);
+            WebSocket.SendAsync(data, null);
         }
         
-        private void OnWebsocketMessage(object sender, WebSocketSharp.MessageEventArgs e)
-        {            
-            OnMessage.Invoke(sender, new MessageEventArgs(e.RawData));
+        private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
+        {
+            OnReceive.Invoke(sender, new MessageEventArgs(e.RawData));
         }
     }
 }

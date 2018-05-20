@@ -30,7 +30,6 @@ namespace RosSharp.RosBridgeClient
         // TODO:
 
         // implement websocket_upw Protocol
-        // implement .NET Websocket Protocol
 
         // combine service request and response messages in one service class?
 
@@ -47,7 +46,7 @@ namespace RosSharp.RosBridgeClient
         public RosSocket(IProtocol protocol)
         {
             Protocol = protocol;
-            Protocol.OnMessage += (sender, e) => Receive(sender, e);
+            Protocol.OnReceive += (sender, e) => Receive(sender, e);
             Protocol.Connect();
         }
 

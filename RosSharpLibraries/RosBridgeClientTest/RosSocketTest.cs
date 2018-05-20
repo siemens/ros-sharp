@@ -41,7 +41,7 @@ namespace RosSharp.RosBridgeClientTest
         [SetUp]
         public void Setup()
         {
-            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebsocketProtocol("ws://192.168.56.102:9090"));
+            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol("ws://192.168.56.102:9090"));
         }
 
         [TearDown]
