@@ -39,8 +39,8 @@ namespace RosSharp.RosBridgeClient
 
         internal Publisher(string id, string topic, out Advertisement advertisement)
         {
-            Topic = topic;
             Id = id;
+            Topic = topic;   
             advertisement = new Advertisement(Id, Topic, Message.GetRosName(typeof(T)) );
         }
 

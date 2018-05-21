@@ -25,16 +25,11 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {
-        // TODO:
-
-        // combine service request and response messages in one service class?
-        // see todos below
-
         private IProtocol Protocol;
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
-        private Dictionary<string, ServiceProvider> ServiceProvider = new Dictionary<string, ServiceProvider>();
+        private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
 
         public RosSocket(IProtocol protocol)
@@ -52,8 +47,8 @@ namespace RosSharp.RosBridgeClient
             while (Subscribers.Count > 0)
                 Unsubscribe(Subscribers.First().Key);
 
-            while (ServiceProvider.Count > 0)
-                UnadvertiseService(ServiceProvider.First().Key);
+            while (ServiceProviders.Count > 0)
+                UnadvertiseService(ServiceProviders.First().Key);
 
             Protocol.Close();
         }
@@ -62,9 +57,10 @@ namespace RosSharp.RosBridgeClient
 
         public string Advertise<T>(string topic) where T : Message
         {
-            // todo delete previous entry if topic already exists
-
             string id = topic;
+            if (Publishers.ContainsKey(id))
+                Unadvertise(id);
+
             Publishers.Add(id, new Publisher<T>(id, topic, out Advertisement advertisement));
             Send(advertisement);
             return id;
@@ -87,8 +83,7 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
-            // todo add increasing number to topic id
-            string id = topic;
+            string id = GetUnusedCounterID(topic);
             Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out Subscription subscription, throttle_rate, queue_length, fragment_size, compression));
             Send(subscription);
             return id;
@@ -99,22 +94,25 @@ namespace RosSharp.RosBridgeClient
             Send(Subscribers[id].Unsubscribe());
             Subscribers.Remove(id);
         }
-        #endregion
+                #endregion
 
         #region ServiceProviders
 
         public string AdvertiseService<Tin, Tout>(string service, ServiceCallHandler<Tin, Tout> serviceCallHandler) where Tin : Message where Tout : Message
         {
             string id = service;
-            ServiceProvider.Add(id, new ServiceProvider<Tin, Tout>(service, serviceCallHandler, out ServiceAdvertisement serviceAdvertisement));
+            if (ServiceProviders.ContainsKey(id))
+                UnadvertiseService(id);
+
+            ServiceProviders.Add(id, new ServiceProvider<Tin, Tout>(service, serviceCallHandler, out ServiceAdvertisement serviceAdvertisement));
             Send(serviceAdvertisement);
             return id;
         }
 
         public void UnadvertiseService(string id)
         {
-            Send(ServiceProvider[id].UnadvertiseService());
-            ServiceProvider.Remove(id);
+            Send(ServiceProviders[id].UnadvertiseService());
+            ServiceProviders.Remove(id);
         }
 
         #endregion
@@ -123,8 +121,7 @@ namespace RosSharp.RosBridgeClient
 
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments = null) where Tin : Message where Tout : Message
         {
-            // todo add increasing number to topic id
-            string id = service;
+            string id = GetUnusedCounterID(service);
             ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments = null));
             Send(serviceCall);
             return id;
@@ -164,7 +161,7 @@ namespace RosSharp.RosBridgeClient
                 case "call_service":
                     {
                         string id = jObject.GetValue("id").ToString();
-                        ServiceProvider[id].Respond(id, jObject.GetValue("args").ToObject<Message>());
+                        ServiceProviders[id].Respond(id, jObject.GetValue("args").ToObject<Message>());
                         return;
                     }
             }
@@ -182,5 +179,14 @@ namespace RosSharp.RosBridgeClient
             return JsonConvert.DeserializeObject<T>(ascii);
         }
 
+        private string GetUnusedCounterID(string name)
+        {
+            int I = 0;
+            string id;
+            do
+                id = name + ":" + (I++).ToString();
+            while (Subscribers.ContainsKey(id));
+            return id;
+        }
     }
 }

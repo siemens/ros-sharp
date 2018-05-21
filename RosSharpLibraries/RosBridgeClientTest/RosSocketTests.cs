@@ -20,11 +20,12 @@ using RosSharp.RosBridgeClient;
 using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
 using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using System;
 
 namespace RosSharp.RosBridgeClientTest
 {
     [TestFixture]
-    public class RosSocketTest
+    public class RosSocketTests
     {
         // on ROS system:
         // launch before starting:
@@ -65,12 +66,49 @@ namespace RosSharp.RosBridgeClientTest
         }
 
         [Test]
+        public void DoublePublicationTest()
+        {
+            string id1 = RosSocket.Advertise<std_msgs.String>("/publication_test");
+            string id2 = RosSocket.Advertise<std_msgs.String>("/publication_test");
+            std_msgs.String message = new std_msgs.String("publication test message data");
+
+            Assert.Throws<NullReferenceException>(() => RosSocket.Publish(id1, message));
+
+            RosSocket.Publish(id2, message); //works
+            RosSocket.Unadvertise(id2);
+            Thread.Sleep(100);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
         public void SubscriptionTest()
         {
             string id = RosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
             OnMessageReceived.WaitOne();
             OnMessageReceived.Reset();
             RosSocket.Unsubscribe(id);
+            Thread.Sleep(100);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void DoubleSubscriptionTest()
+        {
+            string id1 = RosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
+            string id2 = RosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
+
+            
+            OnMessageReceived.WaitOne();
+            OnMessageReceived.Reset();
+            Console.WriteLine("First Subscription received Message.");
+
+            OnMessageReceived.WaitOne();
+            OnMessageReceived.Reset();
+            Console.WriteLine("Second Subscription received Message.");
+
+            RosSocket.Unsubscribe(id1);
+            RosSocket.Unsubscribe(id2);
+
             Thread.Sleep(100);
             Assert.IsTrue(true);
         }

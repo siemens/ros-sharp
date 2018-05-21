@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RosSocketConsoleExample.cs" />
-    <Compile Include="RosSocketTest.cs" />
+    <Compile Include="RosSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
