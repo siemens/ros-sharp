@@ -14,8 +14,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEditor;
-using System;
 using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
@@ -37,9 +35,6 @@ namespace RosSharp.RosBridgeClient
         public bool AddJointStateWriters;
         public JointStateReceiver jointStateReceiver;
 
-
-        Dictionary<Transform, JointStateHandler.JointTypes> jointTypeDictionary;
-
         public void Patch()
         {
             RemoveExistingComponents();
@@ -54,58 +49,29 @@ namespace RosSharp.RosBridgeClient
             if (AddPoseReceiver)
                 UrdfModel.AddComponent<PoseReceiver>();
 
-            if (AddJointStateReaders || AddJointStateWriters)
-                GetSingleDimensionalJoints();
-
             if (AddJointStateReaders)
-                jointStateProvider.JointStateReaders = PatchJoints<JointStateReader>();
+                jointStateProvider.JointStateReaders = AddJointStateReaderComponents();
 
             if (AddJointStateWriters)
-                jointStateReceiver.JointStateWriters = PatchJoints<JointStateWriter>();
+                jointStateReceiver.JointStateWriterDictionary = AddJointStateWriterComponents();
         }
-
-        private void GetSingleDimensionalJoints()
-        {
-            jointTypeDictionary =  new Dictionary<Transform, JointStateHandler.JointTypes>();
-
-            JointStateHandler.JointTypes jointType;
-
-            foreach (Transform child in UrdfModel.GetComponentsInChildren<Transform>())            
-                if (HasSingleDimensionalJoint(child, out jointType))
-                    jointTypeDictionary.Add(child, jointType);
         
+        private JointStateReader[] AddJointStateReaderComponents() 
+        {
+            List<JointStateReader> jointStateReaders = new List<JointStateReader>();
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
+                jointStateReaders.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateReader>());   
+            return jointStateReaders.ToArray();
         }
 
-        public T[] PatchJoints<T>() where T : JointStateHandler
+        private Dictionary<string, JointStateWriter> AddJointStateWriterComponents()
         {
-            int jointID = 0;
-            T[] jointStateHandlers = new T[jointTypeDictionary.Count];
-            
-            foreach (KeyValuePair<Transform,JointStateHandler.JointTypes> jointTypeEntry in jointTypeDictionary)
-            {
-                jointStateHandlers[jointID] = jointTypeEntry.Key.gameObject.AddComponent<T>();
-                jointStateHandlers[jointID].JointType = jointTypeEntry.Value;
-                jointStateHandlers[jointID].JointID = jointID++;
-                
-            }
-            return jointStateHandlers;
-        }
-
-
-        private bool HasSingleDimensionalJoint(Transform child, out JointStateReader.JointTypes jointType)
-        {
-            jointType = JointStateHandler.JointTypes.continuous;
-
-            if (child.name.Contains("continuous Joint"))
-                jointType = JointStateHandler.JointTypes.continuous;
-            else if (child.name.Contains("revolute Joint"))
-                jointType = JointStateHandler.JointTypes.revolute;
-            else if (child.name.Contains("prismatic Joint"))
-                jointType = JointStateHandler.JointTypes.prismatic;
-            else
-                return false;
-
-            return true;
+            Dictionary<string, JointStateWriter> jointStateWriters = new Dictionary<string, JointStateWriter>();
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
+                jointStateWriters.Add(
+                    jointUrdfDataManager.name,
+                    jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
+            return jointStateWriters;
         }
 
         private void RemoveExistingComponents()
@@ -126,6 +92,7 @@ namespace RosSharp.RosBridgeClient
                 meshCollider.convex = convex;
             }
         }
+
         private void PatchRigidbodies(bool useGravity,bool isKinematic)
         {
             foreach (Rigidbody rigidbody in UrdfModel.GetComponentsInChildren<Rigidbody>())
@@ -134,9 +101,6 @@ namespace RosSharp.RosBridgeClient
                 rigidbody.isKinematic = isKinematic;
             }
         }
-
-       
-
 
     }
 }

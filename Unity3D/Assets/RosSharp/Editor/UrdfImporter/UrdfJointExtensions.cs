@@ -85,6 +85,10 @@ namespace RosSharp.UrdfImporter
                 else
                     hingeJoint.useLimits = true;
             }
+
+            // data:
+            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+
             return hingeJoint;
         }
 
@@ -127,6 +131,10 @@ namespace RosSharp.UrdfImporter
                 prismaticJoint.lowAngularXLimit = joint.limit.GetLowSoftJointLimit();
                 prismaticJoint.highAngularXLimit = joint.limit.GetHighSoftJointLimit();
             }
+
+            // data:
+            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+
             return prismaticJoint;
         }
 

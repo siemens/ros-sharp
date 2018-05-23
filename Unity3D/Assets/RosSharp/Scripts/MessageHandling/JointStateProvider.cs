@@ -41,13 +41,14 @@ namespace RosSharp.RosBridgeClient
         private void InitializeMessage()
         {
             int jointStateLength = JointStateReaders.Length;
-            message = new SensorJointStates();
-            message.header = new StandardHeader();
-            message.header.frame_id = FrameId;
-            message.name = new string[jointStateLength];
-            message.position = new float[jointStateLength];
-            message.velocity = new float[jointStateLength];
-            message.effort = new float[jointStateLength];
+            message = new SensorJointStates
+            {
+                header = new StandardHeader { frame_id = FrameId },
+                name = new string[jointStateLength],
+                position = new float[jointStateLength],
+                velocity = new float[jointStateLength],
+                effort = new float[jointStateLength]
+            };
         }
         private void UpdateMessage()
         {

@@ -17,18 +17,20 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint))]
-    public class JointStateWriter : JointStateHandler
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointUrdfDataManager))]
+    public class JointStateWriter : MonoBehaviour
     {
         private Joint joint;
-        
+        private JointUrdfDataManager jointUrdfDataManager;
+
         private float newState; // deg or m
         private float prevState; // deg or m
         private bool isNewStateReceived;
 
         private void Start()
         {
-            joint = GetComponent<Joint>(); 
+            joint = GetComponent<UnityEngine.Joint>();
+            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
         }
 
         private void Update()
@@ -41,9 +43,9 @@ namespace RosSharp.RosBridgeClient
         }
         private void WriteUpdate()
         {
-            if (JointType == JointTypes.continuous || JointType == JointTypes.revolute)
+            if (jointUrdfDataManager.IsRevoluteOrContinuous)
                 WriteHingeJointUpdate();
-            else if (JointType == JointTypes.prismatic)
+            else if (jointUrdfDataManager.IsPrismatic)
                 WritePrismaticJointUpdate();
             
         prevState = newState;
