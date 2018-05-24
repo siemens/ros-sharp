@@ -21,7 +21,6 @@ using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
 using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
 
-
 namespace RosSharp.RosBridgeClientTest
 {
     [TestFixture]
