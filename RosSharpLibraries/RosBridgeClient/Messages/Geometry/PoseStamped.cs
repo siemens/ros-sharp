@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class PoseStamped : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/PoseStamped"; } }
+        public const string RosMessageName = "geometry_msgs/PoseStamped";
         public Standard.Header header;
         public Pose pose;
         public PoseStamped()

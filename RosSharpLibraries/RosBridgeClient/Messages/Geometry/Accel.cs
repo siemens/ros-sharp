@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
         public class Accel : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/Accel"; } }
+        public const string RosMessageName = "geometry_msgs/Accel";
         public Vector3 linear;
         public Vector3 angular;
         public Accel()

@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class Quaternion : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/Quaternion"; } }
+        public const string RosMessageName = "geometry_msgs/Quaternion";
         public float x;
         public float y;
         public float z;

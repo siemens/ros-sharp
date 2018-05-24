@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     public class Header : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "std_msgs/Header"; } }
+        public const string RosMessageName = "std_msgs/Header";
         public int seq;
         public Time stamp;
         public string frame_id;

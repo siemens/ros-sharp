@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
     public class OccupancyGrid : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "nav_msgs/OccupancyGrid"; } }
+        public const string RosMessageName = "nav_msgs/OccupancyGrid";
         public Standard.Header header;
         public MapMetaData info;
         public sbyte[] data;

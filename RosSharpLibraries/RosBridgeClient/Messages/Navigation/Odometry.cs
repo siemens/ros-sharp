@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
    public class Odometry : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "nav_msgs/Odometry"; } }
+        public const string RosMessageName = "nav_msgs/Odometry";
         public Standard.Header header;
         public string child_frame_id;
         public Geometry.PoseWithCovariance pose;

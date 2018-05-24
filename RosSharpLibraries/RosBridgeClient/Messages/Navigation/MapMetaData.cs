@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
     public class MapMetaData : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "nav_msgs/MapMetaData"; } }
+        public const string RosMessageName = "nav_msgs/MapMetaData";
         public Standard.Time map_load_time;
         public float resolution;
         public uint width;

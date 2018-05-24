@@ -20,8 +20,8 @@ namespace RosSharp.RosBridgeClient
 {
     internal abstract class Communication
     {
-        internal abstract string op { get; } // required
-        internal virtual string id { get; } // optional
+        public abstract string op { get; } // required
+        public virtual string id { get; } // optional
 
         internal Communication(string id = null)
         {
@@ -31,9 +31,9 @@ namespace RosSharp.RosBridgeClient
 
     internal class Advertisement : Communication
     {
-        internal override string op { get { return "advertise"; } } // required
-        internal string topic; // required
-        internal string type; // required
+        public override string op { get { return "advertise"; } } // required
+        public string topic; // required
+        public string type; // required
 
         internal Advertisement(string id, string topic, string type) : base(id)
         {
@@ -44,8 +44,8 @@ namespace RosSharp.RosBridgeClient
 
     internal class Unadverisement : Communication
     {
-        internal override string op { get { return "unadvertise"; } } // required
-        internal string topic; // required
+        public override string op { get { return "unadvertise"; } } // required
+        public string topic; // required
 
         internal Unadverisement(string id, string topic) : base(id)
         {
@@ -55,9 +55,9 @@ namespace RosSharp.RosBridgeClient
 
     internal class Publication<T> : Communication where T: Message
     {
-        internal override string op { get { return "publish"; } } // required
-        internal string topic; // required
-        internal T msg; // required
+        public override string op { get { return "publish"; } } // required
+        public string topic; // required
+        public T msg; // required
 
         internal Publication(string id, string topic, T msg) : base(id)
         {
@@ -68,13 +68,13 @@ namespace RosSharp.RosBridgeClient
 
     internal class Subscription : Communication
     {
-        internal override string op { get { return "subscribe"; } } // required
-        internal string topic; // required
-        internal string type; // optional
-        internal int throttle_rate; // optional
-        internal int queue_length; // optional
-        internal int fragment_size; // optional
-        internal string compression; // optional
+        public override string op { get { return "subscribe"; } } // required
+        public string topic; // required
+        public string type; // optional
+        public int throttle_rate; // optional
+        public int queue_length; // optional
+        public int fragment_size; // optional
+        public string compression; // optional
 
         internal Subscription(string id, string topic, string type, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
@@ -89,8 +89,8 @@ namespace RosSharp.RosBridgeClient
 
     internal class Unsubscription : Communication
     {
-        internal override string op { get { return "unsubscribe"; } } // required
-        internal string topic; // required
+        public override string op { get { return "unsubscribe"; } } // required
+        public string topic; // required
 
         internal Unsubscription(string id, string topic) : base(id)
         {
@@ -100,13 +100,13 @@ namespace RosSharp.RosBridgeClient
 
     internal class ServiceCall<T> : Communication where T : Message
     {
-        internal override string op { get { return "call_service"; } } // required
-        internal string service; // required
-        internal T args; // optional
-        internal int fragment_size; // optional
-        internal string compression; // optional
+        public override string op { get { return "call_service"; } } // required
+        public string service; // required
+        public T args; // optional
+        public int fragment_size; // optional
+        public string compression; // optional
 
-        public ServiceCall(string id, string service, T args = null, int fragment_size = int.MaxValue, string compression = "none") : base(id)
+        public ServiceCall(string id, string service, T args, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
             this.service = service;
             this.args = args;
@@ -117,10 +117,10 @@ namespace RosSharp.RosBridgeClient
 
     internal class ServiceResponse<T> : Communication where T : Message
     {
-        internal override string op { get { return "service_response"; } } // required
-        internal string service; // required
-        internal T values; // optional
-        internal bool result; // required
+        public override string op { get { return "service_response"; } } // required
+        public string service; // required
+        public T values; // optional
+        public bool result; // required
 
         internal ServiceResponse(string id, string service, T values, bool Result) : base(id)
         {
@@ -131,9 +131,9 @@ namespace RosSharp.RosBridgeClient
     }
     internal class ServiceAdvertisement : Communication
     {
-        internal override string op { get { return "advertise_service"; } } // required
-        internal string type; // required
-        internal string service; // required
+        public override string op { get { return "advertise_service"; } } // required
+        public string type; // required
+        public string service; // required
 
         internal ServiceAdvertisement(string service, string type) 
         {
@@ -143,8 +143,8 @@ namespace RosSharp.RosBridgeClient
     }
     internal class ServiceUnadvertisement : Communication
     {
-        internal override string op { get { return "unadvertise_service"; } } // required
-        internal string service; // required
+        public override string op { get { return "unadvertise_service"; } } // required
+        public string service; // required
 
         internal ServiceUnadvertisement(string Service)
         { 

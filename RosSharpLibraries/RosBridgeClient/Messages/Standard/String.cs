@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     public class String : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "std_msgs/String"; } }
+        public const string RosMessageName = "std_msgs/String";
         public string data;
         public String(string data)
         {

@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
     public class Joy : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "sensor_msgs/Joy"; } }
+        public const string RosMessageName = "sensor_msgs/Joy";
         public Standard.Header header;
         public float[] axes;
         public int[] buttons;

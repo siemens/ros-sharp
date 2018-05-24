@@ -17,11 +17,5 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class Message
     {
-        public abstract string RosMessageName { get; }
-
-        public static string GetRosName(System.Type t)
-        {
-            return (string)t.GetField("RosMessageName")?.GetRawConstantValue();
-        }
     }
 }

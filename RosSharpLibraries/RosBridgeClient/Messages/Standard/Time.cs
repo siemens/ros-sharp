@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     public class Time : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "std_msgs/Time"; } }
+        public const string RosMessageName = "std_msgs/Time";
         public int secs;
         public int nsecs;
         public Time()

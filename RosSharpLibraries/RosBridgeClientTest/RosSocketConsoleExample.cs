@@ -15,7 +15,6 @@ limitations under the License.
 
 using System;
 using RosSharp.RosBridgeClient;
-
 using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
 using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
@@ -34,14 +33,19 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsole
     {
+        static readonly string uri = "ws://192.168.56.101:9090";
+
         public static void Main(string[] args)
         {
-            RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol("ws://192.168.56.102:9090"));
+            RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(uri));
+            //RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Publication:
-            string publication_id = rosSocket.Advertise<std_msgs.String>("/publication_test");
             std_msgs.String message = new std_msgs.String("publication test message data");
+
+            string publication_id = rosSocket.Advertise<std_msgs.String>("publication_test");
             rosSocket.Publish(publication_id, message);
+
 
             // Subscription:
             string subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
@@ -50,7 +54,13 @@ namespace RosSharp.RosBridgeClientTest
             rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro"));
 
             // Service Response:
-            rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+            string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+
+            Console.WriteLine("Press any key to unsubscribe...");
+            Console.ReadKey(true);
+            rosSocket.Unadvertise(publication_id);
+            rosSocket.Unsubscribe(subscription_id);
+            rosSocket.UnadvertiseService(service_id);
 
             Console.WriteLine("Press any key to close...");
             Console.ReadKey(true);

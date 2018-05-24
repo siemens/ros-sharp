@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Services.FileServer
     public class GetBinaryFileRequest : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "file_server/GetBinaryFile"; } }
+        public const string RosMessageName = "file_server/GetBinaryFile";
         public string name;
         public GetBinaryFileRequest(string name)
         {
@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient.Services.FileServer
     public class GetBinaryFileResponse : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "file_server/GetBinaryFile"; } }
+        public const string RosMessageName = "file_server/GetBinaryFile";
         public byte[] value;
     }
 }

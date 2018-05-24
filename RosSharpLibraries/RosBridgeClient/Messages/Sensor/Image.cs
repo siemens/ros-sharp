@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
     public class Image : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "sensor_msgs/Image"; } }
+        public const string RosMessageName = "sensor_msgs/Image";
         public Standard.Header header;
         public int height;
         public int width;

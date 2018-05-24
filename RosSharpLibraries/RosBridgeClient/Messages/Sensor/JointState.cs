@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
     public class JointState : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "sensor_msgs/JointState"; } }
+        public const string RosMessageName = "sensor_msgs/JointState";
         public Standard.Header header;
         public string[] name;
         public float[] position;

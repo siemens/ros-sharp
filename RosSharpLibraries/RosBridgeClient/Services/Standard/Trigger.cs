@@ -20,15 +20,15 @@ namespace RosSharp.RosBridgeClient.Services.Standard
     public class TriggerRequest : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "std_srvs/Trigger"; } }
+        public const string RosMessageName = "std_srvs/Trigger";
     }
 
     public class TriggerResponse : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "std_srvs/Trigger"; } }
-        bool success;
-        string message;
+        public const string RosMessageName = "std_srvs/Trigger";
+        public bool success;
+        public string message;
         public TriggerResponse(bool success, string message)
         {
             this.success = success;

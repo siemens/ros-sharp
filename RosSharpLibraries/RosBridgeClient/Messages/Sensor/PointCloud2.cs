@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
     public class PointCloud2 : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "sensor_msgs/PointCloud2"; } }
+        public const string RosMessageName = "sensor_msgs/PointCloud2";
         public Standard.Header header;
         public int height;
         public int width;

@@ -83,7 +83,7 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
-            string id = GetUnusedCounterID(topic);
+            string id = GetUnusedCounterID(topic);  //topic;
             Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out Subscription subscription, throttle_rate, queue_length, fragment_size, compression));
             Send(subscription);
             return id;
@@ -119,22 +119,22 @@ namespace RosSharp.RosBridgeClient
 
         #region ServiceConsumers
 
-        public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments = null) where Tin : Message where Tout : Message
+        public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments) where Tin : Message where Tout : Message
         {
             string id = GetUnusedCounterID(service);
-            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments = null));
+            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments));
             Send(serviceCall);
             return id;
         }
 
         #endregion
 
-        private void Send(Communication operation)
+        private void Send<T>(T communication) where T: Communication
         {
 #if DEBUG
-            Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(operation, Formatting.Indented) + "\n");
+            Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(communication, Formatting.Indented) + "\n");
 #endif
-            Protocol.Send(Serialize(operation));
+            Protocol.Send(Serialize<T>(communication));
             return;
         }
 
@@ -148,23 +148,30 @@ namespace RosSharp.RosBridgeClient
             {
                 case "publish":
                     {
-                        string id = jObject.GetValue("topic").ToString();
-                        Subscribers[id].Receive(jObject.GetValue("msg").ToObject<Message>());
+
+                        string topic = jObject.GetValue("topic").ToString();
+                        foreach (Subscriber subscriber in SubscribersOf(topic))
+                            subscriber.Receive(jObject.GetValue("msg"));
                         return;
                     }
                 case "service_response":
                     {
                         string id = jObject.GetValue("id").ToString();
-                        ServiceConsumers[id].Consume(jObject.GetValue("values").ToObject<Message>());
+                        ServiceConsumers[id].Consume(jObject.GetValue("values"));
                         return;
                     }
                 case "call_service":
                     {
                         string id = jObject.GetValue("id").ToString();
-                        ServiceProviders[id].Respond(id, jObject.GetValue("args").ToObject<Message>());
+                        string service = jObject.GetValue("service").ToString();
+                        Send(ServiceProviders[service].Respond(id, jObject.GetValue("args")));
                         return;
                     }
             }
+        }
+        private List<Subscriber> SubscribersOf(string topic)
+        {
+            return Subscribers.Where(pair => pair.Key.StartsWith(topic)).Select(pair => pair.Value).ToList();
         }
 
         private static byte[] Serialize<T>(T obj)

@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
     public class GetParamRequest : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "ros_api/GetParam"; } }
+        public const string RosMessageName = "ros_api/GetParam";
         public string name;
         public GetParamRequest(string name)
         {
@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
     public class GetParamResponse : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "ros_api/GetParam"; } }
+        public const string RosMessageName = "ros_api/GetParam";
         public string value;
     }
 }

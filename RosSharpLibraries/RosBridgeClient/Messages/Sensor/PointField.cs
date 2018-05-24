@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
     public class PointField : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "sensor_msgs/PointField"; } }
+        public const string RosMessageName = "sensor_msgs/PointField";
         public int datatype;
         public string name;
         public int offset;

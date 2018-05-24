@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class Point : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/Point"; } }
+        public const string RosMessageName = "geometry_msgs/Point";
         public float x;
         public float y;
         public float z;

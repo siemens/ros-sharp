@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class Pose : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/Pose"; } }
+        public const string RosMessageName = "geometry_msgs/Pose";
         public Point position;
         public Quaternion orientation;
         public Pose()

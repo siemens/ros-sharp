@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class TwistWithCovariance : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/TwistWithCovariance"; } }
+        public const string RosMessageName = "geometry_msgs/TwistWithCovariance";
         public Twist twist;
         public float[] covariance;
         public TwistWithCovariance()

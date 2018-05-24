@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
     public class Twist : Message
     {
         [JsonIgnore]
-        public override string RosMessageName { get { return "geometry_msgs/Twist"; } }
+        public const string RosMessageName = "geometry_msgs/Twist";
         public Vector3 linear;
         public Vector3 angular;
         public Twist()
