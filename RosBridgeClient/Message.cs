@@ -239,7 +239,7 @@ namespace RosSharp.RosBridgeClient
         public int height;
         public int width;
         public string encoding;
-        public bool is_bigendian;
+        public byte is_bigendian;
         public int step;
         public byte[] data;
         public SensorImage()
@@ -248,7 +248,7 @@ namespace RosSharp.RosBridgeClient
             height = 0;
             width = 0;
             encoding = "undefined";
-            is_bigendian = false;
+            is_bigendian = 0;
             step = 0;
             data = new byte[0];
         }
