@@ -16,20 +16,20 @@ limitations under the License.
 // this class requires .NET 4.5+ to compile and Windows 8+ to work
 
 using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-
-
     public class WebSocketNetProtocol : IProtocol
     {
         public event EventHandler OnReceive;
 
         private ClientWebSocket ClientWebSocket;
         private string Uri { get; }
-        private const int maxFrameSize = (int)2e8;
+        private const int bufferSize = 1024;
+
         public WebSocketNetProtocol(string uri)
         {
             ClientWebSocket = new ClientWebSocket();
@@ -61,38 +61,20 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             while (ClientWebSocket.State == WebSocketState.Open)
             {
-                int bufferSize = 1000;
                 var buffer = new byte[bufferSize];
-                var offset = 0;
-                var free = buffer.Length;
+                var message = new byte[0];
+
                 WebSocketReceiveResult result;
                 do
                 {
-                    result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer, offset, free), CancellationToken.None);
-                    offset += result.Count;
-                    free -= result.Count;
-                    if (free == 0)
-                    {
-                        // No free space
-                        // Resize the outgoing buffer
-                        var newSize = buffer.Length + bufferSize;
-                        // Check if the new size exceeds a limit
-                        // It should suit the data it receives
-                        // This limit however has a max value of 2 billion bytes (2 GB)
-                        if (newSize > maxFrameSize)
-                        {
-                            throw new Exception("Maximum size exceeded");
-                        }
-                        var newBuffer = new byte[newSize];
-                        Array.Copy(buffer, 0, newBuffer, 0, offset);
-                        buffer = newBuffer;
-                        free = buffer.Length - offset;
-                    }
+                    result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    message = message.Concat(buffer).ToArray();
                 } while (!result.EndOfMessage);
+
                 if (result.MessageType == WebSocketMessageType.Close)
                     await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
                 else
-                    OnReceive.Invoke(this, new MessageEventArgs(buffer));
+                    OnReceive.Invoke(this, new MessageEventArgs(message));
             }
         }
 
