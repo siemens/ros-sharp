@@ -14,15 +14,13 @@ limitations under the License.
 */
 
 using System;
-using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-
     public class JointStateProvider : MessageProvider
     {
-        private SensorJointStates message;
-        public override Type MessageType { get { return (typeof(SensorJointStates)); } }
+        private Messages.Sensor.JointState message;
+        public override Type MessageType { get { return (typeof(Messages.Sensor.JointState)); } }
 
         public string FrameId = "UnityFrameId";
 
@@ -41,9 +39,9 @@ namespace RosSharp.RosBridgeClient
         private void InitializeMessage()
         {
             int jointStateLength = JointStateReaders.Length;
-            message = new SensorJointStates
+            message = new Messages.Sensor.JointState
             {
-                header = new StandardHeader { frame_id = FrameId },
+                header = new Messages.Standard.Header { frame_id = FrameId },
                 name = new string[jointStateLength],
                 position = new float[jointStateLength],
                 velocity = new float[jointStateLength],

@@ -17,7 +17,7 @@ using System;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class UnityTimePublisher : Publisher
+    public class UnityTimePublisher<T> : Publisher<T> where T: Message
     {
         public enum Timings { UnityFrameTime, UnityFixedTime }
         public Timings Timing;

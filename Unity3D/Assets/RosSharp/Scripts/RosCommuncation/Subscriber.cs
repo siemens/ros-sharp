@@ -18,7 +18,7 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public class Subscriber : MonoBehaviour
+    public class Subscriber<T> : MonoBehaviour where T: Message
     {
         public string Topic;
 
@@ -32,10 +32,10 @@ namespace RosSharp.RosBridgeClient
         private void Start()
         {
             rosSocket = GetComponent<RosConnector>().RosSocket;
-            rosSocket.Subscribe(Topic, MessageTypes.RosMessageType(MessageReceiver.MessageType), Receive, timeStep);
+            rosSocket.Subscribe<T>(Topic, Receive, timeStep);
         }
                
-        private void Receive(Message message)
+        private void Receive(T message)
         {            
             MessageReceiver.RaiseMessageReception(new MessageEventArgs(message));
         }

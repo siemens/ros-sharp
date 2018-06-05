@@ -24,8 +24,8 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(Camera))]
     public class ImageProvider : MessageProvider
     {
-        private SensorCompressedImage message;
-        public override Type MessageType { get { return (typeof(SensorCompressedImage)); } }
+        private Messages.Sensor.CompressedImage message;
+        public override Type MessageType { get { return (typeof(Messages.Sensor.CompressedImage)); } }
 
         public string FrameId = "Camera";
         public int resolutionWidth = 640;
@@ -57,7 +57,7 @@ namespace RosSharp.RosBridgeClient
         }
         private void InitializeMessage()
         {
-            message = new SensorCompressedImage();
+            message = new Messages.Sensor.CompressedImage();
             message.header.frame_id = FrameId;
             message.format = "jpeg";
         }

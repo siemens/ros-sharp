@@ -20,8 +20,8 @@ namespace RosSharp.RosBridgeClient
 {
     public class PoseProvider : MessageProvider
     {
-        private GeometryPoseStamped message;
-        public override Type MessageType { get { return (typeof(GeometryPoseStamped)); } }
+        private Messages.Geometry.PoseStamped message;
+        public override Type MessageType { get { return (typeof(Messages.Geometry.PoseStamped)); } }
 
         public string FrameId;
 
@@ -37,8 +37,8 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new GeometryPoseStamped();
-            message.header = new StandardHeader();
+            message = new Messages.Geometry.PoseStamped();
+            message.header = new Messages.Standard.Header();
             message.header.frame_id = FrameId;
         }
         private void UpdateMessage()
@@ -49,17 +49,17 @@ namespace RosSharp.RosBridgeClient
             RaiseMessageRelease(new MessageEventArgs(message));
         }
 
-        private GeometryPoint GetGeometryPoint(Vector3 position)
+        private Messages.Geometry.Point GetGeometryPoint(Vector3 position)
         {
-            GeometryPoint geometryPoint = new GeometryPoint();
+            Messages.Geometry.Point geometryPoint = new Messages.Geometry.Point();
             geometryPoint.x = position.x;
             geometryPoint.y = position.y;
             geometryPoint.z = position.z;
             return geometryPoint;
         }
-        private GeometryQuaternion GetGeometryQuaternion(Quaternion quaternion)
+        private Messages.Geometry.Quaternion GetGeometryQuaternion(Quaternion quaternion)
         {
-            GeometryQuaternion geometryQuaternion = new GeometryQuaternion();
+            Messages.Geometry.Quaternion geometryQuaternion = new Messages.Geometry.Quaternion();
             geometryQuaternion.x = quaternion.x;
             geometryQuaternion.y = quaternion.y;
             geometryQuaternion.z = quaternion.z;

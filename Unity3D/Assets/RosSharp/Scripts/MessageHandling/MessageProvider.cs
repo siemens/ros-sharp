@@ -43,16 +43,12 @@ namespace RosSharp.RosBridgeClient
         
         protected virtual void RaiseMessageRelease(MessageEventArgs e)
         {
-            EventHandler<MessageEventArgs> eventHandler = MessageRealease;
-            if (eventHandler != null)
-                eventHandler(this, e);
+            MessageRealease?.Invoke(this, e);
         }
 
         public virtual void RaiseMessageRequest(EventArgs e)
         {
-            EventHandler eventHandler = MessageRequest;
-            if (eventHandler != null)
-                eventHandler(this, e);
+            MessageRequest?.Invoke(this, e);
         }
     }
 }

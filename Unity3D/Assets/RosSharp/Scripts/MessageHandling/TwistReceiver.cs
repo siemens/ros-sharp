@@ -28,8 +28,8 @@ namespace RosSharp.RosBridgeClient
         private Vector3 angularVelocity;
         private bool isMessageReceived;
 
-        public override Type MessageType { get { return (typeof(GeometryTwist)); } }
-        private GeometryTwist message;
+        public override Type MessageType { get { return (typeof(Messages.Geometry.Twist)); } }
+        private Messages.Geometry.Twist message;
 
         private void Awake()
         {
@@ -38,13 +38,13 @@ namespace RosSharp.RosBridgeClient
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
-            message = (GeometryTwist)e.Message;
+            message = (Messages.Geometry.Twist)e.Message;
             linearVelocity = getVector3(message.linear).Ros2Unity();
             angularVelocity = -getVector3(message.angular).Ros2Unity();
             isMessageReceived = true;
         }
 
-        private static Vector3 getVector3(GeometryVector3 geometryVector3)
+        private static Vector3 getVector3(Messages.Geometry.Vector3 geometryVector3)
         {
             return new Vector3(
                 geometryVector3.x,

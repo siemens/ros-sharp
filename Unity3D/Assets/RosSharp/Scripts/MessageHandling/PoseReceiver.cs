@@ -45,26 +45,26 @@ namespace RosSharp.RosBridgeClient
         {
             if (PoseMessageType == PoseMessageTypes.GeometryPoseStamped)
             {
-                type = typeof(GeometryPoseStamped);
+                type = typeof(Messages.Geometry.PoseStamped);
                 MessageReception += ReceiveGeometryPoseStampedMessage;
             }
             else if (PoseMessageType == PoseMessageTypes.NavigationOdometry)
             {
-                type = typeof(NavigationOdometry);
+                type = typeof(Messages.Navigation.Odometry);
                 MessageReception += ReceiveNaviagtionOdometryMessage;
             }
         }
 
         private void ReceiveGeometryPoseStampedMessage(object sender, MessageEventArgs e)
         {
-            position = GetPosition((GeometryPoseStamped)e.Message).Ros2Unity();
-            rotation = GetRotation((GeometryPoseStamped)e.Message).Ros2Unity();
+            position = GetPosition((Messages.Geometry.PoseStamped)e.Message).Ros2Unity();
+            rotation = GetRotation((Messages.Geometry.PoseStamped)e.Message).Ros2Unity();
             isMessageReceived = true;
         }
         private void ReceiveNaviagtionOdometryMessage(object sender, MessageEventArgs e)
         {
-            position = GetPosition((NavigationOdometry)e.Message).Ros2Unity();
-            rotation = GetRotation((NavigationOdometry)e.Message).Ros2Unity();
+            position = GetPosition((Messages.Navigation.Odometry)e.Message).Ros2Unity();
+            rotation = GetRotation((Messages.Navigation.Odometry)e.Message).Ros2Unity();
             isMessageReceived = true;
         }
         private void ProcessMessage()
@@ -73,14 +73,14 @@ namespace RosSharp.RosBridgeClient
             transform.rotation = rotation;
         }        
 
-        private Vector3 GetPosition(GeometryPoseStamped message)
+        private Vector3 GetPosition(Messages.Geometry.PoseStamped message)
         {
             return new Vector3(
                 message.pose.position.x,
                 message.pose.position.y,
                 message.pose.position.z);
         }
-        private Vector3 GetPosition(NavigationOdometry message)
+        private Vector3 GetPosition(Messages.Navigation.Odometry message)
         {
             return new Vector3(
                 message.pose.pose.position.x,
@@ -88,7 +88,7 @@ namespace RosSharp.RosBridgeClient
                 message.pose.pose.position.z);
         }
 
-        private Quaternion GetRotation(GeometryPoseStamped message)
+        private Quaternion GetRotation(Messages.Geometry.PoseStamped message)
         {
             return new Quaternion(
                 message.pose.orientation.x,
@@ -97,7 +97,7 @@ namespace RosSharp.RosBridgeClient
                 message.pose.orientation.w);
         }
 
-        private Quaternion GetRotation(NavigationOdometry message)
+        private Quaternion GetRotation(Messages.Navigation.Odometry message)
         {
             return new Quaternion(
                 message.pose.pose.orientation.x,

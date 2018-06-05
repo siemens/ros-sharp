@@ -19,7 +19,7 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public abstract class Publisher : MonoBehaviour
+    public abstract class Publisher<T> : MonoBehaviour where T: Message
     {
         public string Topic;
         public MessageProvider MessageProvider;
@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClient
         {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
-            publicationId = rosSocket.Advertise(Topic, MessageTypes.RosMessageType(MessageProvider.MessageType));
+            publicationId = rosSocket.Advertise<T>(Topic);
             PublicationEvent += ReadMessage;
         }
 
@@ -50,9 +50,7 @@ namespace RosSharp.RosBridgeClient
         }
         protected virtual void StartPublication(EventArgs e)
         {
-            EventHandler eventHandler = PublicationEvent;
-            if (eventHandler != null)
-                eventHandler(this, e);
+            PublicationEvent?.Invoke(this, e);
         }
     }
 }

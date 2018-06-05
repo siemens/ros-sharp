@@ -20,11 +20,11 @@ namespace RosSharp.RosBridgeClient
 {
     public class JointStateReceiver : MessageReceiver
     {
-        public override Type MessageType { get { return (typeof(SensorJointStates)); } }
+        public override Type MessageType { get { return (typeof(Messages.Sensor.JointState)); } }
 
         public Dictionary<string, JointStateWriter> JointStateWriterDictionary;
 
-        private SensorJointStates message;
+        private Messages.Sensor.JointState message;
 
         private void Awake()
         {
@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClient
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
-            message = (SensorJointStates)e.Message;
+            message = (Messages.Sensor.JointState)e.Message;
             for (int i=0; i< message.name.Length; i++)            
                 JointStateWriterDictionary[message.name[i]].Write(message.position[i]);   
         }

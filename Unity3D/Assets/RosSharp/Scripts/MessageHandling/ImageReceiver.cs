@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(MeshRenderer))]
     public class ImageReceiver : MessageReceiver
     {
-        public override Type MessageType { get { return (typeof(SensorCompressedImage)); } }
+        public override Type MessageType { get { return (typeof(Messages.Sensor.CompressedImage)); } }
 
         private byte[] imageData;
         private bool isMessageReceived;
@@ -46,7 +46,7 @@ namespace RosSharp.RosBridgeClient
         }
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
-            imageData = ((SensorCompressedImage)e.Message).data;
+            imageData = ((Messages.Sensor.CompressedImage)e.Message).data;
             isMessageReceived = true;
         }
 

@@ -19,8 +19,8 @@ namespace RosSharp.RosBridgeClient
 {
     public class JoyProvider : MessageProvider
     {
-        private SensorJoy message;
-        public override Type MessageType { get { return (typeof(SensorJoy)); } }
+        private Messages.Sensor.Joy message;
+        public override Type MessageType { get { return (typeof(Messages.Sensor.Joy)); } }
   
         public string FrameId;     
 
@@ -45,7 +45,7 @@ namespace RosSharp.RosBridgeClient
         }
         private void InitializeMessage()
         {
-            message = new SensorJoy();
+            message = new Messages.Sensor.Joy();
             message.header.frame_id = FrameId;
             message.axes = new float[JoyAxisReaders.Length];
             message.buttons = new int[JoyButtonReaders.Length];

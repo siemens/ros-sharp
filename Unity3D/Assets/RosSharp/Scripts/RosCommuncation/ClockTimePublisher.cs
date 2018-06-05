@@ -19,7 +19,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class ClockTimePublisher : Publisher
+    public class ClockTimePublisher<T> : Publisher<T> where T: Message
     {
         public float Timestep;
         private int timestep { get { return (int)(Mathf.Round(Timestep * 1000)); } }

@@ -25,9 +25,7 @@ namespace RosSharp.RosBridgeClient
 
         public virtual void RaiseMessageReception(MessageEventArgs e)
         {
-            EventHandler<MessageEventArgs> eventHandler = MessageReception;
-            if (eventHandler != null)
-                eventHandler(this, e);
+            MessageReception?.Invoke(this, e);
         }
     }
 }

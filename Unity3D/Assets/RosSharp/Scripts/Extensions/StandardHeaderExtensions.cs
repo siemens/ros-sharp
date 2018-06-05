@@ -15,16 +15,16 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public static class StandardHeaderExtensions
+    public static class HeaderExtensions
     {
-        public static void Update(this StandardHeader standardHeader)
+        public static void Update(this Messages.Standard.Header header)
         {
             float time = UnityEngine.Time.realtimeSinceStartup;
             int secs = (int)time;
             int nsecs = (int)(1000 *(time-secs));
-            standardHeader.seq++;
-            standardHeader.stamp.secs = secs;
-            standardHeader.stamp.nsecs = nsecs;
+            header.seq++;
+            header.stamp.secs = secs;
+            header.stamp.nsecs = nsecs;
         }
     }
 }

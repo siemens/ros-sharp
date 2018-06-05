@@ -21,8 +21,8 @@ namespace RosSharp.RosBridgeClient
 
     public class JoyReceiver : MessageReceiver
     {
-        public override Type MessageType { get { return (typeof(SensorJoy)); } }
-        private SensorJoy message;
+        public override Type MessageType { get { return (typeof(Messages.Sensor.Joy)); } }
+        private Messages.Sensor.Joy message;
 
         public JoyButtonWriter[] joyButtonWriters;
         public JoyAxisWriter[] joyAxisWriters;
@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {            
-            message = (SensorJoy)e.Message;
+            message = (Messages.Sensor.Joy)e.Message;
 
             int I = joyButtonWriters.Length < message.buttons.Length ? joyButtonWriters.Length : message.buttons.Length;
             for (int i = 0; i < I; i++)

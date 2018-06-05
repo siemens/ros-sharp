@@ -22,10 +22,10 @@ namespace RosSharp.RosBridgeClient
     {
         private float previousRealTime;
 
-        private GeometryTwist message;
+        private Messages.Geometry.Twist message;
         private Vector3 previousPosition = Vector3.zero;
         private Quaternion previousRotation = Quaternion.identity;
-        public override Type MessageType { get { return (typeof(GeometryTwist)); } }
+        public override Type MessageType { get { return (typeof(Messages.Geometry.Twist)); } }
 
         private void Start()
         {
@@ -39,9 +39,9 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new GeometryTwist();
-            message.linear = new GeometryVector3();
-            message.angular = new GeometryVector3();
+            message = new Messages.Geometry.Twist();
+            message.linear = new Messages.Geometry.Vector3();
+            message.angular = new Messages.Geometry.Vector3();
         }
         private void UpdateMessage()
         {
@@ -59,9 +59,9 @@ namespace RosSharp.RosBridgeClient
             previousRotation = transform.rotation;
         }
 
-        private static GeometryVector3 GetGeometryVector3(Vector3 vector3)
+        private static Messages.Geometry.Vector3 GetGeometryVector3(Vector3 vector3)
         {
-            GeometryVector3 geometryVector3 = new GeometryVector3();
+            Messages.Geometry.Vector3 geometryVector3 = new Messages.Geometry.Vector3();
             geometryVector3.x = vector3.x;
             geometryVector3.y = vector3.y;
             geometryVector3.z = vector3.z;
