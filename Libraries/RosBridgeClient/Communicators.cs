@@ -121,7 +121,8 @@ namespace RosSharp.RosBridgeClient
 
         internal override Communication Respond(string id, JToken args = null)
         {
-            bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out Tout result);
+            Tout result;
+            bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out result);
             return new ServiceResponse<Tout>(id, Service, result, isSuccess);
         }
     }

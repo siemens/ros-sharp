@@ -61,7 +61,8 @@ namespace RosSharp.RosBridgeClient
             if (Publishers.ContainsKey(id))
                 Unadvertise(id);
 
-            Publishers.Add(id, new Publisher<T>(id, topic, out Advertisement advertisement));
+            Advertisement advertisement;
+            Publishers.Add(id, new Publisher<T>(id, topic, out advertisement));
             Send(advertisement);
             return id;
         }
@@ -83,8 +84,9 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
-            string id = GetUnusedCounterID(topic);  //topic;
-            Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out Subscription subscription, throttle_rate, queue_length, fragment_size, compression));
+            string id = GetUnusedCounterID(topic);
+            Subscription subscription;
+            Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
             Send(subscription);
             return id;
         }
@@ -104,7 +106,8 @@ namespace RosSharp.RosBridgeClient
             if (ServiceProviders.ContainsKey(id))
                 UnadvertiseService(id);
 
-            ServiceProviders.Add(id, new ServiceProvider<Tin, Tout>(service, serviceCallHandler, out ServiceAdvertisement serviceAdvertisement));
+            ServiceAdvertisement serviceAdvertisement;
+            ServiceProviders.Add(id, new ServiceProvider<Tin, Tout>(service, serviceCallHandler, out serviceAdvertisement));
             Send(serviceAdvertisement);
             return id;
         }
@@ -122,7 +125,8 @@ namespace RosSharp.RosBridgeClient
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments) where Tin : Message where Tout : Message
         {
             string id = GetUnusedCounterID(service);
-            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out Communication serviceCall, serviceArguments));
+            Communication serviceCall;
+            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out serviceCall, serviceArguments));
             Send(serviceCall);
             return id;
         }
