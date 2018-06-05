@@ -19,13 +19,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
-using RosSharp.RosBridgeClient.Messages;
 
-using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
 using file_server = RosSharp.RosBridgeClient.Services.FileServer;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
-
-
 
 namespace RosSharp.RosBridgeClient
 {
