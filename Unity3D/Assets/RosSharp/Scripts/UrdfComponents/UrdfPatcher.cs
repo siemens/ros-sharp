@@ -53,7 +53,8 @@ namespace RosSharp.RosBridgeClient
                 jointStateProvider.JointStateReaders = AddJointStateReaderComponents();
 
             if (AddJointStateWriters)
-                jointStateReceiver.JointStateWriterDictionary = AddJointStateWriterComponents();
+               AddJointStateWriterComponents(out jointStateReceiver.JointNames, out jointStateReceiver.JointStateWriters);
+
         }
         
         private JointStateReader[] AddJointStateReaderComponents() 
@@ -64,14 +65,17 @@ namespace RosSharp.RosBridgeClient
             return jointStateReaders.ToArray();
         }
 
-        private Dictionary<string, JointStateWriter> AddJointStateWriterComponents()
-        {
-            Dictionary<string, JointStateWriter> jointStateWriters = new Dictionary<string, JointStateWriter>();
+        private void AddJointStateWriterComponents(out List<string> jointNames, out List<JointStateWriter> jointStateWriters)
+        {   
+            jointNames = new List<string>();
+            jointStateWriters = new List<JointStateWriter>();
+
             foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
-                jointStateWriters.Add(
-                    jointUrdfDataManager.name,
-                    jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
-            return jointStateWriters;
+            {
+                jointNames.Add(jointUrdfDataManager.JointName);
+                jointStateWriters.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
+            }
+                
         }
 
         private void RemoveExistingComponents()

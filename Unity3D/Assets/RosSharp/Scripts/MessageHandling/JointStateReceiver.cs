@@ -15,6 +15,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -22,7 +23,8 @@ namespace RosSharp.RosBridgeClient
     {
         public override Type MessageType { get { return (typeof(SensorJointStates)); } }
 
-        public Dictionary<string, JointStateWriter> JointStateWriterDictionary;
+        public List<string> JointNames;
+        public List<JointStateWriter> JointStateWriters;
 
         private SensorJointStates message;
 
@@ -34,8 +36,8 @@ namespace RosSharp.RosBridgeClient
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
             message = (SensorJointStates)e.Message;
-            for (int i=0; i< message.name.Length; i++)            
-                JointStateWriterDictionary[message.name[i]].Write(message.position[i]);   
+            for (int i = 0; i < message.name.Length; i++)
+                JointStateWriters[JointNames.IndexOf( message.name[i] )].Write( message.position[i] );
         }
     }
 }
