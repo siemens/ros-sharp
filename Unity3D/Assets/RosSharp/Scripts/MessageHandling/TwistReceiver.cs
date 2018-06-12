@@ -24,8 +24,8 @@ namespace RosSharp.RosBridgeClient
     public class TwistReceiver : MessageReceiver
     {
         private float previousRealTime;
-        private Vector3 linearVelocity;
-        private Vector3 angularVelocity;
+        protected Vector3 linearVelocity;
+        protected Vector3 angularVelocity;
         private bool isMessageReceived;
 
         public override Type MessageType { get { return (typeof(GeometryTwist)); } }
@@ -57,7 +57,7 @@ namespace RosSharp.RosBridgeClient
             if (isMessageReceived)
                 ProcessMessage();
         }
-        private void ProcessMessage()
+        protected virtual void ProcessMessage()
         {
             float deltaTime = Time.realtimeSinceStartup-previousRealTime;
             transform.Translate(linearVelocity * deltaTime);
