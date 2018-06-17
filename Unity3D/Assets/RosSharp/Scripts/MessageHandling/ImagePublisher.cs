@@ -16,57 +16,60 @@ limitations under the License.
 // Adjustments to new Publication Timing and Execution Framework 
 // © Siemens AG, 2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(Camera))]
-    public class ImageProvider : MessageProvider
+    public class ImagePublisher : UnityTimePublisher<Messages.Sensor.CompressedImage>
     {
-        private Messages.Sensor.CompressedImage message;
-        public override Type MessageType { get { return (typeof(Messages.Sensor.CompressedImage)); } }
-
         public string FrameId = "Camera";
         public int resolutionWidth = 640;
         public int resolutionHeight = 480;
         [Range(0, 100)]
         public int qualityLevel = 50;
-        
+
+        private Messages.Sensor.CompressedImage message;
         private Texture2D texture2D;
         private Rect rect;        
-        private RenderTexture renderTexture;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             InitializeGameObject();
             InitializeMessage();
         }
 
+        protected override Messages.Sensor.CompressedImage GetMessage()
+        {
+            return message;
+        }
+
         private void OnPostRender()
         {
-            if (IsMessageRequested) 
-                UpdateMessage();
+            UpdateMessage();
         }
+
         private void InitializeGameObject()
         {
             texture2D = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
             rect = new Rect(0, 0, resolutionWidth, resolutionHeight);
-            renderTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
-            GetComponent<Camera>().targetTexture = renderTexture;
+            GetComponent<Camera>().targetTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
         }
+
         private void InitializeMessage()
         {
             message = new Messages.Sensor.CompressedImage();
             message.header.frame_id = FrameId;
             message.format = "jpeg";
         }
+
         private void UpdateMessage()
         {
             message.header.Update();
-            message.data = ReadTexture2D().EncodeToJPG(qualityLevel);
-            RaiseMessageRelease(new MessageEventArgs(message));
+            message.data = texture2D.EncodeToJPG(qualityLevel);
         }
+
         private Texture2D ReadTexture2D()
         {
             texture2D.ReadPixels(rect, 0, 0);

@@ -13,29 +13,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStateReceiver : MessageReceiver
+    public class JointStateSubscriber : Subscriber<Messages.Sensor.JointState>
     {
-        public override Type MessageType { get { return (typeof(Messages.Sensor.JointState)); } }
-
         public Dictionary<string, JointStateWriter> JointStateWriterDictionary;
 
-        private Messages.Sensor.JointState message;
-
-        private void Awake()
+        protected override void ReceiveMessage(Messages.Sensor.JointState message)
         {
-            MessageReception += ReceiveMessage;
-        }
-
-        private void ReceiveMessage(object sender, MessageEventArgs e)
-        {
-            message = (Messages.Sensor.JointState)e.Message;
-            for (int i=0; i< message.name.Length; i++)            
-                JointStateWriterDictionary[message.name[i]].Write(message.position[i]);   
+            for (int i = 0; i < message.name.Length; i++)
+                JointStateWriterDictionary[message.name[i]].Write(message.position[i]);
         }
     }
 }

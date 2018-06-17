@@ -13,16 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Threading;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class ClockTimePublisher<T> : Publisher<T> where T: Message
+    public abstract class ClockTimePublisher<T> : Publisher<T> where T: Message
     {
-        public float Timestep;
-        private int timestep { get { return (int)(Mathf.Round(Timestep * 1000)); } }
+        public float TimeStep;
+        private int SleeptTime { get { return (int)(Mathf.Round(TimeStep * 1000)); } }
 
         //private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         private Thread clockTimeIterate;
@@ -33,13 +32,14 @@ namespace RosSharp.RosBridgeClient
 
             //stopwatch.Start();
             clockTimeIterate = new Thread(ClockTimeIterate);
-            clockTimeIterate.Start();
+            clockTimeIterate.Start();            
         }
 
         private void OnApplicationQuit()
         {
             if (clockTimeIterate != null)
                 clockTimeIterate.Abort();
+
             //if (stopwatch != null)
             //    stopwatch.Stop();
         }
@@ -49,8 +49,8 @@ namespace RosSharp.RosBridgeClient
             while (true)
             {
                 //Debug.Log("Time elapsed: " + stopwatch.Elapsed.ToString());
-                StartPublication(EventArgs.Empty);
-                Thread.Sleep(timestep);
+                Publish();
+                Thread.Sleep(SleeptTime);
             }
         }
     }

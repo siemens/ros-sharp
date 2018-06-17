@@ -13,25 +13,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseProvider : MessageProvider
+    public class PoseStampedPublisher : UnityTimePublisher<Messages.Geometry.PoseStamped>
     {
         private Messages.Geometry.PoseStamped message;
-        public override Type MessageType { get { return (typeof(Messages.Geometry.PoseStamped)); } }
+        public string FrameId = "Unity";
 
-        public string FrameId;
-
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             InitializeMessage();
         }
+
+        protected override Messages.Geometry.PoseStamped GetMessage()
+        {
+            return message;
+        }
+
         private void FixedUpdate()
         {
-            if (IsMessageRequested)
                 UpdateMessage();
         }
 
@@ -46,7 +49,6 @@ namespace RosSharp.RosBridgeClient
             message.header.Update();
             message.pose.position = GetGeometryPoint(transform.position.Unity2Ros());
             message.pose.orientation = GetGeometryQuaternion(transform.rotation.Unity2Ros());
-            RaiseMessageRelease(new MessageEventArgs(message));
         }
 
         private Messages.Geometry.Point GetGeometryPoint(Vector3 position)

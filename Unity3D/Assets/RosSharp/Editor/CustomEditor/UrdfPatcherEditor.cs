@@ -41,11 +41,11 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Space(10);
             urdfPatcher.AddJointStateReaders = GUILayout.Toggle(urdfPatcher.AddJointStateReaders, "Publish Joint States (Add Joint State Readers)");
             if (urdfPatcher.AddJointStateReaders)
-                urdfPatcher.jointStateProvider = (JointStateProvider) EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStateProvider, typeof(JointStateProvider), true);
+                urdfPatcher.jointStateProvider = (JointStatePublisher) EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStateProvider, typeof(JointStatePublisher), true);
 
             urdfPatcher.AddJointStateWriters = GUILayout.Toggle(urdfPatcher.AddJointStateWriters, "Subscribe Joint States (Add Joint State Writers)");
             if (urdfPatcher.AddJointStateWriters)
-                urdfPatcher.jointStateReceiver = (JointStateReceiver) EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateReceiver, typeof(JointStateReceiver), true);
+                urdfPatcher.jointStateReceiver = (JointStateSubscriber) EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateReceiver, typeof(JointStateSubscriber), true);
 
             GUILayout.Space(10);
             if (GUILayout.Button("Apply"))

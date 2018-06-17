@@ -13,43 +13,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Adjustments to new Publication Timing and Execution Framework 
+// Adjustments to new Publication Timing and Execution Framework
 // © Siemens AG, 2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistReceiver : MessageReceiver
+    public class TwistSubscriber : Subscriber<Messages.Geometry.Twist>
     {
         private float previousRealTime;
         private Vector3 linearVelocity;
         private Vector3 angularVelocity;
         private bool isMessageReceived;
 
-        public override Type MessageType { get { return (typeof(Messages.Geometry.Twist)); } }
-        private Messages.Geometry.Twist message;
 
-        private void Awake()
+        protected override void ReceiveMessage(Messages.Geometry.Twist message)
         {
-            MessageReception += ReceiveMessage;
-        }
-
-        private void ReceiveMessage(object sender, MessageEventArgs e)
-        {
-            message = (Messages.Geometry.Twist)e.Message;
-            linearVelocity = getVector3(message.linear).Ros2Unity();
-            angularVelocity = -getVector3(message.angular).Ros2Unity();
+            linearVelocity = ToVector3(message.linear).Ros2Unity();
+            angularVelocity = -ToVector3(message.angular).Ros2Unity();
             isMessageReceived = true;
         }
 
-        private static Vector3 getVector3(Messages.Geometry.Vector3 geometryVector3)
+        private static Vector3 ToVector3(Messages.Geometry.Vector3 geometryVector3)
         {
-            return new Vector3(
-                geometryVector3.x,
-                geometryVector3.y,
-                geometryVector3.z);
+            return new Vector3(geometryVector3.x,geometryVector3.y,geometryVector3.z);
         }
 
         private void Update()
@@ -60,11 +48,14 @@ namespace RosSharp.RosBridgeClient
         private void ProcessMessage()
         {
             float deltaTime = Time.realtimeSinceStartup-previousRealTime;
+
             transform.Translate(linearVelocity * deltaTime);
             transform.Rotate(Vector3.forward, angularVelocity.x * deltaTime);
             transform.Rotate(Vector3.up, angularVelocity.y * deltaTime);
             transform.Rotate(Vector3.left, angularVelocity.z * deltaTime);
+
             previousRealTime = Time.realtimeSinceStartup;
+
             isMessageReceived = false;
         }     
     }

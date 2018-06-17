@@ -13,16 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class MessageEventArgs : EventArgs
+    [RequireComponent(typeof(JoyAxisWriter))]
+    public class JoyAxisProvider: MonoBehaviour
     {
-        public Message Message;
-        public MessageEventArgs(Message message)
+        public string AxisName;
+        private JoyAxisWriter joyAxisWriter;
+
+        private void Start()
         {
-            Message = message;
+            joyAxisWriter = GetComponent<JoyAxisWriter>();
+        }
+        private void Update()
+        {
+            joyAxisWriter.Write(Input.GetAxis(AxisName));
         }
     }
 }

@@ -21,7 +21,6 @@ namespace RosSharp.RosBridgeClient
 
     public class UrdfPatcher : MonoBehaviour
     {
-
         public GameObject UrdfModel;
         
         public bool EnableRigidbodiesGravity;
@@ -31,9 +30,9 @@ namespace RosSharp.RosBridgeClient
         public bool AddPoseProvider;
         public bool AddPoseReceiver;
         public bool AddJointStateReaders;
-        public JointStateProvider jointStateProvider;
+        public JointStatePublisher jointStateProvider;
         public bool AddJointStateWriters;
-        public JointStateReceiver jointStateReceiver;
+        public JointStateSubscriber jointStateReceiver;
 
         public void Patch()
         {
@@ -44,10 +43,10 @@ namespace RosSharp.RosBridgeClient
             PatchMeshColliders(SetMeshCollidersConvex);
 
             if (AddPoseProvider)
-                UrdfModel.AddComponent<PoseProvider>();
+                UrdfModel.AddComponent<PoseStampedSubscriber>();
 
             if (AddPoseReceiver)
-                UrdfModel.AddComponent<PoseReceiver>();
+                UrdfModel.AddComponent<OdometrySubscriber>();
 
             if (AddJointStateReaders)
                 jointStateProvider.JointStateReaders = AddJointStateReaderComponents();
@@ -80,8 +79,8 @@ namespace RosSharp.RosBridgeClient
             {
                 child.DestroyImmediateIfExists<JointStateReader>();
                 child.DestroyImmediateIfExists<JointStateWriter>();
-                child.DestroyImmediateIfExists<PoseReceiver>();
-                child.DestroyImmediateIfExists<PoseProvider>();
+                child.DestroyImmediateIfExists<PoseStampedSubscriber>();
+                child.DestroyImmediateIfExists<OdometrySubscriber>();
             }
         }
 

@@ -13,38 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-using System;
-
 namespace RosSharp.RosBridgeClient
 {
-
-    public class JoyReceiver : MessageReceiver
+    public class JoySubscriber : Subscriber<Messages.Sensor.Joy>
     {
-        public override Type MessageType { get { return (typeof(Messages.Sensor.Joy)); } }
-        private Messages.Sensor.Joy message;
-
         public JoyButtonWriter[] joyButtonWriters;
         public JoyAxisWriter[] joyAxisWriters;
 
-        private void Awake()
+        protected override void ReceiveMessage(Messages.Sensor.Joy joy)
         {
-            MessageReception += ReceiveMessage;
-        }
-
-        private void ReceiveMessage(object sender, MessageEventArgs e)
-        {            
-            message = (Messages.Sensor.Joy)e.Message;
-
-            int I = joyButtonWriters.Length < message.buttons.Length ? joyButtonWriters.Length : message.buttons.Length;
+            int I = joyButtonWriters.Length < joy.buttons.Length ? joyButtonWriters.Length : joy.buttons.Length;
             for (int i = 0; i < I; i++)
-                if (joyButtonWriters[i]!=null)
-                joyButtonWriters[i].Write(message.buttons[i]);
+                if (joyButtonWriters[i] != null)
+                    joyButtonWriters[i].Write(joy.buttons[i]);
 
-            I = joyAxisWriters.Length < message.axes.Length ? joyAxisWriters.Length : message.axes.Length;
+            I = joyAxisWriters.Length < joy.axes.Length ? joyAxisWriters.Length : joy.axes.Length;
             for (int i = 0; i < I; i++)
                 if (joyAxisWriters[i] != null)
-                    joyAxisWriters[i].Write(message.axes[i]);
+                    joyAxisWriters[i].Write(joy.axes[i]);
         }
     }
 }

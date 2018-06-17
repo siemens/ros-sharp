@@ -13,36 +13,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 namespace RosSharp.RosBridgeClient
 {
-    public class JoyProvider : MessageProvider
+    public class JoyPublisher : UnityTimePublisher<Messages.Sensor.Joy>
     {
         private Messages.Sensor.Joy message;
-        public override Type MessageType { get { return (typeof(Messages.Sensor.Joy)); } }
-  
-        public string FrameId;     
+        public string FrameId = "Unity";
 
         private JoyAxisReader[] JoyAxisReaders;
         private JoyButtonReader[] JoyButtonReaders;
-        
-        private void Start()
+
+        protected override void Start()
         {
+            base.Start();
             InitializeGameObject();
             InitializeMessage();
         }
 
+        protected override Messages.Sensor.Joy GetMessage()
+        {
+            return message;
+        }
+
         private void Update()
         {
-            if (IsMessageRequested)
-                UpdateMessage();
+            UpdateMessage();
         }      
+
         private void InitializeGameObject()
         {
             JoyAxisReaders = GetComponents<JoyAxisReader>();
             JoyButtonReaders = GetComponents<JoyButtonReader>();            
         }
+
         private void InitializeMessage()
         {
             message = new Messages.Sensor.Joy();
@@ -50,6 +53,7 @@ namespace RosSharp.RosBridgeClient
             message.axes = new float[JoyAxisReaders.Length];
             message.buttons = new int[JoyButtonReaders.Length];
         }
+
         private void UpdateMessage()
         {
             message.header.Update();
@@ -59,8 +63,6 @@ namespace RosSharp.RosBridgeClient
             
             for (int i = 0; i < JoyButtonReaders.Length; i++)
                 message.buttons[i] = (JoyButtonReaders[i].Read() ? 1 : 0);
-
-            RaiseMessageRelease(new MessageEventArgs(message));
         }
     }
 }

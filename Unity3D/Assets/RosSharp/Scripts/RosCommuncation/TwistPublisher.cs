@@ -13,28 +13,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistProvider : MessageProvider
+    public class TwistPublisher : UnityTimePublisher<Messages.Geometry.Twist>
     {
-        private float previousRealTime;
-
         private Messages.Geometry.Twist message;
+
+        private float previousRealTime;        
         private Vector3 previousPosition = Vector3.zero;
         private Quaternion previousRotation = Quaternion.identity;
-        public override Type MessageType { get { return (typeof(Messages.Geometry.Twist)); } }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             InitializeMessage();
         }
+
+        protected override Messages.Geometry.Twist GetMessage()
+        {
+            return message;
+        }
+
         private void FixedUpdate()
         {
-            if (IsMessageRequested)
-                UpdateMessage();
+            UpdateMessage();
         }
 
         private void InitializeMessage()
@@ -52,7 +56,6 @@ namespace RosSharp.RosBridgeClient
                 
             message.linear = GetGeometryVector3(linearVelocity.Unity2Ros()); ;
             message.angular = GetGeometryVector3(- angularVelocity.Unity2Ros());
-            RaiseMessageRelease(new MessageEventArgs(message));
 
             previousRealTime = Time.realtimeSinceStartup;
             previousPosition = transform.position;

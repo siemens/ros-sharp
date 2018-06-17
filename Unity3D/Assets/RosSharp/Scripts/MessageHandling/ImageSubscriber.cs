@@ -13,29 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(MeshRenderer))]
-    public class ImageReceiver : MessageReceiver
+    public class ImageSubscriber : Subscriber<Messages.Sensor.CompressedImage>
     {
-        public override Type MessageType { get { return (typeof(Messages.Sensor.CompressedImage)); } }
-
         private byte[] imageData;
         private bool isMessageReceived;
 
         private MeshRenderer meshRenderer;
         private Texture2D texture2D;
 
-        private void Awake()
-        {
-            MessageReception += ReceiveMessage;
-        }
         private void Start()
         {
-            texture2D = new Texture2D(1,1);
+            texture2D = new Texture2D(1, 1);
             meshRenderer = GetComponent<MeshRenderer>();
             meshRenderer.material = new Material(Shader.Find("Standard"));
         }
@@ -44,9 +37,10 @@ namespace RosSharp.RosBridgeClient
             if (isMessageReceived)
                 ProcessMessage();
         }
-        private void ReceiveMessage(object sender, MessageEventArgs e)
+
+        protected override void ReceiveMessage(Messages.Sensor.CompressedImage compressedImage)
         {
-            imageData = ((Messages.Sensor.CompressedImage)e.Message).data;
+            imageData = compressedImage.data;
             isMessageReceived = true;
         }
 

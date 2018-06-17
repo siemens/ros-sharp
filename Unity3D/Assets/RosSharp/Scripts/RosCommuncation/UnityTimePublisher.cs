@@ -13,17 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 namespace RosSharp.RosBridgeClient
 {
-    public class UnityTimePublisher<T> : Publisher<T> where T: Message
+    public abstract class UnityTimePublisher<T> : Publisher<T> where T : Message
     {
         public enum Timings { UnityFrameTime, UnityFixedTime }
         public Timings Timing;
 
         public int SkipSteps;
-        private int skipFrames { get { return SkipSteps + 1; } }
+        private int SkipFrames { get { return SkipSteps + 1; } }
 
         private int stepsSincePublication;
 
@@ -37,7 +35,10 @@ namespace RosSharp.RosBridgeClient
             UpdateStep(Timings.UnityFrameTime);
         }
 
-        private void FixedUpdate()
+        // make sure to set Execution Order of this script sufficiently late
+        // to publish the recent data from the current FixedUpdate step
+
+        private void FixedUpdate() 
         {
             UpdateStep(Timings.UnityFixedTime);
         }
@@ -45,10 +46,10 @@ namespace RosSharp.RosBridgeClient
         private void UpdateStep(Timings UpdateTiming)
         {
             if (Timing == UpdateTiming
-                && stepsSincePublication++ % skipFrames == 0)
+                && stepsSincePublication++ % SkipFrames == 0)
             {
                 //     Debug.Log("Frame No. " + Time.frameCount);
-                StartPublication(EventArgs.Empty);
+                Publish();
             }
         }
     }

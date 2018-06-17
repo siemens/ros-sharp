@@ -13,44 +13,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(RosConnector))]
     public abstract class Publisher<T> : MonoBehaviour where T: Message
     {
         public string Topic;
-        public MessageProvider MessageProvider;
+        public RosConnector rosConnector;
 
-        public event EventHandler PublicationEvent;
-
-        protected RosSocket rosSocket;
-        protected string publicationId;
+        private RosSocket rosSocket;
+        private string publicationId;
 
         protected virtual void Start()
         {
-            rosSocket = GetComponent<RosConnector>().RosSocket;
-
+            rosSocket = rosConnector.RosSocket;
             publicationId = rosSocket.Advertise<T>(Topic);
-            PublicationEvent += ReadMessage;
         }
 
-        protected void ReadMessage(object sender, EventArgs e)
+        protected virtual void Publish()
         {
-            MessageProvider.RaiseMessageRequest(e);
-            MessageProvider.MessageRealease += Publish;
+            rosSocket.Publish(publicationId, GetMessage());
         }
 
-        protected void Publish(object sender, MessageEventArgs e)
-        {
-            MessageProvider.MessageRealease -= Publish;
-            rosSocket.Publish(publicationId, e.Message);
-        }
-        protected virtual void StartPublication(EventArgs e)
-        {
-            PublicationEvent?.Invoke(this, e);
-        }
+        protected abstract T GetMessage();
     }
 }
