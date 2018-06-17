@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseStampedPublisher : UnityTimePublisher<Messages.Geometry.PoseStamped>
+    public class PoseStampedPublisher : Publisher<Messages.Geometry.PoseStamped>
     {
         private Messages.Geometry.PoseStamped message;
         public string FrameId = "Unity";
@@ -26,11 +26,6 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
-        }
-
-        protected override Messages.Geometry.PoseStamped GetMessage()
-        {
-            return message;
         }
 
         private void FixedUpdate()
@@ -44,11 +39,14 @@ namespace RosSharp.RosBridgeClient
             message.header = new Messages.Standard.Header();
             message.header.frame_id = FrameId;
         }
+
         private void UpdateMessage()
         {
             message.header.Update();
             message.pose.position = GetGeometryPoint(transform.position.Unity2Ros());
             message.pose.orientation = GetGeometryQuaternion(transform.rotation.Unity2Ros());
+
+            Publish(message);
         }
 
         private Messages.Geometry.Point GetGeometryPoint(Vector3 position)
@@ -59,6 +57,7 @@ namespace RosSharp.RosBridgeClient
             geometryPoint.z = position.z;
             return geometryPoint;
         }
+
         private Messages.Geometry.Quaternion GetGeometryQuaternion(Quaternion quaternion)
         {
             Messages.Geometry.Quaternion geometryQuaternion = new Messages.Geometry.Quaternion();

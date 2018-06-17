@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JoyPublisher : UnityTimePublisher<Messages.Sensor.Joy>
+    public class JoyPublisher : Publisher<Messages.Sensor.Joy>
     {
         private Messages.Sensor.Joy message;
         public string FrameId = "Unity";
@@ -28,11 +28,6 @@ namespace RosSharp.RosBridgeClient
             base.Start();
             InitializeGameObject();
             InitializeMessage();
-        }
-
-        protected override Messages.Sensor.Joy GetMessage()
-        {
-            return message;
         }
 
         private void Update()
@@ -63,6 +58,8 @@ namespace RosSharp.RosBridgeClient
             
             for (int i = 0; i < JoyButtonReaders.Length; i++)
                 message.buttons[i] = (JoyButtonReaders[i].Read() ? 1 : 0);
+
+            Publish(message);
         }
     }
 }

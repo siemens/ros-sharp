@@ -31,11 +31,9 @@ namespace RosSharp.RosBridgeClient
             publicationId = rosSocket.Advertise<T>(Topic);
         }
 
-        protected virtual void Publish()
+        protected void Publish(T message)
         {
-            rosSocket.Publish(publicationId, GetMessage());
+            rosSocket.Publish(publicationId, message);
         }
-
-        protected abstract T GetMessage();
     }
 }

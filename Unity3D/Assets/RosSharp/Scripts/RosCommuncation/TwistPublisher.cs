@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistPublisher : UnityTimePublisher<Messages.Geometry.Twist>
+    public class TwistPublisher : Publisher<Messages.Geometry.Twist>
     {
         private Messages.Geometry.Twist message;
 
@@ -29,11 +29,6 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
-        }
-
-        protected override Messages.Geometry.Twist GetMessage()
-        {
-            return message;
         }
 
         private void FixedUpdate()
@@ -60,6 +55,8 @@ namespace RosSharp.RosBridgeClient
             previousRealTime = Time.realtimeSinceStartup;
             previousPosition = transform.position;
             previousRotation = transform.rotation;
+
+            Publish(message);
         }
 
         private static Messages.Geometry.Vector3 GetGeometryVector3(Vector3 vector3)

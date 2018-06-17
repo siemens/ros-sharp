@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStatePublisher : UnityTimePublisher<Messages.Sensor.JointState>
+    public class JointStatePublisher : Publisher<Messages.Sensor.JointState>
     {
         private Messages.Sensor.JointState message;        
         public string FrameId = "Unity";
@@ -26,11 +26,6 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
-        }
-
-        protected override Messages.Sensor.JointState GetMessage()
-        {
-            return message;
         }
 
         private void FixedUpdate()
@@ -55,6 +50,8 @@ namespace RosSharp.RosBridgeClient
             message.header.Update();
             for (int i = 0; i < JointStateReaders.Length; i++)
                 UpdateJointState(i);
+
+            Publish(message);
         }
 
         private void UpdateJointState(int i)
