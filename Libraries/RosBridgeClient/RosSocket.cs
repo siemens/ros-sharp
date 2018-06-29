@@ -84,7 +84,7 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
-            string id = GetUnusedCounterID(topic);
+            string id = GetUnusedCounterID(Subscribers, topic);
             Subscription subscription;
             Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
             Send(subscription);
@@ -96,7 +96,7 @@ namespace RosSharp.RosBridgeClient
             Send(Subscribers[id].Unsubscribe());
             Subscribers.Remove(id);
         }
-                #endregion
+        #endregion
 
         #region ServiceProviders
 
@@ -124,7 +124,7 @@ namespace RosSharp.RosBridgeClient
 
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments) where Tin : Message where Tout : Message
         {
-            string id = GetUnusedCounterID(service);
+            string id = GetUnusedCounterID(ServiceConsumers, service);
             Communication serviceCall;
             ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out serviceCall, serviceArguments));
             Send(serviceCall);
@@ -133,7 +133,7 @@ namespace RosSharp.RosBridgeClient
 
         #endregion
 
-        private void Send<T>(T communication) where T: Communication
+        private void Send<T>(T communication) where T : Communication
         {
 #if DEBUG
             Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(communication, Formatting.Indented) + "\n");
@@ -190,14 +190,15 @@ namespace RosSharp.RosBridgeClient
             return JsonConvert.DeserializeObject<T>(ascii);
         }
 
-        private string GetUnusedCounterID(string name)
+        private static string GetUnusedCounterID<T>(Dictionary<string, T> dictionary, string name)
         {
             int I = 0;
             string id;
             do
                 id = name + ":" + (I++).ToString();
-            while (Subscribers.ContainsKey(id));
+            while (dictionary.ContainsKey(id));
             return id;
         }
+
     }
 }

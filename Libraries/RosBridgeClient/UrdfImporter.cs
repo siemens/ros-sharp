@@ -80,9 +80,14 @@ namespace RosSharp.RosBridgeClient
 
         public bool Import(int maxTimeOut = int.MaxValue)
         {
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ReceiveRobotName, new rosapi.GetParamRequest("/robot/name"));
-            var robotDescriptionReceiver
-                = new ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse>(rosSocket, "/rosapi/get_param", new rosapi.GetParamRequest("/robot_description"), Path.DirectorySeparatorChar + "robot_description.urdf");
+            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
+                                                                                    ReceiveRobotName,
+                                                                                    new rosapi.GetParamRequest("/robot/name", "default"));
+
+            var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(rosSocket, "/rosapi/get_param",
+                                                                                        new rosapi.GetParamRequest("/robot_description", "default"),
+                                                                                        Path.DirectorySeparatorChar + "robot_description.urdf");
+
             robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;
 
             return (WaitHandle.WaitAll(Status.Values.ToArray(), maxTimeOut));

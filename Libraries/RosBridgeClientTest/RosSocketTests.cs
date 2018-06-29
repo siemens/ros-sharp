@@ -77,7 +77,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceCallTest()
         {
-            RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro"));
+            RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
             OnServiceReceived.WaitOne();
             OnServiceReceived.Reset();
             Assert.IsTrue(true);
@@ -86,7 +86,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test]
         public void ServiceResponseTest()
         {
-            string id =RosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+            string id = RosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
             OnServiceProvided.WaitOne();
             OnServiceProvided.Reset();
             RosSocket.UnadvertiseService(id);

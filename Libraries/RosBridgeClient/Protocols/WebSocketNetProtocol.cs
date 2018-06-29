@@ -28,7 +28,7 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         private ClientWebSocket ClientWebSocket;
         private string Uri { get; }
-        private const int bufferSize = 1024;
+        private const int bufferSize = 1024*10;
 
         public WebSocketNetProtocol(string uri)
         {

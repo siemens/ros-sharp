@@ -22,9 +22,14 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
         [JsonIgnore]
         public const string RosMessageName = "ros_api/GetParam";
         public string name;
-        public GetParamRequest(string name)
+
+        [JsonProperty("default")]
+        public string _default;
+
+        public GetParamRequest(string _name, string _defaultValue)
         {
-            this.name = name;
+            this.name = _name;
+            this._default = _defaultValue;
         }
     }
 
