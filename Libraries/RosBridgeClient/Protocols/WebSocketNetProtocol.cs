@@ -28,6 +28,8 @@ namespace RosSharp.RosBridgeClient.Protocols
         private readonly Uri uri;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken cancellationToken;
+        private AutoResetEvent SendAsyncReady = new AutoResetEvent(true);
+        private AutoResetEvent ReceiveAsyncReady = new AutoResetEvent(true);
 
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
@@ -37,7 +39,6 @@ namespace RosSharp.RosBridgeClient.Protocols
         public WebSocketNetProtocol(string uriString)
         {
             clientWebSocket = new ClientWebSocket();
-            clientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(20);
             uri = new Uri(uriString);
             cancellationToken = cancellationTokenSource.Token;
         }
@@ -48,9 +49,9 @@ namespace RosSharp.RosBridgeClient.Protocols
             StartListen();
         }
 
-        public void Close()
+        public async void Close()
         {
-            clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
         }
 
         public bool IsAlive()
@@ -65,9 +66,6 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public async void SendAsync(byte[] message)
         {
-            if (clientWebSocket.State != WebSocketState.Open)
-                throw new WebSocketException(WebSocketError.InvalidState, "Error Sending Message: WebSocket is not open.");
-
             int messageCount = (int)Math.Ceiling((double)message.Length / SendChunkSize);
 
             for (int i = 0; i < messageCount; i++)
@@ -75,46 +73,41 @@ namespace RosSharp.RosBridgeClient.Protocols
                 int offset = SendChunkSize * i;
                 bool endOfMessage = (i == messageCount - 1);
                 int count = endOfMessage ? message.Length - offset : SendChunkSize;
+                SendAsyncReady.WaitOne();
                 await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Text, endOfMessage, cancellationToken);
+                SendAsyncReady.Set();
             }
         }
 
         private async void StartListen()
         {
             byte[] buffer = new byte[ReceiveChunkSize];
-            try
+
+            while (clientWebSocket.State == WebSocketState.Open)
             {
-                while (clientWebSocket.State == WebSocketState.Open)
+                MemoryStream memoryStream = new MemoryStream();
+                WebSocketReceiveResult result;
+                do
                 {
-                    MemoryStream memoryStream = new MemoryStream();
-                    WebSocketReceiveResult result;
-                    do
+                    ReceiveAsyncReady.WaitOne();
+                    result = await clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                    ReceiveAsyncReady.Set();
+
+                    if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        result = await clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                        await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                        return;
+                    }
+                    else
+                    {
+                        memoryStream.Write(buffer, 0, result.Count);                        
+                    }
 
-                        if (result.MessageType == WebSocketMessageType.Close)
-                        {
-                            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                        }
-                        else
-                        {
-                            memoryStream.Write(buffer, 0, result.Count);
-                        }
-
-                    } while (!result.EndOfMessage);
-
-                    OnReceive.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                clientWebSocket.Dispose();
+                } while (!result.EndOfMessage);
+                OnReceive.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
             }
         }
-
     }
+
 }
+

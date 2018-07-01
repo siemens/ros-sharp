@@ -34,7 +34,6 @@ namespace RosSharp.UrdfImporter
         private static string assetPath;
 
         private Thread rosSocketConnectThread;
-        private Thread urdfImportThread;
         private RosBridgeClient.UrdfImporter urdfImporter;
 
         private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
@@ -55,6 +54,7 @@ namespace RosSharp.UrdfImporter
             editorWindow.minSize = new Vector2(150, 300);
             editorWindow.Show();
         }
+
         private void OnFocus()
         {
             GetEditorPrefs();
@@ -69,6 +69,7 @@ namespace RosSharp.UrdfImporter
         {
             SetEditorPrefs();
         }
+
         private void DeleteEditorPrefs()
         {
             EditorPrefs.DeleteKey("UrdfImporterProtocolNumber");
@@ -168,8 +169,8 @@ namespace RosSharp.UrdfImporter
             status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
-            Thread urdfImportThread = new Thread(() => urdfImporter.Import());
-            urdfImportThread.Start();
+
+            urdfImporter.Import();
 
             // import URDF assets:
             if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
