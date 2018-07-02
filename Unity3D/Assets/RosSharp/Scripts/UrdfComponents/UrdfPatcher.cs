@@ -30,9 +30,9 @@ namespace RosSharp.RosBridgeClient
         public bool AddPoseProvider;
         public bool AddPoseReceiver;
         public bool AddJointStateReaders;
-        public JointStatePublisher jointStateProvider;
+        public JointStatePublisher jointStatePublisher;
         public bool AddJointStateWriters;
-        public JointStateSubscriber jointStateReceiver;
+        public JointStateSubscriber jointStateSubscriber;
 
         public void Patch()
         {
@@ -49,10 +49,10 @@ namespace RosSharp.RosBridgeClient
                 UrdfModel.AddComponent<OdometrySubscriber>();
 
             if (AddJointStateReaders)
-                jointStateProvider.JointStateReaders = AddJointStateReaderComponents();
+                jointStatePublisher.JointStateReaders = AddJointStateReaderComponents();
 
             if (AddJointStateWriters)
-                jointStateReceiver.JointStateWriterDictionary = AddJointStateWriterComponents();
+                AddJointStateWriterComponents(out jointStateSubscriber.JointNames, out jointStateSubscriber.JointStateWriters);
         }
         
         private JointStateReader[] AddJointStateReaderComponents() 
@@ -63,14 +63,15 @@ namespace RosSharp.RosBridgeClient
             return jointStateReaders.ToArray();
         }
 
-        private Dictionary<string, JointStateWriter> AddJointStateWriterComponents()
+        private void AddJointStateWriterComponents(out List<string> jointNames, out List<JointStateWriter> jointStateWriters)
         {
-            Dictionary<string, JointStateWriter> jointStateWriters = new Dictionary<string, JointStateWriter>();
-            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
-                jointStateWriters.Add(
-                    jointUrdfDataManager.name,
-                    jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
-            return jointStateWriters;
+            jointNames = new List<string>();
+            jointStateWriters = new List<JointStateWriter>();
+
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>()) {
+                jointNames.Add(jointUrdfDataManager.JointName);
+                jointStateWriters.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
+            }
         }
 
         private void RemoveExistingComponents()

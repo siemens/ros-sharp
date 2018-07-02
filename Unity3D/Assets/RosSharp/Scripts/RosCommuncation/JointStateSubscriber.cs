@@ -19,12 +19,13 @@ namespace RosSharp.RosBridgeClient
 {
     public class JointStateSubscriber : Subscriber<Messages.Sensor.JointState>
     {
-        public Dictionary<string, JointStateWriter> JointStateWriterDictionary;
+        public List<string> JointNames;
+        public List<JointStateWriter> JointStateWriters;
 
         protected override void ReceiveMessage(Messages.Sensor.JointState message)
         {
             for (int i = 0; i < message.name.Length; i++)
-                JointStateWriterDictionary[message.name[i]].Write(message.position[i]);
+                JointStateWriters[ JointNames.IndexOf(message.name[i]) ].Write(message.position[i]);
         }
     }
 }
