@@ -43,7 +43,7 @@ namespace RosSharp.RosBridgeClient
             if (jointUrdfDataManager.IsRevoluteOrContinuous)
             {
                 HingeJoint hingeJoint = (HingeJoint)joint;
-                limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max);
+                limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max) * Mathf.Deg2Rad; ;
             }
             else if (jointUrdfDataManager.IsPrismatic)
             {

@@ -78,15 +78,15 @@ namespace RosSharp.RosBridgeClient
             }
             public float GetPosition()
             {
-                return hingeJoint.angle * Mathf.Deg2Rad;
+                return -hingeJoint.angle * Mathf.Deg2Rad;
             }
             public float GetVelocity()
             {
-                return hingeJoint.velocity * Mathf.Deg2Rad;
+                return -hingeJoint.velocity * Mathf.Deg2Rad;
             }
             public float GetEffort()
             {
-                return hingeJoint.motor.force;
+                return -hingeJoint.motor.force;
             }
         }
     }
