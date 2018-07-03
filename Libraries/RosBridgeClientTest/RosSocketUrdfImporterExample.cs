@@ -31,42 +31,25 @@ using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
 
 namespace RosSharp.RosBridgeClientTest
 {
-    public class RosSocketConsole
+    public class RosSocketUrdfImporterExample
     {
         static readonly string uri = "ws://192.168.56.102:9090";
 
         public static void Main(string[] args)
         {
             //RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(uri));
-            RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
-            // Publication:
-            std_msgs.String message = new std_msgs.String("publication test message data");
+            for (int i=0; i<2;i++)
+            {
+                RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
+                UrdfImporter urdfImporter = new UrdfImporter(rosSocket, System.IO.Directory.GetCurrentDirectory().ToString());
+                urdfImporter.Import();
+                Console.WriteLine("Press any key to close...");
+                Console.ReadKey(true);
+                rosSocket.Close();
+            }
 
-            string publication_id = rosSocket.Advertise<std_msgs.String>("publication_test");
-            rosSocket.Publish(publication_id, message);
 
-
-            // Subscription:
-            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
-             subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
-
-            // Service Call:
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
-
-            // Service Response:
-            string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
-
-            Console.WriteLine("Press any key to unsubscribe...");
-            Console.ReadKey(true);
-            rosSocket.Unadvertise(publication_id);
-            rosSocket.Unsubscribe(subscription_id);
-            rosSocket.UnadvertiseService(service_id);
-
-            Console.WriteLine("Press any key to close...");
-            Console.ReadKey(true);
-            rosSocket.Close();
         }
         private static void SubscriptionHandler(std_msgs.String message)
         {
