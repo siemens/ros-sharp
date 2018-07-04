@@ -34,7 +34,10 @@ namespace RosSharp.UrdfImporter
         private static string assetPath;
 
         private Thread rosSocketConnectThread;
-        private RosBridgeClient.UrdfImporter urdfImporter;
+
+        private string robotName;
+        private string localDirectory;
+        
 
         private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
         { "connected", new ManualResetEvent(false) },
@@ -165,15 +168,21 @@ namespace RosSharp.UrdfImporter
             status["connected"].Set();
 
             // setup urdfImporter
-            urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
+            RosBridgeClient.UrdfImporter urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
             status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
 
             urdfImporter.Import();
 
-            // import URDF assets:
-            if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
+            if (status["robotNameReceived"].WaitOne(timeout * 1000))
+            {
+                robotName = urdfImporter.RobotName;
+                localDirectory = urdfImporter.LocalDirectory;
+            }
+
+                // import URDF assets:
+                if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
@@ -205,10 +214,10 @@ namespace RosSharp.UrdfImporter
                 status["importModelDialogShown"].Set();
                 if (EditorUtility.DisplayDialog(
                     "Urdf Assets imported.",
-                    "Do you want to generate a " + urdfImporter.RobotName + " GameObject now?",
+                    "Do you want to generate a " + robotName + " GameObject now?",
                     "Yes", "No"))
                 {
-                    RobotCreator.Create(Path.Combine(urdfImporter.LocalDirectory, "robot_description.urdf"));
+                    RobotCreator.Create(Path.Combine(localDirectory, "robot_description.urdf"));
                 }
             }
 
