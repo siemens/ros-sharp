@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UrdfImporterConsoleTest.cs" />
+    <Compile Include="UrdfImporterConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />
     <Compile Include="RosSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

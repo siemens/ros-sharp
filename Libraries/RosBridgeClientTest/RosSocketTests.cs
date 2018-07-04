@@ -43,7 +43,7 @@ namespace RosSharp.RosBridgeClientTest
         [SetUp]
         public void Setup()
         {
-            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(Uri));
+            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(Uri));
         }
 
         [TearDown]
