@@ -28,8 +28,8 @@ namespace RosSharp.RosBridgeClient.Protocols
         private readonly Uri uri;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken cancellationToken;
+        private ManualResetEvent IsConnected = new ManualResetEvent(false);
         private AutoResetEvent SendAsyncReady = new AutoResetEvent(true);
-        private AutoResetEvent IsConnected = new AutoResetEvent(false);
         private AutoResetEvent ReceiveAsyncReady = new AutoResetEvent(true);
 
         private const int ReceiveChunkSize = 1024;
@@ -44,17 +44,21 @@ namespace RosSharp.RosBridgeClient.Protocols
             cancellationToken = cancellationTokenSource.Token;
         }
 
-        public async void Connect()
+        public void Connect()
+        {
+            Thread thread = new Thread(() => ConnectAsync());
+            thread.Start();
+        }
+
+        public async void ConnectAsync()
         {
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
             StartListen();
         }
 
-        //public async void Close()
         public async void Close()
         {
-            //await Task.WhenAll(Receive(webSocket), Send(webSocket));
             await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
         }
 
@@ -65,17 +69,17 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public void Send(byte[] message)
         {
-            IsConnected.WaitOne();
-            IsConnected.Set();
-            SendAsync(message);
+            Thread thread = new Thread(() => SendAsync(message));
+            thread.Start();
         }
 
         public async void SendAsync(byte[] message)
         {
+            IsConnected.WaitOne();
 
             if (clientWebSocket.State != WebSocketState.Open)
             {
-                throw new Exception("Hello World!");
+                throw new WebSocketException(WebSocketError.InvalidState, "Error Sending Message. WebSocket State is: " + clientWebSocket.State);
             }
 
             int messageCount = (int)Math.Ceiling((double)message.Length / SendChunkSize);
@@ -86,7 +90,6 @@ namespace RosSharp.RosBridgeClient.Protocols
                 bool endOfMessage = (i == messageCount - 1);
                 int count = endOfMessage ? message.Length - offset : SendChunkSize;
                 SendAsyncReady.WaitOne();
-                //if(clientWebSocket.State == WebSocketState.Open || clientWebSocket.State == WebSocketState.Connecting)
                 await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Text, endOfMessage, cancellationToken);
                 SendAsyncReady.Set();
             }
@@ -96,44 +99,26 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             byte[] buffer = new byte[ReceiveChunkSize];
 
-            IsConnected.WaitOne();
-            IsConnected.Set();
-            //try
-            //{
             while (clientWebSocket.State == WebSocketState.Open)
+            {
+                MemoryStream memoryStream = new MemoryStream();
+                WebSocketReceiveResult result;
+                do
                 {
-                    MemoryStream memoryStream = new MemoryStream();
-                    WebSocketReceiveResult result;
-                    do
-                    {
-                        ReceiveAsyncReady.WaitOne();
-                        result = await clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                        ReceiveAsyncReady.Set();
+                    ReceiveAsyncReady.WaitOne();
+                    result = await clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                    ReceiveAsyncReady.Set();
 
-                        if (result.MessageType == WebSocketMessageType.Close)
-                        {
-                        //await clientWebSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                        //clientWebSocket.Abort();
+                    if (result.MessageType == WebSocketMessageType.Close)
                         return;
-                        }
-                        else
-                        {
-                            memoryStream.Write(buffer, 0, result.Count);
-                        }
 
-                    } while (!result.EndOfMessage);
-                    OnReceive.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
-                }
+                    memoryStream.Write(buffer, 0, result.Count);
+
+                } while (!result.EndOfMessage);
+
+                OnReceive.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
             }
-            //catch (Exception)
-            //{
-            //    // CallOnDisconnected();
-            //}
-            //finally
-            //{
-            //    clientWebSocket.Dispose();
-            //}
-        //}
+        }
     }
 
 }
