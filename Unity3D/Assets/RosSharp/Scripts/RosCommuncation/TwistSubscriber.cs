@@ -27,6 +27,10 @@ namespace RosSharp.RosBridgeClient
         private Vector3 angularVelocity;
         private bool isMessageReceived;
 
+		protected override void Start()
+		{
+			base.Start();
+		}
 
         protected override void ReceiveMessage(Messages.Geometry.Twist message)
         {

@@ -26,8 +26,9 @@ namespace RosSharp.RosBridgeClient
         private MeshRenderer meshRenderer;
         private Texture2D texture2D;
 
-        private void Start()
+        protected override void Start()
         {
+			base.Start();
             texture2D = new Texture2D(1, 1);
             meshRenderer = GetComponent<MeshRenderer>();
             meshRenderer.material = new Material(Shader.Find("Standard"));

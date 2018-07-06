@@ -22,37 +22,32 @@ namespace RosSharp.RosBridgeClient
     public class UrdfPatcher : MonoBehaviour
     {
         public GameObject UrdfModel;
-        
+
         public bool EnableRigidbodiesGravity;
         public bool SetRigidbodiesKinematic;
         public bool SetMeshCollidersConvex;
 
-        public bool AddPoseProvider;
-        public bool AddPoseReceiver;
         public bool AddJointStateReaders;
-        public JointStatePublisher jointStatePublisher;
         public bool AddJointStateWriters;
-        public JointStateSubscriber jointStateSubscriber;
 
         public void Patch()
         {
             RemoveExistingComponents();
 
             PatchRigidbodies(EnableRigidbodiesGravity, SetRigidbodiesKinematic);
-
             PatchMeshColliders(SetMeshCollidersConvex);
 
-            if (AddPoseProvider)
-                UrdfModel.AddComponent<PoseStampedSubscriber>();
-
-            if (AddPoseReceiver)
-                UrdfModel.AddComponent<OdometrySubscriber>();
-
             if (AddJointStateReaders)
+            {                
+                JointStatePublisher jointStatePublisher = AddComponentIfNotExists<JointStatePublisher>();                
                 jointStatePublisher.JointStateReaders = AddJointStateReaderComponents();
+            }
 
             if (AddJointStateWriters)
+            {
+                JointStateSubscriber jointStateSubscriber = AddComponentIfNotExists<JointStateSubscriber>();
                 AddJointStateWriterComponents(out jointStateSubscriber.JointNames, out jointStateSubscriber.JointStateWriters);
+            }
         }
         
         private JointStateReader[] AddJointStateReaderComponents() 
@@ -80,8 +75,6 @@ namespace RosSharp.RosBridgeClient
             {
                 child.DestroyImmediateIfExists<JointStateReader>();
                 child.DestroyImmediateIfExists<JointStateWriter>();
-                child.DestroyImmediateIfExists<PoseStampedSubscriber>();
-                child.DestroyImmediateIfExists<OdometrySubscriber>();
             }
         }
 
@@ -100,6 +93,14 @@ namespace RosSharp.RosBridgeClient
                 rigidbody.useGravity = useGravity;
                 rigidbody.isKinematic = isKinematic;
             }
+        }
+
+        private T AddComponentIfNotExists<T>() where T : Component
+        {
+            T component = GetComponent<T>();
+            if (component == null)
+                component = gameObject.AddComponent<T>();
+            return component;
         }
 
     }

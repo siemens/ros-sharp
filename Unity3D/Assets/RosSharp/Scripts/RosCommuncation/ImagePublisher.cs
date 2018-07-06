@@ -20,10 +20,11 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Camera))]
+
     public class ImagePublisher : Publisher<Messages.Sensor.CompressedImage>
     {
         public string FrameId = "Camera";
+        public Camera ImageCamera;
         public int resolutionWidth = 640;
         public int resolutionHeight = 480;
         [Range(0, 100)]
@@ -49,7 +50,7 @@ namespace RosSharp.RosBridgeClient
         {
             texture2D = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
             rect = new Rect(0, 0, resolutionWidth, resolutionHeight);
-            GetComponent<Camera>().targetTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
+            ImageCamera.targetTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
         }
 
         private void InitializeMessage()

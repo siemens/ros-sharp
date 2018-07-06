@@ -20,6 +20,11 @@ namespace RosSharp.RosBridgeClient
         public JoyButtonWriter[] joyButtonWriters;
         public JoyAxisWriter[] joyAxisWriters;
 
+		protected override void Start()
+		{
+			base.Start();
+		}
+		
         protected override void ReceiveMessage(Messages.Sensor.Joy joy)
         {
             int I = joyButtonWriters.Length < joy.buttons.Length ? joyButtonWriters.Length : joy.buttons.Length;

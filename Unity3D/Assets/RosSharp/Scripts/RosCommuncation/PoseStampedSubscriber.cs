@@ -23,6 +23,11 @@ namespace RosSharp.RosBridgeClient
         private Quaternion rotation;
         private bool isMessageReceived;
 
+		protected override void Start()
+        {
+			base.Start();
+		}
+		
         private void Update()
         {
             if (isMessageReceived)

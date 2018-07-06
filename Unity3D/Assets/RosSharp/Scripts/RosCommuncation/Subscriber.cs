@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient
         public float TimeStep;
         public RosConnector rosConnector;
 
-        private void Start()
+        protected virtual void Start()
         {
             rosConnector.RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000)); // the rate(in ms in between messages) at which to throttle the topics
         }

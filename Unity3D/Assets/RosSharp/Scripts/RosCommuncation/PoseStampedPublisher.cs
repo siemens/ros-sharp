@@ -21,6 +21,7 @@ namespace RosSharp.RosBridgeClient
     {
         private Messages.Geometry.PoseStamped message;
         public string FrameId = "Unity";
+        public Transform PublishedTransform;
 
         protected override void Start()
         {
@@ -43,8 +44,8 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.pose.position = GetGeometryPoint(transform.position.Unity2Ros());
-            message.pose.orientation = GetGeometryQuaternion(transform.rotation.Unity2Ros());
+            message.pose.position = GetGeometryPoint(PublishedTransform.position.Unity2Ros());
+            message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
 
             Publish(message);
         }

@@ -22,6 +22,11 @@ namespace RosSharp.RosBridgeClient
         public List<string> JointNames;
         public List<JointStateWriter> JointStateWriters;
 
+		protected override void Start()
+		{
+			base.Start();
+		}
+		
         protected override void ReceiveMessage(Messages.Sensor.JointState message)
         {
             for (int i = 0; i < message.name.Length; i++)
