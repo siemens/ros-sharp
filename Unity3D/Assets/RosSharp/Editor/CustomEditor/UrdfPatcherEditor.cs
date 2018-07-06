@@ -35,14 +35,14 @@ namespace RosSharp.RosBridgeClient
             urdfPatcher.SetRigidbodiesKinematic = GUILayout.Toggle(urdfPatcher.SetRigidbodiesKinematic, "Set Rigidbodies Kinematic");
             urdfPatcher.SetMeshCollidersConvex = GUILayout.Toggle(urdfPatcher.SetMeshCollidersConvex, "Set Mesh Colliders Convex");
 
-            //GUILayout.Space(10);
-            //urdfPatcher.AddJointStateReaders = GUILayout.Toggle(urdfPatcher.AddJointStateReaders, "Publish Joint States (Add Joint State Readers)");
+            GUILayout.Space(10);
+            urdfPatcher.AddJointStateReaders = GUILayout.Toggle(urdfPatcher.AddJointStateReaders, "Publish Joint States (Add Joint State Readers)");
             //if (urdfPatcher.AddJointStateReaders)
-            //    urdfPatcher.jointStatePublisher = (JointStatePublisher) EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStatePublisher, typeof(JointStatePublisher), true);
+            //    urdfPatcher.jointStatePublisher = (JointStatePublisher)EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStatePublisher, typeof(JointStatePublisher), true);
 
-            //urdfPatcher.AddJointStateWriters = GUILayout.Toggle(urdfPatcher.AddJointStateWriters, "Subscribe Joint States (Add Joint State Writers)");
+            urdfPatcher.AddJointStateWriters = GUILayout.Toggle(urdfPatcher.AddJointStateWriters, "Subscribe Joint States (Add Joint State Writers)");
             //if (urdfPatcher.AddJointStateWriters)
-            //    urdfPatcher.jointStateSubscriber = (JointStateSubscriber) EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateSubscriber, typeof(JointStateSubscriber), true);
+            //    urdfPatcher.jointStateSubscriber = (JointStateSubscriber)EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateSubscriber, typeof(JointStateSubscriber), true);
 
             GUILayout.Space(10);
             if (GUILayout.Button("Apply"))

@@ -2276,6 +2276,134 @@ Transform:
   m_Father: {fileID: 1858981883}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &323852033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 323852037}
+  - component: {fileID: 323852036}
+  - component: {fileID: 323852035}
+  - component: {fileID: 323852034}
+  - component: {fileID: 323852038}
+  - component: {fileID: 323852039}
+  - component: {fileID: 323852040}
+  m_Layer: 0
+  m_Name: RosConnector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &323852034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501d3c79ee90f8c4abf2b04c374dfe03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /joy
+  TimeStep: 0
+  joyButtonWriters: []
+  joyAxisWriters:
+  - {fileID: 2007794383}
+  - {fileID: 446901051}
+--- !u!114 &323852035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 496b79b1226cb9047bbb051a9a408955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UrdfModel: {fileID: 1964023292}
+  EnableRigidbodiesGravity: 1
+  SetRigidbodiesKinematic: 0
+  SetMeshCollidersConvex: 1
+  AddJointStateReaders: 1
+  AddJointStateWriters: 0
+--- !u!114 &323852036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Protocol: 1
+  RosBridgeServerUrl: ws://192.168.56.102:9090
+--- !u!4 &323852037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0205, y: 0.4082, z: -0.087}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &323852038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f562e2709255bd84d8c7856ba765aadf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /joint_states
+  FrameId: Unity
+  JointStateReaders:
+  - {fileID: 2007794384}
+  - {fileID: 446901050}
+--- !u!114 &323852039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba7b6cf5987d62d489ba785c899f8226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /odom
+  FrameId: Unity
+  PublishedTransform: {fileID: 770831796}
+--- !u!114 &323852040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323852033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a518db7ba025da45ae50c63dbb45c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /unity_image/compressed
+  FrameId: Camera
+  ImageCamera: {fileID: 1305800023}
+  resolutionWidth: 640
+  resolutionHeight: 480
+  qualityLevel: 50
 --- !u!1 &330067229
 GameObject:
   m_ObjectHideFlags: 0
@@ -5182,7 +5310,6 @@ GameObject:
   - component: {fileID: 770831796}
   - component: {fileID: 770831797}
   - component: {fileID: 770831798}
-  - component: {fileID: 770831799}
   m_Layer: 0
   m_Name: base_link
   m_TagString: Untagged
@@ -5264,20 +5391,6 @@ MonoBehaviour:
   CenterOfMass: {x: -0, y: 0, z: 0.01}
   InertiaTensor: {x: 0.019995, y: 0.019995, z: 0.03675}
   InertiaTensorRotation: {x: 0.6747402, y: 0, z: 0, w: 0.73805535}
---- !u!114 &770831799
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 770831795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba7b6cf5987d62d489ba785c899f8226, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /odom
-  rosConnector: {fileID: 2132634263}
-  FrameId: Unity
 --- !u!1 &783819041
 GameObject:
   m_ObjectHideFlags: 0
@@ -9282,9 +9395,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1305800021}
   - component: {fileID: 1305800023}
-  - component: {fileID: 1305800022}
   m_Layer: 0
-  m_Name: ImagePublisher
+  m_Name: ImagePublisherCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9303,23 +9415,6 @@ Transform:
   m_Father: {fileID: 1858981883}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1305800022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1305800020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a518db7ba025da45ae50c63dbb45c8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /unity_image/compressed
-  rosConnector: {fileID: 2132634263}
-  FrameId: Camera
-  resolutionWidth: 640
-  resolutionHeight: 480
-  qualityLevel: 50
 --- !u!20 &1305800023
 Camera:
   m_ObjectHideFlags: 0
@@ -9351,7 +9446,7 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
+  m_TargetDisplay: 1
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
@@ -9387,52 +9482,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1906854499}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1317638425
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1317638427}
-  - component: {fileID: 1317638426}
-  m_Layer: 0
-  m_Name: JointStatePublisher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1317638426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317638425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f562e2709255bd84d8c7856ba765aadf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /joint_states
-  rosConnector: {fileID: 2132634263}
-  FrameId: Unity
-  JointStateReaders:
-  - {fileID: 2007794384}
-  - {fileID: 446901050}
---- !u!4 &1317638427
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317638425}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2132634264}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1326702511
 GameObject:
@@ -10875,53 +10924,6 @@ Transform:
   m_Father: {fileID: 1093079430}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1588830162
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1588830163}
-  - component: {fileID: 1588830164}
-  m_Layer: 0
-  m_Name: JoySubscriber
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1588830163
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1588830162}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2132634264}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1588830164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1588830162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 501d3c79ee90f8c4abf2b04c374dfe03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /joy
-  TimeStep: 0
-  rosConnector: {fileID: 2132634263}
-  joyButtonWriters: []
-  joyAxisWriters:
-  - {fileID: 2007794383}
-  - {fileID: 446901051}
 --- !u!1 &1588858048
 GameObject:
   m_ObjectHideFlags: 0
@@ -14537,72 +14539,6 @@ Transform:
   - {fileID: 1105862299}
   m_Father: {fileID: 1154199605}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2132634261
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2132634264}
-  - component: {fileID: 2132634263}
-  - component: {fileID: 2132634262}
-  m_Layer: 0
-  m_Name: RosConnector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2132634262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2132634261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 496b79b1226cb9047bbb051a9a408955, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UrdfModel: {fileID: 1964023292}
-  EnableRigidbodiesGravity: 1
-  SetRigidbodiesKinematic: 0
-  SetMeshCollidersConvex: 1
-  AddPosePublisher: 1
-  AddPoseSubscriber: 0
-  AddJointStateReaders: 1
-  jointStatePublisher: {fileID: 1317638426}
-  AddJointStateWriters: 0
-  jointStateSubscriber: {fileID: 0}
---- !u!114 &2132634263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2132634261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Protocol: 0
-  RosBridgeServerUrl: ws://192.168.56.102:9090
---- !u!4 &2132634264
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2132634261}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.64135957, y: -1.0110283, z: -1.4142752}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1317638427}
-  - {fileID: 1588830163}
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2138253089
 GameObject:

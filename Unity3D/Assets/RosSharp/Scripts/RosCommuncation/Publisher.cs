@@ -21,18 +21,16 @@ namespace RosSharp.RosBridgeClient
     public abstract class Publisher<T> : MonoBehaviour where T: Message
     {
         public string Topic;
-         private RosSocket rosSocket;
         private string publicationId;
 
         protected virtual void Start()
         {
-            rosSocket = GetComponent<RosConnector>().RosSocket;
-            publicationId = rosSocket.Advertise<T>(Topic);
+            publicationId = GetComponent<RosConnector>().RosSocket.Advertise<T>(Topic);
         }
 
         protected void Publish(T message)
         {
-            rosSocket.Publish(publicationId, message);
+            GetComponent<RosConnector>().RosSocket.Publish(publicationId, message);
         }
     }
 }
