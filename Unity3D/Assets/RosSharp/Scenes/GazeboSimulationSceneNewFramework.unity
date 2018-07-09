@@ -4068,55 +4068,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!1 &738466038
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 738466040}
-  - component: {fileID: 738466039}
-  m_Layer: 0
-  m_Name: JointStateSubscriber
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &738466039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 738466038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4d169083f3a35442a4abebff09f085c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /joint_states
-  TimeStep: 0
-  rosConnector: {fileID: 844560454}
-  JointNames:
-  - wheel_left_joint
-  - wheel_right_joint
-  JointStateWriters:
-  - {fileID: 935730700}
-  - {fileID: 1397209928}
---- !u!4 &738466040
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 738466038}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 844560455}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &739781538
 GameObject:
   m_ObjectHideFlags: 0
@@ -4843,6 +4794,12 @@ GameObject:
   - component: {fileID: 844560455}
   - component: {fileID: 844560454}
   - component: {fileID: 844560453}
+  - component: {fileID: 844560457}
+  - component: {fileID: 844560456}
+  - component: {fileID: 844560459}
+  - component: {fileID: 844560458}
+  - component: {fileID: 844560460}
+  - component: {fileID: 844560461}
   m_Layer: 0
   m_Name: RosConnector
   m_TagString: Untagged
@@ -4865,12 +4822,8 @@ MonoBehaviour:
   EnableRigidbodiesGravity: 0
   SetRigidbodiesKinematic: 1
   SetMeshCollidersConvex: 0
-  AddPoseProvider: 0
-  AddPoseReceiver: 1
   AddJointStateReaders: 0
-  jointStatePublisher: {fileID: 0}
   AddJointStateWriters: 1
-  jointStateSubscriber: {fileID: 738466039}
 --- !u!114 &844560454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4893,12 +4846,94 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.64135957, y: -1.0110283, z: -1.4142752}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1302848274}
-  - {fileID: 738466040}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &844560456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 377f0f6df72421f43b945ef23b6b232b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /joy
+  FrameId: Unity
+--- !u!114 &844560457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d169083f3a35442a4abebff09f085c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /joint_states
+  TimeStep: 0
+  JointNames:
+  - wheel_left_joint
+  - wheel_right_joint
+  JointStateWriters:
+  - {fileID: 935730700}
+  - {fileID: 1397209928}
+--- !u!114 &844560458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Vertical
+--- !u!114 &844560459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Horizontal
+--- !u!114 &844560460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caa324daa2e3a0e498163929b0536bcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /odom
+  TimeStep: 0
+  assignedObject: {fileID: 1543749758}
+--- !u!114 &844560461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 844560452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ff86b8700454248be882dfab699e79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Topic: /camera/rgb/image_raw/compressed
+  TimeStep: 0
+  meshRenderer: {fileID: 1593676677}
 --- !u!43 &849087564
 Mesh:
   m_ObjectHideFlags: 0
@@ -8202,75 +8237,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 903764710}
---- !u!1 &1302848273
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1302848274}
-  - component: {fileID: 1302848277}
-  - component: {fileID: 1302848276}
-  - component: {fileID: 1302848275}
-  m_Layer: 0
-  m_Name: JoyPublisher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1302848274
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1302848273}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 844560455}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1302848275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1302848273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Vertical
---- !u!114 &1302848276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1302848273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Horizontal
---- !u!114 &1302848277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1302848273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 377f0f6df72421f43b945ef23b6b232b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /joy
-  rosConnector: {fileID: 844560454}
-  FrameId: Unity
 --- !u!1 &1305121965
 GameObject:
   m_ObjectHideFlags: 0
@@ -10374,10 +10340,9 @@ GameObject:
   - component: {fileID: 1593676678}
   - component: {fileID: 1593676677}
   - component: {fileID: 1593676676}
-  - component: {fileID: 1593676675}
   - component: {fileID: 1593676679}
   m_Layer: 0
-  m_Name: ImageSubscriber
+  m_Name: ImagePlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10401,20 +10366,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1593676675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1593676673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39ff86b8700454248be882dfab699e79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /camera/rgb/image_raw/compressed
-  TimeStep: 0.05
-  rosConnector: {fileID: 844560454}
 --- !u!64 &1593676676
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12113,7 +12064,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1832073251}
-  - component: {fileID: 1832073252}
   m_Layer: 0
   m_Name: turtlebot
   m_TagString: Untagged
@@ -12135,20 +12085,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1832073252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1832073250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caa324daa2e3a0e498163929b0536bcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /odom
-  TimeStep: 0
-  rosConnector: {fileID: 844560454}
 --- !u!1 &1840529277
 GameObject:
   m_ObjectHideFlags: 0

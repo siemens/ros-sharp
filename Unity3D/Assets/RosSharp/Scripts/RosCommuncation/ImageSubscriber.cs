@@ -17,20 +17,20 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(MeshRenderer))]
+    [RequireComponent(typeof(RosConnector))]
     public class ImageSubscriber : Subscriber<Messages.Sensor.CompressedImage>
     {
         private byte[] imageData;
         private bool isMessageReceived;
 
-        private MeshRenderer meshRenderer;
+        public MeshRenderer meshRenderer;
         private Texture2D texture2D;
+
 
         protected override void Start()
         {
 			base.Start();
             texture2D = new Texture2D(1, 1);
-            meshRenderer = GetComponent<MeshRenderer>();
             meshRenderer.material = new Material(Shader.Find("Standard"));
         }
         private void Update()

@@ -22,8 +22,9 @@ namespace RosSharp.RosBridgeClient
         private Vector3 position;
         private Quaternion rotation;
         private bool isMessageReceived;
+        public GameObject assignedObject;
 
-		protected override void Start()
+        protected override void Start()
 		{
 			base.Start();
 		}
@@ -42,8 +43,8 @@ namespace RosSharp.RosBridgeClient
         }
         private void ProcessMessage()
         {
-            transform.position = position;
-            transform.rotation = rotation;
+            assignedObject.transform.position = position;
+            assignedObject.transform.rotation = rotation;
         }
 
         private Vector3 GetPosition(Messages.Navigation.Odometry message)

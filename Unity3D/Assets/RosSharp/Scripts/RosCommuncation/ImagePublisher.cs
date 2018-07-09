@@ -39,9 +39,10 @@ namespace RosSharp.RosBridgeClient
             base.Start();
             InitializeGameObject();
             InitializeMessage();
+            Camera.onPostRender += UpdateImage;
         }
 
-        private void OnPostRender()
+        private void UpdateImage(Camera _camera)
         {
             UpdateMessage();
         }
@@ -63,7 +64,7 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.data = texture2D.EncodeToJPG(qualityLevel);
+            message.data = ReadTexture2D().EncodeToJPG(qualityLevel);
             Publish(message);
         }
 
