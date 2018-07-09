@@ -19,6 +19,7 @@ using System.IO;
 using System.Xml;
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace RosSharp.UrdfImporter
 {
@@ -33,6 +34,14 @@ namespace RosSharp.UrdfImporter
 
     public static class UrdfRobotExtensions
     {
+        private static string urdf_filename_;
+        private static string robot_package_name_;
+
+        private static string absolute_robot_package_path_;
+        private static string unity_package_path_;
+        private static string absolute_unity_package_path_;
+        private static string absolute_unity_urdf_path_;
+
         public static GameObject Create(this Robot robot)
         {
             if (UrdfAssetDatabase.GetAssetPath(robot.filename) == null)
@@ -42,17 +51,13 @@ namespace RosSharp.UrdfImporter
                 {
                     if (!ImportUrdfToUnity(robot))
                     {
-                        // Failed to import URDF into Unity.
+                        Debug.Log("URDF not imported into Unity.");
                         return null;
                     }
-                    AssetDatabase.Refresh();
-                    robot = new Robot(robot.filename); // reinitialize robot
+                    robot = new Robot(absolute_unity_urdf_path_); // reinitialize robot
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog("URDF Import Error", 
-                        "URDF and resources must be placed here:\n" + Application.dataPath +
-                        "\n\nPlease see the wiki:\nhttps://github.com/siemens/ros-sharp/wiki","OK") ;
                     return null;
                 }
                 
@@ -79,92 +84,136 @@ namespace RosSharp.UrdfImporter
                 rigidbody.isKinematic = isKinematic;
         }
 
+        // Import the URDF and mesh assets in to the Unity project
         public static bool ImportUrdfToUnity(Robot robot)
         {
-            // Create URDF folder
-            if (!AssetDatabase.IsValidFolder("Assets/Urdf"))
+            string dirSeparators = "\\/";
+            urdf_filename_ = robot.filename.Substring(robot.filename.LastIndexOfAny(dirSeparators.ToCharArray()) + 1);
+
+            if (!GetRobotPackageName(robot.filename)) return false;
+            if (!GetRobotPackagePath(robot.filename)) return false;
+            if (!GetUnityPackagePath()) return false;
+            if (!ImportRobotPackage(robot.filename)) return false;
+
+            return true;
+        }
+
+        // Get the robot URDF package path
+        private static bool GetRobotPackagePath(string urdf_path)
+        {
+            if (urdf_path.Contains(robot_package_name_))
             {
-                AssetDatabase.CreateFolder("Assets", "Urdf");
+                absolute_robot_package_path_ = urdf_path.Remove(urdf_path.IndexOf(robot_package_name_) + robot_package_name_.Length);
+                return true;
             }
-
-            // Create folder for URDF
-            if (!AssetDatabase.IsValidFolder("Assets/Urdf/" + robot.name))
+            else
             {
-                AssetDatabase.CreateFolder("Assets/Urdf", robot.name);
+                EditorUtility.DisplayDialog("URDF Import Error",
+                    "There was an error finding the robot description package path.", "OK");
+                return false;
             }
-            // TODO: if folder exists, check if robot should be updated.
+        }
 
-            // Create folder for meshes
-            if (!AssetDatabase.IsValidFolder("Assets/Urdf/" + robot.name + "/meshes"))
+        // Gets the folder within the Unity project where the user would like to import the new robot description package 
+        private static bool GetUnityPackagePath()
+        {
+            string absolute_robot_package_path = EditorUtility.OpenFolderPanel("Select location to import robot", "Assets", "");
+
+            // Check that the location is inside of the Unity project's Asset folder
+            if (absolute_robot_package_path.StartsWith(Application.dataPath))
             {
-                AssetDatabase.CreateFolder("Assets/Urdf/" + robot.name, "meshes");
-            }
-
-            // Copy URDF into folder
-            string unity_urdf_file_path = Path.Combine(Application.dataPath + "/Urdf/" + robot.name, robot.name + ".urdf");
-            unity_urdf_file_path = unity_urdf_file_path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-            // Find the root of the description package
-            string urdf_package_path = robot.filename;
-            bool package_dir_found = false;
-            do
-            {
-                // First loop, remove file name from string, next loops remove last directory from string
-                urdf_package_path = urdf_package_path.Remove(urdf_package_path.LastIndexOf(Path.AltDirectorySeparatorChar));
-                
-                if (File.Exists(Path.Combine(urdf_package_path, "package.xml")))
+                // Check if the location is the Assets folder
+                if (absolute_robot_package_path.Length > Application.dataPath.Length)
                 {
-                    package_dir_found = true;
-                    break;
+                    unity_package_path_ = absolute_robot_package_path.Substring(Application.dataPath.Length + 1);
+                    unity_package_path_ = Path.Combine(unity_package_path_, robot_package_name_);
                 }
-            } while (urdf_package_path.LastIndexOf(Path.AltDirectorySeparatorChar) != -1);
-
-            if (!package_dir_found)
+                unity_package_path_.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                absolute_unity_package_path_ = Path.Combine(Application.dataPath, unity_package_path_);
+                absolute_unity_package_path_.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                return true;
+            }
+            else
             {
-                // Ask user to manually locate the package path
-                if (EditorUtility.DisplayDialog("Import URDF Problem ",
-                    "Could not find the root of the robot_description package. Select folder?", "Yes", "Cancel Import"))
+                EditorUtility.DisplayDialog("URDF Import Error",
+                    "URDF and resources must be placed in the project's Assets folder\n" +
+                    "\n\nPlease see the wiki:\nhttps://github.com/siemens/ros-sharp/wiki", "OK");
+                return false;
+            }
+        }
+
+        // Gets the name of the robot description package
+        private static bool GetRobotPackageName(string robot_urdf)
+        {
+            // Load the urdf
+            XmlDocument urdf_xml = new XmlDocument();
+            urdf_xml.Load(robot_urdf);
+            XmlNodeList mesh_nodes = urdf_xml.GetElementsByTagName("mesh");
+
+            // Try to automatically find the package name
+            if (mesh_nodes.Count > 0)
+            {
+                robot_package_name_ = mesh_nodes[0].Attributes["filename"].Value;
+                robot_package_name_ = robot_package_name_.Replace("package://", string.Empty);
+                int end_package_index = robot_package_name_.IndexOf("/");
+                robot_package_name_ = robot_package_name_.Substring(0, end_package_index);
+                return true;
+            }
+            else
+            {
+                // TODO: This limits importing URDFs to those with mesh files.
+                EditorUtility.DisplayDialog("URDF Import Error", "Could not determine the URDF package name.", "OK");
+                return false;
+            }
+        }
+
+        // Imports the robot description package to into the Unity project
+        private static bool ImportRobotPackage(string absolute_robot_urdf_path)
+        {
+            // Check if the URDF exists
+            absolute_unity_urdf_path_ = Path.Combine(absolute_unity_package_path_, urdf_filename_);
+
+            if (System.IO.File.Exists(absolute_unity_urdf_path_))
+            {
+                if (!EditorUtility.DisplayDialog("URDF file already exists!",
+                    "A URDF with the same name already exists in this folder. Re-import URDF and mesh assets into Unity?", "Import URDF", "Cancel"))
                 {
-                    urdf_package_path = EditorUtility.OpenFolderPanel("Select URDF root folder", "", "");
-                }
-                else
-                {
-                    // Abort the import process if user cancels.
                     return false;
                 }
             }
-            string package_name = urdf_package_path.Remove(0, urdf_package_path.LastIndexOf(Path.AltDirectorySeparatorChar) + 1);
+            System.IO.Directory.CreateDirectory(absolute_unity_package_path_);
+            System.IO.File.Copy(absolute_robot_urdf_path, absolute_unity_urdf_path_, true);
 
-            // Load XML and copy mesh files
+            List<string> mesh_paths = GetListOfMeshFiles(absolute_robot_urdf_path);
+
+            foreach (var mesh_path in mesh_paths)
+            {
+                string from = Path.Combine(absolute_robot_package_path_, mesh_path);
+                string to = Path.Combine(absolute_unity_package_path_, mesh_path);
+                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(to));
+                System.IO.File.Copy(from, to, true);
+            }
+            AssetDatabase.Refresh();
+            return true;
+        }
+
+        // Gets a list of the relative mesh asset paths from the URDF
+        private static List<string> GetListOfMeshFiles(string absolute_robot_urdf_path)
+        {
+            List<string> mesh_file_names = new List<string>();
+
             XmlDocument urdf_xml = new XmlDocument();
-            urdf_xml.Load(robot.filename);
+            urdf_xml.Load(absolute_robot_urdf_path);
             XmlNodeList mesh_nodes = urdf_xml.GetElementsByTagName("mesh");
 
             for (int i = 0; i < mesh_nodes.Count; i++)
             {
-                string mesh_file_path = mesh_nodes[i].Attributes["filename"].Value;
-                mesh_file_path = mesh_file_path.Replace("package://" + package_name, urdf_package_path);
-                string mesh_file_name = mesh_file_path.Remove(0, mesh_file_path.LastIndexOf(Path.AltDirectorySeparatorChar) + 1);
-
-                // Copy URDF into folder
-                string unity_mesh_file_path = Application.dataPath + "/Urdf/" + robot.name + "/meshes/" + mesh_file_name;
-                unity_mesh_file_path = unity_mesh_file_path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-                mesh_file_path = mesh_file_path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-                if (!File.Exists(unity_mesh_file_path))
-                {
-                    File.Copy(@mesh_file_path, @unity_mesh_file_path);
-                }
-
-                // Update URDF mesh path
-                mesh_nodes[i].Attributes["filename"].Value = "package://" + robot.name + "/meshes/" + mesh_file_name;
+                string mesh_name = mesh_nodes[i].Attributes["filename"].Value;
+                string replace_string = "package://" + robot_package_name_ + "/";
+                mesh_name = mesh_name.Replace(replace_string, string.Empty);
+                mesh_file_names.Add(mesh_name);
             }
-            // Save modified URDF to Assets folder
-            urdf_xml.Save(Application.dataPath + "/Urdf/" + robot.name + "/" + robot.name + ".urdf");
-
-            // Update robot.filename
-            robot.filename = unity_urdf_file_path;
-
-            return true;
+            return mesh_file_names;
         }
     }
 }
