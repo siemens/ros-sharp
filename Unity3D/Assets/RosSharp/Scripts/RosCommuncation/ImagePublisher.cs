@@ -16,6 +16,7 @@ limitations under the License.
 // Adjustments to new Publication Timing and Execution Framework 
 // © Siemens AG, 2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
+using System.Collections;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -32,7 +33,10 @@ namespace RosSharp.RosBridgeClient
 
         private Messages.Sensor.CompressedImage message;
         private Texture2D texture2D;
-        private Rect rect;        
+        private Rect rect;
+
+        private float lastCommunicationTime;
+        public float MinTime;
 
         protected override void Start()
         {
@@ -42,9 +46,9 @@ namespace RosSharp.RosBridgeClient
             Camera.onPostRender += UpdateImage;
         }
 
-        private void UpdateImage(Camera _camera)
+        private void UpdateImage(Camera ImageCamera)
         {
-            UpdateMessage();
+            if(texture2D != null)   UpdateMessage();
         }
 
         private void InitializeGameObject()
@@ -64,14 +68,10 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.data = ReadTexture2D().EncodeToJPG(qualityLevel);
+            texture2D.ReadPixels(rect, 0, 0);
+            message.data = texture2D.EncodeToJPG(qualityLevel);
             Publish(message);
         }
 
-        private Texture2D ReadTexture2D()
-        {
-            texture2D.ReadPixels(rect, 0, 0);
-            return texture2D;
-        }
     }
 }

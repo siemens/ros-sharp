@@ -29,8 +29,7 @@ namespace RosSharp.RosBridgeClient.Protocols
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken cancellationToken;
         private ManualResetEvent IsConnected = new ManualResetEvent(false);
-        private AutoResetEvent SendAsyncReady = new AutoResetEvent(true);
-        private AutoResetEvent ReceiveAsyncReady = new AutoResetEvent(true);
+        private AutoResetEvent IsReadyToSend = new AutoResetEvent(true);
 
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
@@ -84,15 +83,15 @@ namespace RosSharp.RosBridgeClient.Protocols
 
             int messageCount = (int)Math.Ceiling((double)message.Length / SendChunkSize);
 
+            IsReadyToSend.WaitOne();
             for (int i = 0; i < messageCount; i++)
             {
                 int offset = SendChunkSize * i;
                 bool endOfMessage = (i == messageCount - 1);
                 int count = endOfMessage ? message.Length - offset : SendChunkSize;
-                SendAsyncReady.WaitOne();
                 await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Text, endOfMessage, cancellationToken);
-                SendAsyncReady.Set();
             }
+            IsReadyToSend.Set();
         }
 
         private async void StartListen()
@@ -105,9 +104,7 @@ namespace RosSharp.RosBridgeClient.Protocols
                 WebSocketReceiveResult result;
                 do
                 {
-                    ReceiveAsyncReady.WaitOne();
                     result = await clientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                    ReceiveAsyncReady.Set();
 
                     if (result.MessageType == WebSocketMessageType.Close)
                         return;
