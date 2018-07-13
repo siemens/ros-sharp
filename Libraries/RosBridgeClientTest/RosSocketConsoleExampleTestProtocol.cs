@@ -43,14 +43,14 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Publication:
-            int ImageDataSize = 10000;
+            int ImageDataSize = 100;
             sensor_msgs.CompressedImage image = new sensor_msgs.CompressedImage();
             image.header.frame_id = "Test";
             string publication_id = rosSocket.Advertise<sensor_msgs.CompressedImage>("/test_image");
 
             Console.WriteLine("Press any key to start publication...");
             Console.ReadKey(true);
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 image.header.seq += 1;
                 image.data = Enumerable.Repeat((byte)0x20, ImageDataSize).ToArray();

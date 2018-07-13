@@ -63,6 +63,7 @@
     <Compile Include="Messages\Sensor\CompressedImage.cs" />
     <Compile Include="Messages\Sensor\Image.cs" />
     <Compile Include="Messages\Sensor\JointState.cs" />
+    <Compile Include="Messages\Sensor\LaserScan.cs" />
     <Compile Include="Messages\Sensor\Joy.cs" />
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
