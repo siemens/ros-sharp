@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Vertical
+  Name: Horizontal
 --- !u!114 &77361240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0297db9a74427dd4c8f0c54526915112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Horizontal
+  Name: Vertical
 --- !u!114 &77361241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Topic: /scanCorrected
   TimeStep: 0
+  laserScannerObject: {fileID: 954108452}
 --- !u!114 &77361247
 MonoBehaviour:
   m_ObjectHideFlags: 0

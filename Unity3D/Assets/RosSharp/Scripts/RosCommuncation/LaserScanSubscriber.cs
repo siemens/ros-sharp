@@ -1,6 +1,6 @@
 ﻿/*
 © Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,16 +26,18 @@ namespace RosSharp.RosBridgeClient
         private float maxRange;
         private float minRange;
         private bool isReceived = false;
+        public GameObject laserScannerObject;
 
         protected override void Start()
-		{
+        {
             base.Start();
         }
-		
+
         private void Update()
         {
             if (isReceived)
                 ProcessMessage();
+
         }
 
         protected override void ReceiveMessage(Messages.Sensor.LaserScan laserScan)
@@ -69,6 +71,7 @@ namespace RosSharp.RosBridgeClient
                 {
                     spheres[i].SetActive(isInRange[i]);
                     spheres[i].transform.localPosition = new Vector3(spherePositions[i].x, spherePositions[i].y, 0).Ros2Unity();
+                    spheres[i].transform.parent = laserScannerObject.transform;
                 }
         }
 
@@ -83,7 +86,7 @@ namespace RosSharp.RosBridgeClient
         private GameObject InitializeSphere()
         {
             GameObject _gameObject = Instantiate(Resources.Load("LaserScanSphere", typeof(GameObject))) as GameObject;
-            _gameObject.GetComponent<LaserScanManager>().SetRanges(minRange, maxRange);
+            _gameObject.GetComponent<LaserScanWriter>().SetRanges(minRange, maxRange);
             _gameObject.transform.SetParentAndAlign(this.transform);
             return _gameObject;
         }
