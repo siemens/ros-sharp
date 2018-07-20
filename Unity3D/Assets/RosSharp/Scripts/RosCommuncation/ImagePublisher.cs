@@ -46,9 +46,10 @@ namespace RosSharp.RosBridgeClient
             Camera.onPostRender += UpdateImage;
         }
 
-        private void UpdateImage(Camera ImageCamera)
+        private void UpdateImage(Camera _camera)
         {
-            if(texture2D != null)   UpdateMessage();
+            if (texture2D != null && _camera == this.ImageCamera)
+                UpdateMessage();
         }
 
         private void InitializeGameObject()
