@@ -1,7 +1,7 @@
 # [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) #
-[Unity](https://unity3d.com/) project providing Unity-specific extensions to
-* [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient)
-* [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter)
+[Unity](https://unity3d.com/) project containing
+* Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter)
+* example scenes and reference code
 
 __Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info.__
 
