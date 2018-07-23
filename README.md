@@ -4,23 +4,38 @@
 
 Find some examples what you can do with ROS# [here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases).
 
+## Recent Changes ##
+
+Commit [#672b428](https://github.com/siemens/ros-sharp/commit/672b428b958456b20cb8b4f8b66afa720a3a435a) comes with major changes in RosBridgeClient as discussed in [this](https://github.com/siemens/ros-sharp/issues/59) issue. The biggest changes are:
+* [Generic Communication Protocol Interface](https://github.com/siemens/ros-sharp/wiki/Dev/Protocols.md): an [interface](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/IProtocol.cs) to the communication protocol used by RosBridgeClient. It currently comes with two implementations: [WebSocketNetProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketNetProtocol.cs) and [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)
+* [Message Type Structure](https://github.com/siemens/ros-sharp/Libraries/RosBridgeClient/Messages): a more ROS-oriented structure of message types, including further code simplifications
+* [Simplified Message Handling in Unity](https://github.com/siemens/ros-sharp/wiki/Dev/MessageHandlingCodeMap.pdf): a simplified structure with even better performance. It requires a different placement of ROS# components in Unity scene.
+
+Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki/) and the videos of [UnitySimulationScene](https://youtu.be/Ctv4BioS1Y0) and [GazeboSimulationScene](https://youtu.be/oh4BIE5qKoM) for a detailed info on how to use the new framework.
+
+If you prefer working with the old framework, please revert to commit [#672b428](https://github.com/siemens/ros-sharp/commit/672b428b958456b20cb8b4f8b66afa720a3a435a) or release [v1.2c](https://github.com/siemens/ros-sharp/releases/tag/v1.2c).
+
 ## Contents ##
 
-* [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient): a [.NET](https://www.microsoft.com/net) API to [ROS](http://www.ros.org/) via [rosbridge_suite](http://wiki.ros.org/rosbridge_suite)
-* [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter): a [URDF](http://wiki.ros.org/urdf) file parser for [.NET](https://www.microsoft.com/net) applications
-* [ROS](https://github.com/siemens/ros-sharp/tree/master/ROS) some helpful [ROS](http://wiki.ros.org/) packages
-* [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D): a [Unity](https://unity3d.com/) project
-providing Unity-specific extensions to
-   [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) and
-   [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter)
+* [Libraries](https://github.com/siemens/ros-sharp/tree/master/Libraries):
+ .NET solution for [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient), [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter)
+* [ROS](https://github.com/siemens/ros-sharp/tree/master/ROS):  [ROS](http://wiki.ros.org/) packages used by ROS#.
+* [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D): [Unity](https://unity3d.com/) project containing
+  * Unity-specific extensions to
+   [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and
+   [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter)
+  * example scenes and reference code (see [Wiki](https://github.com/siemens/ros-sharp/wiki))
 
 ## Releases ##
+
 In addition to the source code, [Releases](https://github.com/siemens/ros-sharp/releases) contain:
 
 * a [Unity Asset Package](https://docs.unity3d.com/Manual/AssetPackages.html) containing the [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) project assets:
   * to be imported in other Unity projects using ROS#.
 * binaries of [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter)
   * to be used in other .NET projects using these libraries.
+
+Releases are also published in the [Unity Asset Store](https://assetstore.unity.com/packages/tools/physics/ros-ros-unity-communication-package-107085).
 
 Please get the latest development version directly from the [tip of the ROS# master branch](https://github.com/siemens/ros-sharp).
 
@@ -30,35 +45,45 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 ## External Dependencies ##
 
-[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) uses the following 3rd party libraries:
-* `websocket-sharp.dll` from [websocket-sharp](https://github.com/sta/websocket-sharp) provided under MIT License.
-* `NewtonSoft.Json.dll` from [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under MIT License.
+[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) requires:
+* `websocket-sharp.dll` from [websocket-sharp](https://github.com/sta/websocket-sharp) provided under MIT License (required only when using [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)).
+* `Newtonsoft.Json.dll` from [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under MIT License.
 
-[UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) uses the following 3rd party libraries:
+[UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) requires:
 * `MathNet.Numerics.dll` from [Math.NET Numerics](https://numerics.mathdotnet.com/) provided under MIT License.
-* `System.Threading.dll` from [TaskParallelLibrary for .NET 3.5](https://www.nuget.org/packages/TaskParallelLibrary/1.0.2856) provided under [MS-EULA License](https://msdn.microsoft.com/en-us/hh295787).
+* `System.Numerics.dll` included in Unity's Mono Runtime Environment (typically located here  `C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\4.5\`)
 
-## .NET Standard 2.0 ##
-Both [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient)
-and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter)
-are running on .NET Framework 3.5 as this is the .NET platform currently supported by official Unity releases.
 
-For Non-Unity-Applications [blommers](https://github.com/blommers) kindly provides a
-[.NET Standard 2.0 version of UrdfImporter](https://github.com/blommers/UdrfImporter).
+## .NET Platform ##
+
+Both [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) are built with .NET Framework 4.6.
+
+Additionally [blommers](https://github.com/blommers) kindly provides a [.NET Standard 2.0 version of UrdfImporter](https://github.com/blommers/UdrfImporter).
+
+## ROS# Project Team ##
+
+* [Martin Bischoff](https://github.com/MartinBischoff)
+* [Berkay Alp Cakal](https://github.com/berkayalpcakal)
+* [Verena Roehrl](https://github.com/roehrlverena)
+* [Suzannah Smith](https://github.com/SuzannahSmith)
+
+### Former Members and Visitors ###
+
+* [Rahul Warrier](https://github.com/jaguar243)
+
 
 ## Special Thanks ##
 
-* [Rahul Warrier](https://github.com/jaguar243) for adjusting the code to enable its open source publication.
-* [Verena Roehrl](https://github.com/roehrlverena) for providing  ROS packages, Wiki pages and Unity example scenes.
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity STL mesh importer used in this project.
 * [Jeremy Fix](https://github.com/jeremyfix) for providing some helpful ROS communication example scripts in Unity.
-* [Berkay Alp Cakal](https://github.com/berkayalpcakal)  for providing  ROS packages, Wiki pages and Unity example scenes.
-
+  for providing  ROS packages, Wiki pages and Unity example scenes.
+* [Hassanbot](https://github.com/hassanbot) for multiple bugfixes and [communication performance tests](https://github.com/siemens/ros-sharp/issues/66).
 * [Interested in contributing as well?](CONTRIBUTING.md)
 
 ## Further Info ##
-* [Read the Wiki](https://github.com/siemens/ros-sharp/wiki).
-* [Contact the project team](mailto:ros-sharp.ct@siemens.com).
+
+* [Read the Wiki](https://github.com/siemens/ros-sharp/wiki)
+* [Contact the project team](mailto:ros-sharp.ct@siemens.com)
 
 ---
 

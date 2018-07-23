@@ -34,18 +34,15 @@ namespace RosSharp.RosBridgeClient
             urdfPatcher.EnableRigidbodiesGravity = GUILayout.Toggle(urdfPatcher.EnableRigidbodiesGravity, "Enable Gravity for Rigidbodies");
             urdfPatcher.SetRigidbodiesKinematic = GUILayout.Toggle(urdfPatcher.SetRigidbodiesKinematic, "Set Rigidbodies Kinematic");
             urdfPatcher.SetMeshCollidersConvex = GUILayout.Toggle(urdfPatcher.SetMeshCollidersConvex, "Set Mesh Colliders Convex");
-            GUILayout.Space(10);
-            urdfPatcher.AddPoseProvider = GUILayout.Toggle(urdfPatcher.AddPoseProvider, "Publish Pose (Add Pose Provider)");
-            urdfPatcher.AddPoseReceiver = GUILayout.Toggle(urdfPatcher.AddPoseReceiver, "Subscribe Pose (Add Pose Receiver)");
 
             GUILayout.Space(10);
             urdfPatcher.AddJointStateReaders = GUILayout.Toggle(urdfPatcher.AddJointStateReaders, "Publish Joint States (Add Joint State Readers)");
-            if (urdfPatcher.AddJointStateReaders)
-                urdfPatcher.jointStateProvider = (JointStateProvider) EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStateProvider, typeof(JointStateProvider), true);
+            //if (urdfPatcher.AddJointStateReaders)
+            //    urdfPatcher.jointStatePublisher = (JointStatePublisher)EditorGUILayout.ObjectField("Joint State Provider", urdfPatcher.jointStatePublisher, typeof(JointStatePublisher), true);
 
             urdfPatcher.AddJointStateWriters = GUILayout.Toggle(urdfPatcher.AddJointStateWriters, "Subscribe Joint States (Add Joint State Writers)");
-            if (urdfPatcher.AddJointStateWriters)
-                urdfPatcher.jointStateReceiver = (JointStateReceiver) EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateReceiver, typeof(JointStateReceiver), true);
+            //if (urdfPatcher.AddJointStateWriters)
+            //    urdfPatcher.jointStateSubscriber = (JointStateSubscriber)EditorGUILayout.ObjectField("Joint State Receiver", urdfPatcher.jointStateSubscriber, typeof(JointStateSubscriber), true);
 
             GUILayout.Space(10);
             if (GUILayout.Button("Apply"))

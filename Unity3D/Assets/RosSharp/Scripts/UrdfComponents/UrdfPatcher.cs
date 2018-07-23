@@ -21,40 +21,33 @@ namespace RosSharp.RosBridgeClient
 
     public class UrdfPatcher : MonoBehaviour
     {
-
         public GameObject UrdfModel;
-        
+
         public bool EnableRigidbodiesGravity;
         public bool SetRigidbodiesKinematic;
         public bool SetMeshCollidersConvex;
 
-        public bool AddPoseProvider;
-        public bool AddPoseReceiver;
         public bool AddJointStateReaders;
-        public JointStateProvider jointStateProvider;
         public bool AddJointStateWriters;
-        public JointStateReceiver jointStateReceiver;
 
         public void Patch()
         {
             RemoveExistingComponents();
 
             PatchRigidbodies(EnableRigidbodiesGravity, SetRigidbodiesKinematic);
-
             PatchMeshColliders(SetMeshCollidersConvex);
 
-            if (AddPoseProvider)
-                UrdfModel.AddComponent<PoseProvider>();
-
-            if (AddPoseReceiver)
-                UrdfModel.AddComponent<PoseReceiver>();
-
             if (AddJointStateReaders)
-                jointStateProvider.JointStateReaders = AddJointStateReaderComponents();
+            {                
+                JointStatePublisher jointStatePublisher = AddComponentIfNotExists<JointStatePublisher>();                
+                jointStatePublisher.JointStateReaders = AddJointStateReaderComponents();
+            }
 
             if (AddJointStateWriters)
-               AddJointStateWriterComponents(out jointStateReceiver.JointNames, out jointStateReceiver.JointStateWriters);
-
+            {
+                JointStateSubscriber jointStateSubscriber = AddComponentIfNotExists<JointStateSubscriber>();
+                AddJointStateWriterComponents(out jointStateSubscriber.JointNames, out jointStateSubscriber.JointStateWriters);
+            }
         }
         
         private JointStateReader[] AddJointStateReaderComponents() 
@@ -66,16 +59,14 @@ namespace RosSharp.RosBridgeClient
         }
 
         private void AddJointStateWriterComponents(out List<string> jointNames, out List<JointStateWriter> jointStateWriters)
-        {   
+        {
             jointNames = new List<string>();
             jointStateWriters = new List<JointStateWriter>();
 
-            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
-            {
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>()) {
                 jointNames.Add(jointUrdfDataManager.JointName);
                 jointStateWriters.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
             }
-                
         }
 
         private void RemoveExistingComponents()
@@ -84,8 +75,6 @@ namespace RosSharp.RosBridgeClient
             {
                 child.DestroyImmediateIfExists<JointStateReader>();
                 child.DestroyImmediateIfExists<JointStateWriter>();
-                child.DestroyImmediateIfExists<PoseReceiver>();
-                child.DestroyImmediateIfExists<PoseProvider>();
             }
         }
 
@@ -104,6 +93,14 @@ namespace RosSharp.RosBridgeClient
                 rigidbody.useGravity = useGravity;
                 rigidbody.isKinematic = isKinematic;
             }
+        }
+
+        private T AddComponentIfNotExists<T>() where T : Component
+        {
+            T component = GetComponent<T>();
+            if (component == null)
+                component = gameObject.AddComponent<T>();
+            return component;
         }
 
     }

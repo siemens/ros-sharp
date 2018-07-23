@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient
         private Joint joint;
         private JointUrdfDataManager jointUrdfDataManager;
 
-        private float newState;  // rad or m
+        private float newState; // rad or m
         private float prevState; // rad or m
         private bool isNewStateReceived;
 
@@ -55,7 +55,7 @@ namespace RosSharp.RosBridgeClient
         {
             Vector3 anchor = transform.TransformPoint(joint.anchor);
             Vector3 axis = transform.TransformDirection(joint.axis);
-            transform.RotateAround(anchor, axis, -(newState - prevState) * Mathf.Rad2Deg);
+            transform.RotateAround(anchor, axis, -(newState -prevState) * Mathf.Rad2Deg);
         }
         private void WritePrismaticJointUpdate()
         {

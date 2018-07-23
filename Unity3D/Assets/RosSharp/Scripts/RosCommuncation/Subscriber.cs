@@ -18,26 +18,17 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public class Subscriber : MonoBehaviour
+    public abstract class Subscriber<T> : MonoBehaviour where T: Message
     {
         public string Topic;
-
         public float TimeStep;
-        private int timeStep{ get { return (int)(TimeStep * 1000); } } // the rate(in ms in between messages) at which to throttle the topics
 
-        public MessageReceiver MessageReceiver;
-
-        private RosSocket rosSocket;
-
-        private void Start()
+        protected virtual void Start()
         {
-            rosSocket = GetComponent<RosConnector>().RosSocket;
-            rosSocket.Subscribe(Topic, MessageTypes.RosMessageType(MessageReceiver.MessageType), Receive, timeStep);
+            GetComponent<RosConnector>().RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000)); // the rate(in ms in between messages) at which to throttle the topics
         }
-               
-        private void Receive(Message message)
-        {            
-            MessageReceiver.RaiseMessageReception(new MessageEventArgs(message));
-        }
+
+        protected abstract void ReceiveMessage(T message);
+
     }
 }

@@ -129,7 +129,6 @@ namespace RosSharp.UrdfImporter
                 prismaticJoint.lowAngularXLimit = joint.limit.GetLowSoftJointLimit();
                 prismaticJoint.highAngularXLimit = joint.limit.GetHighSoftJointLimit();
 
-                // set linear limit
                 prismaticJoint.linearLimit = joint.limit.GetLinearLimit();
             }
 
@@ -245,5 +244,6 @@ namespace RosSharp.UrdfImporter
             softJointLimit.limit = (float)limit.upper;
             return softJointLimit;
         }
+
     }
 }

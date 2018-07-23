@@ -15,30 +15,44 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using RosSharp.RosBridgeClient;
 using UnityEngine;
 
-public class RosConnector : MonoBehaviour
+namespace RosSharp.RosBridgeClient
 {
-
-    public RosSocket RosSocket { get; private set; }
-    public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
-
-    public void Awake()
+    public class RosConnector : MonoBehaviour
     {
-        RosSocket = new RosSocket(RosBridgeServerUrl);
-        Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
-    }
+        public RosSocket RosSocket { get; private set; }
+        public enum Protocols { WebSocketSharp, WebSocketNET };
+        public Protocols Protocol;
+        public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
 
-    public void Disconnect()
-    {
-        RosSocket.Close();
-        Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
-    }
+        public void Awake()
+        {
+            RosSocket = new RosSocket(GetProtocol());
+            Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
+        }
 
-    private void OnApplicationQuit()
-    {
-        RosSocket.Close();
-        Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+        private RosBridgeClient.Protocols.IProtocol GetProtocol()
+        {
+            switch (Protocol)
+            {
+                case Protocols.WebSocketSharp:
+                    return new RosBridgeClient.Protocols.WebSocketSharpProtocol(RosBridgeServerUrl);
+                default:
+                    return new RosBridgeClient.Protocols.WebSocketNetProtocol(RosBridgeServerUrl);
+            }
+        }
+
+        public void Disconnect()
+        {
+            RosSocket.Close();
+            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+        }
+
+        private void OnApplicationQuit()
+        {
+            RosSocket.Close();
+            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+        }
     }
 }
