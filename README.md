@@ -45,12 +45,13 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 ## External Dependencies ##
 
-[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) uses the following 3rd party libraries:
-* `websocket-sharp.dll` from [websocket-sharp](https://github.com/sta/websocket-sharp) provided under MIT License.
-* `NewtonSoft.Json.dll` from [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under MIT License.
+[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/RosBridgeClient) requires:
+* `websocket-sharp.dll` from [websocket-sharp](https://github.com/sta/websocket-sharp) provided under MIT License (required only when using [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)).
+* `Newtonsoft.Json.dll` from [NewtonSoft Json.Net](http://www.newtonsoft.com/json) provided under MIT License.
 
-[UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) uses the following 3rd party libraries:
+[UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/UrdfImporter) requires:
 * `MathNet.Numerics.dll` from [Math.NET Numerics](https://numerics.mathdotnet.com/) provided under MIT License.
+* `System.Numerics.dll` included in Unity's Mono Runtime Environment (typically located here  `C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\4.5\`)
 
 
 ## .NET Platform ##
