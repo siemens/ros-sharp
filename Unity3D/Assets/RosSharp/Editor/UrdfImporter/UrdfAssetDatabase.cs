@@ -37,6 +37,8 @@ namespace RosSharp.UrdfImporter
             createDefaultMaterialAsset();
             foreach (Link.Visual.Material material in robot.materials)
                 createMaterialAsset(material);
+
+            LocateAssetHandler.missingAsset = false;
         }
 
         #region SetAssetPath
@@ -53,6 +55,11 @@ namespace RosSharp.UrdfImporter
         #endregion
 
         #region GetAssetPath
+        public static string GetAssetRootFolder()
+        {
+            return assetPath;
+        }
+
         public static string GetAssetPathFromPackagePath(string packagePath)
         {
             string path = packagePath.Substring(10).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
@@ -107,7 +114,7 @@ namespace RosSharp.UrdfImporter
             string path = Path.Combine(assetPath, filename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             if (path == null)
                 return null;
-            return AssetDatabase.LoadAssetAtPath<Texture>(path);
+            return LocateAssetHandler.FindUrdfAsset<Texture>(path);
         }
 
         private static Material createDefaultMaterialAsset()
