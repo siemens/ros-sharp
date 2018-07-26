@@ -17,27 +17,30 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint))]
-    public class JointStateReader : JointStateHandler
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointUrdfDataManager))]
+    public class JointStateReader : MonoBehaviour
     {
         private IUrdfJoint joint;
-                
+        private JointUrdfDataManager jointUrdfDataManager;
+
         private void Start()
         {
-            if (JointType == JointTypes.continuous || JointType == JointTypes.revolute)
-                joint = new RevoluteJoint( GetComponent<HingeJoint>());
-            else if (JointType == JointTypes.prismatic)
+            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
+
+            if (jointUrdfDataManager.IsRevoluteOrContinuous)
+                joint = new RevoluteJoint(GetComponent<HingeJoint>());
+            else if (jointUrdfDataManager.IsPrismatic)
                 joint = new PrismaticJoint(GetComponent<ConfigurableJoint>());
         }
-        
+
         public void Read(out string name, out float position, out float velocity, out float effort)
         {
-            name = gameObject.name;
+            name = jointUrdfDataManager.JointName;
             position = joint.GetPosition();
             velocity = joint.GetVelocity();
             effort = joint.GetEffort();
         }
-       
+
         public interface IUrdfJoint
         {
             float GetPosition();
@@ -53,7 +56,7 @@ namespace RosSharp.RosBridgeClient
                 configurableJoint = _configurableJoint;
             }
             public float GetPosition()
-            {                
+            {
                 return Vector3.Dot(configurableJoint.transform.localPosition - configurableJoint.connectedAnchor, configurableJoint.axis);
             }
             public float GetVelocity()
@@ -65,7 +68,7 @@ namespace RosSharp.RosBridgeClient
                 return 0;
             }
         }
-        public class RevoluteJoint: IUrdfJoint
+        public class RevoluteJoint : IUrdfJoint
         {
             private HingeJoint hingeJoint;
 
@@ -75,15 +78,15 @@ namespace RosSharp.RosBridgeClient
             }
             public float GetPosition()
             {
-                return hingeJoint.angle*Mathf.Deg2Rad;
+                return -hingeJoint.angle * Mathf.Deg2Rad;
             }
             public float GetVelocity()
             {
-                return hingeJoint.velocity * Mathf.Deg2Rad;
+                return -hingeJoint.velocity * Mathf.Deg2Rad;
             }
             public float GetEffort()
             {
-                return hingeJoint.motor.force;
+                return -hingeJoint.motor.force;
             }
         }
     }

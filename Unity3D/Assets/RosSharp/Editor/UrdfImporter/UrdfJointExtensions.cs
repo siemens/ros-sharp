@@ -27,8 +27,6 @@ namespace RosSharp.UrdfImporter
             if (parentRigidbody == null)
                 return null;
 
-            gameObject.name = gameObject.name + " (" + joint.type + " Joint: " + joint.name + ")";
-
             if (joint.type == "fixed")
                 return joint.CreateFixedJoint(gameObject, parentRigidbody);
             if (joint.type == "continuous" || joint.type == "revolute")
@@ -85,6 +83,10 @@ namespace RosSharp.UrdfImporter
                 else
                     hingeJoint.useLimits = true;
             }
+
+            // data:
+            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+
             return hingeJoint;
         }
 
@@ -126,7 +128,13 @@ namespace RosSharp.UrdfImporter
             {
                 prismaticJoint.lowAngularXLimit = joint.limit.GetLowSoftJointLimit();
                 prismaticJoint.highAngularXLimit = joint.limit.GetHighSoftJointLimit();
+
+                prismaticJoint.linearLimit = joint.limit.GetLinearLimit();
             }
+
+            // data:
+            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+
             return prismaticJoint;
         }
 
@@ -229,5 +237,13 @@ namespace RosSharp.UrdfImporter
             softJointLimit.limit = (float)limit.upper * Mathf.Rad2Deg;
             return softJointLimit;
         }
+
+        public static SoftJointLimit GetLinearLimit(this Joint.Limit limit)
+        {
+            SoftJointLimit softJointLimit = new SoftJointLimit();
+            softJointLimit.limit = (float)limit.upper;
+            return softJointLimit;
+        }
+
     }
 }

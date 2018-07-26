@@ -16,7 +16,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -29,7 +28,7 @@ namespace RosSharp.UrdfImporter
         public static void SetInertia(this Link.Inertial.Inertia inertia, Rigidbody rigidbody)
         {
             Evd<float> Evd = inertia.Unity3DCoordTrafo().ToMatrix().Evd(Symmetricity.Symmetric);
-            rigidbody.inertiaTensor = Evd.EigenValues.GetReal().ToVector3().FixMinInertia(); // optionally check vector for imaginary part = 0
+            rigidbody.inertiaTensor = Evd.EigenValues.Real().ToSingle().ToVector3().FixMinInertia(); // optionally check vector for imaginary part = 0
             rigidbody.inertiaTensorRotation = Evd.EigenVectors.ToQuaternion(); // optionally check matrix for determinant = 1
         }
 
@@ -64,14 +63,6 @@ namespace RosSharp.UrdfImporter
                     vector3[i] = minInertia;
             return vector3;
         }
-    }
-
-    public static class MathNetNumericsExtensions
-    {
-        public static Vector<float> GetReal(this Vector<Complex> vector)
-        {
-            return vector.Real().ToSingle();
-        }
 
         public static Vector3 ToVector3(this Vector<float> vector)
         {
@@ -95,6 +86,7 @@ namespace RosSharp.UrdfImporter
                 matrix[1, 0] - matrix[0, 1] / w4,
                 w);
         }
+
     }
 }
 

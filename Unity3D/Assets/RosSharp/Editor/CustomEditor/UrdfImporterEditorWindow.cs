@@ -27,13 +27,17 @@ namespace RosSharp.UrdfImporter
 
     public class UrdfImporterEditorWindow : EditorWindow
     {
+        private readonly string[] Protocols = new string[] { "WebSocketSharpProtocol", "WebSocketNetProtocol" };
+        private static int protocolNumber;
         private static string address;
         private static int timeout;
         private static string assetPath;
 
         private Thread rosSocketConnectThread;
-        private Thread urdfImportThread;
-        private RosBridgeClient.UrdfImporter urdfImporter;
+
+        private string robotName;
+        private string localDirectory;
+        
 
         private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
         { "connected", new ManualResetEvent(false) },
@@ -53,6 +57,7 @@ namespace RosSharp.UrdfImporter
             editorWindow.minSize = new Vector2(150, 300);
             editorWindow.Show();
         }
+
         private void OnFocus()
         {
             GetEditorPrefs();
@@ -67,14 +72,19 @@ namespace RosSharp.UrdfImporter
         {
             SetEditorPrefs();
         }
+
         private void DeleteEditorPrefs()
         {
+            EditorPrefs.DeleteKey("UrdfImporterProtocolNumber");
             EditorPrefs.DeleteKey("UrdfImporterAddress");
             EditorPrefs.DeleteKey("UrdfImporterAssetPath");
             EditorPrefs.DeleteKey("UrdfImporterTimeout");
         }
         private void GetEditorPrefs()
         {
+            protocolNumber = (EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
+                EditorPrefs.GetInt("UrdfImporterProtocolNumber") : 1);
+
             address = (EditorPrefs.HasKey("UrdfImporterAddress") ?
                 EditorPrefs.GetString("UrdfImporterAddress") :
                 "ws://192.168.0.1:9090");
@@ -89,6 +99,7 @@ namespace RosSharp.UrdfImporter
         }
         private void SetEditorPrefs()
         {
+            EditorPrefs.SetInt("UrdfImporterProtocol", protocolNumber);
             EditorPrefs.SetString("UrdfImporterAddress", address);
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
@@ -99,6 +110,7 @@ namespace RosSharp.UrdfImporter
             GUILayout.Label("URDF Asset Importer", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 100;
+            protocolNumber = EditorGUILayout.Popup("Protocol", protocolNumber, Protocols);
             address = EditorGUILayout.TextField("Address", address);
             timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
             EditorGUILayout.EndHorizontal();
@@ -151,20 +163,26 @@ namespace RosSharp.UrdfImporter
             foreach (ManualResetEvent manualResetEvent in status.Values)
                 manualResetEvent.Reset();
 
-            // connect to ROSbridge
-            RosSocket rosSocket = new RosSocket(address);
+            // connect to rosbrige_suite:
+            RosSocket rosSocket = new RosSocket(GetProtocol());
             status["connected"].Set();
 
             // setup urdfImporter
-            urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
+            RosBridgeClient.UrdfImporter urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
             status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
-            Thread urdfImportThread = new Thread(() => urdfImporter.Import());
-            urdfImportThread.Start();
 
-            // import URDF assets:
-            if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
+            urdfImporter.Import();
+
+            if (status["robotNameReceived"].WaitOne(timeout * 1000))
+            {
+                robotName = urdfImporter.RobotName;
+                localDirectory = urdfImporter.LocalDirectory;
+            }
+
+                // import URDF assets:
+                if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
@@ -172,6 +190,15 @@ namespace RosSharp.UrdfImporter
             // close the ROSBridge socket
             rosSocket.Close();
             status["disconnected"].Set();
+        }
+
+        private RosBridgeClient.Protocols.IProtocol GetProtocol()
+            {
+            switch (protocolNumber)
+            { 
+                case 0: return new RosBridgeClient.Protocols.WebSocketSharpProtocol(address);
+                default: return new RosBridgeClient.Protocols.WebSocketNetProtocol(address);
+            }
         }
 
         private void OnInspectorUpdate()
@@ -187,10 +214,10 @@ namespace RosSharp.UrdfImporter
                 status["importModelDialogShown"].Set();
                 if (EditorUtility.DisplayDialog(
                     "Urdf Assets imported.",
-                    "Do you want to generate a " + urdfImporter.robotName + " GameObject now?",
+                    "Do you want to generate a " + robotName + " GameObject now?",
                     "Yes", "No"))
                 {
-                    RobotCreator.Create(Path.Combine(urdfImporter.LocalDirectory, "robot_description.urdf"));
+                    RobotCreator.Create(Path.Combine(localDirectory, "robot_description.urdf"));
                 }
             }
 

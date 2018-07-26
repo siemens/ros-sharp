@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint)),RequireComponent(typeof(JointStateWriter))]
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointStateWriter)), RequireComponent(typeof(JointUrdfDataManager))]
     public class JoyAxisJointTransformWriter : JoyAxisWriter
     {
         public float StepLength;
@@ -25,7 +25,8 @@ namespace RosSharp.RosBridgeClient
 
         private Joint joint;
         private JointStateWriter jointStateWriter;
-        
+        private JointUrdfDataManager jointUrdfDataManager;
+
         private float state;
         private Vector2 limit;
 
@@ -33,18 +34,18 @@ namespace RosSharp.RosBridgeClient
         {
             joint = GetComponent<Joint>();
             jointStateWriter = GetComponent<JointStateWriter>();
+            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
 
             SetLimit();
         }
         private void SetLimit()
         {
-            if (jointStateWriter.JointType == JointStateWriter.JointTypes.continuous
-                || jointStateWriter.JointType == JointStateWriter.JointTypes.revolute)
+            if (jointUrdfDataManager.IsRevoluteOrContinuous)
             {
                 HingeJoint hingeJoint = (HingeJoint)joint;
-                limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max);
+                limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max) * Mathf.Deg2Rad; ;
             }
-            else if (jointStateWriter.JointType == JointStateWriter.JointTypes.prismatic)
+            else if (jointUrdfDataManager.IsPrismatic)
             {
                 ConfigurableJoint configurableJoint = (ConfigurableJoint)joint;
                 limit = new Vector2(-configurableJoint.linearLimit.limit, configurableJoint.linearLimit.limit);
@@ -55,7 +56,7 @@ namespace RosSharp.RosBridgeClient
         {
             state = (state >= limit.x) ? state : limit.x;
             state = (state <= limit.y) ? state : limit.y;
-            
+
         }
 
         public override void Write(float value)

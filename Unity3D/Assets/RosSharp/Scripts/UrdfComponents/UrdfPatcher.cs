@@ -14,8 +14,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEditor;
-using System;
 using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
@@ -23,89 +21,52 @@ namespace RosSharp.RosBridgeClient
 
     public class UrdfPatcher : MonoBehaviour
     {
-
         public GameObject UrdfModel;
-        
+
         public bool EnableRigidbodiesGravity;
         public bool SetRigidbodiesKinematic;
         public bool SetMeshCollidersConvex;
 
-        public bool AddPoseProvider;
-        public bool AddPoseReceiver;
         public bool AddJointStateReaders;
-        public JointStateProvider jointStateProvider;
         public bool AddJointStateWriters;
-        public JointStateReceiver jointStateReceiver;
-
-
-        Dictionary<Transform, JointStateHandler.JointTypes> jointTypeDictionary;
 
         public void Patch()
         {
             RemoveExistingComponents();
 
             PatchRigidbodies(EnableRigidbodiesGravity, SetRigidbodiesKinematic);
-
             PatchMeshColliders(SetMeshCollidersConvex);
 
-            if (AddPoseProvider)
-                UrdfModel.AddComponent<PoseProvider>();
-
-            if (AddPoseReceiver)
-                UrdfModel.AddComponent<PoseReceiver>();
-
-            if (AddJointStateReaders || AddJointStateWriters)
-                GetSingleDimensionalJoints();
-
             if (AddJointStateReaders)
-                jointStateProvider.JointStateReaders = PatchJoints<JointStateReader>();
+            {                
+                JointStatePublisher jointStatePublisher = AddComponentIfNotExists<JointStatePublisher>();                
+                jointStatePublisher.JointStateReaders = AddJointStateReaderComponents();
+            }
 
             if (AddJointStateWriters)
-                jointStateReceiver.JointStateWriters = PatchJoints<JointStateWriter>();
-        }
-
-        private void GetSingleDimensionalJoints()
-        {
-            jointTypeDictionary =  new Dictionary<Transform, JointStateHandler.JointTypes>();
-
-            JointStateHandler.JointTypes jointType;
-
-            foreach (Transform child in UrdfModel.GetComponentsInChildren<Transform>())            
-                if (HasSingleDimensionalJoint(child, out jointType))
-                    jointTypeDictionary.Add(child, jointType);
-        
-        }
-
-        public T[] PatchJoints<T>() where T : JointStateHandler
-        {
-            int jointID = 0;
-            T[] jointStateHandlers = new T[jointTypeDictionary.Count];
-            
-            foreach (KeyValuePair<Transform,JointStateHandler.JointTypes> jointTypeEntry in jointTypeDictionary)
             {
-                jointStateHandlers[jointID] = jointTypeEntry.Key.gameObject.AddComponent<T>();
-                jointStateHandlers[jointID].JointType = jointTypeEntry.Value;
-                jointStateHandlers[jointID].JointID = jointID++;
-                
+                JointStateSubscriber jointStateSubscriber = AddComponentIfNotExists<JointStateSubscriber>();
+                AddJointStateWriterComponents(out jointStateSubscriber.JointNames, out jointStateSubscriber.JointStateWriters);
             }
-            return jointStateHandlers;
+        }
+        
+        private JointStateReader[] AddJointStateReaderComponents() 
+        {
+            List<JointStateReader> jointStateReaders = new List<JointStateReader>();
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
+                jointStateReaders.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateReader>());   
+            return jointStateReaders.ToArray();
         }
 
-
-        private bool HasSingleDimensionalJoint(Transform child, out JointStateReader.JointTypes jointType)
+        private void AddJointStateWriterComponents(out List<string> jointNames, out List<JointStateWriter> jointStateWriters)
         {
-            jointType = JointStateHandler.JointTypes.continuous;
+            jointNames = new List<string>();
+            jointStateWriters = new List<JointStateWriter>();
 
-            if (child.name.Contains("continuous Joint"))
-                jointType = JointStateHandler.JointTypes.continuous;
-            else if (child.name.Contains("revolute Joint"))
-                jointType = JointStateHandler.JointTypes.revolute;
-            else if (child.name.Contains("prismatic Joint"))
-                jointType = JointStateHandler.JointTypes.prismatic;
-            else
-                return false;
-
-            return true;
+            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>()) {
+                jointNames.Add(jointUrdfDataManager.JointName);
+                jointStateWriters.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
+            }
         }
 
         private void RemoveExistingComponents()
@@ -114,8 +75,6 @@ namespace RosSharp.RosBridgeClient
             {
                 child.DestroyImmediateIfExists<JointStateReader>();
                 child.DestroyImmediateIfExists<JointStateWriter>();
-                child.DestroyImmediateIfExists<PoseReceiver>();
-                child.DestroyImmediateIfExists<PoseProvider>();
             }
         }
 
@@ -126,6 +85,7 @@ namespace RosSharp.RosBridgeClient
                 meshCollider.convex = convex;
             }
         }
+
         private void PatchRigidbodies(bool useGravity,bool isKinematic)
         {
             foreach (Rigidbody rigidbody in UrdfModel.GetComponentsInChildren<Rigidbody>())
@@ -135,8 +95,13 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-       
-
+        private T AddComponentIfNotExists<T>() where T : Component
+        {
+            T component = GetComponent<T>();
+            if (component == null)
+                component = gameObject.AddComponent<T>();
+            return component;
+        }
 
     }
 }
