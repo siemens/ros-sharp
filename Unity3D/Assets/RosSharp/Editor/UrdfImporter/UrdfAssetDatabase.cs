@@ -29,7 +29,7 @@ namespace RosSharp.UrdfImporter
 
         public static void Initialize(Robot robot)
         {
-            assetPath = GetAssetPath(robot.filename);
+            assetPath = GetAssetParentDirectoryPath(robot.filename);
 
             if (!AssetDatabase.IsValidFolder(Path.Combine(assetPath, materialFolderName)))
                 AssetDatabase.CreateFolder(assetPath, materialFolderName);
@@ -40,16 +40,15 @@ namespace RosSharp.UrdfImporter
         }
 
         #region SetAssetPath
-        public static string GetAssetPath(this string urdfFile)
+        public static string GetAssetParentDirectoryPath(this string urdfFile)
         {
-            string absolutePath = Path.GetDirectoryName(urdfFile);
-            string absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            if (absolutePathUnityFormat.StartsWith(Application.dataPath))
-            {
-                string assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
-                return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            }
-            return null;
+            string directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
+            return GetAssetPathFromAbsolutePath(directoryAbsolutePath);
+        }
+
+        public static void UpdateAssetPath(string newPath)
+        {
+            assetPath = newPath;
         }
         #endregion
 
@@ -62,6 +61,17 @@ namespace RosSharp.UrdfImporter
                 path = path.Substring(0, path.Length - 3) + "prefab";
 
             return Path.Combine(assetPath, path);
+        }
+
+        public static string GetAssetPathFromAbsolutePath(string absolutePath)
+        {
+            string absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (absolutePathUnityFormat.StartsWith(Application.dataPath))
+            {
+                string assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
+                return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            }
+            return null;
         }
 
         private static string getMaterialAssetPath(string materialName)

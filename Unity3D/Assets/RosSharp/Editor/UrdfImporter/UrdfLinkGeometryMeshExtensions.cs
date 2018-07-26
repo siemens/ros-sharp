@@ -23,11 +23,22 @@ namespace RosSharp.UrdfImporter
     public static class UrdfLinkGeometryMeshExtensions
     {
         public static GameObject CreateVisual(this Link.Geometry.Mesh mesh, GameObject parent)
-        {            
-            GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
-            mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
-            return gameObject;
+        {
+            GameObject meshObject = AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename));
+        
+            if (meshObject == null)
+            {
+                meshObject = MissingAssetHandler.FindMissingAsset(mesh.filename);
+            }
+
+            if(meshObject != null)
+            { 
+                GameObject gameObject = Object.Instantiate(meshObject);
+                mesh.setScale(gameObject);
+                gameObject.transform.SetParentAndAlign(parent.transform);
+                return gameObject;
+            }
+            return null;
         }
 
         public static GameObject CreateCollider(this Link.Geometry.Mesh mesh, GameObject parent)
@@ -42,10 +53,10 @@ namespace RosSharp.UrdfImporter
                 meshCollider.sharedMesh = meshFilter.sharedMesh;
                 Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
                 Object.DestroyImmediate(meshFilter);
-                
+
             }
             mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
+            gameObject.transform.SetParentAndAlign(parent.transform);
             return gameObject;
         }
 

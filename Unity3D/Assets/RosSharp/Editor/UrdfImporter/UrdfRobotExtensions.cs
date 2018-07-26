@@ -33,7 +33,7 @@ namespace RosSharp.UrdfImporter
     {
         public static GameObject Create(this Robot robot)
         {
-            if (UrdfAssetDatabase.GetAssetPath(robot.filename) == null)
+            if (UrdfAssetDatabase.GetAssetParentDirectoryPath(robot.filename) == null)
             { 
                 Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);
                 return null;
