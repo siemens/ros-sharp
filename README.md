@@ -76,7 +76,6 @@ Additionally [blommers](https://github.com/blommers) kindly provides a [.NET Sta
 
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity STL mesh importer used in this project.
 * [Jeremy Fix](https://github.com/jeremyfix) for providing some helpful ROS communication example scripts in Unity.
-  for providing  ROS packages, Wiki pages and Unity example scenes.
 * [Hassanbot](https://github.com/hassanbot) for multiple bugfixes and [communication performance tests](https://github.com/siemens/ros-sharp/issues/66).
 * [Interested in contributing as well?](CONTRIBUTING.md)
 
