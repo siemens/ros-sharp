@@ -24,7 +24,6 @@ namespace RosSharp.UrdfImporter
 {
     public static class LocateAssetHandler
     {
-        public static bool missingAsset;
         private static string fileAssetPath;
 
         public static T FindUrdfAsset<T>(string assetFileName) where T : UnityEngine.Object
@@ -34,38 +33,25 @@ namespace RosSharp.UrdfImporter
 
             if (assetObject == null) // Asset is missing
             {
-                if (!missingAsset) // Found an asset missing for the first time
-                {
-                    int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                         "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
-                         "\n\nExpected asset path: " + fileAssetPath,
-                         "Locate Asset",
-                         "Ignore Missing Asset",
-                         "Locate Root Folder");
+                
+                int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
+                        "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
+                        "\n\nExpected asset path: " + fileAssetPath,
+                        "Locate Asset",
+                        "Ignore Missing Asset",
+                        "Locate Root Folder");
 
-                    switch (option)
-                    {
-                        case 0:
-                            assetObject = LocateAssetFile<T>();
-                            break;
-                        case 1: break;
-                        case 2:
-                            assetObject = LocateRootAssetFolder<T>(assetFileName);
-                            break;
-                        default: break;
-                    }
-                }
-                else
+                switch (option)
                 {
-                    bool locateAsset = EditorUtility.DisplayDialog("Urdf Importer: Asset Not Found",
-                         "Expected asset path: " + fileAssetPath,
-                         "Locate Asset",
-                         "Ignore Missing Asset");
-
-                    if (locateAsset)
+                    case 0:
                         assetObject = LocateAssetFile<T>();
+                        break;
+                    case 1: break;
+                    case 2:
+                        assetObject = LocateRootAssetFolder<T>(assetFileName);
+                        break;
+                    default: break;
                 }
-                missingAsset = true;
             }
 
             if (assetObject != null)

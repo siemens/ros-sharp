@@ -37,8 +37,6 @@ namespace RosSharp.UrdfImporter
             createDefaultMaterialAsset();
             foreach (Link.Visual.Material material in robot.materials)
                 createMaterialAsset(material);
-
-            LocateAssetHandler.missingAsset = false;
         }
 
         #region SetAssetPath
