@@ -51,9 +51,8 @@ namespace RosSharp.UrdfImporter
             ResetStatusEvents();
 
             // connect to rosbrige_suite:
-            RosBridgeClient.Protocols.Protocol protocol = GetProtocol(protocolNumber, address);
-            RosSocket rosSocket = new RosSocket(protocol);
-            CheckConnection(protocol, timeout);
+            RosSocket rosSocket = new RosSocket(GetProtocol(protocolNumber, address));
+            CheckConnection(rosSocket.Protocol, timeout);
             
             if (!statusEvents["connected"].WaitOne(0))
             {

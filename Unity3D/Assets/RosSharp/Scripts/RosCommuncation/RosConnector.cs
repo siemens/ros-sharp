@@ -21,6 +21,8 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosConnector : MonoBehaviour
     {
+        public int timeout = 10;
+
         public RosSocket RosSocket { get; private set; }
         public enum Protocols { WebSocketSharp, WebSocketNET };
         public Protocols Protocol;
@@ -29,7 +31,10 @@ namespace RosSharp.RosBridgeClient
         public void Awake()
         {
             RosSocket = new RosSocket(GetProtocol());
-            Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
+            if (RosSocket.Protocol.WaitForConnection(timeout))
+                Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
+            else
+                Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
 
         private RosBridgeClient.Protocols.Protocol GetProtocol()

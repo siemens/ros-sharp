@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {
-        private Protocol Protocol;
+        public Protocol Protocol;
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
