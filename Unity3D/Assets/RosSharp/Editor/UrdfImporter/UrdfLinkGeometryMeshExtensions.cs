@@ -38,24 +38,26 @@ namespace RosSharp.UrdfImporter
 
         public static GameObject CreateCollider(this Link.Geometry.Mesh mesh, GameObject parent)
         {
-            GameObject gameObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
+            GameObject prefabObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
 
-            if (gameObject != null)
+            if (prefabObject == null)
+                return null;
+                    
+            GameObject meshObject = Object.Instantiate(prefabObject);
+
+            MeshFilter[] meshFilters = meshObject.GetComponentsInChildren<MeshFilter>();
+            foreach (MeshFilter meshFilter in meshFilters)
             {
-                MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-                foreach (MeshFilter meshFilter in meshFilters)
-                {
-                    GameObject child = meshFilter.gameObject;
-                    MeshCollider meshCollider = child.AddComponent<MeshCollider>();
-                    meshCollider.sharedMesh = meshFilter.sharedMesh;
-                    Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
-                    Object.DestroyImmediate(meshFilter);
-
-                }
-                mesh.setScale(gameObject);
-                gameObject.transform.SetParentAndAlign(parent.transform);
+                GameObject child = meshFilter.gameObject;
+                MeshCollider meshCollider = child.AddComponent<MeshCollider>();
+                meshCollider.sharedMesh = meshFilter.sharedMesh;
+                Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
+                Object.DestroyImmediate(meshFilter);
             }
-            return gameObject;
+
+            mesh.setScale(meshObject);
+            meshObject.transform.SetParentAndAlign(parent.transform);
+            return meshObject;
         }
 
         private static void setScale(this Link.Geometry.Mesh mesh, GameObject gameObject)
