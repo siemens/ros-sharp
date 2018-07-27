@@ -18,9 +18,9 @@ using WebSocketSharp;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebSocketSharpProtocol: IProtocol
+    public class WebSocketSharpProtocol: Protocol
     {
-        public event EventHandler OnReceive;
+        public override event EventHandler OnReceive;
 
         private WebSocket WebSocket;
 
@@ -30,22 +30,22 @@ namespace RosSharp.RosBridgeClient.Protocols
             WebSocket.OnMessage += Receive;                
         }
                 
-        public void Connect()
+        public override void Connect()
         {
             WebSocket.Connect();            
         }
 
-        public void Close()
+        public override void Close()
         {
             WebSocket.Close();
         }
 
-        public bool IsAlive()
+        public override bool IsAlive()
         {
             return WebSocket.IsAlive;
         }
 
-        public void Send(byte[] data)
+        public override void Send(byte[] data)
         {
             WebSocket.SendAsync(data, null);
         }

@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient
             Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
         }
 
-        private RosBridgeClient.Protocols.IProtocol GetProtocol()
+        private RosBridgeClient.Protocols.Protocol GetProtocol()
         {
             switch (Protocol)
             {

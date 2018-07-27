@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebSocketNetProtocol : IProtocol
+    public class WebSocketNetProtocol : Protocol
     {
         private ClientWebSocket clientWebSocket;
         private readonly Uri uri;
@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient.Protocols
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
 
-        public event EventHandler OnReceive;
+        public override event EventHandler OnReceive;
 
         public WebSocketNetProtocol(string uriString)
         {
@@ -43,7 +43,7 @@ namespace RosSharp.RosBridgeClient.Protocols
             cancellationToken = cancellationTokenSource.Token;
         }
 
-        public void Connect()
+        public override void Connect()
         {
             Thread thread = new Thread(() => ConnectAsync());
             thread.Start();
@@ -56,17 +56,17 @@ namespace RosSharp.RosBridgeClient.Protocols
             StartListen();
         }
 
-        public async void Close()
+        public override async void Close()
         {
             await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
         }
 
-        public bool IsAlive()
+        public override bool IsAlive()
         {
             return clientWebSocket.State == WebSocketState.Open;
         }
 
-        public void Send(byte[] message)
+        public override void Send(byte[] message)
         {
             Thread thread = new Thread(() => SendAsync(message));
             thread.Start();

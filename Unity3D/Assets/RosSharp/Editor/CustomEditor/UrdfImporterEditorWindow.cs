@@ -17,11 +17,8 @@ limitations under the License.
 
 using System.IO;
 using System.Threading;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using RosSharp.RosBridgeClient;
-using System;
 
 namespace RosSharp.UrdfImporter
 {
@@ -32,28 +29,17 @@ namespace RosSharp.UrdfImporter
         private static string address;
         private static int timeout;
         private static string assetPath;
-
-        private Thread rosSocketConnectThread;
-
-        private string robotName;
-        private string localDirectory;
-        
-        private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
-        { "connected", new ManualResetEvent(false) },
-        { "robotNameReceived",new ManualResetEvent(false) },
-        { "robotDescriptionReceived", new ManualResetEvent(false) },
-        { "resourceFilesReceived", new ManualResetEvent(false) },
-        { "disconnected", new ManualResetEvent(false) },
-        { "databaseRefreshStarted", new ManualResetEvent(false) },
-        { "databaseRefreshed", new ManualResetEvent(false) },
-        { "importModelDialogShown", new ManualResetEvent(false) },
-        };
+      
+        private RosConnectionHandler connectionHandler;
 
         [MenuItem("RosBridgeClient/Import URDF Assets...")]
         private static void Init()
         {
             UrdfImporterEditorWindow editorWindow = GetWindow<UrdfImporterEditorWindow>();
             editorWindow.minSize = new Vector2(150, 300);
+            
+            editorWindow.connectionHandler = new RosConnectionHandler();
+
             editorWindow.Show();
         }
 
@@ -131,7 +117,8 @@ namespace RosSharp.UrdfImporter
             if (GUILayout.Button("Read Robot Description."))
             {
                 SetEditorPrefs();
-                rosSocketConnectThread = new Thread(() => rosSocketConnect());
+
+                Thread rosSocketConnectThread = new Thread(() => connectionHandler.RosSocketConnect(protocolNumber, address, timeout, assetPath));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
@@ -140,116 +127,29 @@ namespace RosSharp.UrdfImporter
 
             EditorGUIUtility.labelWidth = 300;
 
-            drawLabelField("1. rosbridge_server Connected:", "connected");
-            drawLabelField("2. Robot Name Received:", "robotNameReceived");
-            drawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
-            drawLabelField("4. Resource Files Received:", "resourceFilesReceived");
-            drawLabelField("5. rosbridge_server Disconnected:", "disconnected");
-            drawLabelField("6. Asset Database Refresh Completed:", "databaseRefreshed");
+            DrawLabelField("1. rosbridge_server Connected:", "connected");
+            DrawLabelField("2. Robot Name Received:", "robotNameReceived");
+            DrawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
+            DrawLabelField("4. Resource Files Received:", "resourceFilesReceived");
+            DrawLabelField("5. rosbridge_server Disconnected:", "disconnected");
+            DrawLabelField("6. Import Complete:", "importComplete");
         }
 
-        private void drawLabelField(string label, string stage)
+        private void DrawLabelField(string label, string stage)
         {
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
-            bool state = status[stage].WaitOne(0);
+            bool state = connectionHandler.statusEvents[stage].WaitOne(0);
             guiStyle.normal.textColor = state ? Color.green : Color.red;
             EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
         }
 
-        private void rosSocketConnect()
-        {
-            // initialize
-            foreach (ManualResetEvent manualResetEvent in status.Values)
-                manualResetEvent.Reset();
-
-            // connect to rosbrige_suite:
-            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
-            RosSocket rosSocket = new RosSocket(protocol);
-            CheckConnection(protocol);
-
-            if (!status["connected"].WaitOne(0))
-            { 
-                rosSocket.Close();
-                return;
-            }
-
-            // setup urdfImporter
-            RosBridgeClient.UrdfImporter urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
-            status["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
-            status["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
-            status["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
-
-            urdfImporter.Import();
-
-            if (status["robotNameReceived"].WaitOne(timeout * 1000))
-            {
-                robotName = urdfImporter.RobotName;
-                localDirectory = urdfImporter.LocalDirectory;
-            }
-
-            // import URDF assets:
-            if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
-                Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
-            else
-                Debug.LogWarning("Not all resource files have been received before timeout.");
-
-            status["disconnected"].Set();
-            rosSocket.Close();
-        }
-
-        private void CheckConnection(RosBridgeClient.Protocols.IProtocol protocol)
-        {
-            Debug.Log("Attempting to connect to ROS");
-
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
-
-            while (!protocol.IsAlive() && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
-                Thread.Sleep(500);
-
-            stopwatch.Stop();
-            if (protocol.IsAlive())
-                status["connected"].Set();
-            else
-                Debug.LogWarning("Failed to connect to ROS before timeout");
-        }
-
-        private RosBridgeClient.Protocols.IProtocol GetProtocol()
-            {
-            switch (protocolNumber)
-            { 
-                case 0: return new RosBridgeClient.Protocols.WebSocketSharpProtocol(address);
-                default: return new RosBridgeClient.Protocols.WebSocketNetProtocol(address);
-            }
-        }
-
         private void OnInspectorUpdate()
         {
-            // some methods can only be called from main thread:
-            // We check the status to call the methods at the right step in the process:
-
             Repaint();
 
-            // import Model
-            if (status["databaseRefreshed"].WaitOne(0) && !status["importModelDialogShown"].WaitOne(0))
-            {
-                status["importModelDialogShown"].Set();
-                if (EditorUtility.DisplayDialog(
-                    "Urdf Assets imported.",
-                    "Do you want to generate a " + robotName + " GameObject now?",
-                    "Yes", "No"))
-                {
-                    RobotCreator.Create(Path.Combine(localDirectory, "robot_description.urdf"));
-                }
-            }
-
-            // refresh Asset Database 
-            if (status["resourceFilesReceived"].WaitOne(0) && !status["databaseRefreshed"].WaitOne(0))
-            {
-                status["databaseRefreshStarted"].Set();
-                AssetDatabase.Refresh();
-                status["databaseRefreshed"].Set();
-            }
-        }
+            // some methods can only be called from main thread:
+            // We check the status to call the methods at the right step in the process:
+            connectionHandler.FinishImportIfReady();
+        } 
     }
 }

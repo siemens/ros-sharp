@@ -25,14 +25,14 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {
-        private IProtocol Protocol;
+        private Protocol Protocol;
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
 
-        public RosSocket(IProtocol protocol)
+        public RosSocket(Protocol protocol)
         {
             Protocol = protocol;
             Protocol.OnReceive += (sender, e) => Receive(sender, e);
