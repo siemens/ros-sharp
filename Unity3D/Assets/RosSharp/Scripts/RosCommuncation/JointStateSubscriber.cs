@@ -29,13 +29,12 @@ namespace RosSharp.RosBridgeClient
 
         protected override void ReceiveMessage(Messages.Sensor.JointState message)
         {
+            int index;
             for (int i = 0; i < message.name.Length; i++)
             {
-                if (JointNames.Contains(message.name[i]))
-                {
-                    JointStateWriters[JointNames.IndexOf(message.name[i])].Write(message.position[i]);
-                }
-
+                index = JointNames.IndexOf(message.name[i]);
+                if (index != -1)
+                    JointStateWriters[index].Write(message.position[i]);
             }
         }
     }
