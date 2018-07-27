@@ -23,29 +23,38 @@ namespace RosSharp.UrdfImporter
     public static class UrdfLinkGeometryMeshExtensions
     {
         public static GameObject CreateVisual(this Link.Geometry.Mesh mesh, GameObject parent)
-        {            
-            GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
-            mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
-            return gameObject;
+        {
+            GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
+
+            if(meshObject != null)
+            { 
+                GameObject gameObject = Object.Instantiate(meshObject);
+                mesh.setScale(gameObject);
+                gameObject.transform.SetParentAndAlign(parent.transform);
+                return gameObject;
+            }
+            return null;
         }
 
         public static GameObject CreateCollider(this Link.Geometry.Mesh mesh, GameObject parent)
         {
-            GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
+            GameObject gameObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
 
-            MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-            foreach (MeshFilter meshFilter in meshFilters)
+            if (gameObject != null)
             {
-                GameObject child = meshFilter.gameObject;
-                MeshCollider meshCollider = child.AddComponent<MeshCollider>();
-                meshCollider.sharedMesh = meshFilter.sharedMesh;
-                Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
-                Object.DestroyImmediate(meshFilter);
-                
+                MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    GameObject child = meshFilter.gameObject;
+                    MeshCollider meshCollider = child.AddComponent<MeshCollider>();
+                    meshCollider.sharedMesh = meshFilter.sharedMesh;
+                    Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
+                    Object.DestroyImmediate(meshFilter);
+
+                }
+                mesh.setScale(gameObject);
+                gameObject.transform.SetParentAndAlign(parent.transform);
             }
-            mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
             return gameObject;
         }
 
