@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2018
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,36 +31,33 @@ namespace RosSharp.UrdfImporter
             fileAssetPath = UrdfAssetDatabase.GetAssetPathFromPackagePath(assetFileName);
             T assetObject = AssetDatabase.LoadAssetAtPath<T>(fileAssetPath);
 
-            if (assetObject == null) // Asset is missing
-            {
-                
-                int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                        "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
-                        "\n\nExpected asset path: " + fileAssetPath,
-                        "Locate Asset",
-                        "Ignore Missing Asset",
-                        "Locate Root Folder");
+            if (assetObject != null)
+                return assetObject;
 
-                switch (option)
-                {
-                    case 0:
-                        assetObject = LocateAssetFile<T>();
-                        break;
-                    case 1: break;
-                    case 2:
-                        assetObject = LocateRootAssetFolder<T>(assetFileName);
-                        break;
-                    default: break;
-                }
+            int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
+                    "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
+                    "\n\nExpected asset path: " + fileAssetPath,
+                    "Locate Asset",
+                    "Ignore Missing Asset",
+                    "Locate Root Folder");
+
+            switch (option)
+            {
+                case 0:
+                    assetObject = LocateAssetFile<T>();
+                    break;
+                case 1: break;
+                case 2:
+                    assetObject = LocateRootAssetFolder<T>(assetFileName);
+                    break;
+                default: break;
             }
 
             if (assetObject != null)
                 return assetObject;
-            else
-            {
-                ChooseFailureOption(fileAssetPath);
-                return null;
-            }
+
+            ChooseFailureOption(fileAssetPath);
+            return null;
         }
 
         private static T LocateRootAssetFolder<T>(string assetFileName) where T : UnityEngine.Object
