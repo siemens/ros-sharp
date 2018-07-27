@@ -21,10 +21,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using RosSharp.RosBridgeClient;
+using System;
 
 namespace RosSharp.UrdfImporter
 {
-
     public class UrdfImporterEditorWindow : EditorWindow
     {
         private readonly string[] Protocols = new string[] { "WebSocketSharpProtocol", "WebSocketNetProtocol" };
@@ -38,7 +38,6 @@ namespace RosSharp.UrdfImporter
         private string robotName;
         private string localDirectory;
         
-
         private Dictionary<string, ManualResetEvent> status = new Dictionary<string, ManualResetEvent>{
         { "connected", new ManualResetEvent(false) },
         { "robotNameReceived",new ManualResetEvent(false) },
@@ -159,13 +158,20 @@ namespace RosSharp.UrdfImporter
 
         private void rosSocketConnect()
         {
-            // intialize
+            // initialize
             foreach (ManualResetEvent manualResetEvent in status.Values)
                 manualResetEvent.Reset();
 
             // connect to rosbrige_suite:
-            RosSocket rosSocket = new RosSocket(GetProtocol());
-            status["connected"].Set();
+            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
+            RosSocket rosSocket = new RosSocket(protocol);
+            CheckConnection(protocol);
+
+            if (!status["connected"].WaitOne(0))
+            { 
+                rosSocket.Close();
+                return;
+            }
 
             // setup urdfImporter
             RosBridgeClient.UrdfImporter urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
@@ -181,15 +187,31 @@ namespace RosSharp.UrdfImporter
                 localDirectory = urdfImporter.LocalDirectory;
             }
 
-                // import URDF assets:
-                if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
+            // import URDF assets:
+            if (status["resourceFilesReceived"].WaitOne(timeout * 1000))
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
 
-            // close the ROSBridge socket
-            rosSocket.Close();
             status["disconnected"].Set();
+            rosSocket.Close();
+        }
+
+        private void CheckConnection(RosBridgeClient.Protocols.IProtocol protocol)
+        {
+            Debug.Log("Attempting to connect to ROS");
+
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
+            while (!protocol.IsAlive() && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
+                Thread.Sleep(500);
+
+            stopwatch.Stop();
+            if (protocol.IsAlive())
+                status["connected"].Set();
+            else
+                Debug.LogWarning("Failed to connect to ROS before timeout");
         }
 
         private RosBridgeClient.Protocols.IProtocol GetProtocol()
