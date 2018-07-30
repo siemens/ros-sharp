@@ -19,14 +19,12 @@ namespace RosSharp.RosBridgeClient.Protocols
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
-            while (IsAlive() && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
+            while (!IsAlive() && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
                 Thread.Sleep(millisecondsCheckConnection);
 
             stopwatch.Stop();
-            if (IsAlive())
-                return true;
 
-            return false;
+            return IsAlive();
         }
     }
 }

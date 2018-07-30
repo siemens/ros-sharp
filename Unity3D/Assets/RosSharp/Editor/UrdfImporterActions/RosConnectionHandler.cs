@@ -27,7 +27,6 @@ namespace RosSharp.UrdfImporter
 {
     class RosConnectionHandler
     {
-
         private string robotName;
         private string localDirectory;
 
@@ -76,9 +75,7 @@ namespace RosSharp.UrdfImporter
 
             // import URDF assets:
             if (statusEvents["resourceFilesReceived"].WaitOne(timeout * 1000))
-            {
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
-            }
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
 
@@ -88,8 +85,6 @@ namespace RosSharp.UrdfImporter
 
         private void CheckConnection(RosBridgeClient.Protocols.Protocol protocol, int timeout)
         {
-            Debug.Log("Attempting to connect to ROS");
-
             if(protocol.WaitForConnection(timeout))
                 statusEvents["connected"].Set();
             else
