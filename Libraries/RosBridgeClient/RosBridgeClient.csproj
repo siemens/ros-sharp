@@ -75,7 +75,7 @@
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
-    <Compile Include="Protocols\Protocol.cs" />
+    <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />

@@ -25,18 +25,18 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosSocket
     {
-        public Protocol Protocol;
+        public IProtocol protocol;
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
 
-        public RosSocket(Protocol protocol)
+        public RosSocket(IProtocol protocol)
         {
-            Protocol = protocol;
-            Protocol.OnReceive += (sender, e) => Receive(sender, e);
-            Protocol.Connect();
+            this.protocol = protocol;
+            this.protocol.OnReceive += (sender, e) => Receive(sender, e);
+            this.protocol.Connect();
         }
 
         public void Close()
@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClient
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
 
-            Protocol.Close();
+            protocol.Close();
         }
 
         #region Publishers
@@ -138,7 +138,7 @@ namespace RosSharp.RosBridgeClient
 #if DEBUG
             Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(communication, Formatting.Indented) + "\n");
 #endif
-            Protocol.Send(Serialize<T>(communication));
+            protocol.Send(Serialize<T>(communication));
             return;
         }
 
@@ -199,6 +199,5 @@ namespace RosSharp.RosBridgeClient
             while (dictionary.ContainsKey(id));
             return id;
         }
-
     }
 }

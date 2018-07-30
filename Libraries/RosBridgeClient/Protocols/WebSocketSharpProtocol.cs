@@ -18,41 +18,56 @@ using WebSocketSharp;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebSocketSharpProtocol: Protocol
+    public class WebSocketSharpProtocol: IProtocol
     {
-        public override event EventHandler OnReceive;
+        public event EventHandler OnReceive;
+        public event EventHandler OnConnect;
+        public event EventHandler OnClose;
 
         private WebSocket WebSocket;
 
         public WebSocketSharpProtocol(string url)
         {
             WebSocket = new WebSocket(url);
-            WebSocket.OnMessage += Receive;                
+            WebSocket.OnMessage += Receive;
+
+            WebSocket.OnClose += Closed;
+            WebSocket.OnOpen += Connected;
         }
                 
-        public override void Connect()
+        public void Connect()
         {
             WebSocket.Connect();            
         }
 
-        public override void Close()
+        public void Close()
         {
             WebSocket.Close();
         }
 
-        public override bool IsAlive()
+        public bool IsAlive()
         {
             return WebSocket.IsAlive;
         }
 
-        public override void Send(byte[] data)
+        public void Send(byte[] data)
         {
             WebSocket.SendAsync(data, null);
         }
         
         private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
         {
-            OnReceive.Invoke(sender, new MessageEventArgs(e.RawData));
+            OnReceive(sender, new MessageEventArgs(e.RawData));
+        }
+
+        private void Closed(object sender, EventArgs e)
+        {
+            OnClose(null, EventArgs.Empty);
+        }
+
+        private void Connected(object sender, EventArgs e)
+        {
+            OnConnect(null, EventArgs.Empty);
         }
     }
 }

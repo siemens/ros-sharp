@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebSocketNetProtocol : Protocol
+    public class WebSocketNetProtocol : IProtocol
     {
         private ClientWebSocket clientWebSocket;
         private readonly Uri uri;
@@ -34,7 +34,9 @@ namespace RosSharp.RosBridgeClient.Protocols
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
 
-        public override event EventHandler OnReceive;
+        public event EventHandler OnReceive;
+        public event EventHandler OnConnect;
+        public event EventHandler OnClose;
 
         public WebSocketNetProtocol(string uriString)
         {
@@ -43,7 +45,7 @@ namespace RosSharp.RosBridgeClient.Protocols
             cancellationToken = cancellationTokenSource.Token;
         }
 
-        public override void Connect()
+        public void Connect()
         {
             Thread thread = new Thread(() => ConnectAsync());
             thread.Start();
@@ -53,20 +55,26 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
+            OnConnect(null, EventArgs.Empty);
             StartListen();
         }
 
-        public override async void Close()
+        public async void Close()
         {
-            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            if (IsAlive())
+            {
+                await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                IsConnected.Reset();
+                OnClose(null, EventArgs.Empty);
+            }
         }
 
-        public override bool IsAlive()
+        public bool IsAlive()
         {
             return clientWebSocket.State == WebSocketState.Open;
         }
 
-        public override void Send(byte[] message)
+        public void Send(byte[] message)
         {
             Thread thread = new Thread(() => SendAsync(message));
             thread.Start();
@@ -117,6 +125,5 @@ namespace RosSharp.RosBridgeClient.Protocols
             }
         }
     }
-
 }
 

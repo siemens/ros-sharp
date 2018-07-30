@@ -33,6 +33,8 @@ namespace RosSharp.UrdfImporter
         private int protocolNumber;
         private string address;
         private int timeout;
+        private string assetPath;
+
         private RosSocket rosSocket;
 
         public Dictionary<string, ManualResetEvent> statusEvents;
@@ -49,19 +51,29 @@ namespace RosSharp.UrdfImporter
                 };
         }
 
-        public void RosSocketImport(int protocolNumber, string address, int timeout, string assetPath)
+        public void BeginRosImport(int protocolNumber, string address, int timeout, string assetPath)
         {
             this.protocolNumber = protocolNumber;
             this.address = address;
             this.timeout = timeout;
+            this.assetPath = assetPath;
 
             // initialize
             ResetStatusEvents();
-            
-            ConnectToRosSocket();
-            if (!statusEvents["connected"].WaitOne(0))
+
+            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
+            protocol.OnConnect += SetConnected;
+            protocol.OnClose += SetDisconnected;
+
+            rosSocket = new RosSocket(protocol);
+            ImportAssets();
+        }
+
+        private void ImportAssets()
+        {
+            if(!statusEvents["connected"].WaitOne(timeout * 1000))
             {
-                rosSocket.Close();
+                Debug.LogWarning("Failed to connect to ROS before timeout");
                 return;
             }
 
@@ -85,45 +97,10 @@ namespace RosSharp.UrdfImporter
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
 
-            DisconnectFromRosSocket();
-        }
-
-        private void ConnectToRosSocket()
-        {
-            rosSocket = new RosSocket(GetProtocol());
-
-            if (rosSocket.Protocol.WaitForConnection(timeout))
-                statusEvents["connected"].Set();
-            else
-                Debug.LogWarning("Failed to connect to ROS before timeout");
-        }
-
-        private void DisconnectFromRosSocket()
-        {
             rosSocket.Close();
-
-            if (rosSocket.Protocol.WaitForDisconnection(timeout))
-                statusEvents["disconnected"].Set();
-            else
-                Debug.Log("Failed to disconnect from RosBridge before timeout: " + address);
         }
 
-        private void ResetStatusEvents()
-        {
-            foreach (ManualResetEvent manualResetEvent in statusEvents.Values)
-                manualResetEvent.Reset();
-        }
-
-        private RosBridgeClient.Protocols.Protocol GetProtocol()
-        {
-            switch (protocolNumber)
-            {
-                case 0: return new RosBridgeClient.Protocols.WebSocketSharpProtocol(address);
-                default: return new RosBridgeClient.Protocols.WebSocketNetProtocol(address);
-            }
-        }
-
-        public void FinishImportIfReady()
+        public void GenerateModelIfReady()
         {
             if (statusEvents["resourceFilesReceived"].WaitOne(0) && !statusEvents["importComplete"].WaitOne(0))
             {
@@ -139,6 +116,31 @@ namespace RosSharp.UrdfImporter
 
                 statusEvents["importComplete"].Set();
             }
+        }
+
+        private RosBridgeClient.Protocols.IProtocol GetProtocol()
+        {
+            switch (protocolNumber)
+            {
+                case 0: return new RosBridgeClient.Protocols.WebSocketSharpProtocol(address);
+                default: return new RosBridgeClient.Protocols.WebSocketNetProtocol(address);
+            }
+        }
+
+        private void SetDisconnected(object sender, EventArgs e)
+        {
+            statusEvents["disconnected"].Set();
+        }
+
+        private void SetConnected(object sender, EventArgs e)
+        {
+            statusEvents["connected"].Set();
+        }
+
+        private void ResetStatusEvents()
+        {
+            foreach (ManualResetEvent manualResetEvent in statusEvents.Values)
+                manualResetEvent.Reset();
         }
     }
 }

@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Threading;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -28,16 +30,23 @@ namespace RosSharp.RosBridgeClient
         public Protocols Protocol;
         public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
 
+        private ManualResetEvent IsConnected = new ManualResetEvent(false);
+
         public void Awake()
         {
-            RosSocket = new RosSocket(GetProtocol());
-            if (RosSocket.Protocol.WaitForConnection(timeout))
-                Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
-            else
+            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
+            protocol.OnConnect += NotifyAboutConnection;
+            protocol.OnClose += NotifyAboutDisconnect;
+
+            RosSocket = new RosSocket(protocol);
+
+            if (!IsConnected.WaitOne(timeout * 1000))
+            {
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
+            }
         }
 
-        private RosBridgeClient.Protocols.Protocol GetProtocol()
+        private RosBridgeClient.Protocols.IProtocol GetProtocol()
         {
             switch (Protocol)
             {
@@ -51,19 +60,22 @@ namespace RosSharp.RosBridgeClient
         public void Disconnect()
         {
             RosSocket.Close();
-            if (RosSocket.Protocol.WaitForDisconnection(timeout))
-                Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
-            else
-                Debug.Log("Failed to disconnect from RosBridge before timeout: " + RosBridgeServerUrl);
         }
 
         private void OnApplicationQuit()
         {
             RosSocket.Close();
-            if(RosSocket.Protocol.WaitForDisconnection(timeout))
-                Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
-            else
-                Debug.Log("Failed to disconnect from RosBridge before timeout: " + RosBridgeServerUrl);
+        }
+
+        private void NotifyAboutConnection(object sender, EventArgs e)
+        {
+            IsConnected.Set();
+            Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
+        }
+
+        public void NotifyAboutDisconnect(object sender, EventArgs e)
+        {
+            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
         }
     }
 }

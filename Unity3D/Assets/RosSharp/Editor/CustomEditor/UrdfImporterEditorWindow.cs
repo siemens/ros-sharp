@@ -118,7 +118,7 @@ namespace RosSharp.UrdfImporter
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => importHandler.RosSocketImport(protocolNumber, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolNumber, address, timeout, assetPath));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
@@ -149,7 +149,7 @@ namespace RosSharp.UrdfImporter
 
             // some methods can only be called from main thread:
             // We check the status to call the methods at the right step in the process:
-            importHandler.FinishImportIfReady();
+            importHandler.GenerateModelIfReady();
         } 
     }
 }
