@@ -16,15 +16,25 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public bool WaitForConnection(int timeout)
         {
+            return WaitForConnectionStatus(timeout, true);
+        }
+
+        public bool WaitForDisconnection(int timeout)
+        {
+            return WaitForConnectionStatus(timeout, false);
+        }
+
+        private bool WaitForConnectionStatus(int timeout, bool wantAlive)
+        {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
-            while (!IsAlive() && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
+            while ((wantAlive != IsAlive()) && stopwatch.Elapsed < TimeSpan.FromSeconds(timeout))
                 Thread.Sleep(millisecondsCheckConnection);
-
+          
             stopwatch.Stop();
 
-            return IsAlive();
+            return (wantAlive == IsAlive());
         }
     }
 }

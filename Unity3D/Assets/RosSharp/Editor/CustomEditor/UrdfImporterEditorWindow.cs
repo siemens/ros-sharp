@@ -30,7 +30,7 @@ namespace RosSharp.UrdfImporter
         private static int timeout;
         private static string assetPath;
       
-        private RosConnectionHandler connectionHandler;
+        private RosImportHandler importHandler;
 
         [MenuItem("RosBridgeClient/Import URDF Assets...")]
         private static void Init()
@@ -38,7 +38,7 @@ namespace RosSharp.UrdfImporter
             UrdfImporterEditorWindow editorWindow = GetWindow<UrdfImporterEditorWindow>();
             editorWindow.minSize = new Vector2(150, 300);
             
-            editorWindow.connectionHandler = new RosConnectionHandler();
+            editorWindow.importHandler = new RosImportHandler();
 
             editorWindow.Show();
         }
@@ -118,7 +118,7 @@ namespace RosSharp.UrdfImporter
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => connectionHandler.RosSocketConnect(protocolNumber, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => importHandler.RosSocketImport(protocolNumber, address, timeout, assetPath));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
@@ -138,7 +138,7 @@ namespace RosSharp.UrdfImporter
         private void DrawLabelField(string label, string stage)
         {
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
-            bool state = connectionHandler.statusEvents[stage].WaitOne(0);
+            bool state = importHandler.statusEvents[stage].WaitOne(0);
             guiStyle.normal.textColor = state ? Color.green : Color.red;
             EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
         }
@@ -149,7 +149,7 @@ namespace RosSharp.UrdfImporter
 
             // some methods can only be called from main thread:
             // We check the status to call the methods at the right step in the process:
-            connectionHandler.FinishImportIfReady();
+            importHandler.FinishImportIfReady();
         } 
     }
 }

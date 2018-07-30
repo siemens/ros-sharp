@@ -51,13 +51,19 @@ namespace RosSharp.RosBridgeClient
         public void Disconnect()
         {
             RosSocket.Close();
-            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            if (RosSocket.Protocol.WaitForDisconnection(timeout))
+                Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            else
+                Debug.Log("Failed to disconnect from RosBridge before timeout: " + RosBridgeServerUrl);
         }
 
         private void OnApplicationQuit()
         {
             RosSocket.Close();
-            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            if(RosSocket.Protocol.WaitForDisconnection(timeout))
+                Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            else
+                Debug.Log("Failed to disconnect from RosBridge before timeout: " + RosBridgeServerUrl);
         }
     }
 }

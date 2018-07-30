@@ -52,11 +52,22 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket.Close();
         }
 
-        [Test] 
+        [Test]
         public void ConnectionTest()
         {
-            bool connected = RosSocket.Protocol.WaitForConnection(1000);
+            bool connected = RosSocket.Protocol.WaitForConnection(10);
             Assert.IsTrue(connected);
+        }
+
+        [Test]
+        public void DisconnectionTest()
+        { 
+            RosSocket.Close();
+            bool disconnected = RosSocket.Protocol.WaitForDisconnection(10);
+            Assert.IsTrue(disconnected);
+
+            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(Uri));
+            Assert.IsTrue(RosSocket.Protocol.WaitForConnection(10));
         }
 
         [Test]
