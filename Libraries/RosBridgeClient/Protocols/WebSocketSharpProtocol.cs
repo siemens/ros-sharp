@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if !WINDOWS_UWP
+
 using System;
 using WebSocketSharp;
 
@@ -71,3 +73,6 @@ namespace RosSharp.RosBridgeClient.Protocols
         }
     }
 }
+
+
+#endif
