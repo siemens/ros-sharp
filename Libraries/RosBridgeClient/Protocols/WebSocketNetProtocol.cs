@@ -35,6 +35,8 @@ namespace RosSharp.RosBridgeClient.Protocols
         private const int SendChunkSize = 1024;
 
         public event EventHandler OnReceive;
+        public event EventHandler OnConnected;
+        public event EventHandler OnClosed;
 
         public WebSocketNetProtocol(string uriString)
         {
@@ -53,12 +55,18 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
+            OnConnected(null, EventArgs.Empty);
             StartListen();
         }
 
         public async void Close()
         {
-            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            if (IsAlive())
+            {
+                await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                IsConnected.Reset();
+                OnClosed(null, EventArgs.Empty);
+            }
         }
 
         public bool IsAlive()
@@ -117,6 +125,5 @@ namespace RosSharp.RosBridgeClient.Protocols
             }
         }
     }
-
 }
 
