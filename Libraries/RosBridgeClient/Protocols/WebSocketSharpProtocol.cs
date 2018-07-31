@@ -21,8 +21,8 @@ namespace RosSharp.RosBridgeClient.Protocols
     public class WebSocketSharpProtocol: IProtocol
     {
         public event EventHandler OnReceive;
-        public event EventHandler OnConnect;
-        public event EventHandler OnClose;
+        public event EventHandler OnConnected;
+        public event EventHandler OnClosed;
 
         private WebSocket WebSocket;
 
@@ -37,12 +37,12 @@ namespace RosSharp.RosBridgeClient.Protocols
                 
         public void Connect()
         {
-            WebSocket.Connect();            
+            WebSocket.ConnectAsync();            
         }
 
         public void Close()
         {
-            WebSocket.Close();
+            WebSocket.CloseAsync();
         }
 
         public bool IsAlive()
@@ -62,12 +62,12 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         private void Closed(object sender, EventArgs e)
         {
-            OnClose(null, EventArgs.Empty);
+            OnClosed(sender, e);
         }
 
         private void Connected(object sender, EventArgs e)
         {
-            OnConnect(null, EventArgs.Empty);
+            OnConnected(sender, e);
         }
     }
 }

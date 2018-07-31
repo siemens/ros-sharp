@@ -62,8 +62,8 @@ namespace RosSharp.UrdfImporter
             ResetStatusEvents();
 
             RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
-            protocol.OnConnect += SetConnected;
-            protocol.OnClose += SetDisconnected;
+            protocol.OnConnected += OnConnected;
+            protocol.OnClosed += OnClose;
 
             rosSocket = new RosSocket(protocol);
             ImportAssets();
@@ -111,7 +111,7 @@ namespace RosSharp.UrdfImporter
                     "Do you want to generate a " + robotName + " GameObject now?",
                     "Yes", "No"))
                 {
-                    RobotCreator.Create(Path.Combine(localDirectory, "robot_description.urdf"));
+                    RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
                 }
 
                 statusEvents["importComplete"].Set();
@@ -127,12 +127,12 @@ namespace RosSharp.UrdfImporter
             }
         }
 
-        private void SetDisconnected(object sender, EventArgs e)
+        private void OnClose(object sender, EventArgs e)
         {
             statusEvents["disconnected"].Set();
         }
 
-        private void SetConnected(object sender, EventArgs e)
+        private void OnConnected(object sender, EventArgs e)
         {
             statusEvents["connected"].Set();
         }

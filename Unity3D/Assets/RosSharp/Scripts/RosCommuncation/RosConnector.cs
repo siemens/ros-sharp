@@ -35,11 +35,11 @@ namespace RosSharp.RosBridgeClient
         public void Awake()
         {
             RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
-            protocol.OnConnect += NotifyAboutConnection;
-            protocol.OnClose += NotifyAboutDisconnect;
+            protocol.OnConnected += OnConnected;
+            protocol.OnClosed += OnClosed;
 
             RosSocket = new RosSocket(protocol);
-
+        
             if (!IsConnected.WaitOne(timeout * 1000))
             {
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
@@ -57,23 +57,18 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        public void Disconnect()
-        {
-            RosSocket.Close();
-        }
-
         private void OnApplicationQuit()
         {
             RosSocket.Close();
         }
 
-        private void NotifyAboutConnection(object sender, EventArgs e)
+        private void OnConnected(object sender, EventArgs e)
         {
             IsConnected.Set();
             Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
         }
 
-        public void NotifyAboutDisconnect(object sender, EventArgs e)
+        private void OnClosed(object sender, EventArgs e)
         {
             Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
         }

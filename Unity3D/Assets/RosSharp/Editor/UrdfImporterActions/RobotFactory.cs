@@ -1,6 +1,6 @@
 ﻿/*
 © Siemens AG, 2017
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,25 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.UrdfImporter
 {
-    public class UrdfGeneratorEditorWindow
+    public static class RobotFactory
     {
-        [MenuItem("GameObject/3D Object/URDF Model")]
-        private static void CreateUrdfObject()
+        public static GameObject Create(string filename)
         {
-            string urdfFile = EditorUtility.OpenFilePanel(
-                "Import local URDF",
-                Path.Combine(Path.GetDirectoryName(Application.dataPath),"Assets"),
-                "urdf");
-
-            if (urdfFile != "")
-                RobotFactory.Create(urdfFile);
-
+            Robot robot = new Robot(filename);
+            return robot.Create();
         }
     }
 }
