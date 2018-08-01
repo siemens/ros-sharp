@@ -23,18 +23,29 @@ namespace RosSharp.UrdfImporter
     public static class UrdfLinkGeometryMeshExtensions
     {
         public static GameObject CreateVisual(this Link.Geometry.Mesh mesh, GameObject parent)
-        {            
-            GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
-            mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
-            return gameObject;
+        {
+            GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
+
+            if(meshObject != null)
+            { 
+                GameObject gameObject = Object.Instantiate(meshObject);
+                mesh.setScale(gameObject);
+                gameObject.transform.SetParentAndAlign(parent.transform);
+                return gameObject;
+            }
+            return null;
         }
 
         public static GameObject CreateCollider(this Link.Geometry.Mesh mesh, GameObject parent)
         {
-            GameObject gameObject = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(UrdfAssetDatabase.GetAssetPathFromPackagePath(mesh.filename)));
+            GameObject prefabObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
 
-            MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+            if (prefabObject == null)
+                return null;
+                    
+            GameObject meshObject = Object.Instantiate(prefabObject);
+
+            MeshFilter[] meshFilters = meshObject.GetComponentsInChildren<MeshFilter>();
             foreach (MeshFilter meshFilter in meshFilters)
             {
                 GameObject child = meshFilter.gameObject;
@@ -42,11 +53,11 @@ namespace RosSharp.UrdfImporter
                 meshCollider.sharedMesh = meshFilter.sharedMesh;
                 Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
                 Object.DestroyImmediate(meshFilter);
-                
             }
-            mesh.setScale(gameObject);
-            gameObject.transform.SetParentAndAlign(parent.transform);            
-            return gameObject;
+
+            mesh.setScale(meshObject);
+            meshObject.transform.SetParentAndAlign(parent.transform);
+            return meshObject;
         }
 
         private static void setScale(this Link.Geometry.Mesh mesh, GameObject gameObject)

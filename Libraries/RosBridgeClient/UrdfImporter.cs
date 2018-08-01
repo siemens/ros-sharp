@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if !WINDOWS_UWP
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -230,3 +232,5 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#endif

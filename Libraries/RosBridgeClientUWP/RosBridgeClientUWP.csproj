@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{473E1A95-178E-4377-97A5-91D0FDACFE7E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RosBridgeClientUWP</RootNamespace>
+    <AssemblyName>RosBridgeClientUWP</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\RosBridgeClient\Communication.cs">
+      <Link>Communication.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Communicators.cs">
+      <Link>Communicators.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Message.cs">
+      <Link>Message.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Accel.cs">
+      <Link>Messages\Geometry\Accel.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Point.cs">
+      <Link>Messages\Geometry\Point.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Pose.cs">
+      <Link>Messages\Geometry\Pose.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\PoseStamped.cs">
+      <Link>Messages\Geometry\PoseStamped.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\PoseWithCovariance.cs">
+      <Link>Messages\Geometry\PoseWithCovariance.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Quaternion.cs">
+      <Link>Messages\Geometry\Quaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Twist.cs">
+      <Link>Messages\Geometry\Twist.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\TwistWithCovariance.cs">
+      <Link>Messages\Geometry\TwistWithCovariance.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\Vector3.cs">
+      <Link>Messages\Geometry\Vector3.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Navigation\MapMetaData.cs">
+      <Link>Messages\Navigation\MapMetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Navigation\OccupancyGrid.cs">
+      <Link>Messages\Navigation\OccupancyGrid.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Navigation\Odometry.cs">
+      <Link>Messages\Navigation\Odometry.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\CompressedImage.cs">
+      <Link>Messages\Sensor\CompressedImage.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\Image.cs">
+      <Link>Messages\Sensor\Image.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\JointState.cs">
+      <Link>Messages\Sensor\JointState.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\Joy.cs">
+      <Link>Messages\Sensor\Joy.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\LaserScan.cs">
+      <Link>Messages\Sensor\LaserScan.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\PointCloud2.cs">
+      <Link>Messages\Sensor\PointCloud2.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Sensor\PointField.cs">
+      <Link>Messages\Sensor\PointField.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Standard\Header.cs">
+      <Link>Messages\Standard\Header.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Standard\String.cs">
+      <Link>Messages\Standard\String.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Standard\Time.cs">
+      <Link>Messages\Standard\Time.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\PointCloud.cs">
+      <Link>PointCloud.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Protocols\IProtocol.cs">
+      <Link>Protocols\IProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Protocols\MessageEventArgs.cs">
+      <Link>Protocols\MessageEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Protocols\WebSocketNetProtocol.cs">
+      <Link>Protocols\WebSocketNetProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Protocols\WebSocketSharpProtocol.cs">
+      <Link>Protocols\WebSocketSharpProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Protocols\WebSocketUWPProtocol.cs">
+      <Link>Protocols\WebSocketUWPProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\RosSocket.cs">
+      <Link>RosSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Services\FileServer\GetBinaryFile.cs">
+      <Link>Services\FileServer\GetBinaryFile.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Services\RosApi\GetParam.cs">
+      <Link>Services\RosApi\GetParam.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Services\Standard\Trigger.cs">
+      <Link>Services\Standard\Trigger.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\UrdfImporter.cs">
+      <Link>UrdfImporter.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\RosBridgeClientUWP.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>11.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

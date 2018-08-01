@@ -60,7 +60,7 @@ namespace RosSharp
         private static GameObject CreateStlGameObject(string meshAssetPath, Material material)
         {
             GameObject gameObject = new GameObject(Path.GetFileNameWithoutExtension(meshAssetPath));
-            gameObject.AddComponent<MeshFilter>().sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshAssetPath);
+            gameObject.AddComponent<MeshFilter>().sharedMesh = UrdfImporter.LocateAssetHandler.FindUrdfAsset<Mesh>(meshAssetPath);
             gameObject.AddComponent<MeshRenderer>().sharedMaterial = material;
             return gameObject;
         }

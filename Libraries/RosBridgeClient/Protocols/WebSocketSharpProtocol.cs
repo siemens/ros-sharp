@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if !WINDOWS_UWP
+
 using System;
 using WebSocketSharp;
 
@@ -21,23 +23,28 @@ namespace RosSharp.RosBridgeClient.Protocols
     public class WebSocketSharpProtocol: IProtocol
     {
         public event EventHandler OnReceive;
+        public event EventHandler OnConnected;
+        public event EventHandler OnClosed;
 
         private WebSocket WebSocket;
 
         public WebSocketSharpProtocol(string url)
         {
             WebSocket = new WebSocket(url);
-            WebSocket.OnMessage += Receive;                
+            WebSocket.OnMessage += Receive;
+
+            WebSocket.OnClose += Closed;
+            WebSocket.OnOpen += Connected;
         }
                 
         public void Connect()
         {
-            WebSocket.Connect();            
+            WebSocket.ConnectAsync();            
         }
 
         public void Close()
         {
-            WebSocket.Close();
+            WebSocket.CloseAsync();
         }
 
         public bool IsAlive()
@@ -52,7 +59,20 @@ namespace RosSharp.RosBridgeClient.Protocols
         
         private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
         {
-            OnReceive.Invoke(sender, new MessageEventArgs(e.RawData));
+            OnReceive(sender, new MessageEventArgs(e.RawData));
+        }
+
+        private void Closed(object sender, EventArgs e)
+        {
+            OnClosed(sender, e);
+        }
+
+        private void Connected(object sender, EventArgs e)
+        {
+            OnConnected(sender, e);
         }
     }
 }
+
+
+#endif

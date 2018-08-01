@@ -51,7 +51,7 @@ namespace RosSharp.RosBridgeClientTest
         {
             RosSocket.Close();
         }
-
+        
         [Test]
         public void PublicationTest()
         {
