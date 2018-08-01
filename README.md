@@ -24,6 +24,11 @@ ROS# contains a solution in the Libraries folder, which contains a project calle
 
 In the ROS# Unity project, I first installed the Mixed Reality Toolkit and followed their configuration instructions. Next, in RosSharp/Plugins, I deselected all platforms from Newtonsoft.Json, and excluded WSAPlayer from all others. Next, I copied over the RosBridgeClientUWP.dll into RosSharp/Plugins, and selected WSAPlayer as the only platform. Finally, I modified RosConnector.cs, using preprocessor directives to make Unity use the WebSocketUWP protocol if WINDOWS_UWP is defined.
 
+### Making Changes ###
+
+If you want to make changes to the RosBridgeClient, like adding new messages, for instance, simply edit the code in the RosBridgeClient project (following the instructions from the main ROS# wiki), build the solution, and copy over the new RosBridgeClient.dll and RosBridgeClientUWP.dll.
+
+
 ## Recent Changes ##
 
 [This](https://github.com/siemens/ros-sharp/commit/34fb2a8ddd58c5f099b1e4b887a253b954808fb4) commit comes with major changes in [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) that already have been discussed in [this](https://github.com/siemens/ros-sharp/issues/59) issue.
