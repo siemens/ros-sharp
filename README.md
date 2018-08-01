@@ -8,13 +8,13 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. 
 
-### Instalation ### 
+#### Installation ### 
 
 To use ROS# with the HoloLens, simply clone this fork and switch to the UWP branch. Then open the Unity project and import the [Microsoft Mixed Reality Toolkit](https://github.com/Microsoft/MixedRealityToolkit-Unity). The toolkit provides a version of Newtonsoft.Json that works on the HoloLens, as well as other tools/features you will want during HoloLens development. Follow the Mixed Reality Toolkit configuration instructions, and you will be good to go. 
 
 ### Architecture ###
 
-How does this work under the hood? In brief, I wrote a UWP-compatible WebSocket interface for ROS#, created a UWP-compatible version of RosBridgeClient.dll, called RosBridgeClientUWP.dll, added that to the Unity Project, spefified proper platforms for all .dlls, and edited RosConnector.cs to automatically use to the UWP WebSocket interface.
+How does this work under the hood? In brief, I wrote a UWP-compatible WebSocket interface for ROS#, created a UWP-compatible version of RosBridgeClient.dll, called RosBridgeClientUWP.dll, added that to the Unity Project, specified proper platforms for all .dlls, and edited RosConnector.cs to automatically use to the UWP WebSocket interface.
 
 #### Creating RosBridgeClientUWP.dll ####
 
