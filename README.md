@@ -4,6 +4,26 @@
 
 Find some examples what you can do with ROS# [here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases).
 
+## Notes On This Fork ##
+
+This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. 
+
+### Instalation ### 
+
+To use ROS# with the HoloLens, simply clone this fork and switch to the UWP branch. Then open the Unity project and import the [Microsoft Mixed Reality Toolkit](https://github.com/Microsoft/MixedRealityToolkit-Unity). The toolkit provides a version of Newtonsoft.Json that works on the HoloLens, as well as other tools/features you will want during HoloLens development. Follow the Mixed Reality Toolkit configuration instructions, and you will be good to go. 
+
+### Architecture ###
+
+How does this work under the hood? In brief, I wrote a UWP-compatible WebSocket interface for ROS#, created a UWP-compatible version of RosBridgeClient.dll, called RosBridgeClientUWP.dll, added that to the Unity Project, spefified proper platforms for all .dlls, and edited RosConnector.cs to automatically use to the UWP WebSocket interface.
+
+#### Creating RosBridgeClientUWP.dll ####
+
+ROS# contains a solution in the Libraries folder, which contains a project called RosBridgeClient. In the Protocols folder, I created a UWP compatible WebSocket interface. Next, I wrapped all WebSocket protocol files in preprocessor directives so only the UWP compatible interface would be compiled in a UWP-build. Finally, I created a second project in the solution called RosBridgeClientUWP. I made it a Windows Universal class library project, and copied all of the RosBridgeClient code over as links. Copying as links means that editing the code in one location changes it in both. Finally, build the solution.
+
+#### Preparing the Unity Project ####
+
+In the ROS# Unity project, I first installed the Mixed Reality Toolkit and followed their configuration instructions. Next, in RosSharp/Plugins, I deselected all platforms from Newtonsoft.Json, and excluded WSAPlayer from all others. Next, I copied over the RosBridgeClientUWP.dll into RosSharp/Plugins, and selected WSAPlayer as the only platform. Finally, I modified RosConnector.cs, using preprocessor directives to make Unity use the WebSocketUWP protocol if WINDOWS_UWP is defined.
+
 ## Recent Changes ##
 
 [This](https://github.com/siemens/ros-sharp/commit/34fb2a8ddd58c5f099b1e4b887a253b954808fb4) commit comes with major changes in [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) that already have been discussed in [this](https://github.com/siemens/ros-sharp/issues/59) issue.
