@@ -36,7 +36,7 @@ namespace RosSharp.UrdfImporter
 
             createDefaultMaterialAsset();
             foreach (Link.Visual.Material material in robot.materials)
-                createMaterialAsset(material);
+                CreateMaterialAsset(material);
         }
 
         #region SetAssetPath
@@ -82,21 +82,32 @@ namespace RosSharp.UrdfImporter
         private static string getMaterialAssetPath(string materialName)
         {
             string path = Path.Combine(materialFolderName, Path.GetFileName(materialName) + ".mat");
-            return Path.Combine(assetPath,path);
+            return Path.Combine(assetPath, path);
         }
         #endregion
 
         #region CreateMaterialAssets
-        private static Material initializeMaterial()        {
+        private static Material initializeMaterial()
+        {
             Material material = new Material(Shader.Find("Standard"));
             material.SetFloat("_Metallic", 0.75f);
             material.SetFloat("_Glossiness", 0.75f);
             return material;
         }
 
-        private static Material createMaterialAsset(this Link.Visual.Material urdfMaterial)
+        private static Material CreateMaterialAsset(this Link.Visual.Material urdfMaterial)
         {
-            Material material = initializeMaterial();
+            if (urdfMaterial.name == "")
+            {
+                Debug.LogWarning("Could not create a material without a name.");
+                return null;
+            }
+
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(urdfMaterial.name));
+            if (material != null) //material already exists
+                return material;
+
+            material = initializeMaterial();
 
             if (urdfMaterial.color != null)
                 material.color = urdfMaterial.color.CreateColor();
@@ -117,7 +128,11 @@ namespace RosSharp.UrdfImporter
 
         private static Material createDefaultMaterialAsset()
         {
-            Material material = initializeMaterial();
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(defaultMaterialName));
+            if (material != null)
+                return material;
+
+            material = initializeMaterial();
             material.color = new Color(0.33f, 0.33f, 0.33f, 0.0f);
 
             AssetDatabase.CreateAsset(material, getMaterialAssetPath(defaultMaterialName));
@@ -134,11 +149,27 @@ namespace RosSharp.UrdfImporter
                 renderer.sharedMaterial = material;
         }
 
+        public static void SafelySetMaterial(GameObject gameObject, Link.Visual.Material urdfMaterial)
+        {
+            if (urdfMaterial == null)
+                return;
+            else if (urdfMaterial.name == "")
+            {
+                SetDefaultMaterial(gameObject);
+                return;
+            }
+
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(urdfMaterial.name));
+            if (material == null)
+                CreateMaterialAsset(urdfMaterial);
+
+            SetMaterial(gameObject, urdfMaterial.name);
+        }
+
         public static void SetDefaultMaterial(GameObject gameObject)
         {
             SetMaterial(gameObject, defaultMaterialName);
         }
         #endregion
-
     }
 }
