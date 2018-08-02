@@ -97,7 +97,7 @@ namespace RosSharp.UrdfImporter
         #endregion CreateMaterialAssets
 
         #region SetMaterial
-        public static void SafelySetMaterial(GameObject gameObject, Link.Visual.Material urdfMaterial)
+        public static void SetUrdfMaterial(GameObject gameObject, Link.Visual.Material urdfMaterial)
         {
             if (urdfMaterial != null && urdfMaterial.name == "")
             {
