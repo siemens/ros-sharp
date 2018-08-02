@@ -25,50 +25,42 @@ namespace RosSharp.UrdfImporter
     {
         private const string defaultMaterialName = "Default";
         private const string materialFolderName = "Materials";
-        private static string assetPath;
+        private static string assetRootFolder;
 
-        public static void Initialize(Robot robot)
+        private static int unnamedMaterials = 0;
+
+        public static void InitializeRobotAssets(Robot robot)
         {
-            assetPath = GetAssetParentDirectoryPath(robot.filename);
+            assetRootFolder = GetPathToParentDirectory(robot.filename);
 
-            if (!AssetDatabase.IsValidFolder(Path.Combine(assetPath, materialFolderName)))
-                AssetDatabase.CreateFolder(assetPath, materialFolderName);
+            if (!AssetDatabase.IsValidFolder(Path.Combine(assetRootFolder, materialFolderName)))
+                AssetDatabase.CreateFolder(assetRootFolder, materialFolderName);
 
-            createDefaultMaterialAsset();
+            CreateDefaultMaterialAsset();
             foreach (Link.Visual.Material material in robot.materials)
                 CreateMaterialAsset(material);
         }
 
-        #region SetAssetPath
-        public static string GetAssetParentDirectoryPath(this string urdfFile)
+        #region SetAssetRootFolder
+        public static string GetPathToParentDirectory(this string urdfFile)
         {
             string directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
-            return GetAssetPathFromAbsolutePath(directoryAbsolutePath);
+            return GetRelativeAssetPath(directoryAbsolutePath);
         }
 
-        public static void UpdateAssetPath(string newPath)
+        public static void UpdateAssetRootFolder(string newPath)
         {
-            assetPath = newPath;
+            assetRootFolder = newPath;
         }
         #endregion
 
-        #region GetAssetPath
+        #region GetAssets
         public static string GetAssetRootFolder()
         {
-            return assetPath;
+            return assetRootFolder;
         }
 
-        public static string GetAssetPathFromPackagePath(string packagePath)
-        {
-            string path = packagePath.Substring(10).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-            if (path.Substring(path.Length - 3, 3).ToLowerInvariant() == "stl")
-                path = path.Substring(0, path.Length - 3) + "prefab";
-
-            return Path.Combine(assetPath, path);
-        }
-
-        public static string GetAssetPathFromAbsolutePath(string absolutePath)
+        public static string GetRelativeAssetPath(string absolutePath)
         {
             string absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (absolutePathUnityFormat.StartsWith(Application.dataPath))
@@ -79,15 +71,51 @@ namespace RosSharp.UrdfImporter
             return null;
         }
 
-        private static string getMaterialAssetPath(string materialName)
+        private static string GetMaterialAssetPath(string materialName)
         {
             string path = Path.Combine(materialFolderName, Path.GetFileName(materialName) + ".mat");
-            return Path.Combine(assetPath, path);
+            return Path.Combine(assetRootFolder, path);
         }
         #endregion
 
         #region CreateMaterialAssets
-        private static Material initializeMaterial()
+        private static Material CreateMaterialAsset(this Link.Visual.Material urdfMaterial)
+        {
+            if (urdfMaterial.name == "")
+            {
+                Debug.LogWarning("Invalid material name: cannot create a material without a name.");
+                return null;
+            }
+
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(urdfMaterial.name));
+            if (material != null) //material already exists
+                return material;
+
+            material = InitializeMaterial();
+
+            if (urdfMaterial.color != null)
+                material.color = urdfMaterial.color.CreateColor();
+            else if (urdfMaterial.texture != null)
+                material.mainTexture = LoadTexture(urdfMaterial.texture.filename);
+
+            AssetDatabase.CreateAsset(material, GetMaterialAssetPath(urdfMaterial.name));
+            return material;
+        }
+        
+        private static Material CreateDefaultMaterialAsset()
+        {
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(defaultMaterialName));
+            if (material != null)
+                return material;
+
+            material = InitializeMaterial();
+            material.color = new Color(0.33f, 0.33f, 0.33f, 0.0f);
+
+            AssetDatabase.CreateAsset(material, GetMaterialAssetPath(defaultMaterialName));
+            return material;
+        }
+
+        private static Material InitializeMaterial()
         {
             Material material = new Material(Shader.Find("Standard"));
             material.SetFloat("_Metallic", 0.75f);
@@ -95,71 +123,24 @@ namespace RosSharp.UrdfImporter
             return material;
         }
 
-        private static Material CreateMaterialAsset(this Link.Visual.Material urdfMaterial)
-        {
-            if (urdfMaterial.name == "")
-            {
-                Debug.LogWarning("Could not create a material without a name.");
-                return null;
-            }
-
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(urdfMaterial.name));
-            if (material != null) //material already exists
-                return material;
-
-            material = initializeMaterial();
-
-            if (urdfMaterial.color != null)
-                material.color = urdfMaterial.color.CreateColor();
-            else if (urdfMaterial.texture != null)
-                material.mainTexture = LoadTexture(urdfMaterial.texture.filename);
-
-            AssetDatabase.CreateAsset(material, getMaterialAssetPath(urdfMaterial.name));
-            return material;
-        }
-
         private static Texture LoadTexture(string filename)
         {
-            string path = Path.Combine(assetPath, filename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            string path = Path.Combine(assetRootFolder, filename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             if (path == null)
                 return null;
             return LocateAssetHandler.FindUrdfAsset<Texture>(path);
         }
-
-        private static Material createDefaultMaterialAsset()
-        {
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(defaultMaterialName));
-            if (material != null)
-                return material;
-
-            material = initializeMaterial();
-            material.color = new Color(0.33f, 0.33f, 0.33f, 0.0f);
-
-            AssetDatabase.CreateAsset(material, getMaterialAssetPath(defaultMaterialName));
-            return material;
-        }
         #endregion CreateMaterialAssets
 
         #region SetMaterial
-        public static void SetMaterial(GameObject gameObject, string materialName)
-        {
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(materialName));
-            Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in renderers)
-                renderer.sharedMaterial = material;
-        }
-
         public static void SafelySetMaterial(GameObject gameObject, Link.Visual.Material urdfMaterial)
         {
             if (urdfMaterial == null)
                 return;
             else if (urdfMaterial.name == "")
-            {
-                SetDefaultMaterial(gameObject);
-                return;
-            }
+                urdfMaterial.name = "material_" + unnamedMaterials++;
 
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(getMaterialAssetPath(urdfMaterial.name));
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(urdfMaterial.name));
             if (material == null)
                 CreateMaterialAsset(urdfMaterial);
 
@@ -169,6 +150,14 @@ namespace RosSharp.UrdfImporter
         public static void SetDefaultMaterial(GameObject gameObject)
         {
             SetMaterial(gameObject, defaultMaterialName);
+        }
+
+        private static void SetMaterial(GameObject gameObject, string materialName)
+        {
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(materialName));
+            Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+                renderer.sharedMaterial = material;
         }
         #endregion
     }
