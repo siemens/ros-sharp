@@ -36,7 +36,7 @@ namespace RosSharp.UrdfImporter
 
         public static string GetPathToParentDirectory(this string urdfFile)
         {
-            string directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
+            var directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
             return GetRelativeAssetPath(directoryAbsolutePath);
         }
         #endregion
@@ -49,13 +49,12 @@ namespace RosSharp.UrdfImporter
 
         public static string GetRelativeAssetPath(string absolutePath)
         {
-            string absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            if (absolutePathUnityFormat.StartsWith(Application.dataPath))
-            {
-                string assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
-                return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            }
-            return null;
+            var absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (!absolutePathUnityFormat.StartsWith(Application.dataPath))
+                return null;
+
+            var assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
+            return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
         #endregion
 
