@@ -28,14 +28,14 @@ namespace RosSharp.UrdfImporter
 
         public static T FindUrdfAsset<T>(string assetFileName) where T : UnityEngine.Object
         {
-            fileAssetPath = UrdfAssetDatabase.GetAssetPathFromPackagePath(assetFileName);
+            fileAssetPath = GetAssetPathFromUrdfPath(assetFileName);
             T assetObject = AssetDatabase.LoadAssetAtPath<T>(fileAssetPath);
 
             if (assetObject != null)
                 return assetObject;
 
             int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                    "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
+                    "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
                     "\n\nExpected asset path: " + fileAssetPath,
                     "Locate Asset",
                     "Ignore Missing Asset",
@@ -68,8 +68,8 @@ namespace RosSharp.UrdfImporter
                  Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
                  "");
 
-            UrdfAssetDatabase.UpdateAssetPath(UrdfAssetDatabase.GetAssetPathFromAbsolutePath(newAssetPath));
-            fileAssetPath = UrdfAssetDatabase.GetAssetPathFromPackagePath(assetFileName);
+            UrdfAssetPathHandler.SetAssetRootFolder(UrdfAssetPathHandler.GetRelativeAssetPath(newAssetPath));
+            fileAssetPath = GetAssetPathFromUrdfPath(assetFileName);
             assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
             return assetObject;
         }
@@ -77,12 +77,12 @@ namespace RosSharp.UrdfImporter
         private static T LocateAssetFile<T>() where T : UnityEngine.Object
         {
             T assetObject;
-            string newAssetFilePath = EditorUtility.OpenFilePanel(
+            string newPath = EditorUtility.OpenFilePanel(
                  "Couldn't find asset at " + fileAssetPath + ". Select correct file.",
                  Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
                  "");
 
-            fileAssetPath = UrdfAssetDatabase.GetAssetPathFromAbsolutePath(newAssetFilePath);
+            fileAssetPath = UrdfAssetPathHandler.GetRelativeAssetPath(newPath);
             assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
             return assetObject;
         }
@@ -97,6 +97,16 @@ namespace RosSharp.UrdfImporter
             {
                 throw new InterruptedUrdfImportException("User cancelled URDF import. Model may be incomplete.");
             }
+        }
+
+        private static string GetAssetPathFromUrdfPath(string packagePath)
+        {
+            string path = packagePath.Substring(10).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (path.Substring(path.Length - 3, 3).ToLowerInvariant() == "stl")
+                path = path.Substring(0, path.Length - 3) + "prefab";
+
+            return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
         }
     }
 
