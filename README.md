@@ -60,7 +60,7 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 * The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) solution is built using .NET Framework 4.6. It requires Unity 2018.x to run. Make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
-* [David Whitney](https://github.com/dwhit) provides a UWP version of ROS# on [his fork](https://github.com/dwhit/ros-sharp/tree/WebSocketUWP).
+* [David Whitney](https://github.com/dwhit) provides a UWP version of ROS# on [his fork](https://github.com/dwhit/ros-sharp).
 
 * Additionally [Blommers](https://github.com/blommers) kindly provides a [.NET Standard 2.0 version of UrdfImporter](https://github.com/blommers/UdrfImporter).
 
