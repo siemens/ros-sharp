@@ -111,7 +111,7 @@ namespace RosSharp.UrdfImporter
 
             visual.geometry.CreateVisual(gameObject);
 
-            UrdfAssetDatabase.SafelySetMaterial(gameObject, visual.material);
+            UrdfMaterialHandler.SafelySetMaterial(gameObject, visual.material);
 
             return gameObject;
         }

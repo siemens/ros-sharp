@@ -47,7 +47,7 @@ namespace RosSharp
                 return null;
 
             GameObject parent = new GameObject(Path.GetFileNameWithoutExtension(stlFile));
-            Material material = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Diffuse.mat"); ;
+            Material material = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Diffuse.mat");
             for (int i = 0; i < meshes.Length; i++)
             {
                 string meshAssetPath = getMeshAssetPath(stlFile, i);

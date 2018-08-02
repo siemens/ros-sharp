@@ -35,7 +35,7 @@ namespace RosSharp.UrdfImporter
                 return assetObject;
 
             int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                    "Current root folder: " + UrdfAssetDatabase.GetAssetRootFolder() +
+                    "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
                     "\n\nExpected asset path: " + fileAssetPath,
                     "Locate Asset",
                     "Ignore Missing Asset",
@@ -68,7 +68,7 @@ namespace RosSharp.UrdfImporter
                  Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
                  "");
 
-            UrdfAssetDatabase.UpdateAssetRootFolder(UrdfAssetDatabase.GetRelativeAssetPath(newAssetPath));
+            UrdfAssetPathHandler.SetAssetRootFolder(UrdfAssetPathHandler.GetRelativeAssetPath(newAssetPath));
             fileAssetPath = GetAssetPathFromUrdfPath(assetFileName);
             assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
             return assetObject;
@@ -82,7 +82,7 @@ namespace RosSharp.UrdfImporter
                  Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
                  "");
 
-            fileAssetPath = UrdfAssetDatabase.GetRelativeAssetPath(newPath);
+            fileAssetPath = UrdfAssetPathHandler.GetRelativeAssetPath(newPath);
             assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
             return assetObject;
         }
@@ -106,7 +106,7 @@ namespace RosSharp.UrdfImporter
             if (path.Substring(path.Length - 3, 3).ToLowerInvariant() == "stl")
                 path = path.Substring(0, path.Length - 3) + "prefab";
 
-            return Path.Combine(UrdfAssetDatabase.GetAssetRootFolder(), path);
+            return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
         }
     }
 
