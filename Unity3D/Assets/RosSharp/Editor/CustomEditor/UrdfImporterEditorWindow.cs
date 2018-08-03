@@ -138,7 +138,7 @@ namespace RosSharp.UrdfImporter
         private void DrawLabelField(string label, string stage)
         {
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
-            bool state = importHandler.statusEvents[stage].WaitOne(0);
+            bool state = importHandler.StatusEvents[stage].WaitOne(0);
             guiStyle.normal.textColor = state ? Color.green : Color.red;
             EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
         }

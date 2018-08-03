@@ -24,97 +24,102 @@ namespace RosSharp.UrdfImporter
 {
     public static class LocateAssetHandler
     {
-        private static string fileAssetPath;
-
-        public static T FindUrdfAsset<T>(string assetFileName) where T : UnityEngine.Object
+        public static T FindUrdfAsset<T>(string urdfFileName) where T : UnityEngine.Object
         {
-            fileAssetPath = GetAssetPathFromUrdfPath(assetFileName);
+            string fileAssetPath = GetAssetPathFromUrdfPath(urdfFileName);
             T assetObject = AssetDatabase.LoadAssetAtPath<T>(fileAssetPath);
 
             if (assetObject != null)
                 return assetObject;
 
+            //If asset was not found, let user choose whether to search for
+            //or ignore the missing asset.
+            string invalidPath = fileAssetPath ?? urdfFileName;
             int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                    "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
-                    "\n\nExpected asset path: " + fileAssetPath,
-                    "Locate Asset",
-                    "Ignore Missing Asset",
-                    "Locate Root Folder");
+                "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
+                "\n\nExpected asset path: " + invalidPath,
+                "Locate Asset",
+                "Ignore Missing Asset",
+                "Locate Root Folder");
 
             switch (option)
             {
                 case 0:
-                    assetObject = LocateAssetFile<T>();
+                    fileAssetPath = LocateAssetFile<T>(invalidPath);
                     break;
                 case 1: break;
                 case 2:
-                    assetObject = LocateRootAssetFolder<T>(assetFileName);
+                    fileAssetPath = LocateRootAssetFolder<T>(urdfFileName);
                     break;
-                default: break;
             }
 
+            assetObject = (T) AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
             if (assetObject != null)
                 return assetObject;
 
-            ChooseFailureOption(fileAssetPath);
+            ChooseFailureOption(urdfFileName);
             return null;
         }
 
-        private static T LocateRootAssetFolder<T>(string assetFileName) where T : UnityEngine.Object
+        private static string LocateRootAssetFolder<T>(string urdfFileName) where T : UnityEngine.Object
         {
-            T assetObject;
             string newAssetPath = EditorUtility.OpenFolderPanel(
-                 "Locate package root folder",
-                 Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
-                 "");
+                "Locate package root folder",
+                Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
+                "");
 
             UrdfAssetPathHandler.SetAssetRootFolder(UrdfAssetPathHandler.GetRelativeAssetPath(newAssetPath));
-            fileAssetPath = GetAssetPathFromUrdfPath(assetFileName);
-            assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
-            return assetObject;
+
+            return GetAssetPathFromUrdfPath(urdfFileName);
         }
 
-        private static T LocateAssetFile<T>() where T : UnityEngine.Object
+        private static string LocateAssetFile<T>(string invalidPath) where T : UnityEngine.Object
         {
-            T assetObject;
-            string newPath = EditorUtility.OpenFilePanel(
-                 "Couldn't find asset at " + fileAssetPath + ". Select correct file.",
-                 Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
-                 "");
+            string fileExtension = Path.GetExtension(invalidPath)?.Replace(".", "");
 
-            fileAssetPath = UrdfAssetPathHandler.GetRelativeAssetPath(newPath);
-            assetObject = (T)AssetDatabase.LoadAssetAtPath(fileAssetPath, typeof(T));
-            return assetObject;
+            string newPath = EditorUtility.OpenFilePanel(
+                "Couldn't find asset at " + invalidPath + ". Select correct file.",
+                UrdfAssetPathHandler.GetAssetRootFolder(),
+                fileExtension);
+
+            return UrdfAssetPathHandler.GetRelativeAssetPath(newPath);
         }
 
-        private static void ChooseFailureOption(string assetFilePath)
+        private static void ChooseFailureOption(string urdfFilePath)
         {
             if (!EditorUtility.DisplayDialog(
-                                "Urdf Importer: Missing Asset",
-                                "Missing asset " + Path.GetFileName(assetFilePath) + " was ignored or could not be found.\n\nContinue URDF Import?",
-                                "Yes",
-                                "No"))
+                "Urdf Importer: Missing Asset",
+                "Missing asset " + Path.GetFileName(urdfFilePath) +
+                " was ignored or could not be found.\n\nContinue URDF Import?",
+                "Yes",
+                "No"))
             {
                 throw new InterruptedUrdfImportException("User cancelled URDF import. Model may be incomplete.");
             }
         }
 
-        private static string GetAssetPathFromUrdfPath(string packagePath)
+        private static string GetAssetPathFromUrdfPath(string urdfPath)
         {
-            string path = packagePath.Substring(10).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            if (!urdfPath.StartsWith(@"package://"))
+            {
+                Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
+                return null;
+            }
 
-            if (path.Substring(path.Length - 3, 3).ToLowerInvariant() == "stl")
+            var path = urdfPath.Substring(10)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
                 path = path.Substring(0, path.Length - 3) + "prefab";
 
             return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
         }
-    }
 
-    class InterruptedUrdfImportException : Exception
-    {
-        public InterruptedUrdfImportException(string message)
-            : base(message)
+        private class InterruptedUrdfImportException : Exception
         {
+            public InterruptedUrdfImportException(string message) : base(message)
+            {
+            }
         }
     }
 }

@@ -24,7 +24,6 @@ namespace RosSharp.UrdfImporter
     {
         private const string defaultMaterialName = "Default";
         private const string materialFolderName = "Materials";
-        private static int unnamedMaterials = 0;
 
         public static void InitializeRobotMaterials(Robot robot)
         {
@@ -106,8 +105,7 @@ namespace RosSharp.UrdfImporter
 
         private static Texture LoadTexture(string filename)
         {
-            var path = Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), filename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            return path == "" ? null : LocateAssetHandler.FindUrdfAsset<Texture>(path);
+            return filename == "" ? null : LocateAssetHandler.FindUrdfAsset<Texture>(filename);
         }
         #endregion CreateMaterialAssets
 
