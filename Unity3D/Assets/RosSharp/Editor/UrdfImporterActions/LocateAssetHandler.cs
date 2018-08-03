@@ -99,21 +99,18 @@ namespace RosSharp.UrdfImporter
 
         private static string GetAssetPathFromUrdfPath(string urdfPath)
         {
-            try
+            if (!urdfPath.StartsWith(@"package://"))
             {
-                var path = urdfPath.Substring(10)
-                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-                if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
-                    path = path.Substring(0, path.Length - 3) + "prefab";
-
-                return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
+                throw new InvalidFileNameException(urdfPath + " is not a valid URDF package file path. Path must start with \"package://\".");
             }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e);
-                throw new InvalidFileNameException(urdfPath + " is not a valid URDF package file path. ");
-            }
+
+            var path = urdfPath.Substring(10)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
+                path = path.Substring(0, path.Length - 3) + "prefab";
+
+            return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
         }
 
         private class InterruptedUrdfImportException : Exception
