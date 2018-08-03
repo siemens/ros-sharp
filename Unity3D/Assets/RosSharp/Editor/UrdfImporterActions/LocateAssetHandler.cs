@@ -104,7 +104,7 @@ namespace RosSharp.UrdfImporter
                 var path = urdfPath.Substring(10)
                     .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
-                if (Path.GetExtension(path).ToLowerInvariant() == "stl")
+                if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
                     path = path.Substring(0, path.Length - 3) + "prefab";
 
                 return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
