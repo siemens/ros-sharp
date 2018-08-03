@@ -34,17 +34,18 @@ namespace RosSharp.UrdfImporter
 
             //If asset was not found, let user choose whether to search for
             //or ignore the missing asset.
+            string invalidPath = fileAssetPath ?? urdfFileName;
             int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
                 "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
-                "\n\nExpected asset path: " + fileAssetPath,
+                "\n\nExpected asset path: " + invalidPath,
                 "Locate Asset",
                 "Ignore Missing Asset",
                 "Locate Root Folder");
-            
+
             switch (option)
             {
                 case 0:
-                    fileAssetPath = LocateAssetFile<T>(fileAssetPath);
+                    fileAssetPath = LocateAssetFile<T>(invalidPath);
                     break;
                 case 1: break;
                 case 2:
@@ -72,12 +73,12 @@ namespace RosSharp.UrdfImporter
             return GetAssetPathFromUrdfPath(urdfFileName);
         }
 
-        private static string LocateAssetFile<T>(string fileAssetPath) where T : UnityEngine.Object
+        private static string LocateAssetFile<T>(string invalidPath) where T : UnityEngine.Object
         {
-            string fileExtension = Path.GetExtension(fileAssetPath)?.Replace(".", "");
+            string fileExtension = Path.GetExtension(invalidPath)?.Replace(".", "");
 
             string newPath = EditorUtility.OpenFilePanel(
-                "Couldn't find asset at " + fileAssetPath + ". Select correct file.",
+                "Couldn't find asset at " + invalidPath + ". Select correct file.",
                 UrdfAssetPathHandler.GetAssetRootFolder(),
                 fileExtension);
 
@@ -101,7 +102,8 @@ namespace RosSharp.UrdfImporter
         {
             if (!urdfPath.StartsWith(@"package://"))
             {
-                throw new InvalidFileNameException(urdfPath + " is not a valid URDF package file path. Path must start with \"package://\".");
+                Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
+                return null;
             }
 
             var path = urdfPath.Substring(10)
@@ -116,13 +118,6 @@ namespace RosSharp.UrdfImporter
         private class InterruptedUrdfImportException : Exception
         {
             public InterruptedUrdfImportException(string message) : base(message)
-            {
-            }
-        }
-
-        private class InvalidFileNameException : Exception
-        {
-            public InvalidFileNameException(string message) : base(message)
             {
             }
         }
