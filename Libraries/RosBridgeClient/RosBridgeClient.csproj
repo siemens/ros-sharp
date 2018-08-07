@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Messages\Geometry\Accel.cs" />
     <Compile Include="Messages\Geometry\Point.cs" />
+    <Compile Include="Messages\Geometry\PointStamped.cs" />
     <Compile Include="Messages\Geometry\Pose.cs" />
     <Compile Include="Messages\Geometry\PoseStamped.cs" />
     <Compile Include="Messages\Geometry\PoseWithCovariance.cs" />
