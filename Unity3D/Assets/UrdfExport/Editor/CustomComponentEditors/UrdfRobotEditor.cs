@@ -20,7 +20,7 @@ using UnityEditor;
 using UnityEngine;
 using UrdfExport.UrdfComponents;
 
-namespace UrdfExport.Editor.CustomComponentEditorss
+namespace UrdfExport.Editor.CustomComponentEditors
 {
     [CustomEditor(typeof(UrdfRobot))]
     public class UrdfRobotEditor : UnityEditor.Editor
@@ -31,13 +31,25 @@ namespace UrdfExport.Editor.CustomComponentEditorss
         {
             urdfRobot = (UrdfRobot)target;
 
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("Initialize robot"))
-            //    urdfRobot.InitializeRobot();
+            GUILayout.Space(10);
+            if (GUILayout.Button("Initialize robot"))
+                urdfRobot.InitializeRobot();
 
             GUILayout.Space(5);
             if (GUILayout.Button("Export robot to URDF file"))
                 urdfRobot.ExportRobotToUrdf();
         }
     }
+
+    public class UrdfObjectGenerator
+    {
+        [MenuItem("GameObject/URDF Object/Robot")]
+        public static void CreateUrdfRobot()
+        {
+            GameObject robot = new GameObject("Robot");
+            robot.AddComponent<UrdfRobot>();
+        }
+    }
+
+
 }
