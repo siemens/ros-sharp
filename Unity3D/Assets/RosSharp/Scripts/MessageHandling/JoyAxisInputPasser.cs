@@ -18,7 +18,7 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(JoyAxisWriter))]
-    public class JoyAxisProvider: MonoBehaviour
+    public class JoyAxisInputPasser : MonoBehaviour
     {
         public string AxisName;
         private JoyAxisWriter joyAxisWriter;
