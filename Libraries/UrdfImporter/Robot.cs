@@ -17,6 +17,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace RosSharp.UrdfImporter
@@ -27,7 +28,10 @@ namespace RosSharp.UrdfImporter
         public string name;
         public Link root;
         public List<Link.Visual.Material> materials;
-        
+
+        public List<Link> links;
+        public List<Joint> joints;
+
         public Robot(string filename)
         {
             this.filename = filename;
@@ -35,20 +39,31 @@ namespace RosSharp.UrdfImporter
             XElement node = xdoc.Element("robot");
             name = node.Attribute("name").Value;
 
-            materials = readMaterials(node); // multiple
-            List<Link> Links = readLinks(node); // multiple
-            List<Joint> Joints = readJoints(node); // multiple
+            materials = ReadMaterials(node); // multiple
+            links = ReadLinks(node); // multiple
+            joints = ReadJoints(node); // multiple
 
             // build tree structure from link and joint lists:
-            foreach (Link link in Links)
-                link.joints = Joints.FindAll(v => v.parent == link.name);
-            foreach (Joint joint in Joints)
-                joint.ChildLink = Links.Find(v => v.name == joint.child);
+            foreach (Link link in links)
+                link.joints = joints.FindAll(v => v.parent == link.name);
+            foreach (Joint joint in joints)
+                joint.ChildLink = links.Find(v => v.name == joint.child);
 
             // save root node only:
-            root = findRootLink(Links, Joints);
+            root = FindRootLink(links, joints);
         }
-        private static List<Link.Visual.Material> readMaterials(XElement node)
+
+        public Robot(string filename, string name)
+        {
+            this.filename = filename;
+            this.name = name;
+
+            links = new List<Link>();
+            joints = new List<Joint>();
+            materials = new List<Link.Visual.Material>();
+        }
+
+        private static List<Link.Visual.Material> ReadMaterials(XElement node)
         {
             var materials =
                 from child in node.Elements("material")
@@ -56,7 +71,7 @@ namespace RosSharp.UrdfImporter
             return materials.ToList();
         }
 
-        private static List<Link> readLinks(XElement node)
+        private static List<Link> ReadLinks(XElement node)
         {
             var links =
                 from child in node.Elements("link")
@@ -64,7 +79,7 @@ namespace RosSharp.UrdfImporter
             return links.ToList();
         }
 
-        private static List<Joint> readJoints(XElement node)
+        private static List<Joint> ReadJoints(XElement node)
         {
             var joints =
                 from child in node.Elements("joint")
@@ -72,7 +87,7 @@ namespace RosSharp.UrdfImporter
             return joints.ToList();
         }
 
-        private static Link findRootLink(List<Link> Links, List<Joint> Joints, int startIdx = 0)
+        private static Link FindRootLink(List<Link> Links, List<Joint> Joints, int startIdx = 0)
         {
             Joint joint = Joints[0];
             string parent;
@@ -83,6 +98,28 @@ namespace RosSharp.UrdfImporter
             }
             while (joint != null);
             return Links.Find(v => v.name == parent);
+        }
+
+        public void WriteToUrdf()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = false };
+
+            using (XmlWriter writer = XmlWriter.Create(filename, settings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("robot");
+                writer.WriteAttributeString("name", name);
+
+                foreach (var material in materials)
+                    material.WriteToUrdf(writer);
+                foreach (var link in links)
+                    link.WriteToUrdf(writer);
+                foreach (var joint in joints)
+                    joint.WriteToUrdf(writer);
+               
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
         }
     }
 }

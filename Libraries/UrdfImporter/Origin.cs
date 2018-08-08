@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Xml;
 using System.Xml.Linq;
 
 namespace RosSharp.UrdfImporter
@@ -30,5 +31,18 @@ namespace RosSharp.UrdfImporter
             Rpy = node.Attribute("rpy") != null ? node.Attribute("rpy").ReadDoubleArray() : null;
         }
 
+        public Origin(double[] xyz, double[] rpy)
+        {
+            Xyz = xyz;
+            Rpy = rpy;
+        }
+
+        public void WriteToUrdf(XmlWriter writer)
+        {
+            writer.WriteStartElement("origin");
+            writer.WriteAttributeString("rpy", Rpy.DoubleArrayToString());
+            writer.WriteAttributeString("xyz", Xyz.DoubleArrayToString());
+            writer.WriteEndElement();
+        }
     }
 }
