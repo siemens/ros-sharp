@@ -121,6 +121,9 @@
     <Compile Include="..\RosBridgeClient\Messages\Geometry\Point.cs">
       <Link>Messages\Geometry\Point.cs</Link>
     </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Geometry\PointStamped.cs">
+      <Link>Messages\Geometry\PointStamped.cs</Link>
+    </Compile>
     <Compile Include="..\RosBridgeClient\Messages\Geometry\Pose.cs">
       <Link>Messages\Geometry\Pose.cs</Link>
     </Compile>
