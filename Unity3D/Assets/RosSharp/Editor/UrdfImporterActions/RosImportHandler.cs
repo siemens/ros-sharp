@@ -37,11 +37,11 @@ namespace RosSharp.UrdfImporter
 
         private RosSocket rosSocket;
 
-        public Dictionary<string, ManualResetEvent> statusEvents;
+        public Dictionary<string, ManualResetEvent> StatusEvents;
 
         public RosImportHandler()
         {
-            statusEvents = new Dictionary<string, ManualResetEvent>{
+            StatusEvents = new Dictionary<string, ManualResetEvent>{
                 { "connected", new ManualResetEvent(false) },
                 { "robotNameReceived",new ManualResetEvent(false) },
                 { "robotDescriptionReceived", new ManualResetEvent(false) },
@@ -61,7 +61,7 @@ namespace RosSharp.UrdfImporter
             // initialize
             ResetStatusEvents();
 
-            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
+            var protocol = GetProtocol();
             protocol.OnConnected += OnConnected;
             protocol.OnClosed += OnClose;
 
@@ -71,7 +71,7 @@ namespace RosSharp.UrdfImporter
 
         private void ImportAssets()
         {
-            if(!statusEvents["connected"].WaitOne(timeout * 1000))
+            if(!StatusEvents["connected"].WaitOne(timeout * 1000))
             {
                 Debug.LogWarning("Failed to connect to ROS before timeout");
                 return;
@@ -79,20 +79,20 @@ namespace RosSharp.UrdfImporter
 
             // setup urdfImporter
             RosBridgeClient.UrdfImporter urdfImporter = new RosBridgeClient.UrdfImporter(rosSocket, assetPath);
-            statusEvents["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
-            statusEvents["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
-            statusEvents["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
+            StatusEvents["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
+            StatusEvents["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
+            StatusEvents["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
 
             urdfImporter.Import();
 
-            if (statusEvents["robotNameReceived"].WaitOne(timeout * 1000))
+            if (StatusEvents["robotNameReceived"].WaitOne(timeout * 1000))
             {
                 robotName = urdfImporter.RobotName;
                 localDirectory = urdfImporter.LocalDirectory;
             }
 
             // import URDF assets:
-            if (statusEvents["resourceFilesReceived"].WaitOne(timeout * 1000))
+            if (StatusEvents["resourceFilesReceived"].WaitOne(timeout * 1000))
                 Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
@@ -102,20 +102,20 @@ namespace RosSharp.UrdfImporter
 
         public void GenerateModelIfReady()
         {
-            if (statusEvents["resourceFilesReceived"].WaitOne(0) && !statusEvents["importComplete"].WaitOne(0))
+            if (!StatusEvents["resourceFilesReceived"].WaitOne(0) || StatusEvents["importComplete"].WaitOne(0))
+                return;
+
+            AssetDatabase.Refresh();
+
+            if (EditorUtility.DisplayDialog(
+                "Urdf Assets imported.",
+                "Do you want to generate a " + robotName + " GameObject now?",
+                "Yes", "No"))
             {
-                AssetDatabase.Refresh();
-
-                if (EditorUtility.DisplayDialog(
-                    "Urdf Assets imported.",
-                    "Do you want to generate a " + robotName + " GameObject now?",
-                    "Yes", "No"))
-                {
-                    RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
-                }
-
-                statusEvents["importComplete"].Set();
+                RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
             }
+
+            StatusEvents["importComplete"].Set();
         }
 
         private RosBridgeClient.Protocols.IProtocol GetProtocol()
@@ -129,17 +129,17 @@ namespace RosSharp.UrdfImporter
 
         private void OnClose(object sender, EventArgs e)
         {
-            statusEvents["disconnected"].Set();
+            StatusEvents["disconnected"].Set();
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
-            statusEvents["connected"].Set();
+            StatusEvents["connected"].Set();
         }
 
         private void ResetStatusEvents()
         {
-            foreach (ManualResetEvent manualResetEvent in statusEvents.Values)
+            foreach (var manualResetEvent in StatusEvents.Values)
                 manualResetEvent.Reset();
         }
     }

@@ -111,15 +111,7 @@ namespace RosSharp.UrdfImporter
 
             visual.geometry.CreateVisual(gameObject);
 
-
-            if (visual.material != null)
-                UrdfAssetDatabase.SetMaterial(gameObject, visual.material.name);
-
-            if (gameObject.GetComponentInChildren<Renderer>() != null)
-            {
-                if (gameObject.GetComponentInChildren<Renderer>().sharedMaterial == null)
-                    UrdfAssetDatabase.SetDefaultMaterial(gameObject);
-            }
+            UrdfMaterialHandler.SetUrdfMaterial(gameObject, visual.material);
 
             return gameObject;
         }
