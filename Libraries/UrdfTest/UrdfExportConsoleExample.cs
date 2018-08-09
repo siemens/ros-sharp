@@ -1,18 +1,18 @@
 ﻿using System;
 using System.IO;
-using RosSharp.UrdfImporter;
+using RosSharp.Urdf;
 
-namespace RosSharp.UrdfImporterTest
+namespace RosSharp.UrdfTest
 {
     public class UrdfExportConsoleExample
     {
         private static void Main(string[] args)
         {
-
-            string newRobotAssetPath = Directory.GetCurrentDirectory() + "\\..\\..\\TestResults";
+            char slash = Path.DirectorySeparatorChar;
+            string newRobotAssetPath = Directory.GetCurrentDirectory() + slash + ".." + slash + ".." + slash + "TestResults";
             Directory.CreateDirectory(newRobotAssetPath);
 
-            Robot robot = new Robot(newRobotAssetPath + "\\TESTING_EXPORT.urdf", "MrTesty");
+            Robot robot = new Robot(newRobotAssetPath + slash + "TESTING_EXPORT.urdf", "MrTesty");
 
             //Test material library
             Link.Visual.Material material = new Link.Visual.Material("blue", new Link.Visual.Material.Color(new double[] { 0, 0, 1, 1 }));

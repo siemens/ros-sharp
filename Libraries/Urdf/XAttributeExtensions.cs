@@ -21,7 +21,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Globalization;
 
-namespace RosSharp.UrdfImporter
+namespace RosSharp.Urdf
 {
     public static class XAttributeExtensions
     {

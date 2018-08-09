@@ -20,7 +20,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace RosSharp.UrdfImporter
+namespace RosSharp.Urdf
 {
     public class Link
     {

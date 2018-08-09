@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RosBridgeClient", "RosBridg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RosBridgeClientTest", "RosBridgeClientTest\RosBridgeClientTest.csproj", "{4E1BB3D0-8254-4D23-BD1B-F6EC7AA562FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfImporter", "UrdfImporter\UrdfImporter.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urdf", "Urdf\Urdf.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfImporterTest", "UrdfImporterTest\UrdfImporterTest.csproj", "{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfTest", "UrdfTest\UrdfTest.csproj", "{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
