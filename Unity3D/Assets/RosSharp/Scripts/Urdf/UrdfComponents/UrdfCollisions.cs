@@ -19,26 +19,14 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    public class UrdfRobot : MonoBehaviour
+    public class UrdfCollisions : MonoBehaviour
     {
-        public void ExportRobotToUrdf()
+        public void AddColision(UrdfVisuals.GeometryTypes type)
         {
-            Robot robot = GenerateFormattedRobot();
-            robot.WriteToUrdf();
-        }
+            GameObject collision = new GameObject("unnamed");
+            collision.transform.SetParentAndAlign(gameObject.transform);
 
-        public void InitializeRobot()
-        {
-            GameObject baseLink = new GameObject("base_link");
-            baseLink.transform.SetParentAndAlign(gameObject.transform);
-
-            baseLink.AddComponent<UrdfLink>().InitializeUrdfLink();
-
-        }
-
-        private Robot GenerateFormattedRobot()
-        {
-            return new Robot("blah", "bloo");
+            collision.AddComponent<UrdfCollision>().Initialize(type);
         }
     }
 }

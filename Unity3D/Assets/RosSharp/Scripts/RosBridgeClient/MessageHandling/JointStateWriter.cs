@@ -13,15 +13,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using RosSharp.Urdf;
 using UnityEngine;
+using Joint = UnityEngine.Joint;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointUrdfDataManager))]
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(UrdfJoint))]
     public class JointStateWriter : MonoBehaviour
     {
         private Joint joint;
-        private JointUrdfDataManager jointUrdfDataManager;
+        private UrdfJoint urdfJoint;
 
         private float newState; // rad or m
         private float prevState; // rad or m
@@ -30,7 +32,7 @@ namespace RosSharp.RosBridgeClient
         private void Start()
         {
             joint = GetComponent<UnityEngine.Joint>();
-            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
+            urdfJoint = GetComponent<UrdfJoint>();
         }
 
         private void Update()
@@ -43,9 +45,9 @@ namespace RosSharp.RosBridgeClient
         }
         private void WriteUpdate()
         {
-            if (jointUrdfDataManager.IsRevoluteOrContinuous)
+            if (urdfJoint.IsRevoluteOrContinuous)
                 WriteHingeJointUpdate();
-            else if (jointUrdfDataManager.IsPrismatic)
+            else if (urdfJoint.IsPrismatic)
                 WritePrismaticJointUpdate();
             
         prevState = newState;

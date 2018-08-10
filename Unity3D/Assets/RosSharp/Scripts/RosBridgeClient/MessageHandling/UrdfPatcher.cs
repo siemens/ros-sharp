@@ -15,6 +15,7 @@ limitations under the License.
 
 using UnityEngine;
 using System.Collections.Generic;
+using RosSharp.Urdf;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -53,8 +54,8 @@ namespace RosSharp.RosBridgeClient
         private JointStateReader[] AddJointStateReaderComponents() 
         {
             List<JointStateReader> jointStateReaders = new List<JointStateReader>();
-            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>())
-                jointStateReaders.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateReader>());   
+            foreach (UrdfJoint urdfJoint in UrdfModel.GetComponentsInChildren<UrdfJoint>())
+                jointStateReaders.Add(urdfJoint.gameObject.AddComponent<JointStateReader>());   
             return jointStateReaders.ToArray();
         }
 
@@ -63,9 +64,9 @@ namespace RosSharp.RosBridgeClient
             jointNames = new List<string>();
             jointStateWriters = new List<JointStateWriter>();
 
-            foreach (JointUrdfDataManager jointUrdfDataManager in UrdfModel.GetComponentsInChildren<JointUrdfDataManager>()) {
-                jointNames.Add(jointUrdfDataManager.JointName);
-                jointStateWriters.Add(jointUrdfDataManager.gameObject.AddComponent<JointStateWriter>());
+            foreach (UrdfJoint urdfJoint in UrdfModel.GetComponentsInChildren<UrdfJoint>()) {
+                jointNames.Add(urdfJoint.JointName);
+                jointStateWriters.Add(urdfJoint.gameObject.AddComponent<JointStateWriter>());
             }
         }
 

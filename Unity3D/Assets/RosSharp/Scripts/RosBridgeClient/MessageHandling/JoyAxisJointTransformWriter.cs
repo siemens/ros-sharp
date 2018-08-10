@@ -13,11 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using RosSharp.Urdf;
 using UnityEngine;
+using Joint = UnityEngine.Joint;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointStateWriter)), RequireComponent(typeof(JointUrdfDataManager))]
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointStateWriter)), RequireComponent(typeof(UrdfJoint))]
     public class JoyAxisJointTransformWriter : JoyAxisWriter
     {
         public float StepLength;
@@ -25,7 +27,7 @@ namespace RosSharp.RosBridgeClient
 
         private Joint joint;
         private JointStateWriter jointStateWriter;
-        private JointUrdfDataManager jointUrdfDataManager;
+        private UrdfJoint urdfJoint;
 
         private float state;
         private Vector2 limit;
@@ -34,18 +36,18 @@ namespace RosSharp.RosBridgeClient
         {
             joint = GetComponent<Joint>();
             jointStateWriter = GetComponent<JointStateWriter>();
-            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
+            urdfJoint = GetComponent<UrdfJoint>();
 
             SetLimit();
         }
         private void SetLimit()
         {
-            if (jointUrdfDataManager.IsRevoluteOrContinuous)
+            if (urdfJoint.IsRevoluteOrContinuous)
             {
                 HingeJoint hingeJoint = (HingeJoint)joint;
                 limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max) * Mathf.Deg2Rad; ;
             }
-            else if (jointUrdfDataManager.IsPrismatic)
+            else if (urdfJoint.IsPrismatic)
             {
                 ConfigurableJoint configurableJoint = (ConfigurableJoint)joint;
                 limit = new Vector2(-configurableJoint.linearLimit.limit, configurableJoint.linearLimit.limit);

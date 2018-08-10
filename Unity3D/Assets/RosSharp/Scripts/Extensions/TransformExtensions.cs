@@ -13,12 +13,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using RosSharp.Urdf;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace RosSharp
 {
     public static class TransformExtensions
     {
+        private const int RoundDigits = 4;
+
         public static void DestroyImmediateIfExists<T>(this Transform transform) where T : Component
         {
             T component = transform.GetComponent<T>();
@@ -43,6 +48,57 @@ namespace RosSharp
             }
         }
 
+        public static Origin GetOriginData(this Transform transform)
+        {
+           return new Origin(transform.GetUrdfXyz(), transform.GetUrdfRpy());
+        }
+
+        private static double[] GetUrdfXyz(this Transform transform)
+        {
+            if (transform.position != Vector3.zero)
+                return new double[]
+                {
+                    Math.Round(transform.position.z, RoundDigits),
+                    Math.Round(-transform.position.x, RoundDigits),
+                    Math.Round(transform.position.y, RoundDigits)
+                };
+
+            return null;
+        }
+        private static double[] GetUrdfRpy(this Transform transform)
+        {
+            Vector3 rotationVector = transform.rotation.eulerAngles;
+            if (rotationVector != Vector3.zero)
+                return new double[]
+                {
+                    Math.Round(-rotationVector.z * Mathf.Deg2Rad, RoundDigits),
+                    Math.Round(rotationVector.x * Mathf.Deg2Rad, RoundDigits),
+                    Math.Round(-rotationVector.y * Mathf.Deg2Rad, RoundDigits)
+                };
+
+            return null;
+        }
+
+        public static double[] GetUrdfSize(this Transform transform)
+        {
+            return new double []
+            {
+                Math.Round(transform.localScale.z, RoundDigits),
+                Math.Round(transform.localScale.x, RoundDigits),
+                Math.Round(transform.localScale.y, RoundDigits)
+            };
+        }
+
+        public static double GetRadius(this Transform transform)
+        {
+            return Math.Round(transform.localScale.x / 2, RoundDigits);
+        }
+
+        public static double GetCylinderHeight(this Transform transform)
+        {
+            return Math.Round(transform.localScale.y * 2, RoundDigits);
+        }
+        
         public static Transform FindDeepChild(this Transform parent, string name)
         {
             Transform result = parent.Find(name);

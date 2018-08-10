@@ -85,7 +85,7 @@ namespace RosSharp.Urdf.Import
             }
 
             // data:
-            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+            gameObject.AddComponent<UrdfJoint>().Initialize(joint.name, joint.type);
 
             return hingeJoint;
         }
@@ -133,7 +133,7 @@ namespace RosSharp.Urdf.Import
             }
 
             // data:
-            JointUrdfDataManager.AddComponent(gameObject, joint.name, joint.type);
+            gameObject.AddComponent<UrdfJoint>().Initialize(joint.name, joint.type);
 
             return prismaticJoint;
         }

@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -102,6 +103,7 @@ namespace RosSharp.Urdf
 
         public void WriteToUrdf()
         {
+            Directory.CreateDirectory(Directory.GetParent(filename).FullName);
             XmlWriterSettings settings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = false };
 
             using (XmlWriter writer = XmlWriter.Create(filename, settings))

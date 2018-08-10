@@ -40,8 +40,10 @@ namespace RosSharp.Urdf
         public void WriteToUrdf(XmlWriter writer)
         {
             writer.WriteStartElement("origin");
-            writer.WriteAttributeString("rpy", Rpy.DoubleArrayToString());
-            writer.WriteAttributeString("xyz", Xyz.DoubleArrayToString());
+            if(Rpy != null)
+                writer.WriteAttributeString("rpy", Rpy.DoubleArrayToString());
+            if(Xyz != null)
+                writer.WriteAttributeString("xyz", Xyz.DoubleArrayToString());
             writer.WriteEndElement();
         }
     }

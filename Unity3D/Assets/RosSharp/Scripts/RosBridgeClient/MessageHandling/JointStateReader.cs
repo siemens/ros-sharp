@@ -13,29 +13,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using RosSharp.Urdf;
 using UnityEngine;
+using Joint = UnityEngine.Joint;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointUrdfDataManager))]
+    [RequireComponent(typeof(Joint)), RequireComponent(typeof(UrdfJoint))]
     public class JointStateReader : MonoBehaviour
     {
         private IUrdfJoint joint;
-        private JointUrdfDataManager jointUrdfDataManager;
+        private UrdfJoint urdfJoint;
 
         private void Start()
         {
-            jointUrdfDataManager = GetComponent<JointUrdfDataManager>();
+            urdfJoint = GetComponent<UrdfJoint>();
 
-            if (jointUrdfDataManager.IsRevoluteOrContinuous)
+            if (urdfJoint.IsRevoluteOrContinuous)
                 joint = new RevoluteJoint(GetComponent<HingeJoint>());
-            else if (jointUrdfDataManager.IsPrismatic)
+            else if (urdfJoint.IsPrismatic)
                 joint = new PrismaticJoint(GetComponent<ConfigurableJoint>());
         }
 
         public void Read(out string name, out float position, out float velocity, out float effort)
         {
-            name = jointUrdfDataManager.JointName;
+            name = urdfJoint.JointName;
             position = joint.GetPosition();
             velocity = joint.GetVelocity();
             effort = joint.GetEffort();

@@ -15,23 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    [CustomEditor(typeof(UrdfLink))]
-    public class UrdfLinkEditor : UnityEditor.Editor
+    public class UrdfVisuals : MonoBehaviour
     {
-        private UrdfLink urdfLink;
+        //TODO move enum to Geometry class in RosSharp.Urdf
+        public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
-        public override void OnInspectorGUI()
+        public void AddVisual(GeometryTypes type)
         {
-            urdfLink = (UrdfLink)target;
+            GameObject visualObject = new GameObject("unnamed");
+            visualObject.transform.SetParentAndAlign(gameObject.transform);
 
-            GUILayout.Space(10);
-            if (GUILayout.Button("Add child link"))
-                urdfLink.AddChildLink();
+            visualObject.AddComponent<UrdfVisual>().Initialize(type);
         }
+
     }
 }

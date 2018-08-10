@@ -15,11 +15,11 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace RosSharp
+namespace RosSharp.Urdf
 {
     //  [ExecuteInEditMode]
     [RequireComponent(typeof(Joint))]
-    public class JointUrdfDataManager : MonoBehaviour
+    public class UrdfJoint : MonoBehaviour
     {
         public enum JointTypes { continuous, revolute, prismatic, undefined };
         public string JointName;         
@@ -31,12 +31,12 @@ namespace RosSharp
         }
         public bool IsPrismatic { get { return JointType == JointTypes.prismatic; } }
 
-        public static JointUrdfDataManager AddComponent(GameObject _gameObject, string jointName, string jointType)
+        public void Initialize(string jointName, string jointType)
         {
-            JointUrdfDataManager jointUrdfDataManager = _gameObject.AddComponent<JointUrdfDataManager>();
-            jointUrdfDataManager.JointName = jointName;
-            jointUrdfDataManager.JointType = GetJointType(jointType);
-            return jointUrdfDataManager;
+            JointName = jointName;
+            JointType = GetJointType(jointType);
+
+            //TODO Add correct type of Unity Joint
         }
 
         private static JointTypes GetJointType(string jointType)
@@ -54,6 +54,11 @@ namespace RosSharp
             }
         }
 
+        public Joint GetJointData()
+        {
+            //Todo: output correct joint type, and fill in optional parameters
+            return new Joint(JointName, JointType.ToString(), gameObject.transform.parent.name, gameObject.name, transform.GetOriginData());
+        }
     }
 }
 

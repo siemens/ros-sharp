@@ -15,12 +15,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    public class UrdfJoint : MonoBehaviour
+    [CustomEditor(typeof(UrdfCollisions))]
+    class UrdfCollisionsEditor : UnityEditor.Editor
     {
+        private UrdfCollisions urdfCollisions;
+        private UrdfVisuals.GeometryTypes geometryType;
 
+        public override void OnInspectorGUI()
+        {
+            urdfCollisions = (UrdfCollisions)target;
+
+            GUILayout.Space(10);
+            geometryType = (UrdfVisuals.GeometryTypes)EditorGUILayout.EnumPopup("Type of collision", geometryType);
+
+            if (GUILayout.Button("Add collision"))
+                urdfCollisions.AddColision(geometryType);
+        }
     }
 }

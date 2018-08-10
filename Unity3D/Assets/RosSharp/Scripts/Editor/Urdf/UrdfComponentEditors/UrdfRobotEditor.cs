@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,23 +33,20 @@ namespace RosSharp.Urdf.Export
 
             GUILayout.Space(10);
             if (GUILayout.Button("Initialize robot"))
-                urdfRobot.InitializeRobot();
+                urdfRobot.Initialize();
 
             GUILayout.Space(5);
+
             if (GUILayout.Button("Export robot to URDF file"))
+            {
+                string robotAssetFolder = EditorUtility.OpenFolderPanel(
+                    "Select export location",
+                    Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
+                    "");
+                UrdfAssetPathHandler.SetAssetRootFolder(robotAssetFolder);
+                urdfRobot.filePath = Path.Combine(robotAssetFolder, urdfRobot.gameObject.name + ".urdf");
                 urdfRobot.ExportRobotToUrdf();
+            }
         }
     }
-
-    public class UrdfObjectGenerator
-    {
-        [MenuItem("GameObject/URDF Object/Robot")]
-        public static void CreateUrdfRobot()
-        {
-            GameObject robot = new GameObject("Robot");
-            robot.AddComponent<UrdfRobot>();
-        }
-    }
-
-
 }
