@@ -31,9 +31,9 @@ namespace RosSharp.Urdf.Export
         {
             urdfRobot = (UrdfRobot)target;
 
-            GUILayout.Space(10);
-            if (GUILayout.Button("Initialize robot"))
-                urdfRobot.Initialize();
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Initialize robot"))
+            //    urdfRobot.Initialize();
 
             GUILayout.Space(5);
 

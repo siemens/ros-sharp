@@ -21,6 +21,7 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
+    [SelectionBase]
     public class UrdfCollision : MonoBehaviour
     {
         private UrdfVisuals.GeometryTypes geometryType;
@@ -48,6 +49,7 @@ namespace RosSharp.Urdf.Export
                     break;
             }
 
+            geometryGameObject.hideFlags ^= HideFlags.NotEditable;
             EditorGUIUtility.PingObject(geometryGameObject);
         }
 

@@ -14,7 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RosSharp.Urdf.Export
@@ -24,6 +25,14 @@ namespace RosSharp.Urdf.Export
         //TODO move enum to Geometry class in RosSharp.Urdf
         public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
+        public void Reset()
+        {
+            transform.DestroyChildrenImmediate();
+
+            gameObject.hideFlags = HideFlags.NotEditable;
+            hideFlags = HideFlags.None;
+        }
+
         public void AddVisual(GeometryTypes type)
         {
             GameObject visualObject = new GameObject("unnamed");
@@ -32,5 +41,12 @@ namespace RosSharp.Urdf.Export
             visualObject.AddComponent<UrdfVisual>().Initialize(type);
         }
 
+        public List<Link.Visual> GetVisualsData()
+        {
+            UrdfVisual[] urdfVisuals = gameObject.GetComponentsInChildren<UrdfVisual>();
+
+            return urdfVisuals.Select(urdfCollision => urdfCollision.GetVisualData()).ToList();
+        }
     }
 }
+

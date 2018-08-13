@@ -26,14 +26,13 @@ namespace RosSharp.Urdf.Import
         {
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
 
-            if(meshObject != null)
-            { 
-                GameObject gameObject = Object.Instantiate(meshObject);
-                mesh.setScale(gameObject);
-                gameObject.transform.SetParentAndAlign(parent.transform);
-                return gameObject;
-            }
-            return null;
+            if (meshObject == null)
+                return null;
+
+            GameObject gameObject = Object.Instantiate(meshObject);
+            mesh.setScale(gameObject);
+            gameObject.transform.SetParentAndAlign(parent.transform);
+            return gameObject;
         }
 
         public static GameObject CreateCollider(this Link.Geometry.Mesh mesh, GameObject parent)

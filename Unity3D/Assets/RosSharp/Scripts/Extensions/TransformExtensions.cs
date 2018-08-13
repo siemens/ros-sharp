@@ -31,6 +31,12 @@ namespace RosSharp
                 Object.DestroyImmediate(component);
         }
 
+        public static void DestroyChildrenImmediate(this Transform transform)
+        {
+            while(transform.childCount != 0)
+                Object.DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+
         public static void SetParentAndAlign(this Transform transform, Transform parent, bool keepLocalTransform = true)
         {
             Vector3 localPosition = transform.localPosition;
@@ -58,16 +64,16 @@ namespace RosSharp
             if (transform.position != Vector3.zero)
                 return new double[]
                 {
-                    Math.Round(transform.position.z, RoundDigits),
-                    Math.Round(-transform.position.x, RoundDigits),
-                    Math.Round(transform.position.y, RoundDigits)
+                    Math.Round(transform.localPosition.z, RoundDigits),
+                    Math.Round(-transform.localPosition.x, RoundDigits),
+                    Math.Round(transform.localPosition.y, RoundDigits)
                 };
 
             return null;
         }
         private static double[] GetUrdfRpy(this Transform transform)
         {
-            Vector3 rotationVector = transform.rotation.eulerAngles;
+            Vector3 rotationVector = transform.localEulerAngles;
             if (rotationVector != Vector3.zero)
                 return new double[]
                 {

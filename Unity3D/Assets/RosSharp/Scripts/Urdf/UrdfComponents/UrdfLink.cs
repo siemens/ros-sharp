@@ -32,7 +32,6 @@ namespace RosSharp.Urdf.Export
             childObject.transform.SetParentAndAlign(gameObject.transform);
 
             UrdfLink childUrdfLink = childObject.AddComponent<UrdfLink>();
-            childUrdfLink.Initialize();
 
             return childUrdfLink;
         }
@@ -45,58 +44,56 @@ namespace RosSharp.Urdf.Export
             childLink.gameObject.AddComponent<UrdfJoint>().Initialize(gameObject.name + "_joint", jointType.ToString().ToLower());
         }
 
-        public void Initialize()
+        public void Reset()
         {
-            AddVisuals();
-            AddCollisions();
+            transform.DestroyChildrenImmediate();
 
+            AddVisualsObject();
+            AddCollisionsObject();
+
+            transform.DestroyImmediateIfExists<Rigidbody>();
             gameObject.AddComponent<Rigidbody>();
             
             EditorGUIUtility.PingObject(gameObject);
         }
 
-        private void AddVisuals()
+        private void AddVisualsObject()
         {
-            GameObject visuals = new GameObject("Visuals");
-            visuals.transform.SetParentAndAlign(gameObject.transform);
-            visuals.AddComponent<UrdfVisuals>();
+            GameObject visualsObject = new GameObject("Visuals");
+            visualsObject.transform.SetParentAndAlign(gameObject.transform);
+            visualsObject.AddComponent<UrdfVisuals>();
         }
 
-        private void AddCollisions()
+        private void AddCollisionsObject()
         {
-            GameObject collisions = new GameObject("Collisions");
-            collisions.transform.SetParentAndAlign(gameObject.transform);
-            collisions.AddComponent<UrdfCollisions>();
+            GameObject collisionsObject = new GameObject("Collisions");
+            collisionsObject.transform.SetParentAndAlign(gameObject.transform);
+            collisionsObject.AddComponent<UrdfCollisions>();
         }
 
         public Link GetLinkData()
         {
-            Link link = new Link(gameObject.name);
+            if(transform.localScale != Vector3.one)
+                Debug.LogWarning("Only visuals should be scaled. Scale on link \"" + gameObject.name + "\" cannot be saved to the URDF file.");
 
-            UrdfVisual[] visuals = gameObject.GetComponentInChildren<UrdfVisuals>().GetComponentsInChildren<UrdfVisual>();
-            foreach (UrdfVisual urdfVisual in visuals)
+            Link link = new Link(gameObject.name)
             {
-                link.visuals.Add(urdfVisual.GetVisualData());
-            }
-
-            UrdfCollision[] collisions = gameObject.GetComponentInChildren<UrdfCollisions>().GetComponentsInChildren<UrdfCollision>();
-            foreach (UrdfCollision urdfCollision in collisions)
-            {
-                link.collisions.Add(urdfCollision.GetCollisionData());
-            }
-
-            link.inertial = GetInertialData();
+                visuals = gameObject.GetComponentInChildren<UrdfVisuals>().GetVisualsData(),
+                collisions = gameObject.GetComponentInChildren<UrdfCollisions>().GetCollisionsData(),
+                inertial = GetInertialData()
+            };
+            
             return link;
         }
 
         private Link.Inertial GetInertialData()
         {
-            Rigidbody rigidbody = GetComponent<Rigidbody>();
-            if (rigidbody == null)
+            Rigidbody _rigidbody = GetComponent<Rigidbody>();
+            if (_rigidbody == null)
                 return null;
 
             //TODO: get actual values for inertial matrix
-            return new Link.Inertial(rigidbody.mass, transform.GetOriginData(), new Link.Inertial.Inertia(0,0,0,0,0,0));
+            return new Link.Inertial(_rigidbody.mass, transform.GetOriginData(), new Link.Inertial.Inertia(0,0,0,0,0,0));
             
         }
     }

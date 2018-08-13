@@ -15,18 +15,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
     public class UrdfCollisions : MonoBehaviour
     {
+        public void Reset()
+        {
+            transform.DestroyChildrenImmediate();
+
+            gameObject.hideFlags = HideFlags.NotEditable;
+            hideFlags = HideFlags.None;
+        }
+
         public void AddColision(UrdfVisuals.GeometryTypes type)
         {
             GameObject collision = new GameObject("unnamed");
             collision.transform.SetParentAndAlign(gameObject.transform);
 
             collision.AddComponent<UrdfCollision>().Initialize(type);
+        }
+
+        public List<Link.Collision> GetCollisionsData()
+        {
+            UrdfCollision[] urdfCollisions = gameObject.GetComponentsInChildren<UrdfCollision>();
+
+            return urdfCollisions.Select(urdfCollision => urdfCollision.GetCollisionData()).ToList();
         }
     }
 }

@@ -21,30 +21,30 @@ namespace RosSharp.Urdf.Import
 {
     public static class UrdfLinkGeometryExtensions
     {
-        public static GameObject CreateVisual(this Link.Geometry geometry, GameObject gameObject)
+        public static GameObject CreateVisual(this Link.Geometry geometry, GameObject parent)
         {
             if (geometry.box != null)
-                return geometry.box.CreateVisual(gameObject);
+                return geometry.box.CreateVisual(parent);
             else if (geometry.cylinder != null)
-                return geometry.cylinder.CreateVisual(gameObject);
+                return geometry.cylinder.CreateVisual(parent);
             else if (geometry.sphere != null)
-                return geometry.sphere.CreateVisual(gameObject);
+                return geometry.sphere.CreateVisual(parent);
             else if (geometry.mesh != null)
-                return geometry.mesh.CreateVisual(gameObject);
+                return geometry.mesh.CreateVisual(parent);
             else
                 return null;
         }
 
-        public static GameObject CreateCollider(this Link.Geometry geometry, GameObject gameObject)
+        public static GameObject CreateCollider(this Link.Geometry geometry, GameObject parent)
         {
             if (geometry.box != null)
-                return geometry.box.CreateCollider(gameObject);
+                return geometry.box.CreateCollider(parent);
             else if (geometry.cylinder != null)
-                return geometry.cylinder.CreateCollider(gameObject);
+                return geometry.cylinder.CreateCollider(parent);
             else if (geometry.sphere != null)
-                return geometry.sphere.CreateCollider(gameObject);
+                return geometry.sphere.CreateCollider(parent);
             else if (geometry.mesh != null)
-                return geometry.mesh.CreateCollider(gameObject);
+                return geometry.mesh.CreateCollider(parent);
             else
                 return null;
         }

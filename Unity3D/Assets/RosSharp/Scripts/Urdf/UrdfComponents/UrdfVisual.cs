@@ -21,6 +21,7 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
+    [SelectionBase]
     public class UrdfVisual : MonoBehaviour
     {
         private const int RoundDigits = 4;
@@ -45,16 +46,20 @@ namespace RosSharp.Urdf.Export
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     break;
                 case UrdfVisuals.GeometryTypes.Mesh:
-                    geometryGameObject = new GameObject();
-                    geometryGameObject.AddComponent<MeshFilter>();
-                    geometryGameObject.AddComponent<MeshRenderer>();
+                    //geometryGameObject = new GameObject();
+                    //geometryGameObject.AddComponent<MeshFilter>();
+                    //geometryGameObject.AddComponent<MeshRenderer>();
                     break;
             }
 
-            geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
-            DestroyImmediate(geometryGameObject.GetComponent<Collider>());
+            if (geometryGameObject == null) return;
 
-            EditorGUIUtility.PingObject(geometryGameObject);
+            geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
+            geometryGameObject.hideFlags ^= HideFlags.NotEditable;
+
+            geometryGameObject.transform.DestroyImmediateIfExists<Collider>();
+
+            EditorGUIUtility.PingObject(gameObject);
         }
 
         public Link.Visual GetVisualData()
@@ -94,6 +99,8 @@ namespace RosSharp.Urdf.Export
 
         private Link.Visual.Material GetMaterialData(Material material)
         {
+            if (material == null) return null;
+            
             if (!material.color.Equals(Color.clear))
                 return new Link.Visual.Material(material.name, new Link.Visual.Material.Color(GetRgba(material)));
 

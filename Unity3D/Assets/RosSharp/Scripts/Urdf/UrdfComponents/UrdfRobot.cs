@@ -31,14 +31,16 @@ namespace RosSharp.Urdf.Export
             robot.WriteToUrdf();
         }
 
-        public void Initialize()
+        public void Reset()
         {
+            transform.DestroyChildrenImmediate();
+
             filePath = Application.dataPath + Path.DirectorySeparatorChar + "Urdf" + Path.DirectorySeparatorChar + gameObject.name + ".urdf";
 
             GameObject baseLink = new GameObject("base_link");
             baseLink.transform.SetParentAndAlign(gameObject.transform);
 
-            baseLink.AddComponent<UrdfLink>().Initialize();
+            baseLink.AddComponent<UrdfLink>();
 
         }
 
