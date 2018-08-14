@@ -13,30 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
+using UnityEngine;
 
-namespace RosSharp.RosBridgeClient.Services.RosApi
+namespace RosSharp.RosBridgeClient
 {
-    public class GetParamRequest : Message
+    [RequireComponent(typeof(JoyAxisWriter))]
+    public class JoyAxisInputPasser : MonoBehaviour
     {
-        [JsonIgnore]
-        public const string RosMessageName = "rosapi/GetParam";
-        public string name;
+        public string AxisName;
+        private JoyAxisWriter joyAxisWriter;
 
-        [JsonProperty("default")]
-        public string _default;
-
-        public GetParamRequest(string name, string _default)
+        private void Start()
         {
-            this.name = name;
-            this._default = _default;
+            joyAxisWriter = GetComponent<JoyAxisWriter>();
         }
-    }
-
-    public class GetParamResponse : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "rosapi/GetParam";
-        public string value;
+        private void Update()
+        {
+            joyAxisWriter.Write(Input.GetAxis(AxisName));
+        }
     }
 }
