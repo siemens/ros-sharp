@@ -25,7 +25,7 @@ using UnityEditor;
 
 namespace RosSharp.Urdf.Import
 {
-    class RosImportHandler
+    public class RosImportHandler
     {
         private string robotName;
         private string localDirectory;
