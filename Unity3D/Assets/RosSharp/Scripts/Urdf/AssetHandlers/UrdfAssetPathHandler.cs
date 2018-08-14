@@ -26,22 +26,22 @@ namespace RosSharp.Urdf
         #region SetAssetRootFolder
         public static void SetAssetRootFolder(Robot robot)
         {
-            assetRootFolder = GetPathToParentDirectory(robot.filename);
+            assetRootFolder = GetRelativePathToParentDirectory(robot.filename);
         }
 
         public static void SetAssetRootFolder(string newPath)
         {
             assetRootFolder = newPath;
         }
+        #endregion
 
-        public static string GetPathToParentDirectory(this string urdfFile)
+        #region GetPaths
+        public static string GetRelativePathToParentDirectory(this string urdfFile)
         {
             var directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
             return GetRelativeAssetPath(directoryAbsolutePath);
         }
-        #endregion
 
-        #region GetAssets
         public static string GetAssetRootFolder()
         {
             return assetRootFolder;
@@ -58,9 +58,23 @@ namespace RosSharp.Urdf
         }
         #endregion
 
+        #region GetMeshPaths
+        public static string GetNewMeshPath(string meshFileName)
+        {
+            //meshFileName is the name of the mesh, with file extension
+            return assetRootFolder + Path.DirectorySeparatorChar  + "meshes" + Path.DirectorySeparatorChar + meshFileName;
+        }
+
+        public static string GetPackagePathForMesh(string absoluteMeshPath)
+        {
+            return "package://meshes/" + Path.GetFileName(absoluteMeshPath);
+        }
+        #endregion
+
         public static bool IsValidAssetPath(string path)
         {
-            return GetPathToParentDirectory(path) == null;
+            return GetRelativeAssetPath(path) != null;
         }
     }
+
 }

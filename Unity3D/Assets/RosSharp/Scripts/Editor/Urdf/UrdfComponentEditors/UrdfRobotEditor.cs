@@ -41,11 +41,18 @@ namespace RosSharp.Urdf.Export
             {
                 string robotAssetFolder = EditorUtility.OpenFolderPanel(
                     "Select export location",
-                    Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
+                    Application.dataPath,
                     "");
-                UrdfAssetPathHandler.SetAssetRootFolder(robotAssetFolder);
-                urdfRobot.filePath = Path.Combine(robotAssetFolder, urdfRobot.gameObject.name + ".urdf");
-                urdfRobot.ExportRobotToUrdf();
+
+                if (robotAssetFolder == null || robotAssetFolder == "")
+                    return;
+                if (UrdfAssetPathHandler.GetRelativeAssetPath(robotAssetFolder) == null)
+                {
+                    Debug.LogWarning("You must select a folder within the Assets folder. Aborting URDF export.");
+                    return;
+                }
+                
+                urdfRobot.ExportRobotToUrdf(robotAssetFolder);
             }
         }
     }

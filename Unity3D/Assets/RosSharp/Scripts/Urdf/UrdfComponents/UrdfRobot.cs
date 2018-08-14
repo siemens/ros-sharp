@@ -23,12 +23,19 @@ namespace RosSharp.Urdf.Export
 {
     public class UrdfRobot : MonoBehaviour
     {
-        public string filePath;
+        private string filePath;
 
-        public void ExportRobotToUrdf()
+        public void ExportRobotToUrdf(string robotAssetFolder)
         {
+            UrdfAssetPathHandler.SetAssetRootFolder(robotAssetFolder);
+            filePath = Path.Combine(robotAssetFolder, name + ".urdf");
+            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            
             Robot robot = GetRobotData();
             robot.WriteToUrdf();
+            AssetDatabase.Refresh();
+
+            Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
         }
 
         public void Reset()
