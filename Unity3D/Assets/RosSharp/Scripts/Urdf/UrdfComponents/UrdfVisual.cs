@@ -15,17 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace RosSharp.Urdf.Export
 {
     [SelectionBase]
     public class UrdfVisual : MonoBehaviour
     {
+        [SerializeField]
         private UrdfVisuals.GeometryTypes geometryType;
 
         public void Initialize(UrdfVisuals.GeometryTypes type)
@@ -92,26 +91,23 @@ namespace RosSharp.Urdf.Export
         {
             GameObject geometryChildObject = transform.GetChild(0).gameObject;
             
-            string packagePath = "";
-            string meshPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(geometryChildObject));
-
+            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(geometryChildObject));
             bool foundExistingColladaOrStl = false;
 
-            if (meshPath != null && meshPath != "")
+            if (prefabPath != null && prefabPath != "")
             {
-                if (meshPath.ToLower().Contains(".dae"))
+                if (prefabPath.ToLower().Contains(".dae"))
                     foundExistingColladaOrStl = true;
-                else
+                else //Find STL file that corresponds to the prefab, if it already exists
                 {
-                    //Find STL file, if already exists
-                    string[] foldersToSearch = {Path.GetDirectoryName(meshPath)};
-                    string meshName = Path.GetFileNameWithoutExtension(meshPath);
+                    string[] foldersToSearch = {Path.GetDirectoryName(prefabPath)};
+                    string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
 
-                    foreach (string guid2 in AssetDatabase.FindAssets(meshName, foldersToSearch))
+                    foreach (string guid2 in AssetDatabase.FindAssets(prefabName, foldersToSearch))
                     {
                         if (AssetDatabase.GUIDToAssetPath(guid2).ToLower().Contains(".stl"))
                         {
-                            meshPath = AssetDatabase.GUIDToAssetPath(guid2);
+                            prefabPath = AssetDatabase.GUIDToAssetPath(guid2);
                             foundExistingColladaOrStl = true;
                             break;
                         }
@@ -119,29 +115,36 @@ namespace RosSharp.Urdf.Export
                 }
             }
 
+            string packagePath = "";
             if (foundExistingColladaOrStl) //Copy prefab to new location in robot asset folder
             {
-                string newMeshPath = UrdfAssetPathHandler.GetNewMeshPath(Path.GetFileName(meshPath));
-                Directory.CreateDirectory(Path.GetDirectoryName(newMeshPath));
+                string newPrefabPath = UrdfAssetPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
+                Directory.CreateDirectory(Path.GetDirectoryName(newPrefabPath));
 
-                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(meshPath);
-                AssetDatabase.CopyAsset(meshPath, UrdfAssetPathHandler.GetRelativeAssetPath(newMeshPath));
+                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newPrefabPath);
+                AssetDatabase.CopyAsset(prefabPath, UrdfAssetPathHandler.GetRelativeAssetPath(newPrefabPath));
             }
             else //Create new STL file 
             {
-                Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh " 
-                          + geometryChildObject.name + ". Exporting a new STL file.");
-    
-                string newMeshPath = UrdfAssetPathHandler.GetNewMeshPath(geometryChildObject.name + ".STL");
-                Directory.CreateDirectory(Path.GetDirectoryName(newMeshPath));
-
-                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newMeshPath);
-                
-                GameObject[] gameObjects = { geometryChildObject };
-                StlExporter.Export(newMeshPath, gameObjects, FileType.Binary);
+                string newPrefabPath = ExportMeshToStl(geometryChildObject);
+                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newPrefabPath);
             }
 
             return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, transform.GetUrdfSize()));
+        }
+
+        private static string ExportMeshToStl(GameObject gameObject)
+        {
+            Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
+                      + gameObject.name + ". Exporting a new STL file.");
+
+            string newMeshPath = UrdfAssetPathHandler.GetNewMeshPath(gameObject.name + ".STL");
+            Directory.CreateDirectory(Path.GetDirectoryName(newMeshPath));
+
+            GameObject[] gameObjects = {gameObject};
+            StlExporter.Export(newMeshPath, gameObjects, FileType.Binary);
+
+            return newMeshPath;
         }
 
         private void CheckForUrdfIncompatibility()
@@ -152,9 +155,8 @@ namespace RosSharp.Urdf.Export
                 Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
                                  "Make any translation, rotation, or scale changes to the parent Visual object instead.");
 
-            //Todo: test this
             if (transform.childCount > 1)
-                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. In link "
+                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. One the first one will be exported to Urdf. In link "
                                  + transform.parent.parent.name + ", move each Geometry into its own Visual element.");
         }
     }

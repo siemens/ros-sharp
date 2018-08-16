@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,6 +23,7 @@ namespace RosSharp.Urdf.Export
     [SelectionBase]
     public class UrdfCollision : MonoBehaviour
     {
+        [SerializeField]
         private UrdfVisuals.GeometryTypes geometryType;
 
         public void Initialize(UrdfVisuals.GeometryTypes type)

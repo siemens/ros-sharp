@@ -23,6 +23,7 @@ namespace RosSharp.Urdf.Export
     public class UrdfVisuals : MonoBehaviour
     {
         //TODO move enum to Geometry class in RosSharp.Urdf
+      
         public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
         public void Reset()
