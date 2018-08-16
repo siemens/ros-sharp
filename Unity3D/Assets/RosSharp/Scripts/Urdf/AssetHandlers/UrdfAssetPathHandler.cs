@@ -56,6 +56,11 @@ namespace RosSharp.Urdf
             var assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
             return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
+
+        public static string GetFullAssetPath(string relativePath)
+        {
+            return Application.dataPath + relativePath.Substring("Assets".Length);
+        }
         #endregion
 
         #region GetMeshPaths

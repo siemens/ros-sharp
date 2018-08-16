@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -32,6 +34,9 @@ namespace RosSharp.Urdf.Export
             filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             
             Robot robot = GetRobotData();
+
+            if (robot == null) return;
+
             robot.WriteToUrdf();
             AssetDatabase.Refresh();
 
@@ -54,9 +59,21 @@ namespace RosSharp.Urdf.Export
         private Robot GetRobotData()
         {
             Robot robot = new Robot(filePath, gameObject.name);
-            
+
+            List<string> linkNames = new List<string>();
             foreach (UrdfLink urdfLink in gameObject.GetComponentsInChildren<UrdfLink>())
+            {
                 robot.links.Add(urdfLink.GetLinkData());
+                if (linkNames.Contains(urdfLink.name))
+                {
+                    EditorUtility.DisplayDialog("URDF Export Error",
+                        "URDF export failed. There are several links with the name " +
+                        urdfLink.name + ". Make sure all link names are unique before exporting this robot.",
+                        "Ok");
+                    return null;
+                }
+                linkNames.Add(urdfLink.name);
+            }
 
             foreach (UrdfJoint urdfJoint in gameObject.GetComponentsInChildren<UrdfJoint>())
                 robot.joints.Add(urdfJoint.GetJointData());
