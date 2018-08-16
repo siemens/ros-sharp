@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© Dyno Robotics, 2018
+Author: Samuel Lindgren (samuel@dynorobotics.se)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,19 +17,17 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    [RequireComponent(typeof(JoyAxisWriter))]
-    public class JoyAxisProvider: MonoBehaviour
+    [RequireComponent(typeof(RosConnector))]
+    public abstract class ServiceProvider<Tin, Tout> : MonoBehaviour where Tin : Message where Tout : Message
     {
-        public string AxisName;
-        private JoyAxisWriter joyAxisWriter;
+        public string ServiceName;
 
-        private void Start()
+        protected virtual void Start()
         {
-            joyAxisWriter = GetComponent<JoyAxisWriter>();
+            GetComponent<RosConnector>().RosSocket.AdvertiseService<Tin, Tout>(ServiceName, ServiceCallHandler);
         }
-        private void Update()
-        {
-            joyAxisWriter.Write(Input.GetAxis(AxisName));
-        }
+
+        protected abstract bool ServiceCallHandler(Tin request, out Tout response);
+
     }
 }

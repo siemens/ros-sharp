@@ -80,8 +80,9 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 * [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity STL mesh importer used in this project.
 * [Jeremy Fix](https://github.com/jeremyfix) for providing some helpful ROS communication example scripts in Unity.
-* [Hassanbot](https://github.com/hassanbot) for multiple bugfixes and [communication performance tests](https://github.com/siemens/ros-sharp/issues/66).
+* [Hassanbot](https://github.com/hassanbot) for multiple bug fixes and [communication performance tests](https://github.com/siemens/ros-sharp/issues/66).
 * [David Whitney](https://github.com/dwhit) and  [tarukosu](https://github.com/tarukosu-) for UWP platform support.
+* [Samuel Lindgren](https://github.com/samiamlabs) for adding the ROS Service Providers in Unity.
 * [Interested in contributing as well?](CONTRIBUTING.md)
 
 ## Further Info ##
