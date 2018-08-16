@@ -76,7 +76,11 @@ namespace RosSharp.Urdf.Export
             }
 
             foreach (UrdfJoint urdfJoint in gameObject.GetComponentsInChildren<UrdfJoint>())
-                robot.joints.Add(urdfJoint.GetJointData());
+            {
+                Joint joint = urdfJoint.GetJointData();
+                if (joint != null) robot.joints.Add(joint);
+            }
+                
             
             //TODO find and save all materials/meshes in the urdf folder, and add to robot
 

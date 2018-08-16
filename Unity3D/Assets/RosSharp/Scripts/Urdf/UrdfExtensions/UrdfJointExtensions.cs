@@ -130,6 +130,7 @@ namespace RosSharp.Urdf.Import
                 prismaticJoint.highAngularXLimit = joint.limit.GetHighSoftJointLimit();
 
                 prismaticJoint.linearLimit = joint.limit.GetLinearLimit();
+                //Todo: use lower limit as well? GetLinearLimit only uses upper.
             }
 
             // data:

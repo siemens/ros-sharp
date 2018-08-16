@@ -61,28 +61,14 @@ namespace RosSharp
 
         private static double[] GetUrdfXyz(this Transform transform)
         {
-            if (transform.position != Vector3.zero)
-                return new double[]
-                {
-                    Math.Round(transform.localPosition.z, RoundDigits),
-                    Math.Round(-transform.localPosition.x, RoundDigits),
-                    Math.Round(transform.localPosition.y, RoundDigits)
-                };
-
-            return null;
+            Vector3 xyzVector = transform.localPosition.Unity2Ros();
+            return xyzVector == Vector3.zero ? null: xyzVector.ToRoundedDoubleArray();
         }
+
         private static double[] GetUrdfRpy(this Transform transform)
         {
-            Vector3 rotationVector = transform.localEulerAngles;
-            if (rotationVector != Vector3.zero)
-                return new double[]
-                {
-                    Math.Round(-rotationVector.z * Mathf.Deg2Rad, RoundDigits),
-                    Math.Round(rotationVector.x * Mathf.Deg2Rad, RoundDigits),
-                    Math.Round(-rotationVector.y * Mathf.Deg2Rad, RoundDigits)
-                };
-
-            return null;
+            Vector3 rpyVector = transform.localEulerAngles.Unity2Ros();
+            return rpyVector == Vector3.zero ? null : rpyVector.ToRoundedDoubleArray();
         }
 
         public static double[] GetUrdfSize(this Transform transform)
@@ -137,6 +123,15 @@ namespace RosSharp
         public static Quaternion Unity2Ros(this Quaternion quaternion)
         {
             return new Quaternion(-quaternion.x, -quaternion.z, -quaternion.y, quaternion.w);
+        }
+
+        public static double[] ToRoundedDoubleArray(this Vector3 vector3)
+        {
+            double[] arr = new double[3];
+            for (int i = 0; i < 3; i++)
+                arr[i] = Math.Round(vector3[i], RoundDigits);
+
+            return arr;
         }
     }
 }
