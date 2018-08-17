@@ -100,6 +100,7 @@ namespace RosSharp.Urdf.Export
                     foundExistingColladaOrStl = true;
                 else //Find STL file that corresponds to the prefab, if it already exists
                 {
+                    //TODO: also search for mesh in new folder location (ie: asset root folder)
                     string[] foldersToSearch = {Path.GetDirectoryName(prefabPath)};
                     string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
 

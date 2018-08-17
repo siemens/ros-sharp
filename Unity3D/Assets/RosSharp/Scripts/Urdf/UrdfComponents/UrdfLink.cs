@@ -92,8 +92,11 @@ namespace RosSharp.Urdf.Export
             if (_rigidbody == null)
                 return null;
 
+            //TODO: what to do for rotation values here?
+            Origin inertialOrigin = new Origin(_rigidbody.centerOfMass.Unity2Ros().ToRoundedDoubleArray(), new double[] {0,0,0});
+            
             //TODO: get actual values for inertial matrix
-            return new Link.Inertial(_rigidbody.mass, transform.GetOriginData(), new Link.Inertial.Inertia(0,0,0,0,0,0));
+            return new Link.Inertial(_rigidbody.mass, inertialOrigin, new Link.Inertial.Inertia(0,0,0,0,0,0));
             
         }
     }

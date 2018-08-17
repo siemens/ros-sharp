@@ -30,7 +30,7 @@ namespace RosSharp.Urdf
             prismatic,
             planar
         }
-
+       
         public string JointName;
         public JointTypes JointType;
 
@@ -52,27 +52,6 @@ namespace RosSharp.Urdf
             //TODO: Test all joint types
         }
 
-        private static JointTypes GetJointType(string jointType)
-        {
-            switch (jointType)
-            {
-                case "fixed":
-                    return JointTypes.fixedJoint;
-                case "continuous":
-                    return JointTypes.continuous;
-                case "revolute":
-                    return JointTypes.revolute;
-                case "floating":
-                    return JointTypes.floating;
-                case "prismatic":
-                    return JointTypes.prismatic;
-                case "planar":
-                    return JointTypes.planar;
-                default:
-                    return JointTypes.fixedJoint;
-            }
-        }
-
         private void AddCorrectJointType()
         {
             UnityEngine.Joint joint = null;
@@ -84,6 +63,8 @@ namespace RosSharp.Urdf
             else if (IsRevoluteOrContinuous)
             {
                 joint = gameObject.AddComponent<HingeJoint>();
+                joint.autoConfigureConnectedAnchor = true;
+
                 if (JointType == JointTypes.revolute)
                     ((HingeJoint) joint).useLimits = true;
                     gameObject.AddComponent<JointLimitsManager>();
@@ -91,6 +72,7 @@ namespace RosSharp.Urdf
             else
             {
                 joint = gameObject.AddComponent<ConfigurableJoint>();
+                joint.autoConfigureConnectedAnchor = true;
 
                 ConfigurableJoint cJoint = (ConfigurableJoint)joint;
                 if (IsPrismatic)
@@ -98,22 +80,21 @@ namespace RosSharp.Urdf
                     // degrees of freedom:
                     cJoint.xMotion = ConfigurableJointMotion.Limited;
                     cJoint.yMotion = ConfigurableJointMotion.Locked;
+                    cJoint.zMotion = ConfigurableJointMotion.Locked;
+                    cJoint.angularXMotion = ConfigurableJointMotion.Locked;
+                    cJoint.angularYMotion = ConfigurableJointMotion.Locked;
+                    cJoint.angularZMotion = ConfigurableJointMotion.Locked;
                 }
                 else if (IsPlanar)
                 {
                     // degrees of freedom:
                     cJoint.xMotion = ConfigurableJointMotion.Free;
                     cJoint.yMotion = ConfigurableJointMotion.Free;
-                }
-
-                if (JointType != JointTypes.floating)
-                {
                     cJoint.zMotion = ConfigurableJointMotion.Locked;
                     cJoint.angularXMotion = ConfigurableJointMotion.Locked;
                     cJoint.angularYMotion = ConfigurableJointMotion.Locked;
                     cJoint.angularZMotion = ConfigurableJointMotion.Locked;
                 }
-
             }
 
             if (joint != null) joint.connectedBody = gameObject.transform.parent.gameObject.GetComponent<Rigidbody>();
@@ -126,8 +107,8 @@ namespace RosSharp.Urdf
 
             //Data common to all joints
             Joint joint = new Joint(
-                JointName, 
-                JointType.ToString(), 
+                JointName,
+                GetJointName(JointType),
                 gameObject.transform.parent.name, 
                 gameObject.name,
                 transform.GetOriginData());
@@ -141,8 +122,11 @@ namespace RosSharp.Urdf
             {
                 joint.axis = GetAxisData(unityJoint.axis);
                  
-                Vector3 xpyVector = unityJoint.connectedAnchor.Unity2Ros();
-                joint.origin = new Origin(xpyVector.ToRoundedDoubleArray(), null);
+                //TODO: how to combine info from connectedAnchor and the link's transform origin? Which
+                //is more important? Don't allow user to change connectedAnchor? 
+                //Currently if connectedAnchor is stored in joint.origin, is overrides the link's origin
+                //Vector3 xpyVector = unityJoint.connectedAnchor.Unity2Ros();
+                //joint.origin = new Origin(xpyVector.ToRoundedDoubleArray(), null);
             }
 
             //HingeJoint data
@@ -184,6 +168,38 @@ namespace RosSharp.Urdf
                 rosVector.x,
                 rosVector.y,
                 rosVector.z});
+        }
+
+        private static JointTypes GetJointType(string jointType)
+        {
+            switch (jointType)
+            {
+                case "fixed":
+                    return JointTypes.fixedJoint;
+                case "continuous":
+                    return JointTypes.continuous;
+                case "revolute":
+                    return JointTypes.revolute;
+                case "floating":
+                    return JointTypes.floating;
+                case "prismatic":
+                    return JointTypes.prismatic;
+                case "planar":
+                    return JointTypes.planar;
+                default:
+                    return JointTypes.fixedJoint;
+            }
+        }
+
+        private static string GetJointName(JointTypes jointType)
+        {
+            switch (jointType)
+            {
+                case JointTypes.fixedJoint:
+                    return "fixed";
+                default:
+                    return jointType.ToString();
+            }
         }
     }
 }

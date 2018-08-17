@@ -56,7 +56,13 @@ namespace RosSharp
 
         public static Origin GetOriginData(this Transform transform)
         {
-           return new Origin(transform.GetUrdfXyz(), transform.GetUrdfRpy());
+            double[] xyz = transform.GetUrdfXyz();
+            double[] rpy = transform.GetUrdfRpy();
+
+            if (xyz != null || rpy != null)
+                return new Origin(xyz, rpy);
+
+            return null;
         }
 
         private static double[] GetUrdfXyz(this Transform transform)
@@ -67,7 +73,11 @@ namespace RosSharp
 
         private static double[] GetUrdfRpy(this Transform transform)
         {
-            Vector3 rpyVector = transform.localEulerAngles.Unity2Ros();
+            Vector3 rpyVector = new Vector3(
+                -transform.localEulerAngles.z * Mathf.Deg2Rad,
+                transform.localEulerAngles.x * Mathf.Deg2Rad,
+                -transform.localEulerAngles.y * Mathf.Deg2Rad);
+
             return rpyVector == Vector3.zero ? null : rpyVector.ToRoundedDoubleArray();
         }
 
