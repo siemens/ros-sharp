@@ -60,7 +60,7 @@ namespace RosSharp.Urdf.Export
 
         public Link.Visual GetVisualData()
         {
-            CheckForUrdfIncompatibility();
+            CheckForUrdfCompatibility();
 
             Link.Geometry geometry = null;
             switch (geometryType)
@@ -148,7 +148,7 @@ namespace RosSharp.Urdf.Export
             return newMeshPath;
         }
 
-        private void CheckForUrdfIncompatibility()
+        private void CheckForUrdfCompatibility()
         {
             Transform childTransform = transform.GetChild(0);
             if (childTransform != null &&

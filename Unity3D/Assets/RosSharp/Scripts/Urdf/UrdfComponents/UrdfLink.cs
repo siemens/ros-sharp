@@ -57,6 +57,8 @@ namespace RosSharp.Urdf.Export
             EditorGUIUtility.PingObject(gameObject);
         }
 
+        //TODO: Add ability to reset and/or change type of joint
+
         private void AddVisualsObject()
         {
             GameObject visualsObject = new GameObject("Visuals");

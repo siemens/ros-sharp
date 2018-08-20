@@ -32,7 +32,23 @@ namespace RosSharp.Urdf.Export
             UrdfAssetPathHandler.SetAssetRootFolder(robotAssetFolder);
             filePath = Path.Combine(robotAssetFolder, name + ".urdf");
             filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            
+
+            string meshRootFolder = EditorUtility.OpenFolderPanel(
+                "Select mesh export location",
+                UrdfAssetPathHandler.GetAssetRootFolder(),
+                "");
+            try
+            {
+                meshRootFolder.Substring(UrdfAssetPathHandler.GetAssetRootFolder().Length);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Mesh export folder must be a subfolder of the robot export location. Aborting URDF export. " + e);
+                return;
+            }
+
+            UrdfAssetPathHandler.SetMeshRootFolder(meshRootFolder);
+
             Robot robot = GetRobotData();
 
             if (robot == null) return;
@@ -63,7 +79,6 @@ namespace RosSharp.Urdf.Export
             List<string> linkNames = new List<string>();
             foreach (UrdfLink urdfLink in gameObject.GetComponentsInChildren<UrdfLink>())
             {
-                robot.links.Add(urdfLink.GetLinkData());
                 if (linkNames.Contains(urdfLink.name))
                 {
                     EditorUtility.DisplayDialog("URDF Export Error",
@@ -72,12 +87,24 @@ namespace RosSharp.Urdf.Export
                         "Ok");
                     return null;
                 }
+                robot.links.Add(urdfLink.GetLinkData());
                 linkNames.Add(urdfLink.name);
             }
 
+            List<string> jointNames = new List<string>();
             foreach (UrdfJoint urdfJoint in gameObject.GetComponentsInChildren<UrdfJoint>())
             {
                 Joint joint = urdfJoint.GetJointData();
+                if (jointNames.Contains(urdfJoint.JointName))
+                {
+                    EditorUtility.DisplayDialog("URDF Export Error",
+                        "URDF export failed. There is more than one joint with the name " +
+                        urdfJoint.JointName + ". Make sure all joint names are unique before exporting this robot.",
+                        "Ok");
+                    Debug.LogError("URDF export failed.");
+                    return null;
+                }
+                jointNames.Add(urdfJoint.JointName);
                 if (joint != null) robot.joints.Add(joint);
             }
                 

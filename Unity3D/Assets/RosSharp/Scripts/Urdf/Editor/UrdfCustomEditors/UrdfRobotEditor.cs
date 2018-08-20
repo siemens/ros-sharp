@@ -43,9 +43,7 @@ namespace RosSharp.Urdf.Export
                     "Select export location",
                     Application.dataPath,
                     "");
-
-                if (robotAssetFolder == null || robotAssetFolder == "")
-                    return;
+                
                 if (UrdfAssetPathHandler.GetRelativeAssetPath(robotAssetFolder) == null)
                 {
                     Debug.LogWarning("You must select a folder within the Assets folder. Aborting URDF export.");

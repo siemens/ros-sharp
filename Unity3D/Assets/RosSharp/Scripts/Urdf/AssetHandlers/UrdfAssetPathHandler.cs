@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -22,6 +23,7 @@ namespace RosSharp.Urdf
     public static class UrdfAssetPathHandler
     {
         private static string assetRootFolder;
+        private static string meshRootFolder;
 
         #region SetAssetRootFolder
         public static void SetAssetRootFolder(Robot robot)
@@ -34,6 +36,11 @@ namespace RosSharp.Urdf
             assetRootFolder = newPath;
         }
         #endregion
+
+        public static void SetMeshRootFolder(string newPath)
+        {
+            meshRootFolder = newPath;
+        }
 
         #region GetPaths
         public static string GetRelativePathToParentDirectory(this string urdfFile)
@@ -67,12 +74,13 @@ namespace RosSharp.Urdf
         public static string GetNewMeshPath(string meshFileName)
         {
             //meshFileName is the name of the mesh, with file extension
-            return assetRootFolder + Path.DirectorySeparatorChar  + "meshes" + Path.DirectorySeparatorChar + meshFileName;
+            return Path.Combine(meshRootFolder, meshFileName);
         }
 
         public static string GetPackagePathForMesh(string absoluteMeshPath)
         {
-            return "package://meshes/" + Path.GetFileName(absoluteMeshPath);
+            string relativeMeshPath = meshRootFolder.Substring(assetRootFolder.Length + 1);
+            return Path.Combine("package://", relativeMeshPath, Path.GetFileName(absoluteMeshPath)).Replace("\\", "/");
         }
         #endregion
 

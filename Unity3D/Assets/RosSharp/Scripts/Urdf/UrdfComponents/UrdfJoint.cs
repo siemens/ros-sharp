@@ -13,30 +13,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    //  [ExecuteInEditMode]
     [RequireComponent(typeof(Joint))]
     public class UrdfJoint : MonoBehaviour
     {
         public enum JointTypes
         {
-            fixedJoint,
-            continuous,
-            revolute,
-            floating,
-            prismatic,
-            planar
+            Fixed,
+            Continuous,
+            Revolute,
+            Floating,
+            Prismatic,
+            Planar
         }
        
         public string JointName;
         public JointTypes JointType;
 
-        public bool IsRevoluteOrContinuous => JointType == JointTypes.continuous || JointType == JointTypes.revolute;
-        public bool IsPrismatic => JointType == JointTypes.prismatic;
-        public bool IsPlanar => JointType != JointTypes.planar;
+        public bool IsRevoluteOrContinuous => JointType == JointTypes.Continuous || JointType == JointTypes.Revolute;
+        public bool IsPrismatic => JointType == JointTypes.Prismatic;
+        public bool IsPlanar => JointType == JointTypes.Planar;
 
         //TODO: figure out better default limits. Or how to get info from Unity joint
         public double effortLimit = 50000;
@@ -56,22 +56,25 @@ namespace RosSharp.Urdf
         {
             UnityEngine.Joint joint = null;
 
-            if (JointType == JointTypes.fixedJoint)
+            if (JointType == JointTypes.Fixed)
             {
                 joint = gameObject.AddComponent<FixedJoint>();
+                joint.hideFlags = HideFlags.HideInInspector;
             }
             else if (IsRevoluteOrContinuous)
             {
                 joint = gameObject.AddComponent<HingeJoint>();
+                joint.hideFlags = HideFlags.HideInInspector;
                 joint.autoConfigureConnectedAnchor = true;
 
-                if (JointType == JointTypes.revolute)
+                if (JointType == JointTypes.Revolute)
                     ((HingeJoint) joint).useLimits = true;
                     gameObject.AddComponent<JointLimitsManager>();
             }
             else
             {
                 joint = gameObject.AddComponent<ConfigurableJoint>();
+                joint.hideFlags = HideFlags.HideInInspector;
                 joint.autoConfigureConnectedAnchor = true;
 
                 ConfigurableJoint cJoint = (ConfigurableJoint)joint;
@@ -104,11 +107,12 @@ namespace RosSharp.Urdf
         {
             //TODO: consider only getting dynamics data if "Use Spring" is true
             //TODO: consider only getting limits data if "Use Limits" is true
+            CheckForUrdfCompatibility();
 
             //Data common to all joints
             Joint joint = new Joint(
                 JointName,
-                GetJointName(JointType),
+                GetJointTypeName(JointType),
                 gameObject.transform.parent.name, 
                 gameObject.name,
                 transform.GetOriginData());
@@ -116,9 +120,14 @@ namespace RosSharp.Urdf
             UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
 
             if (unityJoint == null)
-                return joint;
+                return null;
 
-            if (JointType != JointTypes.fixedJoint && IsPlanar)
+            if (IsPlanar)
+            {
+                ConfigurableJoint cJoint = GetComponent<ConfigurableJoint>();
+                joint.axis = GetAxisData(Vector3.Cross(cJoint.axis, cJoint.secondaryAxis));
+            }
+            else if (JointType != JointTypes.Fixed)
             {
                 joint.axis = GetAxisData(unityJoint.axis);
                  
@@ -136,21 +145,22 @@ namespace RosSharp.Urdf
 
                 joint.dynamics = new Joint.Dynamics(hingeJoint.spring.damper, hingeJoint.spring.spring);
                 
-                if (JointType == JointTypes.revolute)
+                if (JointType == JointTypes.Revolute)
                     joint.limit = GetLimitData(hingeJoint.limits.min, hingeJoint.limits.max);
             }
             //ConfigurableJoint data
-            else if (JointType == JointTypes.prismatic && IsPlanar)
+            else if (IsPrismatic || IsPlanar)
             {
-                ConfigurableJoint configurableJoint = (ConfigurableJoint) unityJoint;
+                ConfigurableJoint configurableJoint = GetComponent<ConfigurableJoint>();
                 joint.dynamics = new Joint.Dynamics(configurableJoint.xDrive.positionDamper, configurableJoint.xDrive.positionSpring);
+                
+                //linear limit, not angular
+                joint.limit = new Joint.Limit(
+                    -configurableJoint.linearLimit.limit, 
+                    configurableJoint.linearLimit.limit, 
+                    effortLimit, velocityLimit);
 
-                if (JointType == JointTypes.prismatic)
-                    joint.limit = GetLimitData(configurableJoint.lowAngularXLimit.limit,
-                        configurableJoint.highAngularXLimit.limit);
-                else if (IsPlanar)
-                    joint.axis = GetAxisData(Vector3.Cross(configurableJoint.axis, configurableJoint.secondaryAxis));
-            }
+               }
 
             //TODO: Test all joint types
             return joint;
@@ -175,30 +185,50 @@ namespace RosSharp.Urdf
             switch (jointType)
             {
                 case "fixed":
-                    return JointTypes.fixedJoint;
+                    return JointTypes.Fixed;
                 case "continuous":
-                    return JointTypes.continuous;
+                    return JointTypes.Continuous;
                 case "revolute":
-                    return JointTypes.revolute;
+                    return JointTypes.Revolute;
                 case "floating":
-                    return JointTypes.floating;
+                    return JointTypes.Floating;
                 case "prismatic":
-                    return JointTypes.prismatic;
+                    return JointTypes.Prismatic;
                 case "planar":
-                    return JointTypes.planar;
+                    return JointTypes.Planar;
                 default:
-                    return JointTypes.fixedJoint;
+                    return JointTypes.Fixed;
             }
         }
 
-        private static string GetJointName(JointTypes jointType)
+        private static string GetJointTypeName(JointTypes jointType)
         {
-            switch (jointType)
+            return jointType.ToString().ToLower();
+        }
+
+        public bool AreLimitsCorrect()
+        {
+            if (IsPrismatic || IsPlanar)
             {
-                case JointTypes.fixedJoint:
-                    return "fixed";
-                default:
-                    return jointType.ToString();
+                ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
+                 return joint != null && joint.linearLimit.limit != 0;
+            }
+            if (JointType == JointTypes.Revolute)
+            {
+                HingeJoint joint = GetComponent<HingeJoint>();
+                return joint != null && joint.useLimits && joint.limits.max > joint.limits.min;
+            }
+
+            return true; //limits aren't needed
+        }
+
+
+        private void CheckForUrdfCompatibility()
+        {
+            if (!AreLimitsCorrect())
+            {
+                Debug.LogWarning("Limits are not defined correctly for Joint " + JointName + " in Link " + name +
+                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.");
             }
         }
     }

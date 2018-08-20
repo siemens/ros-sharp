@@ -165,9 +165,11 @@ namespace RosSharp.Urdf
 
             public void WriteToUrdf(XmlWriter writer)
             {
+                if (damping == 0 & friction == 0)
+                    return;
+
                 writer.WriteStartElement("dynamics");
 
-                //TODO only output one or the other
                 if (damping != 0)
                     writer.WriteAttributeString("damping", damping + "");
                 if (friction != 0)
@@ -191,7 +193,7 @@ namespace RosSharp.Urdf
                 effort = (double)node.Attribute("effort"); // required
                 velocity = (double)node.Attribute("velocity"); // required
             }
-
+            
             public Limit(double lower, double upper, double effort, double velocity)
             {
                 this.lower = lower;
@@ -239,6 +241,9 @@ namespace RosSharp.Urdf
 
             public void WriteToUrdf(XmlWriter writer)
             {
+                if (multiplier == 1 && offset == 0)
+                    return;
+
                 writer.WriteStartElement("mimic");
 
                 writer.WriteAttributeString("joint", joint);
