@@ -23,9 +23,8 @@ namespace RosSharp.Urdf.Export
     [CustomEditor(typeof(UrdfLink))]
     public class UrdfLinkEditor : UnityEditor.Editor
     {
-       
         private UrdfLink urdfLink;
-        private UrdfLink.UrdfJointTypes jointType = UrdfLink.UrdfJointTypes.Fixed;
+        private UrdfJoint.JointTypes jointType = UrdfJoint.JointTypes.Fixed;
 
         public override void OnInspectorGUI()
         {
@@ -36,7 +35,7 @@ namespace RosSharp.Urdf.Export
                 urdfLink.AddChildLink();
 
             GUILayout.Space(5);
-            jointType = (UrdfLink.UrdfJointTypes) EditorGUILayout.EnumPopup(
+            jointType = (UrdfJoint.JointTypes) EditorGUILayout.EnumPopup(
                 "Type of joint", jointType);
             if (GUILayout.Button("Add child link with connecting joint"))
                 urdfLink.AddChildLink(jointType);

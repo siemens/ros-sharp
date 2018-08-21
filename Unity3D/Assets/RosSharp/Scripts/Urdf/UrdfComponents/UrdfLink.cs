@@ -23,8 +23,6 @@ namespace RosSharp.Urdf.Export
 {
     public class UrdfLink : MonoBehaviour
     {
-        public enum UrdfJointTypes { Revolute, Continuous, Prismatic, Fixed, Floating, Planar }
-
         public UrdfLink AddChildLink()
         {
             //TODO: Check that link has a unique name
@@ -36,7 +34,7 @@ namespace RosSharp.Urdf.Export
             return childUrdfLink;
         }
 
-        public void AddChildLink(UrdfJointTypes jointType)
+        public void AddChildLink(UrdfJoint.JointTypes jointType)
         {
             UrdfLink childLink = AddChildLink();
 
