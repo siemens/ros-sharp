@@ -77,10 +77,21 @@ namespace RosSharp.Urdf
             return Path.Combine(meshRootFolder, meshFileName);
         }
 
+        public static string GetNewResourcePath(string resourceFileName)
+        {
+            return Path.Combine(meshRootFolder, "resources", resourceFileName);
+        }
+
         public static string GetPackagePathForMesh(string absoluteMeshPath)
         {
             string relativeMeshPath = meshRootFolder.Substring(assetRootFolder.Length + 1);
             return Path.Combine("package://", relativeMeshPath, Path.GetFileName(absoluteMeshPath)).Replace("\\", "/");
+        }
+
+        public static string GetPackagePathForResource(string resourcePath)
+        {
+            string relativeMeshPath = meshRootFolder.Substring(assetRootFolder.Length + 1);
+            return Path.Combine("package://", relativeMeshPath, "resources", Path.GetFileName(resourcePath)).Replace("\\", "/");
         }
         #endregion
 

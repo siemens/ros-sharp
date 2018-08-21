@@ -111,9 +111,12 @@ namespace RosSharp.Urdf
 
             public void WriteToUrdf(XmlWriter writer)
             {
-                writer.WriteStartElement("axis");
-                writer.WriteAttributeString("xyz", xyz.DoubleArrayToString());
-                writer.WriteEndElement();
+                if (!(xyz[0] == 0 && xyz[1] == 0 && xyz[2] == 0))
+                {
+                    writer.WriteStartElement("axis");
+                    writer.WriteAttributeString("xyz", xyz.DoubleArrayToString());
+                    writer.WriteEndElement();
+                }
             }
         }
 

@@ -18,6 +18,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -54,6 +55,8 @@ namespace RosSharp.Urdf.Export
             if (robot == null) return;
 
             robot.WriteToUrdf();
+
+            UrdfMaterial.materials.Clear();
             AssetDatabase.Refresh();
 
             Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
@@ -107,12 +110,8 @@ namespace RosSharp.Urdf.Export
                 jointNames.Add(urdfJoint.JointName);
                 if (joint != null) robot.joints.Add(joint);
             }
-                
-            
-            //TODO find and save all materials/meshes in the urdf folder, and add to robot
 
-            //foreach(Material material in gameObject.GetComponentsInChildren<Material>())
-            //    robot.materials.Add(GetMaterialData(material));
+            robot.materials = UrdfMaterial.materials.Values.ToList();
 
             return robot;
         }

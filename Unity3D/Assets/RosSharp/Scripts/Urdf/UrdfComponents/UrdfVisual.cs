@@ -142,8 +142,14 @@ namespace RosSharp.Urdf.Export
             string newMeshPath = UrdfAssetPathHandler.GetNewMeshPath(gameObject.name + ".STL");
             Directory.CreateDirectory(Path.GetDirectoryName(newMeshPath));
 
-            GameObject[] gameObjects = {gameObject};
+            //Create a clone with no rotation, so that it will be at original orientation when exported
+            GameObject clone = Instantiate(gameObject, Vector3.zero, Quaternion.identity);
+            clone.name = gameObject.name;
+            GameObject[] gameObjects = {clone};
+
             StlExporter.Export(newMeshPath, gameObjects, FileType.Binary);
+
+            DestroyImmediate(clone);
 
             return newMeshPath;
         }
