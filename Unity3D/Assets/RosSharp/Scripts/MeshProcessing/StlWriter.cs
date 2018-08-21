@@ -168,21 +168,20 @@ namespace RosSharp.Urdf
 			return sb.ToString();
 		}
 
-		private static Vector3[] Left2Right(Vector3[] v)
-		{
-			Matrix4x4 l2r = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f, 1f, -1f));
-			Vector3[] r = new Vector3[v.Length];
+	    private static Vector3[] Left2Right(Vector3[] v)
+	    {
+	        Vector3[] r = new Vector3[v.Length];
 
-			for(int i = 0; i < v.Length; i++)
-				r[i] = l2r.MultiplyPoint3x4(v[i]);
+	        for (int i = 0; i < v.Length; i++)
+	            r[i] = new Vector3(v[i].z, -v[i].x, v[i].y);
 
-			return r;
-		}
+	        return r;
+	    }
 
-		/**
+        /**
 		 *	Average of 3 vectors.
 		 */
-		private static Vector3 AvgNrm(Vector3 a, Vector3 b, Vector3 c)
+        private static Vector3 AvgNrm(Vector3 a, Vector3 b, Vector3 c)
 		{
 			return new Vector3(
 				(a.x + b.x + c.x) / 3f,
