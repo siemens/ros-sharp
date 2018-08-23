@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
@@ -30,7 +31,7 @@ namespace RosSharp.Urdf.Import
                 return null;
             }
 
-            UrdfAssetPathHandler.SetAssetRootFolder(robot);
+            UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
             UrdfMaterialHandler.InitializeRobotMaterials(robot);
 
             GameObject gameObject = new GameObject(robot.name);

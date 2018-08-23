@@ -27,18 +27,28 @@ namespace RosSharp.Urdf
 
         public static void InitializeRobotMaterials(Robot robot)
         {
-            if (!AssetDatabase.IsValidFolder(Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), materialFolderName)))
-                AssetDatabase.CreateFolder(UrdfAssetPathHandler.GetAssetRootFolder(), materialFolderName);
+            if (!AssetDatabase.IsValidFolder(Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), materialFolderName)))
+                AssetDatabase.CreateFolder(UrdfAssetPathHandler.GetPackageRoot(), materialFolderName);
 
             CreateDefaultMaterialAsset();
             foreach (var material in robot.materials)
                 CreateMaterialAsset(material);
         }
 
+        public static void MoveMaterialsToNewLocation(string oldPackageRoot) 
+        {
+            if (AssetDatabase.IsValidFolder(Path.Combine(oldPackageRoot, materialFolderName)))
+                AssetDatabase.MoveAsset(
+                    Path.Combine(oldPackageRoot, materialFolderName),
+                    Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), materialFolderName));
+            else
+                AssetDatabase.CreateFolder(UrdfAssetPathHandler.GetPackageRoot(), materialFolderName);
+        }
+
         private static string GetMaterialAssetPath(string materialName)
         {
             var path = Path.Combine(materialFolderName, Path.GetFileName(materialName) + ".mat");
-            return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
+            return Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), path);
         }
 
         #region CreateMaterialAssets
@@ -62,17 +72,16 @@ namespace RosSharp.Urdf
             return material;
         }
 
-        private static Material CreateDefaultMaterialAsset()
+        private static void CreateDefaultMaterialAsset()
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(defaultMaterialName));
             if (material != null)
-                return material;
+                return;
 
             material = InitializeMaterial();
             material.color = new Color(0.33f, 0.33f, 0.33f, 0.0f);
 
             AssetDatabase.CreateAsset(material, GetMaterialAssetPath(defaultMaterialName));
-            return material;
         }
         
         private static Material InitializeMaterial()
@@ -136,7 +145,7 @@ namespace RosSharp.Urdf
             }
         }
 
-        public static void SetDefaultMaterial(GameObject gameObject)
+        private static void SetDefaultMaterial(GameObject gameObject)
         {
             var defaultMaterial = AssetDatabase.LoadAssetAtPath<Material>(GetMaterialAssetPath(defaultMaterialName));
             SetMaterial(gameObject, defaultMaterial);

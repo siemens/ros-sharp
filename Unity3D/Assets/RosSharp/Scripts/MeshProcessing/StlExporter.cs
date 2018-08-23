@@ -16,7 +16,6 @@ namespace RosSharp.Urdf
 		 */
 		public static bool Export(string path, GameObject[] gameObjects, FileType type)
 		{
-            //TODO: fix so that meshes have the correct orientation when reimporting
 			Mesh[] meshes = CreateWorldSpaceMeshesWithTransforms(gameObjects.Select(x => x.transform).ToArray());
 			bool success = false;
 

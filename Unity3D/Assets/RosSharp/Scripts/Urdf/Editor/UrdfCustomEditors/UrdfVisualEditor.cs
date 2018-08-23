@@ -20,21 +20,19 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    [CustomEditor(typeof(UrdfCollisions))]
-    class UrdfCollisionsEditor : UnityEditor.Editor
+    [CustomEditor(typeof(UrdfVisual))]
+    class UrdfVisualEditor : UnityEditor.Editor
     {
-        private UrdfCollisions urdfCollisions;
-        private UrdfGeometry.GeometryTypes geometryType;
+        private UrdfVisual urdfVisual;
 
         public override void OnInspectorGUI()
         {
-            urdfCollisions = (UrdfCollisions)target;
-
-            GUILayout.Space(10);
-            geometryType = (UrdfGeometry.GeometryTypes)EditorGUILayout.EnumPopup("Type of collision", geometryType);
-
-            if (GUILayout.Button("Add collision"))
-                urdfCollisions.AddColision(geometryType);
+            urdfVisual = (UrdfVisual)target;
+            
+            if (GUILayout.Button("Add collision to match visual"))
+            {
+                urdfVisual.AddCorrespondingCollision();
+            }
         }
     }
 }

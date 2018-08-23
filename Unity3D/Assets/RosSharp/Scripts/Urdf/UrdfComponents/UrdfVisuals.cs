@@ -22,10 +22,6 @@ namespace RosSharp.Urdf.Export
 {
     public class UrdfVisuals : MonoBehaviour
     {
-        //TODO move enum to Geometry class in RosSharp.Urdf
-      
-        public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
-
         public void Reset()
         {
             transform.DestroyChildrenImmediate();
@@ -34,7 +30,7 @@ namespace RosSharp.Urdf.Export
             hideFlags = HideFlags.None;
         }
 
-        public void AddVisual(GeometryTypes type)
+        public void AddVisual(UrdfGeometry.GeometryTypes type)
         {
             GameObject visualObject = new GameObject("unnamed");
             visualObject.transform.SetParentAndAlign(gameObject.transform);

@@ -31,12 +31,12 @@ namespace RosSharp.Urdf.Export
             hideFlags = HideFlags.None;
         }
 
-        public void AddColision(UrdfVisuals.GeometryTypes type)
+        public void AddColision(UrdfGeometry.GeometryTypes type, Transform visualTransform = null)
         {
             GameObject collision = new GameObject("unnamed");
             collision.transform.SetParentAndAlign(gameObject.transform);
 
-            collision.AddComponent<UrdfCollision>().Initialize(type);
+            collision.AddComponent<UrdfCollision>().Initialize(type, visualTransform);
         }
 
         public List<Link.Collision> GetCollisionsData()

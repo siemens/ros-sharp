@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,8 +24,7 @@ namespace RosSharp.Urdf.Export
     {
         public UrdfLink AddChildLink()
         {
-            //TODO: Check that link has a unique name
-            GameObject childObject = new GameObject("Link");
+            GameObject childObject = new GameObject("link");
             childObject.transform.SetParentAndAlign(gameObject.transform);
 
             UrdfLink childUrdfLink = childObject.AddComponent<UrdfLink>();
@@ -37,8 +35,6 @@ namespace RosSharp.Urdf.Export
         public void AddChildLink(UrdfJoint.JointTypes jointType)
         {
             UrdfLink childLink = AddChildLink();
-
-            //Todo: add appropriate type of joint as well
             childLink.gameObject.AddComponent<UrdfJoint>().Initialize(gameObject.name + "_joint", jointType.ToString().ToLower());
         }
 
@@ -80,24 +76,10 @@ namespace RosSharp.Urdf.Export
             {
                 visuals = gameObject.GetComponentInChildren<UrdfVisuals>().GetVisualsData(),
                 collisions = gameObject.GetComponentInChildren<UrdfCollisions>().GetCollisionsData(),
-                inertial = GetInertialData()
+                inertial = UrdfInertial.GetInertialData(GetComponent<Rigidbody>())
             };
             
             return link;
-        }
-
-        private Link.Inertial GetInertialData()
-        {
-            Rigidbody _rigidbody = GetComponent<Rigidbody>();
-            if (_rigidbody == null)
-                return null;
-
-            //TODO: what to do for rotation values here?
-            Origin inertialOrigin = new Origin(_rigidbody.centerOfMass.Unity2Ros().ToRoundedDoubleArray(), new double[] {0,0,0});
-            
-            //TODO: get actual values for inertial matrix
-            return new Link.Inertial(_rigidbody.mass, inertialOrigin, new Link.Inertial.Inertia(0,0,0,0,0,0));
-            
         }
     }
 }

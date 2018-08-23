@@ -24,25 +24,18 @@ namespace RosSharp.Urdf.Export
     class UrdfVisualsEditor : UnityEditor.Editor
     {
         private UrdfVisuals urdfVisuals;
-        private UrdfVisuals.GeometryTypes geometryType = UrdfVisuals.GeometryTypes.Box;
+        private UrdfGeometry.GeometryTypes geometryType = UrdfGeometry.GeometryTypes.Box;
 
         public override void OnInspectorGUI()
         {
             urdfVisuals = (UrdfVisuals)target;
 
             GUILayout.Space(10);
-            geometryType = (UrdfVisuals.GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
+            geometryType = (UrdfGeometry.GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
             
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add visual"))
                 urdfVisuals.AddVisual(geometryType);
-
-            if (GUILayout.Button("Add visual with collision"))
-            {
-                urdfVisuals.AddVisual(geometryType);
-                urdfVisuals.gameObject.transform.parent.GetComponentInChildren<UrdfCollisions>()
-                    .AddColision(geometryType);
-            }
 
             EditorGUILayout.EndHorizontal();
 

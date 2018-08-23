@@ -40,7 +40,7 @@ namespace RosSharp.Urdf.Export
             if (GUILayout.Button("Export robot to URDF file"))
             {
                 string robotAssetFolder = EditorUtility.OpenFolderPanel(
-                    "Select export location",
+                    "Select package root of exported robot",
                     Application.dataPath,
                     "");
                 

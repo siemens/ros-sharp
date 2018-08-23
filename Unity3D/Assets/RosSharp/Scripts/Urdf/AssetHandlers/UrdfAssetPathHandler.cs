@@ -22,36 +22,47 @@ namespace RosSharp.Urdf
 {
     public static class UrdfAssetPathHandler
     {
-        private static string assetRootFolder;
-        private static string meshRootFolder;
+        //Relative to Assets folder
+        private static string packageRoot;
+        //Relative to package root folder
+        private static string exportDestination;
+
+        private static string meshFolderName = "meshes";
+        private static string resourceFolderName = "resources";
 
         #region SetAssetRootFolder
-        public static void SetAssetRootFolder(Robot robot)
+        public static void SetPackageRoot(string newPath, bool correctingIncorrectPackageRoot = false)
         {
-            assetRootFolder = GetRelativePathToParentDirectory(robot.filename);
-        }
+            string oldPackagePath = packageRoot;
 
-        public static void SetAssetRootFolder(string newPath)
-        {
-            assetRootFolder = newPath;
+            packageRoot = GetRelativeAssetPath(newPath);
+
+            if(correctingIncorrectPackageRoot)
+                UrdfMaterialHandler.MoveMaterialsToNewLocation(oldPackagePath);
         }
         #endregion
 
-        public static void SetMeshRootFolder(string newPath)
+        public static void SetExportDestination(string newPath)
         {
-            meshRootFolder = newPath;
+            string relativeExportPath = GetRelativeAssetPath(newPath);
+            exportDestination = relativeExportPath == packageRoot ? "" : relativeExportPath.Substring(packageRoot.Length+1);
+
+            //Create resource folders if they don't already exist
+            if (!AssetDatabase.IsValidFolder(Path.Combine(GetExportDestination(), meshFolderName)))
+                AssetDatabase.CreateFolder(GetExportDestination(), meshFolderName);
+            if (!AssetDatabase.IsValidFolder(Path.Combine(GetExportDestination(), resourceFolderName)))
+                AssetDatabase.CreateFolder(GetExportDestination(), resourceFolderName);
         }
 
         #region GetPaths
-        public static string GetRelativePathToParentDirectory(this string urdfFile)
+        public static string GetPackageRoot()
         {
-            var directoryAbsolutePath = Path.GetDirectoryName(urdfFile);
-            return GetRelativeAssetPath(directoryAbsolutePath);
+            return packageRoot;
         }
 
-        public static string GetAssetRootFolder()
+        public static string GetExportDestination()
         {
-            return assetRootFolder;
+            return exportDestination == null ? packageRoot : Path.Combine(packageRoot, exportDestination);
         }
 
         public static string GetRelativeAssetPath(string absolutePath)
@@ -70,34 +81,40 @@ namespace RosSharp.Urdf
         }
         #endregion
 
-        #region GetMeshPaths
+        #region GetExportPaths
+        //Returns new mesh path, relative to the Assets folder
         public static string GetNewMeshPath(string meshFileName)
         {
             //meshFileName is the name of the mesh, with file extension
-            return Path.Combine(meshRootFolder, meshFileName);
+            return Path.Combine(packageRoot, exportDestination, meshFolderName, meshFileName);
         }
 
+        //Returns new resource path, relative to the Assets folder
         public static string GetNewResourcePath(string resourceFileName)
         {
-            return Path.Combine(meshRootFolder, "resources", resourceFileName);
+            return Path.Combine(packageRoot, exportDestination, resourceFolderName, resourceFileName);
         }
 
-        public static string GetPackagePathForMesh(string absoluteMeshPath)
+        public static string GetPackagePathForMesh(string meshPath)
         {
-            string relativeMeshPath = meshRootFolder.Substring(assetRootFolder.Length + 1);
-            return Path.Combine("package://", relativeMeshPath, Path.GetFileName(absoluteMeshPath)).Replace("\\", "/");
+            return Path.Combine("package://", exportDestination, meshFolderName, Path.GetFileName(meshPath)).Replace("\\", "/");
         }
 
         public static string GetPackagePathForResource(string resourcePath)
         {
-            string relativeMeshPath = meshRootFolder.Substring(assetRootFolder.Length + 1);
-            return Path.Combine("package://", relativeMeshPath, "resources", Path.GetFileName(resourcePath)).Replace("\\", "/");
+            return Path.Combine("package://", exportDestination, resourceFolderName, Path.GetFileName(resourcePath)).Replace("\\", "/");
         }
         #endregion
 
         public static bool IsValidAssetPath(string path)
         {
             return GetRelativeAssetPath(path) != null;
+        }
+
+        public static void Clear()
+        {
+            packageRoot = "";
+            exportDestination = "";
         }
     }
 

@@ -36,7 +36,7 @@ namespace RosSharp.Urdf
             //or ignore the missing asset.
             string invalidPath = fileAssetPath ?? urdfFileName;
             int option = EditorUtility.DisplayDialogComplex("Urdf Importer: Asset Not Found",
-                "Current root folder: " + UrdfAssetPathHandler.GetAssetRootFolder() +
+                "Current root folder: " + UrdfAssetPathHandler.GetPackageRoot() +
                 "\n\nExpected asset path: " + invalidPath,
                 "Locate Asset",
                 "Ignore Missing Asset",
@@ -68,7 +68,10 @@ namespace RosSharp.Urdf
                 Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets"),
                 "");
 
-            UrdfAssetPathHandler.SetAssetRootFolder(UrdfAssetPathHandler.GetRelativeAssetPath(newAssetPath));
+            if (UrdfAssetPathHandler.IsValidAssetPath(newAssetPath))
+                UrdfAssetPathHandler.SetPackageRoot(newAssetPath, true);
+            else 
+                Debug.LogWarning("Selected package root " + newAssetPath + " is not within the Assets folder.");
 
             return GetAssetPathFromUrdfPath(urdfFileName);
         }
@@ -79,7 +82,7 @@ namespace RosSharp.Urdf
 
             string newPath = EditorUtility.OpenFilePanel(
                 "Couldn't find asset at " + invalidPath + ". Select correct file.",
-                UrdfAssetPathHandler.GetAssetRootFolder(),
+                UrdfAssetPathHandler.GetPackageRoot(),
                 fileExtension);
 
             return UrdfAssetPathHandler.GetRelativeAssetPath(newPath);
@@ -112,7 +115,7 @@ namespace RosSharp.Urdf
             if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
                 path = path.Substring(0, path.Length - 3) + "prefab";
 
-            return Path.Combine(UrdfAssetPathHandler.GetAssetRootFolder(), path);
+            return Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), path);
         }
 
         private class InterruptedUrdfImportException : Exception

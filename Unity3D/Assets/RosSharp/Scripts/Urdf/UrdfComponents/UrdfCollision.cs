@@ -24,61 +24,53 @@ namespace RosSharp.Urdf.Export
     public class UrdfCollision : MonoBehaviour
     {
         [SerializeField]
-        private UrdfVisuals.GeometryTypes geometryType;
+        private UrdfGeometry.GeometryTypes geometryType;
 
-        public void Initialize(UrdfVisuals.GeometryTypes type)
+        public void Initialize(UrdfGeometry.GeometryTypes type, Transform visualTransform = null)
         {
             geometryType = type;
 
-            GameObject geometryGameObject = new GameObject(type.ToString());
+            GameObject geometryGameObject = null;
+            
+            if (visualTransform != null && geometryType == UrdfGeometry.GeometryTypes.Mesh) 
+            {
+                //Generate copy of visual object, add MeshColliders, and remove MeshRenderers.
+                geometryGameObject = Instantiate(visualTransform.GetChild(0).gameObject);
+                geometryGameObject.name = visualTransform.GetChild(0).name;
+
+                MeshFilter[] meshFilters = geometryGameObject.GetComponentsInChildren<MeshFilter>();
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    GameObject child = meshFilter.gameObject;
+                    MeshCollider meshCollider = child.AddComponent<MeshCollider>();
+                    meshCollider.sharedMesh = meshFilter.sharedMesh;
+                    DestroyImmediate(child.GetComponent<MeshRenderer>());
+                    DestroyImmediate(meshFilter);
+                }
+            }
+            else
+                geometryGameObject = UrdfGeometry.GenerateCollisionGeometry(type);
+
             geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
 
-            switch (type)
-            {
-                case UrdfVisuals.GeometryTypes.Box:
-                    geometryGameObject.AddComponent<BoxCollider>();
-                    break;
-                case UrdfVisuals.GeometryTypes.Cylinder:
-                    geometryGameObject.AddComponent<CapsuleCollider>();
-                    break;
-                case UrdfVisuals.GeometryTypes.Sphere:
-                    geometryGameObject.AddComponent<SphereCollider>();
-                    break;
-                case UrdfVisuals.GeometryTypes.Mesh:
-                    geometryGameObject.AddComponent<MeshCollider>();
-                    break;
+            //copy transform values from corresponding UrdfVisual 
+            if (visualTransform != null)
+            { 
+                transform.localPosition = visualTransform.localPosition;
+                transform.localScale = visualTransform.localScale;
+                transform.localEulerAngles = visualTransform.localEulerAngles;  
             }
-
-            geometryGameObject.hideFlags ^= HideFlags.NotEditable;
-            EditorGUIUtility.PingObject(geometryGameObject);
+            
+            EditorGUIUtility.PingObject(gameObject);
         }
-
-
+    
         //TODO: Move duplicated Geometry code to UrdfGeometry class
         public Link.Collision GetCollisionData()
         {
-            Link.Geometry geometry = null;
-            //TODO: Get rid of default values, actually get info from the real meshes
-            switch (geometryType)
-            {
-                //TODO: Get size of collider 
-                case UrdfVisuals.GeometryTypes.Box:
-                    geometry = new Link.Geometry(new Link.Geometry.Box(transform.GetUrdfSize()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Cylinder:
-                    geometry = new Link.Geometry(null, new Link.Geometry.Cylinder(transform.GetRadius(), transform.GetCylinderHeight()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Sphere:
-                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(transform.GetRadius()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Mesh:
-                    geometry = new Link.Geometry(null, null, null, new Link.Geometry.Mesh("test.dae", null));
-                    break;
-            }
+            Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform, true);
+            string collisionName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            //TODO: Fill in optional values, like origin, etc
-
-            return new Link.Collision(geometry, null, transform.GetOriginData());
+            return new Link.Collision(geometry, collisionName, transform.GetOriginData());
         }
     }
 }

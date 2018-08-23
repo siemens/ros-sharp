@@ -28,27 +28,25 @@ namespace RosSharp.Urdf.Export
     {
         private string filePath;
 
-        public void ExportRobotToUrdf(string robotAssetFolder)
+        public void ExportRobotToUrdf(string packageRootFolder)
         {
-            UrdfAssetPathHandler.SetAssetRootFolder(robotAssetFolder);
-            filePath = Path.Combine(robotAssetFolder, name + ".urdf");
-            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-            string meshRootFolder = EditorUtility.OpenFolderPanel(
-                "Select mesh export location",
-                UrdfAssetPathHandler.GetAssetRootFolder(),
+            UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);
+           
+            string exportDestination = EditorUtility.OpenFolderPanel(
+                "Select export destination for robot asset files (such as meshes, images, etc)",
+                UrdfAssetPathHandler.GetPackageRoot(),
                 "");
-            try
+
+            if (!exportDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Contains(UrdfAssetPathHandler.GetPackageRoot()))
             {
-                meshRootFolder.Substring(UrdfAssetPathHandler.GetAssetRootFolder().Length);
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning("Mesh export folder must be a subfolder of the robot export location. Aborting URDF export. " + e);
+                Debug.LogWarning("Export destination folder must be a subfolder of the robot export location. Aborting URDF export.");
                 return;
             }
 
-            UrdfAssetPathHandler.SetMeshRootFolder(meshRootFolder);
+            UrdfAssetPathHandler.SetExportDestination(exportDestination);
+
+            filePath = Path.Combine(exportDestination, name + ".urdf");
+            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
             Robot robot = GetRobotData();
 
@@ -57,6 +55,7 @@ namespace RosSharp.Urdf.Export
             robot.WriteToUrdf();
 
             UrdfMaterial.materials.Clear();
+            UrdfAssetPathHandler.Clear();
             AssetDatabase.Refresh();
 
             Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));

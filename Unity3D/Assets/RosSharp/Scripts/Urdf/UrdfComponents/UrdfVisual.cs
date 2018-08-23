@@ -25,30 +25,12 @@ namespace RosSharp.Urdf.Export
     public class UrdfVisual : MonoBehaviour
     {
         [SerializeField]
-        private UrdfVisuals.GeometryTypes geometryType;
+        private UrdfGeometry.GeometryTypes geometryType;
 
-        public void Initialize(UrdfVisuals.GeometryTypes type)
+        public void Initialize(UrdfGeometry.GeometryTypes type)
         {
-            GameObject geometryGameObject = null;
             geometryType = type;
-
-            switch (geometryType)
-            {
-                case UrdfVisuals.GeometryTypes.Box:
-                    geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    break;
-                case UrdfVisuals.GeometryTypes.Cylinder:
-                    geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    break;
-                case UrdfVisuals.GeometryTypes.Sphere:
-                    geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    break;
-                case UrdfVisuals.GeometryTypes.Mesh:
-                    geometryGameObject = new GameObject();
-                    geometryGameObject.AddComponent<MeshFilter>();
-                    geometryGameObject.AddComponent<MeshRenderer>();
-                    break;
-            }
+            GameObject geometryGameObject = UrdfGeometry.GenerateVisualGeometry(type);
 
             if (geometryGameObject == null) return;
 
@@ -58,102 +40,24 @@ namespace RosSharp.Urdf.Export
             EditorGUIUtility.PingObject(gameObject);
         }
 
+        public void AddCorrespondingCollision()
+        {
+            GetComponentInParent<UrdfLink>().GetComponentInChildren<UrdfCollisions>()
+                .AddColision(geometryType, transform);
+        }
+
         public Link.Visual GetVisualData()
         {
             CheckForUrdfCompatibility();
 
-            Link.Geometry geometry = null;
-            switch (geometryType)
-            {
-                case UrdfVisuals.GeometryTypes.Box:
-                    geometry = new Link.Geometry(new Link.Geometry.Box(transform.GetUrdfSize()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Cylinder:
-                    geometry = new Link.Geometry(
-                        null,
-                        new Link.Geometry.Cylinder(transform.GetRadius(), transform.GetCylinderHeight()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Sphere:
-                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(transform.GetRadius()));
-                    break;
-                case UrdfVisuals.GeometryTypes.Mesh:
-                    geometry = GetGeometryMeshData();
-                    break;
-            }
-            
+            Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform);
+
             Link.Visual.Material material = UrdfMaterial.GetMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
             return new Link.Visual(geometry, visualName, transform.GetOriginData(), material);
         }
-
-        public Link.Geometry GetGeometryMeshData()
-        {
-            GameObject geometryChildObject = transform.GetChild(0).gameObject;
-            
-            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(geometryChildObject));
-            bool foundExistingColladaOrStl = false;
-
-            if (prefabPath != null && prefabPath != "")
-            {
-                if (prefabPath.ToLower().Contains(".dae"))
-                    foundExistingColladaOrStl = true;
-                else //Find STL file that corresponds to the prefab, if it already exists
-                {
-                    //TODO: also search for mesh in new folder location (ie: asset root folder)
-                    string[] foldersToSearch = {Path.GetDirectoryName(prefabPath)};
-                    string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
-
-                    foreach (string guid2 in AssetDatabase.FindAssets(prefabName, foldersToSearch))
-                    {
-                        if (AssetDatabase.GUIDToAssetPath(guid2).ToLower().Contains(".stl"))
-                        {
-                            prefabPath = AssetDatabase.GUIDToAssetPath(guid2);
-                            foundExistingColladaOrStl = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            string packagePath = "";
-            if (foundExistingColladaOrStl) //Copy prefab to new location in robot asset folder
-            {
-                string newPrefabPath = UrdfAssetPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
-                Directory.CreateDirectory(Path.GetDirectoryName(newPrefabPath));
-
-                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newPrefabPath);
-                AssetDatabase.CopyAsset(prefabPath, UrdfAssetPathHandler.GetRelativeAssetPath(newPrefabPath));
-            }
-            else //Create new STL file 
-            {
-                string newPrefabPath = ExportMeshToStl(geometryChildObject);
-                packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newPrefabPath);
-            }
-
-            return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, transform.GetUrdfSize()));
-        }
-
-        private static string ExportMeshToStl(GameObject gameObject)
-        {
-            Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
-                      + gameObject.name + ". Exporting a new STL file.");
-
-            string newMeshPath = UrdfAssetPathHandler.GetNewMeshPath(gameObject.name + ".STL");
-            Directory.CreateDirectory(Path.GetDirectoryName(newMeshPath));
-
-            //Create a clone with no rotation, so that it will be at original orientation when exported
-            GameObject clone = Instantiate(gameObject, Vector3.zero, Quaternion.identity);
-            clone.name = gameObject.name;
-            GameObject[] gameObjects = {clone};
-
-            StlExporter.Export(newMeshPath, gameObjects, FileType.Binary);
-
-            DestroyImmediate(clone);
-
-            return newMeshPath;
-        }
-
+        
         private void CheckForUrdfCompatibility()
         {
             Transform childTransform = transform.GetChild(0);
