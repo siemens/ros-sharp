@@ -59,12 +59,10 @@ namespace RosSharp.Urdf
             if (JointType == JointTypes.Fixed)
             {
                 joint = gameObject.AddComponent<FixedJoint>();
-                joint.hideFlags = HideFlags.HideInInspector;
             }
             else if (IsRevoluteOrContinuous)
             {
                 joint = gameObject.AddComponent<HingeJoint>();
-                joint.hideFlags = HideFlags.HideInInspector;
                 joint.autoConfigureConnectedAnchor = true;
 
                 if (JointType == JointTypes.Revolute)
@@ -74,7 +72,6 @@ namespace RosSharp.Urdf
             else
             {
                 joint = gameObject.AddComponent<ConfigurableJoint>();
-                joint.hideFlags = HideFlags.HideInInspector;
                 joint.autoConfigureConnectedAnchor = true;
 
                 ConfigurableJoint cJoint = (ConfigurableJoint)joint;
@@ -244,11 +241,12 @@ namespace RosSharp.Urdf
             if (!AreLimitsCorrect())
             {
                 Debug.LogWarning("Limits are not defined correctly for Joint " + JointName + " in Link " + name +
-                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.");
+                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.",
+                                 gameObject);
             }
             if (!IsJointAxisDefined())
             {
-                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.");
+                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.", gameObject);
             }
         }
     }

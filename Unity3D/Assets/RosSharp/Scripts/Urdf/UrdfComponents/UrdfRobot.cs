@@ -114,7 +114,5 @@ namespace RosSharp.Urdf.Export
 
             return robot;
         }
-
-
     }
 }

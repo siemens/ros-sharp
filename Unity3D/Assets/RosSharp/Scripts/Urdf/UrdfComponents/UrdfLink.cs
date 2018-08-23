@@ -70,7 +70,7 @@ namespace RosSharp.Urdf.Export
         public Link GetLinkData()
         {
             if(transform.localScale != Vector3.one)
-                Debug.LogWarning("Only visuals should be scaled. Scale on link \"" + gameObject.name + "\" cannot be saved to the URDF file.");
+                Debug.LogWarning("Only visuals should be scaled. Scale on link \"" + gameObject.name + "\" cannot be saved to the URDF file.", gameObject);
 
             Link link = new Link(gameObject.name)
             {
