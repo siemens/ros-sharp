@@ -45,7 +45,7 @@ namespace RosSharp.Urdf
             EditorGUILayout.LabelField("Max. No. of Rotations:", jointLimitsManager.RotationLimitMax.ToString());
             EditorGUILayout.EndHorizontal();
 
-            if (180-jointLimitsManager.AngleLimitMin< toleranceThreshold)
+            if (180 - jointLimitsManager.AngleLimitMin < toleranceThreshold)
                 EditorGUILayout.HelpBox("Min. Angle is close to +180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
             if (180 - jointLimitsManager.AngleLimitMin < toleranceThreshold)

@@ -20,48 +20,44 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    [CustomEditor(typeof(UrdfVisual))]
-    class UrdfVisualEditor : Editor
+    [CustomEditor(typeof(UrdfCollision))]
+    class UrdfCollisionEditor : Editor
     {
-        private UrdfVisual urdfVisual;
+        private UrdfCollision urdfCollision;
 
         public override void OnInspectorGUI()
         {
-            urdfVisual = (UrdfVisual)target;
+            urdfCollision = (UrdfCollision)target;
 
             GUILayout.Space(5);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Geometry Type");
-            EditorGUILayout.LabelField(urdfVisual.geometryType.ToString());
+            EditorGUILayout.LabelField(urdfCollision.geometryType.ToString());
             EditorGUILayout.EndHorizontal();
-            
-            if (GUILayout.Button("Add collision to match visual"))
-            {
-                urdfVisual.AddCorrespondingCollision();
-            }
 
             DisplayWarnings();
         }
 
         private void DisplayWarnings()
         {
-            if (!urdfVisual.transform.HasExactlyOneChild())
+            if (!urdfCollision.transform.HasExactlyOneChild())
             {
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Visual element must have one and only one child Geometry element.", MessageType.Error);
             }
 
-            if (urdfVisual.transform.GetChild(0).IsTransformed(urdfVisual.geometryType))
+            if (urdfCollision.transform.GetChild(0).IsTransformed(urdfCollision.geometryType))
             {
-                GUILayout.Space(5);
+                GUILayout.BeginVertical("HelpBox");
                 EditorGUILayout.HelpBox("Changes to the transform of the child Geometry element cannot be exported to URDF. " +
                                         "Make any translation, rotation, or scale changes to this Visual object instead.", MessageType.Error);
 
-                if (GUILayout.Button("Fix transformations")) 
-                { 
-                    urdfVisual.transform.MoveChildTransformToParent();
+                if (GUILayout.Button("Fix transformations"))
+                {
+                    urdfCollision.transform.MoveChildTransformToParent();
                 }
+                GUILayout.EndVertical();
             }
         }
     }

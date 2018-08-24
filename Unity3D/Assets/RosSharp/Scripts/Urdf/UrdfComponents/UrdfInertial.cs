@@ -33,7 +33,7 @@ namespace RosSharp.Urdf.Export
             Origin inertialOrigin = new Origin(_rigidbody.centerOfMass.Unity2Ros().ToRoundedDoubleArray(), new double[] { 0, 0, 0 });
             Link.Inertial.Inertia inertia = GetInertiaData(_rigidbody);
 
-            //TODO: test import and export
+            //TODO: test inertia export more thoroughly. Check to see if values are the same when re-importing
             return new Link.Inertial(_rigidbody.mass, inertialOrigin, inertia);
         }
 

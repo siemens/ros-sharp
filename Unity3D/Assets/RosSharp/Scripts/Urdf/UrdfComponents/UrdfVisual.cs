@@ -25,7 +25,7 @@ namespace RosSharp.Urdf.Export
     public class UrdfVisual : MonoBehaviour
     {
         [SerializeField]
-        private UrdfGeometry.GeometryTypes geometryType;
+        public UrdfGeometry.GeometryTypes geometryType;
 
         public void Initialize(UrdfGeometry.GeometryTypes type)
         {
@@ -61,14 +61,13 @@ namespace RosSharp.Urdf.Export
         private void CheckForUrdfCompatibility()
         {
             Transform childTransform = transform.GetChild(0);
-            if (childTransform != null &&
-                (childTransform.localPosition != Vector3.zero || childTransform.localScale != Vector3.one))
+            if (childTransform.IsTransformed(geometryType))
                 Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
                                  "Make any translation, rotation, or scale changes to the parent Visual object instead.",
                                   childTransform);
 
-            if (transform.childCount > 1)
-                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. One the first one will be exported to Urdf. In link "
+            if (!transform.HasExactlyOneChild()) 
+                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. In "
                                  + transform.parent.parent.name + ", move each Geometry into its own Visual element.", gameObject);
         }
     }

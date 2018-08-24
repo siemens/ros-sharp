@@ -42,14 +42,12 @@ namespace RosSharp.Urdf
         public double effortLimit = 50000;
         public double velocityLimit = 10000;
 
-        public void Initialize(string jointName, string jointType)
+        public void Initialize(string jointName, JointTypes jointType)
         {
             JointName = jointName;
-            JointType = GetJointType(jointType);
+            JointType = jointType;
 
             AddCorrectJointType();
-
-            //TODO: Test all joint types
         }
 
         private void AddCorrectJointType()
@@ -66,8 +64,10 @@ namespace RosSharp.Urdf
                 joint.autoConfigureConnectedAnchor = true;
 
                 if (JointType == JointTypes.Revolute)
+                {
                     ((HingeJoint) joint).useLimits = true;
                     gameObject.AddComponent<JointLimitsManager>();
+                }
             }
             else
             {
@@ -102,8 +102,6 @@ namespace RosSharp.Urdf
 
         public Joint GetJointData()
         {
-            //TODO: consider only getting dynamics data if "Use Spring" is true
-            //TODO: consider only getting limits data if "Use Limits" is true
             CheckForUrdfCompatibility();
 
             //Data common to all joints
@@ -158,8 +156,7 @@ namespace RosSharp.Urdf
                     effortLimit, velocityLimit);
 
                }
-
-            //TODO: Test all joint types
+            
             //TODO: Get Floating and Planar joints working
             return joint;
         }
@@ -178,7 +175,7 @@ namespace RosSharp.Urdf
                 rosVector.z});
         }
 
-        private static JointTypes GetJointType(string jointType)
+        public static JointTypes GetJointType(string jointType)
         {
             switch (jointType)
             {
@@ -248,6 +245,15 @@ namespace RosSharp.Urdf
             {
                 Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.", gameObject);
             }
+        }
+
+        public void Reset()
+        {
+            //TODO: Fix "object is destroyed but still trying to reference it" error
+            transform.DestroyImmediateIfExists<JointLimitsManager>();
+            transform.DestroyImmediateIfExists<UnityEngine.Joint>();
+
+            Initialize(JointName, JointType);
         }
     }
 }

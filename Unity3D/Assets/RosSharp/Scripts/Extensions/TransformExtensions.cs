@@ -15,6 +15,7 @@ limitations under the License.
 
 using System;
 using RosSharp.Urdf;
+using RosSharp.Urdf.Export;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -52,6 +53,34 @@ namespace RosSharp
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
             }
+        }
+
+        public static bool HasExactlyOneChild(this Transform transform)
+        {
+            return transform.childCount == 1;
+        }
+
+        public static bool IsTransformed(this Transform transform, UrdfGeometry.GeometryTypes geometryType)
+        {
+            //Ignore rotation if geometry is a mesh. This is because meshes may be rotated during import. 
+            return (transform.localPosition != Vector3.zero
+                    || transform.localScale != Vector3.one
+                    || (geometryType != UrdfGeometry.GeometryTypes.Mesh && transform.localRotation != Quaternion.identity));
+        }
+
+        public static  void MoveChildTransformToParent(this Transform parent)
+        {
+            //Detach child in order to get a transform indenpendent from parent
+            Transform childTransform = parent.GetChild(0);
+            parent.DetachChildren();
+
+            //Copy transform from child to parent
+            parent.position = childTransform.position;
+            parent.rotation = childTransform.rotation;
+            parent.localScale = childTransform.localScale;
+
+            //Re-attach parent and reset child transform
+            childTransform.SetParentAndAlign(parent, false);
         }
 
         public static Origin GetOriginData(this Transform transform)

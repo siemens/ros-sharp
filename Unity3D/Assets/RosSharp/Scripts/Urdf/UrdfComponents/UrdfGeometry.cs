@@ -26,9 +26,7 @@ namespace RosSharp.Urdf.Export
                     geometryGameObject.transform.DestroyImmediateIfExists<SphereCollider>();
                     break;
                 case GeometryTypes.Mesh:
-                    geometryGameObject = new GameObject();
-                    geometryGameObject.AddComponent<MeshFilter>();
-                    geometryGameObject.AddComponent<MeshRenderer>();
+                    //Let user add their own mesh gameObject
                     break;
             }
             return geometryGameObject;

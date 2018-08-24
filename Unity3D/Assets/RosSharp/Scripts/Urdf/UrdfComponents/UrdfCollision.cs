@@ -24,19 +24,19 @@ namespace RosSharp.Urdf.Export
     public class UrdfCollision : MonoBehaviour
     {
         [SerializeField]
-        private UrdfGeometry.GeometryTypes geometryType;
+        public UrdfGeometry.GeometryTypes geometryType;
 
-        public void Initialize(UrdfGeometry.GeometryTypes type, Transform visualTransform = null)
+        public void Initialize(UrdfGeometry.GeometryTypes type, Transform visualToCopy = null)
         {
             geometryType = type;
 
             GameObject geometryGameObject = null;
             
-            if (visualTransform != null && geometryType == UrdfGeometry.GeometryTypes.Mesh) 
+            if (visualToCopy != null && geometryType == UrdfGeometry.GeometryTypes.Mesh) 
             {
                 //Generate copy of visual object, add MeshColliders, and remove MeshRenderers.
-                geometryGameObject = Instantiate(visualTransform.GetChild(0).gameObject);
-                geometryGameObject.name = visualTransform.GetChild(0).name;
+                geometryGameObject = Instantiate(visualToCopy.GetChild(0).gameObject);
+                geometryGameObject.name = visualToCopy.GetChild(0).name;
 
                 MeshFilter[] meshFilters = geometryGameObject.GetComponentsInChildren<MeshFilter>();
                 foreach (MeshFilter meshFilter in meshFilters)
@@ -54,23 +54,38 @@ namespace RosSharp.Urdf.Export
             geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
 
             //copy transform values from corresponding UrdfVisual 
-            if (visualTransform != null)
+            if (visualToCopy != null)
             { 
-                transform.localPosition = visualTransform.localPosition;
-                transform.localScale = visualTransform.localScale;
-                transform.localEulerAngles = visualTransform.localEulerAngles;  
+                transform.localPosition = visualToCopy.localPosition;
+                transform.localScale = visualToCopy.localScale;
+                transform.localEulerAngles = visualToCopy.localEulerAngles;  
             }
             
             EditorGUIUtility.PingObject(gameObject);
         }
     
-        //TODO: Move duplicated Geometry code to UrdfGeometry class
         public Link.Collision GetCollisionData()
         {
+            CheckForUrdfCompatibility();
+
             Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform, true);
             string collisionName = gameObject.name == "unnamed" ? null : gameObject.name;
 
             return new Link.Collision(geometry, collisionName, transform.GetOriginData());
         }
+
+        private void CheckForUrdfCompatibility()
+        {
+            Transform childTransform = transform.GetChild(0);
+            if (childTransform.IsTransformed(geometryType))
+                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
+                                 "Make any translation, rotation, or scale changes to the parent Collision object instead.",
+                    childTransform);
+
+            if (!transform.HasExactlyOneChild())
+                Debug.LogWarning("Only one Geometry element is allowed for each Collision element. In "
+                                 + transform.parent.parent.name + ", move each Geometry into its own Visual element.", gameObject);
+        }
+
     }
 }

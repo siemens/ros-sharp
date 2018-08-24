@@ -35,7 +35,7 @@ namespace RosSharp.Urdf.Export
         public void AddChildLink(UrdfJoint.JointTypes jointType)
         {
             UrdfLink childLink = AddChildLink();
-            childLink.gameObject.AddComponent<UrdfJoint>().Initialize(gameObject.name + "_joint", jointType.ToString().ToLower());
+            childLink.gameObject.AddComponent<UrdfJoint>().Initialize(gameObject.name + "_joint", jointType);
         }
 
         public void Reset()
@@ -50,9 +50,7 @@ namespace RosSharp.Urdf.Export
             
             EditorGUIUtility.PingObject(gameObject);
         }
-
-        //TODO: Add ability to reset and/or change type of joint
-
+        
         private void AddVisualsObject()
         {
             GameObject visualsObject = new GameObject("Visuals");

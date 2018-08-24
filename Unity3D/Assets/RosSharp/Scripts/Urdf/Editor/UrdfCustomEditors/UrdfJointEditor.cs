@@ -28,14 +28,31 @@ namespace RosSharp.Urdf.Export
         public override void OnInspectorGUI()
         {
             urdfJoint = (UrdfJoint) target;
-            
-            urdfJoint.JointName = EditorGUILayout.TextField("Joint Name", urdfJoint.JointName);
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel("Joint Type");
-            EditorGUILayout.LabelField(urdfJoint.JointType.ToString());
-            EditorGUILayout.EndHorizontal();
-           
+            GUILayout.Space(5);
+
+            urdfJoint.JointName = EditorGUILayout.TextField("Joint Name", urdfJoint.JointName);
+            UrdfJoint.JointTypes newJointType = urdfJoint.JointType;
+
+            EditorGUILayout.BeginVertical("HelpBox");
+            newJointType = (UrdfJoint.JointTypes)EditorGUILayout.EnumPopup(
+                "Type of joint", newJointType);
+
+            if (newJointType != urdfJoint.JointType)
+            {
+                if (EditorUtility.DisplayDialog("Confirm joint type change",
+                    "Are you sure you want to change the joint type? This will erase all information currently stored in the joint.",
+                    "Continue", "Cancel"))
+                {
+                    urdfJoint.JointType = newJointType;
+                    urdfJoint.Reset();
+                }
+            }
+            EditorGUILayout.EndVertical();
+
+            if(urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                GUILayout.BeginVertical("HelpBox");
+
             switch (urdfJoint.JointType)
             {
                 case UrdfJoint.JointTypes.Fixed:
@@ -63,12 +80,15 @@ namespace RosSharp.Urdf.Export
                     DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
                     break;
             }
+
+            if (urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                GUILayout.EndVertical();
         }
 
         private void DisplayDynamicsMessage(string dynamicsLocation)
         {
             GUILayout.Space(5);
-            EditorGUILayout.LabelField("Joint Dynamics (optional)", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Joint Dynamics (optional)");
 
             EditorGUILayout.HelpBox("To define damping and friction values, edit the fields " + dynamicsLocation + ".", MessageType.Info);
 
@@ -78,7 +98,7 @@ namespace RosSharp.Urdf.Export
         {
             GUILayout.Space(5);
             
-            EditorGUILayout.LabelField("Joint Axis", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Joint Axis");
 
             EditorGUILayout.HelpBox("An axis is required for this joint type. Remember to define an axis in " + axisLocation + ".", MessageType.Info);
         }
@@ -86,7 +106,7 @@ namespace RosSharp.Urdf.Export
         public void DisplayRequiredLimitMessage(string limitLocation)
         {
             GUILayout.Space(5);
-            EditorGUILayout.LabelField("Joint Limits", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Joint Limits");
 
             urdfJoint.effortLimit = EditorGUILayout.DoubleField("Effort Limit", urdfJoint.effortLimit);
             urdfJoint.velocityLimit = EditorGUILayout.DoubleField("Velocity Limit", urdfJoint.velocityLimit);
