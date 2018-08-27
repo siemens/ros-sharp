@@ -356,7 +356,7 @@ namespace RosSharp.Urdf
                         (float)geometry.sphere.radius * 2);
                     break;
                 case GeometryTypes.Mesh:
-                    if (geometry.mesh.scale != null)
+                    if (geometry?.mesh?.scale != null)
                     {
                         Vector3 scale = new Vector3(
                             (float)geometry.mesh.scale[0],
