@@ -60,9 +60,12 @@ namespace RosSharp.Urdf
             Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
         }
 
-        public void Reset()
+        public static void Create()
         {
-            UrdfLink urdfLink = UrdfLink.Create(transform);
+            GameObject robotGameObject = new GameObject("Robot");
+            UrdfRobot urdfRobot = robotGameObject.AddComponent<UrdfRobot>();
+
+            UrdfLink urdfLink = UrdfLink.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
         }
 
