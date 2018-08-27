@@ -13,7 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -42,39 +41,65 @@ namespace RosSharp.Urdf
         public double effortLimit = 50000;
         public double velocityLimit = 10000;
 
-        public void Initialize(string jointName, JointTypes jointType)
+        public static void Create(GameObject linkObject, string jointName, JointTypes jointType)
         {
-            JointName = jointName;
-            JointType = jointType;
+            UrdfJoint urdfJoint = linkObject.AddComponent<UrdfJoint>();
+            urdfJoint.JointName = jointName;
+            urdfJoint.JointType = jointType;
 
-            AddCorrectJointType();
+            urdfJoint.AddCorrectJointType();
         }
+
+        public static void Create(GameObject linkObject, Joint joint)
+        {
+            UrdfJoint urdfJoint = linkObject.AddComponent<UrdfJoint>();
+            urdfJoint.JointName = joint.name;
+            urdfJoint.JointType = GetJointType(joint.type);
+
+            urdfJoint.AddCorrectJointType();
+
+            urdfJoint.SetJointData(joint);
+        }
+
+        private void SetJointData(Joint joint)
+        {
+            if (IsRevoluteOrContinuous)
+                ConfigureHingeJoint(joint);
+            else if (IsPrismatic)
+                ConfigurePrismaticJoint(joint);
+            else if(JointType == JointTypes.Floating)
+                ConfigureFloatingJoint(joint);
+            else if (IsPlanar)
+                ConfigurePlanarJoint(joint);
+        }
+
+        
 
         private void AddCorrectJointType()
         {
-            UnityEngine.Joint joint = null;
+            UnityEngine.Joint unityJoint = null;
 
             if (JointType == JointTypes.Fixed)
             {
-                joint = gameObject.AddComponent<FixedJoint>();
+                unityJoint = gameObject.AddComponent<FixedJoint>();
             }
             else if (IsRevoluteOrContinuous)
             {
-                joint = gameObject.AddComponent<HingeJoint>();
-                joint.autoConfigureConnectedAnchor = true;
+                unityJoint = gameObject.AddComponent<HingeJoint>();
+                unityJoint.autoConfigureConnectedAnchor = true;
 
                 if (JointType == JointTypes.Revolute)
                 {
-                    ((HingeJoint) joint).useLimits = true;
+                    ((HingeJoint) unityJoint).useLimits = true;
                     gameObject.AddComponent<JointLimitsManager>();
                 }
             }
             else
             {
-                joint = gameObject.AddComponent<ConfigurableJoint>();
-                joint.autoConfigureConnectedAnchor = true;
+                unityJoint = gameObject.AddComponent<ConfigurableJoint>();
+                unityJoint.autoConfigureConnectedAnchor = true;
 
-                ConfigurableJoint cJoint = (ConfigurableJoint)joint;
+                ConfigurableJoint cJoint = (ConfigurableJoint)unityJoint;
                 if (IsPrismatic)
                 {
                     // degrees of freedom:
@@ -97,7 +122,7 @@ namespace RosSharp.Urdf
                 }
             }
 
-            if (joint != null) joint.connectedBody = gameObject.transform.parent.gameObject.GetComponent<Rigidbody>();
+            if (unityJoint != null) unityJoint.connectedBody = gameObject.transform.parent.gameObject.GetComponent<Rigidbody>();
         }
 
         public Joint GetJointData()
@@ -154,12 +179,178 @@ namespace RosSharp.Urdf
                     -configurableJoint.linearLimit.limit, 
                     configurableJoint.linearLimit.limit, 
                     effortLimit, velocityLimit);
-
                }
             
             //TODO: Get Floating and Planar joints working
             return joint;
         }
+
+        private HingeJoint ConfigureHingeJoint(Joint joint)
+        {
+            HingeJoint hingeJoint = GetComponent<HingeJoint>();
+            
+            // axis:
+            hingeJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
+
+            // origin:
+            hingeJoint.autoConfigureConnectedAnchor = false;
+            hingeJoint.connectedAnchor = GetConnectedAnchor(joint);
+
+            // spring, damper & position:
+            if (joint.dynamics != null)
+                hingeJoint.spring = GetJointSpring(joint.dynamics);
+
+            // limits:        
+            if (joint.type == "revolute" && joint.limit != null)
+            {
+                hingeJoint.limits = GetJointLimits(joint.limit);
+
+                // large joint limits:
+                if (hingeJoint.limits.min < -180 || hingeJoint.limits.max > 180)
+                {
+                    JointLimitsManager jointLimitsManager = gameObject.AddComponent<JointLimitsManager>();
+                    jointLimitsManager.LargeAngleLimitMin = hingeJoint.limits.min;
+                    jointLimitsManager.LargeAngleLimitMax = hingeJoint.limits.max;
+                    JointLimits jointLimits = hingeJoint.limits;
+                    jointLimits.min = -180;
+                    jointLimits.max = +180;
+                    hingeJoint.limits = jointLimits;
+                }
+                else
+                    hingeJoint.useLimits = true;
+            }
+            
+            return hingeJoint;
+        }
+
+        private void ConfigureFloatingJoint(Joint joint)
+        {
+            ConfigurableJoint floatingJoint = GetComponent<ConfigurableJoint>();
+            // origin:
+            floatingJoint.autoConfigureConnectedAnchor = false;
+            floatingJoint.connectedAnchor = GetConnectedAnchor(joint);
+        }
+
+        private void ConfigurePrismaticJoint(Joint joint)
+        {
+            ConfigurableJoint prismaticJoint = GetComponent<ConfigurableJoint>();
+
+            prismaticJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
+
+            // origin:
+            prismaticJoint.autoConfigureConnectedAnchor = false;
+            prismaticJoint.connectedAnchor = GetConnectedAnchor(joint);
+
+            // spring, damper & max. force:
+            if (joint.dynamics != null)
+                prismaticJoint.xDrive = GetJointDrive(joint.dynamics);
+
+            // limits:
+            if (joint.limit != null)
+            {
+                prismaticJoint.lowAngularXLimit = GetLowSoftJointLimit(joint.limit);
+                prismaticJoint.highAngularXLimit = GetHighSoftJointLimit(joint.limit);
+
+                prismaticJoint.linearLimit = GetLinearLimit(joint.limit);
+                //Todo: use lower limit as well? GetLinearLimit only uses upper.
+            }
+        }
+
+        private void ConfigurePlanarJoint(Joint joint)
+        {
+            ConfigurableJoint planarJoint = GetComponent<ConfigurableJoint>();
+
+            Vector3 normal = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
+            Vector3 axisX = Vector3.forward;
+            Vector3 axisY = Vector3.left;
+            Vector3.OrthoNormalize(ref normal, ref axisX, ref axisY);
+            planarJoint.axis = axisX;
+            planarJoint.secondaryAxis = axisY;
+
+            // origin:
+            planarJoint.autoConfigureConnectedAnchor = false;
+            planarJoint.connectedAnchor = GetConnectedAnchor(joint);
+
+            // spring, damper & max. force:
+            if (joint.dynamics != null)
+            {
+                planarJoint.xDrive = GetJointDrive(joint.dynamics);
+                planarJoint.yDrive = GetJointDrive(joint.dynamics);
+            }
+        }
+
+        #region ImportHelpers
+
+
+        public static Vector3 GetAxis(Joint.Axis axis)
+        {
+            return new Vector3(
+                (float)-axis.xyz[1],
+                (float)axis.xyz[2],
+                (float)axis.xyz[0]);
+        }
+        public static Vector3 GetDefaultAxis()
+        {
+            return new Vector3(-1, 0, 0);
+        }
+
+        public static JointDrive GetJointDrive(Joint.Dynamics dynamics)
+        {
+            return new JointDrive
+            {
+                maximumForce = float.MaxValue,
+                positionDamper = (float) dynamics.damping,
+                positionSpring = (float) dynamics.friction
+            };
+        }
+        public static JointSpring GetJointSpring(Joint.Dynamics dynamics)
+        {
+            return new JointSpring
+            {
+                damper = (float) dynamics.damping,
+                spring = (float) dynamics.friction,
+                targetPosition = 0
+            };
+        }
+        
+        public static JointLimits GetJointLimits(Joint.Limit limit)
+        {
+            JointLimits jointLimits = new JointLimits();
+            jointLimits.min = (float)limit.lower * Mathf.Rad2Deg;
+            jointLimits.max = (float)limit.upper * Mathf.Rad2Deg;
+            return jointLimits;
+        }
+
+        public static SoftJointLimit GetLowSoftJointLimit(Joint.Limit limit)
+        {
+            SoftJointLimit softJointLimit = new SoftJointLimit();
+            softJointLimit.limit = (float)limit.lower * Mathf.Rad2Deg;
+            return softJointLimit;
+        }
+        public static SoftJointLimit GetHighSoftJointLimit(Joint.Limit limit)
+        {
+            SoftJointLimit softJointLimit = new SoftJointLimit();
+            softJointLimit.limit = (float)limit.upper * Mathf.Rad2Deg;
+            return softJointLimit;
+        }
+
+        public static SoftJointLimit GetLinearLimit(Joint.Limit limit)
+        {
+            SoftJointLimit softJointLimit = new SoftJointLimit();
+            softJointLimit.limit = (float)limit.upper;
+            return softJointLimit;
+        }
+
+        public static Vector3 GetConnectedAnchor(Joint joint)
+        {
+            if (joint.origin != null)
+                return UrdfOrigin.GetPosition(joint.origin); // todo: where to put rotation (if it exists in URDF)?
+            else
+                return Vector3.zero;
+        }
+        #endregion
+
+        #region ExportHelpers
 
         private Joint.Limit GetLimitData(float min, float max)
         {
@@ -174,6 +365,55 @@ namespace RosSharp.Urdf
                 rosVector.y,
                 rosVector.z});
         }
+
+        public bool AreLimitsCorrect()
+        {
+            if (IsPrismatic || IsPlanar)
+            {
+                ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
+                 return joint != null && joint.linearLimit.limit != 0;
+            }
+            if (JointType == JointTypes.Revolute)
+            {
+                HingeJoint joint = GetComponent<HingeJoint>();
+                return joint != null && joint.useLimits && joint.limits.max > joint.limits.min;
+            }
+
+            return true; //limits aren't needed
+        }
+
+        private bool IsJointAxisDefined()
+        {
+            if (IsRevoluteOrContinuous || IsPrismatic)
+            {
+                UnityEngine.Joint joint = GetComponent<UnityEngine.Joint>();
+                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0);
+            }
+            if (IsPlanar)
+            {
+                ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
+                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0)
+                       && !(joint.secondaryAxis.x == 0 && joint.secondaryAxis.y == 0 && joint.secondaryAxis.z == 0);
+            }
+
+            return true; // axis isn't needed
+        }
+
+        private void CheckForUrdfCompatibility()
+        {
+            if (!AreLimitsCorrect())
+            {
+                Debug.LogWarning("Limits are not defined correctly for Joint " + JointName + " in Link " + name +
+                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.",
+                                 gameObject);
+            }
+            if (!IsJointAxisDefined())
+            {
+                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.", gameObject);
+            }
+        }
+
+        #endregion
 
         public static JointTypes GetJointType(string jointType)
         {
@@ -201,59 +441,15 @@ namespace RosSharp.Urdf
             return jointType.ToString().ToLower();
         }
 
-        public bool AreLimitsCorrect()
+        public void ChangeJointType(JointTypes newJointType)
         {
-            if (IsPrismatic || IsPlanar)
-            {
-                ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
-                 return joint != null && joint.linearLimit.limit != 0;
-            }
-            if (JointType == JointTypes.Revolute)
-            {
-                HingeJoint joint = GetComponent<HingeJoint>();
-                return joint != null && joint.useLimits && joint.limits.max > joint.limits.min;
-            }
+            JointType = newJointType;
 
-            return true; //limits aren't needed
-        }
-
-        public bool IsJointAxisDefined()
-        {
-            if (IsRevoluteOrContinuous || IsPrismatic)
-            {
-                UnityEngine.Joint joint = GetComponent<UnityEngine.Joint>();
-                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0);
-            }
-            if (IsPlanar)
-            {
-                ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
-                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0)
-                       && !(joint.secondaryAxis.x == 0 && joint.secondaryAxis.y == 0 && joint.secondaryAxis.z == 0);
-            }
-
-            return true; // axis isn't needed
-        }
-        private void CheckForUrdfCompatibility()
-        {
-            if (!AreLimitsCorrect())
-            {
-                Debug.LogWarning("Limits are not defined correctly for Joint " + JointName + " in Link " + name +
-                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.",
-                                 gameObject);
-            }
-            if (!IsJointAxisDefined())
-            {
-                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.", gameObject);
-            }
-        }
-
-        public void Reset()
-        {
             //TODO: Fix "object is destroyed but still trying to reference it" error
             transform.DestroyImmediateIfExists<JointLimitsManager>();
             transform.DestroyImmediateIfExists<UnityEngine.Joint>();
 
-            Initialize(JointName, JointType);
+            AddCorrectJointType();
         }
     }
 }

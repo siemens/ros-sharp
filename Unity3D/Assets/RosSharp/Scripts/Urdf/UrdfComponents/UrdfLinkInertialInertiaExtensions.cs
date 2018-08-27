@@ -20,14 +20,15 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf
 {
 
     public static class UrdfLinkInertialInertiaExtensions
     {
         public static void SetInertia(this Link.Inertial.Inertia inertia, Rigidbody rigidbody)
         {
-            Evd<float> Evd = inertia.Unity3DCoordTrafo().ToMatrix().Evd(Symmetricity.Symmetric);
+            //Evd<float> Evd = inertia.Unity3DCoordTrafo().ToMatrix().Evd(Symmetricity.Symmetric);
+            Evd<float> Evd = inertia.ToMatrix().Evd(Symmetricity.Symmetric);
             rigidbody.inertiaTensor = Evd.EigenValues.Real().ToSingle().ToVector3().FixMinInertia(); // optionally check vector for imaginary part = 0
             rigidbody.inertiaTensorRotation = Evd.EigenVectors.ToQuaternion(); // optionally check matrix for determinant = 1
         }
@@ -44,13 +45,36 @@ namespace RosSharp.Urdf.Import
             unity3DInertia.iyz = inertia.ixz;
             return unity3DInertia;
         }
+
+        //private static Matrix ToMatrix(this Link.Inertial.Inertia inertia)
+        //{
+        //    return DenseMatrix.OfArray(
+        //        new float[,]{
+        //            {(float)inertia.ixx,(float)inertia.ixy,(float)inertia.ixz },
+        //            {(float)inertia.ixy,(float)inertia.iyy,(float)inertia.iyz },
+        //            {(float)inertia.ixz,(float)inertia.iyz,(float)inertia.izz } }
+        //    );
+        //}
+
+        //Using Ros2Unity vector change
+        //private static Matrix ToMatrix(this Link.Inertial.Inertia inertia)
+        //{
+        //    return DenseMatrix.OfArray(
+        //        new float[,]{
+        //            {(float)inertia.iyy,(float)inertia.iyz,(float)inertia.ixy },
+        //            {(float)inertia.iyz,(float)inertia.izz,(float)inertia.ixz },
+        //            {(float)inertia.ixy,(float)inertia.ixz,(float)inertia.ixx } }
+        //    );
+        //}
+
+        //switching y and z
         private static Matrix ToMatrix(this Link.Inertial.Inertia inertia)
         {
             return DenseMatrix.OfArray(
                 new float[,]{
-                    {(float)inertia.ixx,(float)inertia.ixy,(float)inertia.ixz },
-                    {(float)inertia.ixy,(float)inertia.iyy,(float)inertia.iyz },
-                    {(float)inertia.ixz,(float)inertia.iyz,(float)inertia.izz } }
+                    {(float)inertia.ixx,(float)inertia.ixz,(float)inertia.ixy },
+                    {(float)inertia.ixz,(float)inertia.izz,(float)inertia.iyz },
+                    {(float)inertia.ixy,(float)inertia.iyz,(float)inertia.iyy } }
             );
         }
 
@@ -70,8 +94,9 @@ namespace RosSharp.Urdf.Import
                 throw new System.ArgumentException("Vector length must be 3.", "vector");
 
             return new Vector3(vector[0], vector[1], vector[2]);
+            //return new Vector3(vector[0], vector[1], vector[2]).Ros2Unity();
         }
-
+            
         public static Quaternion ToQuaternion(this Matrix<float> matrix)
         {
             if (matrix.RowCount != 3 || matrix.ColumnCount != 3)

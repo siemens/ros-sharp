@@ -15,11 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     [SelectionBase]
     public class UrdfVisual : MonoBehaviour
@@ -27,23 +26,37 @@ namespace RosSharp.Urdf.Export
         [SerializeField]
         public UrdfGeometry.GeometryTypes geometryType;
 
-        public void Initialize(UrdfGeometry.GeometryTypes type)
+        public static void Create(Transform parent, UrdfGeometry.GeometryTypes type)
         {
-            geometryType = type;
-            GameObject geometryGameObject = UrdfGeometry.GenerateVisualGeometry(type);
+            GameObject visualObject = new GameObject("unnamed");
+            visualObject.transform.SetParentAndAlign(parent);
+            UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
+
+            urdfVisual.geometryType = type;
+            GameObject geometryGameObject = UrdfGeometryVisual.Create(visualObject.transform, type);
 
             if (geometryGameObject == null) return;
-
-            geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
-            transform.DestroyImmediateIfExists<Collider>();
-
-            EditorGUIUtility.PingObject(gameObject);
+            
+            EditorGUIUtility.PingObject(visualObject);
         }
+
+        public static void Create(Transform parent, Link.Visual visual)
+        {
+            GameObject visualObject = new GameObject(visual.name ?? "unnamed");
+            visualObject.transform.SetParentAndAlign(parent);
+            UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
+            urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
+            
+            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
+            UrdfMaterialHandler.SetUrdfMaterial(visualObject, visual.material);
+            UrdfOrigin.SetTransform(visualObject.transform, visual.origin);
+        }
+
 
         public void AddCorrespondingCollision()
         {
-            GetComponentInParent<UrdfLink>().GetComponentInChildren<UrdfCollisions>()
-                .AddColision(geometryType, transform);
+            UrdfCollisions collisions = GetComponentInParent<UrdfLink>().GetComponentInChildren<UrdfCollisions>();
+            UrdfCollision.Create(collisions.transform, geometryType, transform);
         }
 
         public Link.Visual GetVisualData()

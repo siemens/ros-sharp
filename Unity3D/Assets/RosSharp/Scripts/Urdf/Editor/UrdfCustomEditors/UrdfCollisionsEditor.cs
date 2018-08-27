@@ -34,7 +34,7 @@ namespace RosSharp.Urdf.Export
             geometryType = (UrdfGeometry.GeometryTypes)EditorGUILayout.EnumPopup("Type of collision", geometryType);
 
             if (GUILayout.Button("Add collision"))
-                urdfCollisions.AddColision(geometryType);
+                UrdfCollision.Create(urdfCollisions.transform, geometryType);
         }
     }
 }

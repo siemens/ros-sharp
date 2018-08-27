@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2018
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf
 {
     public static class RobotFactory
     {
-        public static GameObject Create(string filename)
+        public static void Create(string filename)
         {
             Robot robot = new Robot(filename);
-            return robot.Create();
+            UrdfRobot.Create(robot);
         }
     }
 }

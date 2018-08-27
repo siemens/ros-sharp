@@ -15,7 +15,6 @@ limitations under the License.
 
 using System;
 using RosSharp.Urdf;
-using RosSharp.Urdf.Export;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

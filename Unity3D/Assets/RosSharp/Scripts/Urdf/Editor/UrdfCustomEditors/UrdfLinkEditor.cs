@@ -21,7 +21,7 @@ using UnityEngine;
 namespace RosSharp.Urdf.Export
 {
     [CustomEditor(typeof(UrdfLink))]
-    public class UrdfLinkEditor : UnityEditor.Editor
+    public class UrdfLinkEditor : Editor
     {
         private UrdfLink urdfLink;
         private UrdfJoint.JointTypes jointType = UrdfJoint.JointTypes.Fixed;
@@ -30,15 +30,19 @@ namespace RosSharp.Urdf.Export
         {
             urdfLink = (UrdfLink)target;
 
-            GUILayout.Space(10);
-            if (GUILayout.Button("Add child link"))
-                urdfLink.AddChildLink();
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Add child link"))
+            //    UrdfLink.Create(urdfLink.transform);
 
             GUILayout.Space(5);
             jointType = (UrdfJoint.JointTypes) EditorGUILayout.EnumPopup(
-                "Type of joint", jointType);
-            if (GUILayout.Button("Add child link with connecting joint"))
-                urdfLink.AddChildLink(jointType);
+                "Joint type", jointType);
+
+            if (GUILayout.Button("Add child link (with joint)"))
+            {
+                UrdfLink childLink = UrdfLink.Create(urdfLink.transform);
+                UrdfJoint.Create(childLink.gameObject, "joint", jointType);
+            }
         }
     }
 }

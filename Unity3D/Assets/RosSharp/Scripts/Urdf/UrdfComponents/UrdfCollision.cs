@@ -18,7 +18,7 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     [SelectionBase]
     public class UrdfCollision : MonoBehaviour
@@ -26,42 +26,42 @@ namespace RosSharp.Urdf.Export
         [SerializeField]
         public UrdfGeometry.GeometryTypes geometryType;
 
-        public void Initialize(UrdfGeometry.GeometryTypes type, Transform visualToCopy = null)
+        public static void Create(Transform parent, UrdfGeometry.GeometryTypes type, Transform visualToCopy = null)
         {
-            geometryType = type;
+            GameObject collisionObject = new GameObject("unnamed");
+            collisionObject.transform.SetParentAndAlign(parent);
 
-            GameObject geometryGameObject = null;
-            
-            if (visualToCopy != null && geometryType == UrdfGeometry.GeometryTypes.Mesh) 
-            {
-                //Generate copy of visual object, add MeshColliders, and remove MeshRenderers.
-                geometryGameObject = Instantiate(visualToCopy.GetChild(0).gameObject);
-                geometryGameObject.name = visualToCopy.GetChild(0).name;
+            UrdfCollision urdfCollision = collisionObject.AddComponent<UrdfCollision>();
+            urdfCollision.geometryType = type;
 
-                MeshFilter[] meshFilters = geometryGameObject.GetComponentsInChildren<MeshFilter>();
-                foreach (MeshFilter meshFilter in meshFilters)
-                {
-                    GameObject child = meshFilter.gameObject;
-                    MeshCollider meshCollider = child.AddComponent<MeshCollider>();
-                    meshCollider.sharedMesh = meshFilter.sharedMesh;
-                    DestroyImmediate(child.GetComponent<MeshRenderer>());
-                    DestroyImmediate(meshFilter);
-                }
-            }
-            else
-                geometryGameObject = UrdfGeometry.GenerateCollisionGeometry(type);
-
-            geometryGameObject.transform.SetParentAndAlign(gameObject.transform);
-
-            //copy transform values from corresponding UrdfVisual 
             if (visualToCopy != null)
-            { 
-                transform.localPosition = visualToCopy.localPosition;
-                transform.localScale = visualToCopy.localScale;
-                transform.localEulerAngles = visualToCopy.localEulerAngles;  
+            {
+                if (urdfCollision.geometryType == UrdfGeometry.GeometryTypes.Mesh)
+                {
+                    GameObject geometryGameObject = UrdfGeometryCollision.CreateMatchingMeshCollision(visualToCopy);
+                    geometryGameObject.transform.SetParentAndAlign(collisionObject.transform);
+                }
+                else
+                    UrdfGeometryCollision.Create(collisionObject.transform, type);
+
+                //copy transform values from corresponding UrdfVisual
+                collisionObject.transform.position = visualToCopy.position;
+                collisionObject.transform.localScale = visualToCopy.localScale;
+                collisionObject.transform.rotation = visualToCopy.rotation;
             }
-            
-            EditorGUIUtility.PingObject(gameObject);
+             
+            EditorGUIUtility.PingObject(collisionObject);
+        }
+
+        public static void Create(Transform parent, Link.Collision collision)
+        {
+            GameObject collisionObject = new GameObject("unnamed");
+            collisionObject.transform.SetParentAndAlign(parent);
+            UrdfCollision urdfCollision = collisionObject.AddComponent<UrdfCollision>();
+            urdfCollision.geometryType = UrdfGeometry.GetGeometryType(collision.geometry);
+
+            UrdfGeometryCollision.Create(collisionObject.transform, urdfCollision.geometryType, collision.geometry);
+            UrdfOrigin.SetTransform(collisionObject.transform, collision.origin);
         }
     
         public Link.Collision GetCollisionData()

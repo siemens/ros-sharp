@@ -44,8 +44,7 @@ namespace RosSharp.Urdf.Export
                     "Are you sure you want to change the joint type? This will erase all information currently stored in the joint.",
                     "Continue", "Cancel"))
                 {
-                    urdfJoint.JointType = newJointType;
-                    urdfJoint.Reset();
+                    urdfJoint.ChangeJointType(newJointType);
                 }
             }
             EditorGUILayout.EndVertical();

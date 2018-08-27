@@ -15,14 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     public class UrdfRobot : MonoBehaviour
     {
@@ -63,15 +62,38 @@ namespace RosSharp.Urdf.Export
 
         public void Reset()
         {
-            transform.DestroyChildrenImmediate();
+            UrdfLink urdfLink = UrdfLink.Create(transform);
+            urdfLink.name = "base_link";
+        }
 
-            filePath = Application.dataPath + Path.DirectorySeparatorChar + "Urdf" + Path.DirectorySeparatorChar + gameObject.name + ".urdf";
+        public static void Create(Robot robot)
+        {
+            if (!UrdfAssetPathHandler.IsValidAssetPath(robot.filename))
+            {
+                Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);
+                return;
+            }
 
-            GameObject baseLink = new GameObject("base_link");
-            baseLink.transform.SetParentAndAlign(gameObject.transform);
+            GameObject robotGameObject = new GameObject(robot.name);
+            UrdfRobot urdfRobot = robotGameObject.AddComponent<UrdfRobot>();
 
-            baseLink.AddComponent<UrdfLink>();
+            UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
+            UrdfMaterialHandler.InitializeRobotMaterials(robot);
 
+            UrdfLink.Create(robotGameObject.transform, robot.root);
+
+            GameObjectUtility.SetParentAndAlign(robotGameObject, Selection.activeObject as GameObject);
+            Undo.RegisterCreatedObjectUndo(robotGameObject, "Create " + robotGameObject.name);
+            Selection.activeObject = robotGameObject;
+
+            urdfRobot.SetKinematic(true);
+        }
+
+        public void SetKinematic(bool isKinematic)
+        {
+            Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody rigidbody in rigidbodies)
+                rigidbody.isKinematic = isKinematic;
         }
 
         private Robot GetRobotData()

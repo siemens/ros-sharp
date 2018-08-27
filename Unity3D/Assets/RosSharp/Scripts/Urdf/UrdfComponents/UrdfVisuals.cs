@@ -18,24 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     public class UrdfVisuals : MonoBehaviour
     {
-        public void Reset()
+        public static UrdfVisuals Create(Transform parent, List<Link.Visual> visuals = null)
         {
-            transform.DestroyChildrenImmediate();
+            GameObject visualsObject = new GameObject("Visuals");
+            visualsObject.transform.SetParentAndAlign(parent);
+            UrdfVisuals urdfVisuals = visualsObject.AddComponent<UrdfVisuals>();
 
-            gameObject.hideFlags = HideFlags.NotEditable;
-            hideFlags = HideFlags.None;
-        }
+            visualsObject.hideFlags = HideFlags.NotEditable;
+            urdfVisuals.hideFlags = HideFlags.None;
 
-        public void AddVisual(UrdfGeometry.GeometryTypes type)
-        {
-            GameObject visualObject = new GameObject("unnamed");
-            visualObject.transform.SetParentAndAlign(gameObject.transform);
+            if (visuals != null)
+            {
+                foreach (Link.Visual visual in visuals)
+                    UrdfVisual.Create(urdfVisuals.transform, visual);
+            }
 
-            visualObject.AddComponent<UrdfVisual>().Initialize(type);
+            return urdfVisuals;
         }
 
         public List<Link.Visual> GetVisualsData()

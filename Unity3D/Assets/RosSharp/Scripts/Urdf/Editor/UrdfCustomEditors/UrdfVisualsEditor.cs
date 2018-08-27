@@ -35,10 +35,8 @@ namespace RosSharp.Urdf.Export
             
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add visual"))
-                urdfVisuals.AddVisual(geometryType);
-
+                UrdfVisual.Create(urdfVisuals.transform, geometryType);
             EditorGUILayout.EndHorizontal();
-
         }
     }
 }

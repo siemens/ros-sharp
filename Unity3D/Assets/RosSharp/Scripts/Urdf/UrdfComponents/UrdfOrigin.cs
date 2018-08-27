@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© Siemens AG, 2018
+Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,16 +17,19 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf
 {
-    public static class UrdfOriginExtensions
+    class UrdfOrigin
     {
-        public static void SetTransform(this Origin origin, GameObject gameObject)
+        public static void SetTransform(Transform transform, Origin origin)
         {
-            gameObject.transform.Translate(origin.GetPosition());
-            gameObject.transform.Rotate(origin.GetRotation());
+            if (origin != null)
+            {
+                transform.Translate(GetPosition(origin));
+                transform.Rotate(GetRotation(origin));
+            }
         }
-        public static Vector3 GetPosition(this Origin origin)
+        public static Vector3 GetPosition(Origin origin)
         {
             if (origin.Xyz != null)
                 return new Vector3(
@@ -36,7 +39,7 @@ namespace RosSharp.Urdf.Import
             else
                 return Vector3.zero;
         }
-        public static Vector3 GetRotation(this Origin origin)
+        public static Vector3 GetRotation(Origin origin)
         {
             if (origin.Rpy != null)
                 return new Vector3(

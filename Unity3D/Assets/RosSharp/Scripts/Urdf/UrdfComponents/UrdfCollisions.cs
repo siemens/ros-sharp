@@ -19,26 +19,28 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
-{
+namespace RosSharp.Urdf
+{ 
     public class UrdfCollisions : MonoBehaviour
     {
-        public void Reset()
+        public static UrdfCollisions Create(Transform parent, List<Link.Collision> collisions = null)
         {
-            transform.DestroyChildrenImmediate();
+            GameObject collisionsObject = new GameObject("Collisions");
+            collisionsObject.transform.SetParentAndAlign(parent);
+            UrdfCollisions urdfCollisions = collisionsObject.AddComponent<UrdfCollisions>();
 
-            gameObject.hideFlags = HideFlags.NotEditable;
-            hideFlags = HideFlags.None;
+            collisionsObject.hideFlags = HideFlags.NotEditable;
+            urdfCollisions.hideFlags = HideFlags.None;
+
+            if (collisions != null)
+            {
+                foreach (Link.Collision collision in collisions)
+                    UrdfCollision.Create(urdfCollisions.transform, collision);
+            }
+
+            return urdfCollisions;
         }
-
-        public void AddColision(UrdfGeometry.GeometryTypes type, Transform visualTransform = null)
-        {
-            GameObject collision = new GameObject("unnamed");
-            collision.transform.SetParentAndAlign(gameObject.transform);
-
-            collision.AddComponent<UrdfCollision>().Initialize(type, visualTransform);
-        }
-
+        
         public List<Link.Collision> GetCollisionsData()
         {
             UrdfCollision[] urdfCollisions = gameObject.GetComponentsInChildren<UrdfCollision>();
