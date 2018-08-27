@@ -116,5 +116,13 @@ namespace RosSharp
             jointLimits.max = max;
             return jointLimits;
         }
+
+        public void InitializeLimits(JointLimits limits)
+        {
+            LargeAngleLimitMin = limits.min;
+            LargeAngleLimitMax = limits.max;
+            limits.min = -180;
+            limits.max = 180;
+        }
     }
 }

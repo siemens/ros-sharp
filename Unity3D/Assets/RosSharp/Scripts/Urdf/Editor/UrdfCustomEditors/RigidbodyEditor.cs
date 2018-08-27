@@ -21,7 +21,7 @@ using UnityEngine;
 namespace RosSharp.Urdf
 {
     [CustomEditor(typeof(Rigidbody))]
-    public class RigidbodyEditor : UnityEditor.Editor
+    public class RigidbodyEditor : Editor
     {
         public override void OnInspectorGUI()
         {

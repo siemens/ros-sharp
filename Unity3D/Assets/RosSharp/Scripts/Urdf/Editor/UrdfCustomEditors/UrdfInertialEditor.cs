@@ -19,21 +19,22 @@ using UnityEditor;
 
 namespace RosSharp.Urdf
 {
-    [CustomEditor(typeof(RigidbodyUrdfDataManager))]
+    [CustomEditor(typeof(UrdfInertial))]
     public class RigidBodyUrdfDataManagerEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            RigidbodyUrdfDataManager rigidbodyUrdfDataManager = (RigidbodyUrdfDataManager)target;
+            UrdfInertial urdfInertial = (UrdfInertial)target;
 
-            bool newValue = EditorGUILayout.Toggle("Use URDF Data", rigidbodyUrdfDataManager.UseUrdfData);
-            EditorGUILayout.Vector3Field("URDF Center of Mass", rigidbodyUrdfDataManager.CenterOfMass);
-            EditorGUILayout.Vector3Field("URDF Inertia Tensor", rigidbodyUrdfDataManager.InertiaTensor);
-            EditorGUILayout.Vector3Field("URDF Inertia Tensor Rotation", rigidbodyUrdfDataManager.InertiaTensorRotation.eulerAngles);
-            if (newValue != rigidbodyUrdfDataManager.UseUrdfData)
+            bool newValue = EditorGUILayout.Toggle("Use URDF Data", urdfInertial.UseUrdfData);
+            EditorGUILayout.Vector3Field("URDF Center of Mass", urdfInertial.CenterOfMass);
+            EditorGUILayout.Vector3Field("URDF Inertia Tensor", urdfInertial.InertiaTensor);
+            EditorGUILayout.Vector3Field("URDF Inertia Tensor Rotation", urdfInertial.InertiaTensorRotation.eulerAngles);
+
+            if (newValue != urdfInertial.UseUrdfData)
             {
-                rigidbodyUrdfDataManager.UseUrdfData = newValue;                    
-                rigidbodyUrdfDataManager.UpdateRigidBodyData();
+                urdfInertial.UseUrdfData = newValue;                    
+                urdfInertial.UpdateRigidBodyData();
             }
         }
     }

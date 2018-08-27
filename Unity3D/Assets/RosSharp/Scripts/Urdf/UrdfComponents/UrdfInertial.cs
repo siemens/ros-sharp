@@ -23,40 +23,74 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    class UrdfInertial
+    [RequireComponent(typeof(Rigidbody))]
+    public class UrdfInertial : MonoBehaviour
     {
         private static readonly int RoundDigits = 6;
 
+        public bool UseUrdfData;
+        public Vector3 CenterOfMass;
+        public Vector3 InertiaTensor;
+        public Quaternion InertiaTensorRotation;
+
+        private Rigidbody _rigidbody;
+
         public static void Create(GameObject linkObject, Link.Inertial inertial = null)
         {
-            Rigidbody rigidbody = linkObject.AddComponent<Rigidbody>();
+            UrdfInertial urdfInertial = linkObject.AddComponent<UrdfInertial>();
+            urdfInertial._rigidbody = linkObject.GetComponent<Rigidbody>();
 
-            if (inertial == null) return;
+            if (inertial != null)
+            {
+                urdfInertial._rigidbody.mass = (float) inertial.mass;
 
-            rigidbody.mass = (float)inertial.mass;
+                if (inertial.origin != null)
+                    urdfInertial._rigidbody.centerOfMass = UrdfOrigin.GetPosition(inertial.origin);
 
-            if (inertial.origin != null)
-                rigidbody.centerOfMass = UrdfOrigin.GetPosition(inertial.origin);
-                
-            SetInertiaData(rigidbody, inertial.inertia);
+                urdfInertial.SetInertiaData(inertial.inertia);
 
-            RigidbodyUrdfDataManager rigidbodyUrdfDataManager
-                = linkObject.AddComponent<RigidbodyUrdfDataManager>();
+                //Save original rigidbody data from URDF
+                urdfInertial.CenterOfMass = urdfInertial._rigidbody.centerOfMass;
+                urdfInertial.InertiaTensor = urdfInertial._rigidbody.inertiaTensor;
+                urdfInertial.InertiaTensorRotation = urdfInertial._rigidbody.inertiaTensorRotation;
 
-            rigidbodyUrdfDataManager.GetValuesFromUrdf(
-                rigidbody.centerOfMass,
-                rigidbody.inertiaTensor,
-                rigidbody.inertiaTensorRotation);
-            rigidbodyUrdfDataManager.UseUrdfData = true;
+                urdfInertial.UseUrdfData = true;
+            }
         }
-        
+
+        #region ManageRigidbodyData
+
+        private void Start()
+        {
+            UpdateRigidBodyData();
+        }
+
+        public void UpdateRigidBodyData()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+
+            if (UseUrdfData)
+            {
+                _rigidbody.centerOfMass = CenterOfMass;
+                _rigidbody.inertiaTensor = InertiaTensor;
+                _rigidbody.inertiaTensorRotation = InertiaTensorRotation;
+            }
+            else
+            {
+                _rigidbody.ResetCenterOfMass();
+                _rigidbody.ResetInertiaTensor();
+            }
+        }
+
+        #endregion
+
         #region SetInertiaData
 
-        public static void SetInertiaData(Rigidbody rigidbody, Link.Inertial.Inertia inertia)
+        private void SetInertiaData(Link.Inertial.Inertia inertia)
         {
             Evd<float> Evd = ToMatrix(Unity3DCoordTrafo(inertia)).Evd(Symmetricity.Symmetric);
-            rigidbody.inertiaTensor = FixMinInertia(ToVector3(Evd.EigenValues.Real().ToSingle())); // optionally check vector for imaginary part = 0
-            rigidbody.inertiaTensorRotation = ToQuaternion(Evd.EigenVectors); // optionally check matrix for determinant = 1
+            _rigidbody.inertiaTensor = FixMinInertia(ToVector3(Evd.EigenValues.Real().ToSingle())); // optionally check vector for imaginary part = 0
+            _rigidbody.inertiaTensorRotation = ToQuaternion(Evd.EigenVectors); // optionally check matrix for determinant = 1
         }
 
         private static Link.Inertial.Inertia Unity3DCoordTrafo(Link.Inertial.Inertia inertia)

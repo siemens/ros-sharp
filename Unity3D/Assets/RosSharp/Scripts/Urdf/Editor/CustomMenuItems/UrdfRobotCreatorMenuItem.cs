@@ -15,10 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.IO;
 using UnityEditor;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf
 {
     public static class UrdfRobotCreatorMenuItem
     {

@@ -27,43 +27,10 @@ namespace RosSharp.Urdf
     {
         private string filePath;
 
-        public void ExportRobotToUrdf(string packageRootFolder)
-        {
-            UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);
-           
-            string exportDestination = EditorUtility.OpenFolderPanel(
-                "Select export destination for robot asset files (such as meshes, images, etc)",
-                UrdfAssetPathHandler.GetPackageRoot(),
-                "");
-
-            if (!exportDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Contains(UrdfAssetPathHandler.GetPackageRoot()))
-            {
-                Debug.LogWarning("Export destination folder must be a subfolder of the robot export location. Aborting URDF export.");
-                return;
-            }
-
-            UrdfAssetPathHandler.SetExportDestination(exportDestination);
-
-            filePath = Path.Combine(exportDestination, name + ".urdf");
-            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-            Robot robot = GetRobotData();
-
-            if (robot == null) return;
-
-            robot.WriteToUrdf();
-
-            UrdfMaterial.materials.Clear();
-            UrdfAssetPathHandler.Clear();
-            AssetDatabase.Refresh();
-
-            Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
-        }
-
         public static void Create()
         {
             GameObject robotGameObject = new GameObject("Robot");
-            UrdfRobot urdfRobot = robotGameObject.AddComponent<UrdfRobot>();
+            robotGameObject.AddComponent<UrdfRobot>();
 
             UrdfLink urdfLink = UrdfLink.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
@@ -92,11 +59,44 @@ namespace RosSharp.Urdf
             urdfRobot.SetKinematic(true);
         }
 
-        public void SetKinematic(bool isKinematic)
+        private void SetKinematic(bool isKinematic)
         {
             Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
             foreach (Rigidbody rigidbody in rigidbodies)
                 rigidbody.isKinematic = isKinematic;
+        }
+
+        public void ExportRobotToUrdf(string packageRootFolder)
+        {
+            UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);
+
+            string exportDestination = EditorUtility.OpenFolderPanel(
+                "Select export destination for robot asset files (such as meshes, images, etc)",
+                UrdfAssetPathHandler.GetPackageRoot(),
+                "");
+
+            if (!exportDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Contains(UrdfAssetPathHandler.GetPackageRoot()))
+            {
+                Debug.LogWarning("Export destination folder must be a subfolder of the robot export location. Aborting URDF export.");
+                return;
+            }
+
+            UrdfAssetPathHandler.SetExportDestination(exportDestination);
+
+            filePath = Path.Combine(exportDestination, name + ".urdf");
+            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            Robot robot = GetRobotData();
+
+            if (robot == null) return;
+
+            robot.WriteToUrdf();
+
+            UrdfMaterial.materials.Clear();
+            UrdfAssetPathHandler.Clear();
+            AssetDatabase.Refresh();
+
+            Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
         }
 
         private Robot GetRobotData()

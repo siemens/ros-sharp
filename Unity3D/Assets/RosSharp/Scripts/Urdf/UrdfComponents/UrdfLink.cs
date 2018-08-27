@@ -56,9 +56,7 @@ namespace RosSharp.Urdf
                 }
             }
             else
-            {
                 UrdfInertial.Create(linkObject);
-            }
             
             EditorGUIUtility.PingObject(linkObject);
 
