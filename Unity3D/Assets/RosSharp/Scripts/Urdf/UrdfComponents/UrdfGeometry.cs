@@ -356,12 +356,15 @@ namespace RosSharp.Urdf
                         (float)geometry.sphere.radius * 2);
                     break;
                 case GeometryTypes.Mesh:
-                    Vector3 scale = new Vector3(
-                        (float)geometry.mesh.scale[0],
-                        (float)geometry.mesh.scale[1],
-                        (float)geometry.mesh.scale[2]);
-                    transform.localScale = Vector3.Scale(transform.localScale, scale);
-                    transform.localPosition = Vector3.Scale(transform.localPosition, scale);
+                    if (geometry.mesh.scale != null)
+                    {
+                        Vector3 scale = new Vector3(
+                            (float)geometry.mesh.scale[0],
+                            (float)geometry.mesh.scale[1],
+                            (float)geometry.mesh.scale[2]);
+                        transform.localScale = Vector3.Scale(transform.localScale, scale);
+                        transform.localPosition = Vector3.Scale(transform.localPosition, scale);
+                    }
                     break;
             }
 
