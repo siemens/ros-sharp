@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -65,7 +66,7 @@ namespace RosSharp.Urdf
             if (prefabObject == null)
                 return null;
 
-            GameObject meshObject = Object.Instantiate(prefabObject);
+            GameObject meshObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabObject);
             ConvertMeshToColliders(meshObject);
 
             return meshObject;
@@ -89,10 +90,17 @@ namespace RosSharp.Urdf
             if (visualToCopy.childCount <= 0) return null;
 
             GameObject objectToCopy = visualToCopy.GetChild(0).gameObject;
-            GameObject collsionObject = Object.Instantiate(objectToCopy);
-            collsionObject.name = objectToCopy.name;
-            ConvertMeshToColliders(collsionObject, true);
-            return collsionObject;
+            GameObject prefabObject = (GameObject)PrefabUtility.GetCorrespondingObjectFromSource(objectToCopy);
+
+            GameObject collisionObject;
+            if (prefabObject != null)
+                collisionObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabObject);
+            else
+                collisionObject = Object.Instantiate(objectToCopy);
+
+            collisionObject.name = objectToCopy.name;
+            ConvertMeshToColliders(collisionObject, true);
+            return collisionObject;
 
         }
 

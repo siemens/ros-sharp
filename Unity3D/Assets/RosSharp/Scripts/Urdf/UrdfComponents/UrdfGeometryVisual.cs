@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -59,7 +60,7 @@ namespace RosSharp.Urdf
         private static GameObject CreateMeshVisual(Transform parent, Link.Geometry.Mesh mesh)
         {
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
-            return meshObject == null ? null : Object.Instantiate(meshObject);
+            return meshObject == null ? null : (GameObject)PrefabUtility.InstantiatePrefab(meshObject);
         }
 
         //public static GameObject CreateCylinderVisual(Link.Geometry.Cylinder cylinder, GameObject parent)
