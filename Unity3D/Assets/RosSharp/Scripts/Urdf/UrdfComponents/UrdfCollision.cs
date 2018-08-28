@@ -71,7 +71,7 @@ namespace RosSharp.Urdf
             Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform, true);
             string collisionName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Collision(geometry, collisionName, transform.GetOriginData());
+            return new Link.Collision(geometry, collisionName, UrdfOrigin.GetOriginData(transform));
         }
 
         private void CheckForUrdfCompatibility()

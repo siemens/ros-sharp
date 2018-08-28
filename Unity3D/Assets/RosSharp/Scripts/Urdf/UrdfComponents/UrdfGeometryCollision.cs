@@ -84,17 +84,19 @@ namespace RosSharp.Urdf
             return gameObject;
         }
 
-        public static GameObject CreateMatchingMeshCollision(Transform visualToCopy) 
+        public static GameObject CreateMatchingMeshCollision(Transform visualToCopy)
         {
-            GameObject collsionObject = Object.Instantiate(visualToCopy.GetChild(0).gameObject);
-            collsionObject.name = visualToCopy.GetChild(0).name;
+            if (visualToCopy.childCount <= 0) return null;
 
-            ConvertMeshToColliders(collsionObject);
-           
+            GameObject objectToCopy = visualToCopy.GetChild(0).gameObject;
+            GameObject collsionObject = Object.Instantiate(objectToCopy);
+            collsionObject.name = objectToCopy.name;
+            ConvertMeshToColliders(collsionObject, true);
             return collsionObject;
+
         }
 
-        private static void ConvertMeshToColliders(GameObject gameObject)
+        private static void ConvertMeshToColliders(GameObject gameObject, bool inflateColliders = false)
         {
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
             foreach (MeshFilter meshFilter in meshFilters)
@@ -102,7 +104,10 @@ namespace RosSharp.Urdf
                 GameObject child = meshFilter.gameObject;
                 MeshCollider meshCollider = child.AddComponent<MeshCollider>();
                 meshCollider.sharedMesh = meshFilter.sharedMesh;
-                meshCollider.inflateMesh = true;
+
+                if (inflateColliders)
+                    meshCollider.inflateMesh = true;
+
                 meshCollider.convex = true;
                 meshCollider.skinWidth = 0.001f;
                 Object.DestroyImmediate(child.GetComponent<MeshRenderer>());

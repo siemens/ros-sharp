@@ -33,6 +33,13 @@ namespace RosSharp.Urdf.Export
 
             GUILayout.Space(5);
 
+            if (GUILayout.Button("Generate unique joint names"))
+            {
+                urdfRobot.GenerateUniqueJointNames();
+            }
+
+            GUILayout.Space(10);
+
             if (GUILayout.Button("Export robot to URDF file"))
             {
                 string robotAssetFolder = EditorUtility.OpenFolderPanel(

@@ -59,7 +59,8 @@ namespace RosSharp.Urdf.Export
 
                 if (GUILayout.Button("Fix transformations"))
                 {
-                    urdfVisual.transform.MoveChildTransformToParent();
+                    bool transferRotation = urdfVisual.geometryType != UrdfGeometry.GeometryTypes.Mesh;
+                    urdfVisual.transform.MoveChildTransformToParent(transferRotation);
                 }
             }
         }

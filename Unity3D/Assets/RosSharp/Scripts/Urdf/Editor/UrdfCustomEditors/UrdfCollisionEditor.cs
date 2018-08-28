@@ -55,7 +55,9 @@ namespace RosSharp.Urdf.Export
 
                 if (GUILayout.Button("Fix transformations"))
                 {
-                    urdfCollision.transform.MoveChildTransformToParent();
+                    //Only transfer rotation if geometry is not a mesh
+                    bool transferRotation = urdfCollision.geometryType != UrdfGeometry.GeometryTypes.Mesh;
+                    urdfCollision.transform.MoveChildTransformToParent(transferRotation);
                 }
                 GUILayout.EndVertical();
             }

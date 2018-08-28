@@ -209,11 +209,8 @@ namespace RosSharp.Urdf
             {
                 writer.WriteStartElement("limit");
 
-                //TODO only output one or the other
-                if (lower != 0)
-                    writer.WriteAttributeString("lower", lower + "");
-                if (upper != 0)
-                    writer.WriteAttributeString("upper", upper + "");
+                writer.WriteAttributeString("lower", lower + "");
+                writer.WriteAttributeString("upper", upper + "");
 
                 writer.WriteAttributeString("effort", effort + "");
                 writer.WriteAttributeString("velocity", velocity + "");

@@ -67,7 +67,7 @@ namespace RosSharp
                     || (geometryType != UrdfGeometry.GeometryTypes.Mesh && transform.localRotation != Quaternion.identity));
         }
 
-        public static  void MoveChildTransformToParent(this Transform parent)
+        public static  void MoveChildTransformToParent(this Transform parent, bool transferRotation = true)
         {
             //Detach child in order to get a transform indenpendent from parent
             Transform childTransform = parent.GetChild(0);
@@ -75,38 +75,18 @@ namespace RosSharp
 
             //Copy transform from child to parent
             parent.position = childTransform.position;
-            parent.rotation = childTransform.rotation;
             parent.localScale = childTransform.localScale;
 
-            //Re-attach parent and reset child transform
-            childTransform.SetParentAndAlign(parent, false);
-        }
+            if (transferRotation)
+            {
+                parent.rotation = childTransform.rotation;
+                childTransform.localRotation = Quaternion.identity;
+            }
 
-        public static Origin GetOriginData(this Transform transform)
-        {
-            double[] xyz = transform.GetUrdfXyz();
-            double[] rpy = transform.GetUrdfRpy();
+            childTransform.parent = parent;
 
-            if (xyz != null || rpy != null)
-                return new Origin(xyz, rpy);
-
-            return null;
-        }
-
-        private static double[] GetUrdfXyz(this Transform transform)
-        {
-            Vector3 xyzVector = transform.localPosition.Unity2Ros();
-            return xyzVector == Vector3.zero ? null: xyzVector.ToRoundedDoubleArray();
-        }
-
-        private static double[] GetUrdfRpy(this Transform transform)
-        {
-            Vector3 rpyVector = new Vector3(
-                -transform.localEulerAngles.z * Mathf.Deg2Rad,
-                transform.localEulerAngles.x * Mathf.Deg2Rad,
-                -transform.localEulerAngles.y * Mathf.Deg2Rad);
-
-            return rpyVector == Vector3.zero ? null : rpyVector.ToRoundedDoubleArray();
+            childTransform.localPosition = Vector3.zero;
+            childTransform.localScale = Vector3.one;
         }
 
         public static double[] GetUrdfSize(this Transform transform)
@@ -170,6 +150,11 @@ namespace RosSharp
                 arr[i] = Math.Round(vector3[i], RoundDigits);
 
             return arr;
+        }
+
+        public static Vector3 ToVector3(this double[] array)
+        {
+            return new Vector3((float)array[0], (float)array[1], (float)array[2]);
         }
     }
 }

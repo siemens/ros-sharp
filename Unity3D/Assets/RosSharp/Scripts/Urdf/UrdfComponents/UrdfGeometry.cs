@@ -120,7 +120,7 @@ namespace RosSharp.Urdf
         private static string CreateNewStlFile(GameObject geometryObject, bool isCollisionGeometry)
         {
             //Create a clone with no scale or transform, so that it will be at original size and position when exported.
-            GameObject clone = Object.Instantiate(geometryObject, Vector3.zero, geometryObject.transform.rotation);
+            GameObject clone = Object.Instantiate(geometryObject, Vector3.zero, Quaternion.identity);
             clone.name = geometryObject.name;
             clone.transform.localScale = Vector3.one;
             GameObject[] gameObjects = { clone };
@@ -358,10 +358,7 @@ namespace RosSharp.Urdf
                 case GeometryTypes.Mesh:
                     if (geometry?.mesh?.scale != null)
                     {
-                        Vector3 scale = new Vector3(
-                            (float)geometry.mesh.scale[0],
-                            (float)geometry.mesh.scale[1],
-                            (float)geometry.mesh.scale[2]);
+                        Vector3 scale = geometry.mesh.scale.ToVector3().Ros2Unity();
                         transform.localScale = Vector3.Scale(transform.localScale, scale);
                         transform.localPosition = Vector3.Scale(transform.localPosition, scale);
                     }

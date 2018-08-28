@@ -36,8 +36,8 @@ namespace RosSharp.Urdf
                     (float)-origin.Xyz[1],
                     (float)+origin.Xyz[2],
                     (float)+origin.Xyz[0]);
-            else
-                return Vector3.zero;
+            
+            return Vector3.zero;
         }
         public static Vector3 GetRotation(Origin origin)
         {
@@ -46,8 +46,35 @@ namespace RosSharp.Urdf
                     (float)+origin.Rpy[1] * Mathf.Rad2Deg,
                     (float)-origin.Rpy[2] * Mathf.Rad2Deg,
                     (float)-origin.Rpy[0] * Mathf.Rad2Deg);
-            else
-                return Vector3.zero;
+
+            return Vector3.zero;
+        }
+
+        public static Origin GetOriginData(Transform transform)
+        {
+            double[] xyz = GetUrdfXyz(transform);
+            double[] rpy = GetUrdfRpy(transform);
+
+            if (xyz != null || rpy != null)
+                return new Origin(xyz, rpy);
+
+            return null;
+        }
+
+        private static double[] GetUrdfXyz(Transform transform)
+        {
+            Vector3 xyzVector = transform.localPosition.Unity2Ros();
+            return xyzVector == Vector3.zero ? null : xyzVector.ToRoundedDoubleArray();
+        }
+
+        private static double[] GetUrdfRpy(Transform transform)
+        {
+            Vector3 rpyVector = new Vector3(
+                -transform.localEulerAngles.z * Mathf.Deg2Rad,
+                transform.localEulerAngles.x * Mathf.Deg2Rad,
+                -transform.localEulerAngles.y * Mathf.Deg2Rad);
+
+            return rpyVector == Vector3.zero ? null : rpyVector.ToRoundedDoubleArray();
         }
     }
 }

@@ -66,6 +66,12 @@ namespace RosSharp.Urdf
                 rigidbody.isKinematic = isKinematic;
         }
 
+        public void GenerateUniqueJointNames()
+        {
+            foreach (UrdfJoint urdfJoint in GetComponentsInChildren<UrdfJoint>())
+                urdfJoint.GenerateUniqueJointName();
+        }
+
         public void ExportRobotToUrdf(string packageRootFolder)
         {
             UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);

@@ -68,7 +68,7 @@ namespace RosSharp.Urdf
             Link.Visual.Material material = UrdfMaterial.GetMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Visual(geometry, visualName, transform.GetOriginData(), material);
+            return new Link.Visual(geometry, visualName, UrdfOrigin.GetOriginData(transform), material);
         }
         
         private void CheckForUrdfCompatibility()

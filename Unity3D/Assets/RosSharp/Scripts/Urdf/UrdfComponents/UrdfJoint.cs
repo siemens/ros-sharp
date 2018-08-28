@@ -97,6 +97,11 @@ namespace RosSharp.Urdf
             AddCorrectJointType();
         }
 
+        public void GenerateUniqueJointName()
+        {
+            JointName = transform.parent.name + "_" + transform.name + "_joint";
+        }
+
         private void AddCorrectJointType()
         {
             UnityEngine.Joint unityJoint = null;
@@ -228,10 +233,7 @@ namespace RosSharp.Urdf
 
         private static Vector3 GetAxis(Joint.Axis axis)
         {
-            return new Vector3(
-                (float)-axis.xyz[1],
-                (float)axis.xyz[2],
-                (float)axis.xyz[0]);
+            return axis.xyz.ToVector3().Ros2Unity();
         }
 
         private static Vector3 GetDefaultAxis()
@@ -311,7 +313,7 @@ namespace RosSharp.Urdf
                 GetJointTypeName(JointType),
                 gameObject.transform.parent.name,
                 gameObject.name,
-                transform.GetOriginData());
+                UrdfOrigin.GetOriginData(transform));
 
             UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
 
@@ -370,11 +372,8 @@ namespace RosSharp.Urdf
 
         private Joint.Axis GetAxisData(Vector3 axis)
         {
-            Vector3 rosVector = axis.Unity2Ros();
-            return new Joint.Axis(new double[] {
-                rosVector.x,
-                rosVector.y,
-                rosVector.z});
+            double[] rosAxis = axis.Unity2Ros().ToRoundedDoubleArray();
+            return new Joint.Axis(rosAxis);
         }
 
         public bool AreLimitsCorrect()
