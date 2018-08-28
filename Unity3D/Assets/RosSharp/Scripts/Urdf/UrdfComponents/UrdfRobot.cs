@@ -36,12 +36,12 @@ namespace RosSharp.Urdf
             urdfLink.name = "base_link";
         }
 
-        public static void Create(Robot robot)
+        public static UrdfRobot Create(Robot robot)
         {
             if (!UrdfAssetPathHandler.IsValidAssetPath(robot.filename))
             {
                 Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);
-                return;
+                return null;
             }
 
             GameObject robotGameObject = new GameObject(robot.name);
@@ -57,6 +57,8 @@ namespace RosSharp.Urdf
             Selection.activeObject = robotGameObject;
 
             urdfRobot.SetKinematic(true);
+
+            return urdfRobot;
         }
 
         private void SetKinematic(bool isKinematic)

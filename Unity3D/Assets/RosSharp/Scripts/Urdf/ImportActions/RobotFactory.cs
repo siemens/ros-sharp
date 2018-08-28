@@ -19,10 +19,10 @@ namespace RosSharp.Urdf
 {
     public static class RobotFactory
     {
-        public static void Create(string filename)
+        public static UrdfRobot Create(string filename)
         {
             Robot robot = new Robot(filename);
-            UrdfRobot.Create(robot);
+            return UrdfRobot.Create(robot);
         }
     }
 }
