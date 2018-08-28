@@ -358,7 +358,11 @@ namespace RosSharp.Urdf
                 case GeometryTypes.Mesh:
                     if (geometry?.mesh?.scale != null)
                     {
-                        Vector3 scale = geometry.mesh.scale.ToVector3().Ros2Unity();
+                        Vector3 scale = new Vector3(
+                            (float)geometry.mesh.scale[2], 
+                            (float)geometry.mesh.scale[0], 
+                            (float)geometry.mesh.scale[1]);
+
                         transform.localScale = Vector3.Scale(transform.localScale, scale);
                         transform.localPosition = Vector3.Scale(transform.localPosition, scale);
                     }
