@@ -108,7 +108,12 @@ namespace RosSharp.Urdf
         private static string CopyAssetToExportDestination(string prefabPath)
         {
             string newPrefabPath = UrdfAssetPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
-            AssetDatabase.CopyAsset(prefabPath, newPrefabPath);
+
+            prefabPath = prefabPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            newPrefabPath = newPrefabPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            
+            if(prefabPath != newPrefabPath) //Don't move prefab if it's already in the right place
+                AssetDatabase.CopyAsset(prefabPath, newPrefabPath);
 
             return newPrefabPath;
         }
@@ -119,7 +124,7 @@ namespace RosSharp.Urdf
 
             StlExporter stlExporter = new StlExporter(UrdfAssetPathHandler.GetFullAssetPath(relativeMeshPath), geometryObject, isCollisionGeometry);
             if (!stlExporter.Export())
-                Debug.LogWarning("Mesh export for link " + geometryObject.GetComponentInParent<UrdfLink>().name + " failed.");
+                Debug.LogWarning("Mesh export for geometry " + geometryObject.name + " failed.", geometryObject);
             
             return relativeMeshPath;
         }
