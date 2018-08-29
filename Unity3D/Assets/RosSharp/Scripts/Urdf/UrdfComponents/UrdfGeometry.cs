@@ -74,11 +74,7 @@ namespace RosSharp.Urdf
                     foundExistingColladaOrStl = true;
                 else //Find STL file that corresponds to the prefab, if it already exists
                 {
-                    string[] foldersToSearch =
-                    {
-                        Path.GetDirectoryName(prefabPath),
-                        Path.Combine(UrdfAssetPathHandler.GetExportDestination(), "meshes")
-                    };
+                    string[] foldersToSearch = { Path.GetDirectoryName(prefabPath) };
                     string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
                     
                     foreach (string guid2 in AssetDatabase.FindAssets(prefabName, foldersToSearch))
@@ -99,7 +95,7 @@ namespace RosSharp.Urdf
             else
             {
                 Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
-                          + geometryObject.name + ". Exporting a new STL file.");
+                          + geometryObject.name + ". Exporting a new STL file.", geometryObject);
 
                 newFilePath = CreateNewStlFile(geometryObject, isCollisionGeometry);
             }
@@ -119,27 +115,12 @@ namespace RosSharp.Urdf
 
         private static string CreateNewStlFile(GameObject geometryObject, bool isCollisionGeometry)
         {
-            //Create a clone with no scale or transform, so that it will be at original size and position when exported.
-            GameObject clone = Object.Instantiate(geometryObject, Vector3.zero, Quaternion.identity);
-            clone.name = geometryObject.name;
-            clone.transform.localScale = Vector3.one;
-            GameObject[] gameObjects = { clone };
+            string relativeMeshPath = UrdfAssetPathHandler.GetNewMeshPath(geometryObject.name + ".stl");
 
-            if (isCollisionGeometry)
-            {
-                //Add meshFilters so that collision meshes will be recognized by STL exporter
-                foreach (MeshCollider meshCollider in clone.GetComponentsInChildren<MeshCollider>())
-                {
-                    MeshFilter meshFilter = meshCollider.gameObject.AddComponent<MeshFilter>();
-                    meshFilter.sharedMesh = meshCollider.sharedMesh;
-                }
-            }
-
-            string relativeMeshPath = UrdfAssetPathHandler.GetNewMeshPath(geometryObject.name + ".STL");
-            StlExporter.Export(UrdfAssetPathHandler.GetFullAssetPath(relativeMeshPath), gameObjects, FileType.Binary);
-
-            Object.DestroyImmediate(clone);
-
+            StlExporter stlExporter = new StlExporter(UrdfAssetPathHandler.GetFullAssetPath(relativeMeshPath), geometryObject, isCollisionGeometry);
+            if (!stlExporter.Export())
+                Debug.LogWarning("Mesh export for link " + geometryObject.GetComponentInParent<UrdfLink>().name + " failed.");
+            
             return relativeMeshPath;
         }
 

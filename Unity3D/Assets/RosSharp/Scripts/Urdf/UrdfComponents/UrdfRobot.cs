@@ -15,9 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,11 +79,17 @@ namespace RosSharp.Urdf
         public void ExportRobotToUrdf(string packageRootFolder)
         {
             UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);
-
+            
             string exportDestination = EditorUtility.OpenFolderPanel(
                 "Select export destination for robot asset files (such as meshes, images, etc)",
                 UrdfAssetPathHandler.GetPackageRoot(),
                 "");
+
+            UrdfAssetPathHandler.SetExportDestination(exportDestination);
+
+            filePath = Path.Combine(exportDestination, name + ".urdf");
+            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
 
             if (!exportDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Contains(UrdfAssetPathHandler.GetPackageRoot()))
             {
@@ -89,22 +97,20 @@ namespace RosSharp.Urdf
                 return;
             }
 
-            UrdfAssetPathHandler.SetExportDestination(exportDestination);
-
-            filePath = Path.Combine(exportDestination, name + ".urdf");
-            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
             Robot robot = GetRobotData();
-
             if (robot == null) return;
+            StartCoroutine(WriteToUrdf(robot));
+        }
 
+        private IEnumerator WriteToUrdf(Robot robot) 
+        {
             robot.WriteToUrdf();
 
             UrdfMaterial.materials.Clear();
             UrdfAssetPathHandler.Clear();
-            AssetDatabase.Refresh();
 
             Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
+            yield return null;
         }
 
         private Robot GetRobotData()

@@ -62,17 +62,6 @@ namespace RosSharp.Urdf
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
             return meshObject == null ? null : (GameObject)PrefabUtility.InstantiatePrefab(meshObject);
         }
-
-        //public static GameObject CreateCylinderVisual(Link.Geometry.Cylinder cylinder, GameObject parent)
-        //{
-        //    GameObject gameObject = new GameObject("Cylinder");
-        //    gameObject.transform.SetParentAndAlign(parent.transform);
-
-        //    MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
-        //    meshFilter.mesh = GetCylinderMesh(cylinder);
-        //    gameObject.AddComponent<MeshRenderer>();
-
-        //    return gameObject;
-        //}
+        
     }
 }

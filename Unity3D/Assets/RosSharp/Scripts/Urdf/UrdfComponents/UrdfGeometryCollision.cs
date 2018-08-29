@@ -87,7 +87,7 @@ namespace RosSharp.Urdf
 
         public static GameObject CreateMatchingMeshCollision(Transform visualToCopy)
         {
-            if (visualToCopy.childCount <= 0) return null;
+            if (visualToCopy.childCount == 0) return null;
 
             GameObject objectToCopy = visualToCopy.GetChild(0).gameObject;
             GameObject prefabObject = (GameObject)PrefabUtility.GetCorrespondingObjectFromSource(objectToCopy);

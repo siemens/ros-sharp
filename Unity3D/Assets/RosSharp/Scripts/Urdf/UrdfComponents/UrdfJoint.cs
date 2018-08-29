@@ -271,19 +271,6 @@ namespace RosSharp.Urdf
             
         }
 
-        //public static SoftJointLimit GetLowSoftJointLimit(Joint.Limit limit)
-        //{
-        //    SoftJointLimit softJointLimit = new SoftJointLimit();
-        //    softJointLimit.limit = (float)limit.lower * Mathf.Rad2Deg;
-        //    return softJointLimit;
-        //}
-        //public static SoftJointLimit GetHighSoftJointLimit(Joint.Limit limit)
-        //{
-        //    SoftJointLimit softJointLimit = new SoftJointLimit();
-        //    softJointLimit.limit = (float)limit.upper * Mathf.Rad2Deg;
-        //    return softJointLimit;
-        //}
-
         private static SoftJointLimit GetLinearLimit(Joint.Limit limit)
         {
             return new SoftJointLimit
@@ -328,12 +315,6 @@ namespace RosSharp.Urdf
             else if (JointType != JointTypes.Fixed)
             {
                 joint.axis = GetAxisData(unityJoint.axis);
-
-                //TODO: how to combine info from connectedAnchor and the link's transform origin? Which
-                //is more important? Don't allow user to change connectedAnchor? 
-                //Currently if connectedAnchor is stored in joint.origin, is overrides the link's origin
-                //Vector3 xpyVector = unityJoint.connectedAnchor.Unity2Ros();
-                //joint.origin = new Origin(xpyVector.ToRoundedDoubleArray(), null);
             }
 
             //HingeJoint data

@@ -47,11 +47,8 @@ namespace RosSharp.Urdf
             string relativeExportPath = GetRelativeAssetPath(newPath);
             exportDestination = relativeExportPath == packageRoot ? "" : relativeExportPath.Substring(packageRoot.Length+1);
 
-            //Create resource folders if they don't already exist
-            if (!AssetDatabase.IsValidFolder(Path.Combine(GetExportDestination(), meshFolderName)))
-                AssetDatabase.CreateFolder(GetExportDestination(), meshFolderName);
-            if (!AssetDatabase.IsValidFolder(Path.Combine(GetExportDestination(), resourceFolderName)))
-                AssetDatabase.CreateFolder(GetExportDestination(), resourceFolderName);
+            Directory.CreateDirectory(Path.Combine(GetExportDestination(), meshFolderName));
+            Directory.CreateDirectory(Path.Combine(GetExportDestination(), resourceFolderName));
         }
 
         #region GetPaths
@@ -83,9 +80,9 @@ namespace RosSharp.Urdf
 
         #region GetExportPaths
         //Returns new mesh path, relative to the Assets folder
+        //meshFileName includes the file extension
         public static string GetNewMeshPath(string meshFileName)
         {
-            //meshFileName is the name of the mesh, with file extension
             return Path.Combine(packageRoot, exportDestination, meshFolderName, meshFileName);
         }
 

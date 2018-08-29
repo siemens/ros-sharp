@@ -15,15 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     [CustomEditor(typeof(UrdfRobot))]
-    public class UrdfRobotEditor : UnityEditor.Editor
+    public class UrdfRobotEditor : Editor
     {
         private UrdfRobot urdfRobot;
 
@@ -40,6 +38,8 @@ namespace RosSharp.Urdf.Export
 
             GUILayout.Space(10);
 
+            StlWriter.fileType = (StlWriter.FileType) EditorGUILayout.EnumPopup("Export new meshes to", StlWriter.fileType);
+            
             if (GUILayout.Button("Export robot to URDF file"))
             {
                 string robotAssetFolder = EditorUtility.OpenFolderPanel(
@@ -52,7 +52,7 @@ namespace RosSharp.Urdf.Export
                     Debug.LogWarning("You must select a folder within the Assets folder. Aborting URDF export.");
                     return;
                 }
-                
+
                 urdfRobot.ExportRobotToUrdf(robotAssetFolder);
             }
         }

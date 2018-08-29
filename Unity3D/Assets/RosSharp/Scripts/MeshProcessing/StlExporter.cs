@@ -1,4 +1,19 @@
-//TODO: add header for pb_STL (https://github.com/karl-/pb_Stl)
+/*
+© Siemens AG, 2018
+Author: Suzannah Smith (suzannah.smith@siemens.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+<http://www.apache.org/licenses/LICENSE-2.0>.
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 using UnityEngine;
 using System.Linq;
@@ -6,94 +21,92 @@ using System.Collections.Generic;
 
 namespace RosSharp.Urdf
 {
-	/**
-	 *	Provides menu items for writing STL files from a scene selection.
-	 */
-	public static class StlExporter
-	{
-		/**
-		 * Export a hierarchy of GameObjects to path with file type.
-		 */
-		public static bool Export(string path, GameObject[] gameObjects, FileType type)
+    public class StlExporter
+    {
+        private readonly bool exportCollision;
+        private readonly string exportPath;
+        private readonly GameObject gameObject;
+
+        public StlExporter(string path, GameObject toExport, bool collision = false)
+        {
+            exportPath = path;
+            gameObject = toExport;
+            exportCollision = collision;
+        }
+
+		public bool Export()
 		{
-			Mesh[] meshes = CreateWorldSpaceMeshesWithTransforms(gameObjects.Select(x => x.transform).ToArray());
+		    List<Mesh> meshes = CreateWorldSpaceMeshes();
 			bool success = false;
 
-			if(meshes != null && meshes.Length > 0)
+			if(meshes != null && meshes.Count > 0)
 			{
-				if(!string.IsNullOrEmpty(path))
-					success = StlWriter.WriteFile(path, meshes, type);
+				if(!(exportPath == "" || exportPath == null))
+					success = new StlWriter(exportPath, meshes).WriteFile();
 			}
 
-			for(int i = 0; meshes != null && i < meshes.Length; i++)
+			for(int i = 0; meshes != null && i < meshes.Count; i++)
 				Object.DestroyImmediate(meshes[i]);
 
 			return success;
 		}
 
-		/**
-		 * Extracts a list of mesh values with their relative transformations intact.
-		 */
-		private static Mesh[] CreateWorldSpaceMeshesWithTransforms(IList<Transform> transforms)
+		private List<Mesh> CreateWorldSpaceMeshes()
 		{
-			if(transforms == null || transforms.Count < 1)
-				return null;
+		    //Create a clone with no scale, rotation or transform, so that mesh will be
+		    //at original size and position when exported.
+		    GameObject clone = Object.Instantiate(gameObject, Vector3.zero, Quaternion.identity);
+		    clone.name = gameObject.name;
+		    clone.transform.localScale = Vector3.one;
+            
+		    GameObject root = new GameObject();
+		    clone.transform.SetParent(root.transform, true);
 
-			// move root node to center of selection
-			Vector3 p = Vector3.zero;
+		    List<Mesh> meshes = new List<Mesh>();
+            if(exportCollision)
+            {
+                MeshCollider[] meshColliders = root.GetComponentsInChildren<MeshCollider>();
 
-			for(int i = 0; i < transforms.Count; i++)
-				p += transforms[i].position;
-			Vector3 mesh_center = p / (float) transforms.Count;
+                foreach (MeshCollider meshCollider in meshColliders)
+                {
+                    if(meshCollider.sharedMesh != null)
+                        meshes.Add(TransformMeshToWorldSpace(meshCollider.transform, meshCollider.sharedMesh));
+                }
+            }
+            else
+            {
+                MeshFilter[] meshFilters = root.transform.GetComponentsInChildren<MeshFilter>();
 
-			GameObject root = new GameObject();
-			root.name = "ROOT";
-			root.transform.position = mesh_center;
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    if(meshFilter.sharedMesh != null)
+                        meshes.Add(TransformMeshToWorldSpace(meshFilter.transform, meshFilter.sharedMesh));
+                }
+            }
 
-			// copy all transforms to new root gameobject
-			foreach(Transform t in transforms)
-			{
-				GameObject go = (GameObject) GameObject.Instantiate(t.gameObject);
-				go.transform.SetParent(t.parent, false);
-				go.transform.SetParent(root.transform, true);
-			}
-
-			// move root to 0,0,0 so mesh transformations are relative to origin
-			root.transform.position = Vector3.zero;
-
-			// create new meshes by iterating the root node and transforming vertex & normal
-			// values (ignoring all other mesh attributes since STL doesn't care about them)
-			List<MeshFilter> mfs = root.GetComponentsInChildren<MeshFilter>().Where(x => x.sharedMesh != null).ToList();
-			int meshCount = mfs.Count;
-			Mesh[] meshes = new Mesh[meshCount];
-
-			for(int i = 0; i < meshCount; i++)
-			{
-				Transform t = mfs[i].transform;
-
-				Vector3[] v = mfs[i].sharedMesh.vertices;
-				Vector3[] n = mfs[i].sharedMesh.normals;
-
-				for(int it = 0; it < v.Length; it++)
-				{
-					v[it] = t.TransformPoint(v[it]);
-					n[it] = t.TransformDirection(n[it]);
-				}
-
-				Mesh m = new Mesh();
-
-				m.name = mfs[i].name;
-				m.vertices = v;
-				m.normals = n;
-				m.triangles = mfs[i].sharedMesh.triangles;
-
-				meshes[i] = m;
-			}
-
-			// Cleanup
-			GameObject.DestroyImmediate(root);
+            Object.DestroyImmediate(root);
 
 			return meshes;
 		}
+
+        private static Mesh TransformMeshToWorldSpace(Transform meshTransform, Mesh sharedMesh)
+        {
+            Vector3[] v = sharedMesh.vertices;
+            Vector3[] n = sharedMesh.normals;
+
+            for (int it = 0; it < v.Length; it++)
+            {
+                v[it] = meshTransform.TransformPoint(v[it]);
+                n[it] = meshTransform.TransformDirection(n[it]);
+            }
+
+            return new Mesh
+            {
+                name = meshTransform.name,
+                vertices = v,
+                normals = n,
+                triangles = sharedMesh.triangles
+            };
+        }
 	}
 }
