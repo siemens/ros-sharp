@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -40,6 +41,9 @@ namespace RosSharp.Urdf
         //TODO: figure out better default limits. Or how to get info from Unity joint
         public double effortLimit = 50000;
         public double velocityLimit = 10000;
+
+        private const int RoundDigits = 4;
+        private const float Tolerance = 0.0000001f;
 
         public static void Create(GameObject linkObject, string jointName, JointTypes jointType)
         {
@@ -149,7 +153,8 @@ namespace RosSharp.Urdf
                 }
             }
 
-            if (unityJoint != null) unityJoint.connectedBody = gameObject.transform.parent.gameObject.GetComponent<Rigidbody>();
+            if (unityJoint != null)
+                unityJoint.connectedBody = gameObject.transform.parent.gameObject.GetComponent<Rigidbody>();
         }
 
 
@@ -157,10 +162,10 @@ namespace RosSharp.Urdf
 
         private void SetJointData(Joint joint)
         {
-            UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
+            //UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
 
-            unityJoint.autoConfigureConnectedAnchor = false;
-            unityJoint.connectedAnchor = GetConnectedAnchor(joint);
+            //unityJoint.autoConfigureConnectedAnchor = false;
+            //unityJoint.connectedAnchor = GetConnectedAnchor(joint);
 
             if (IsRevoluteOrContinuous)
                 ConfigureRevoluteOrContinuousJoint(joint);
@@ -335,8 +340,8 @@ namespace RosSharp.Urdf
 
                 //linear limit, not angular
                 joint.limit = new Joint.Limit(
-                    -configurableJoint.linearLimit.limit,
-                    configurableJoint.linearLimit.limit,
+                    Math.Round(-configurableJoint.linearLimit.limit, RoundDigits),
+                    Math.Round(configurableJoint.linearLimit.limit, RoundDigits),
                     effortLimit, velocityLimit);
             }
 
@@ -348,7 +353,7 @@ namespace RosSharp.Urdf
 
         private Joint.Limit GetLimitData(float min, float max)
         {
-            return new Joint.Limit(min * Mathf.Deg2Rad, max * Mathf.Deg2Rad, effortLimit, velocityLimit);
+            return new Joint.Limit(Math.Round(min * Mathf.Deg2Rad, RoundDigits), Math.Round(max * Mathf.Deg2Rad, RoundDigits), effortLimit, velocityLimit);
         }
 
         private Joint.Axis GetAxisData(Vector3 axis)
@@ -378,33 +383,51 @@ namespace RosSharp.Urdf
             if (IsRevoluteOrContinuous || IsPrismatic)
             {
                 UnityEngine.Joint joint = GetComponent<UnityEngine.Joint>();
-                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0);
+                return !(Math.Abs(joint.axis.x) < Tolerance && 
+                         Math.Abs(joint.axis.y) < Tolerance && 
+                         Math.Abs(joint.axis.z) < Tolerance);
             }
             if (IsPlanar)
             {
                 ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
-                return !(joint.axis.x == 0 && joint.axis.y == 0 && joint.axis.z == 0)
-                       && !(joint.secondaryAxis.x == 0 && joint.secondaryAxis.y == 0 && joint.secondaryAxis.z == 0);
+                return !(Math.Abs(joint.axis.x) < Tolerance &&
+                         Math.Abs(joint.axis.y) < Tolerance &&
+                         Math.Abs(joint.axis.z) < Tolerance)
+                       && !(Math.Abs(joint.secondaryAxis.x) < Tolerance &&
+                            Math.Abs(joint.secondaryAxis.y) < Tolerance &&
+                            Math.Abs(joint.secondaryAxis.z) < Tolerance);
             }
 
             return true; // axis isn't needed
         }
 
+        private bool IsAnchorTransformed()
+        {
+            UnityEngine.Joint joint = GetComponent<UnityEngine.Joint>();
+
+            return Math.Abs(joint.anchor.x) > Tolerance || 
+                Math.Abs(joint.anchor.x) > Tolerance ||
+                Math.Abs(joint.anchor.x) > Tolerance;
+        }
+
+
         private void CheckForUrdfCompatibility()
         {
             if (!AreLimitsCorrect())
-            {
                 Debug.LogWarning("Limits are not defined correctly for Joint " + JointName + " in Link " + name +
-                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.",
-                    gameObject);
-            }
+                                 ". This may cause problems when visualizing the robot in RVIZ or Gazebo.", 
+                                 gameObject);
             if (!IsJointAxisDefined())
-            {
-                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, and the default axis will be used instead.", gameObject);
-            }
+                Debug.LogWarning("Axis for joint " + JointName + " is undefined. Axis will not be written to URDF, " +
+                                 "and the default axis will be used instead.", 
+                                 gameObject);
+            if(IsAnchorTransformed())
+                Debug.LogWarning("The anchor position defined in the joint connected to " + name + " will be" +
+                                 " ignored in URDF. Instead of modifying anchor, change the position of the link.", 
+                                 gameObject);
         }
 
-#endregion
+        #endregion
 
         #endregion
     }

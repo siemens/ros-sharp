@@ -66,8 +66,8 @@ namespace RosSharp.Urdf
         private void SetKinematic(bool isKinematic)
         {
             Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-            foreach (Rigidbody rigidbody in rigidbodies)
-                rigidbody.isKinematic = isKinematic;
+            foreach (Rigidbody rb in rigidbodies)
+                rb.isKinematic = isKinematic;
         }
 
         public void GenerateUniqueJointNames()
@@ -76,40 +76,30 @@ namespace RosSharp.Urdf
                 urdfJoint.GenerateUniqueJointName();
         }
 
-        public void ExportRobotToUrdf(string packageRootFolder)
+        public void ExportRobotToUrdf(string exportRootFolder, string exportDestination)
         {
-            UrdfAssetPathHandler.SetPackageRoot(packageRootFolder);
-            
-            string exportDestination = EditorUtility.OpenFolderPanel(
-                "Select export destination for robot asset files (such as meshes, images, etc)",
-                UrdfAssetPathHandler.GetPackageRoot(),
-                "");
+            UrdfExportPathHandler.SetExportRoot(exportRootFolder);
 
-            UrdfAssetPathHandler.SetExportDestination(exportDestination);
+            if (!UrdfExportPathHandler.SetExportDestination(exportDestination))
+                return;
 
             filePath = Path.Combine(exportDestination, name + ".urdf");
             filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-
-            if (!exportDestination.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Contains(UrdfAssetPathHandler.GetPackageRoot()))
-            {
-                Debug.LogWarning("Export destination folder must be a subfolder of the robot export location. Aborting URDF export.");
-                return;
-            }
-
+    
             Robot robot = GetRobotData();
+
             if (robot == null) return;
             StartCoroutine(WriteToUrdf(robot));
         }
 
-        private IEnumerator WriteToUrdf(Robot robot) 
+        private static IEnumerator WriteToUrdf(Robot robot) 
         {
             robot.WriteToUrdf();
+            Debug.Log(robot.name + " was exported to " + UrdfExportPathHandler.GetExportDestination());
 
             UrdfMaterial.materials.Clear();
-            UrdfAssetPathHandler.Clear();
+            UrdfExportPathHandler.Clear();
 
-            Debug.Log(robot.name + " was exported to " + UrdfAssetPathHandler.GetRelativeAssetPath(filePath));
             yield return null;
         }
 

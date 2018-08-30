@@ -38,7 +38,7 @@ namespace RosSharp.Urdf
             {
                 if (material.mainTexture != null)
                 {
-                    Link.Visual.Material.Texture texture = GetTexture(material.mainTexture);
+                    Link.Visual.Material.Texture texture = GetTextureData(material.mainTexture);
                     materials[material.name] = new Link.Visual.Material(material.name, null, texture);
                 }
                 else if (!material.color.Equals(Color.clear))
@@ -64,14 +64,13 @@ namespace RosSharp.Urdf
             };
         }
 
-        private static Link.Visual.Material.Texture GetTexture(Texture texture)
+        private static Link.Visual.Material.Texture GetTextureData(Texture texture)
         {
             string oldTexturePath = AssetDatabase.GetAssetPath(texture);
-            string newTexturePath = UrdfAssetPathHandler.GetNewResourcePath(Path.GetFileName(oldTexturePath));
-            string packagePath = UrdfAssetPathHandler.GetPackagePathForResource(newTexturePath);
-
+            string newTexturePath = UrdfExportPathHandler.GetNewResourcePath(Path.GetFileName(oldTexturePath));
             AssetDatabase.CopyAsset(oldTexturePath, newTexturePath);
 
+            string packagePath = UrdfExportPathHandler.GetPackagePathForResource(newTexturePath);
             return new Link.Visual.Material.Texture(packagePath);
         }
     }

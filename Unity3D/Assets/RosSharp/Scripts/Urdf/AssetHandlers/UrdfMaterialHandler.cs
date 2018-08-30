@@ -37,6 +37,7 @@ namespace RosSharp.Urdf
 
         public static void MoveMaterialsToNewLocation(string oldPackageRoot) 
         {
+            //TODO: fix issue where moving materials causes texture references to be lost
             if (AssetDatabase.IsValidFolder(Path.Combine(oldPackageRoot, materialFolderName)))
                 AssetDatabase.MoveAsset(
                     Path.Combine(oldPackageRoot, materialFolderName),

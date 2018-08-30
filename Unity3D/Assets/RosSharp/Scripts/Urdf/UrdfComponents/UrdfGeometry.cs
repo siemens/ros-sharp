@@ -100,33 +100,33 @@ namespace RosSharp.Urdf
                 newFilePath = CreateNewStlFile(geometryObject, isCollisionGeometry);
             }
 
-            string packagePath = UrdfAssetPathHandler.GetPackagePathForMesh(newFilePath);
+            string packagePath = UrdfExportPathHandler.GetPackagePathForMesh(newFilePath);
 
             return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, urdfSize));
         }
 
         private static string CopyAssetToExportDestination(string prefabPath)
         {
-            string newPrefabPath = UrdfAssetPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
+            string newPrefabPath = UrdfExportPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
 
-            prefabPath = prefabPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            prefabPath = UrdfAssetPathHandler.GetFullAssetPath(prefabPath).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             newPrefabPath = newPrefabPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             
             if(prefabPath != newPrefabPath) //Don't move prefab if it's already in the right place
-                AssetDatabase.CopyAsset(prefabPath, newPrefabPath);
+                File.Copy(prefabPath, newPrefabPath, true);
 
             return newPrefabPath;
         }
 
         private static string CreateNewStlFile(GameObject geometryObject, bool isCollisionGeometry)
         {
-            string relativeMeshPath = UrdfAssetPathHandler.GetNewMeshPath(geometryObject.name + ".stl");
+            string newMeshPath = UrdfExportPathHandler.GetNewMeshPath(geometryObject.name + ".stl");
 
-            StlExporter stlExporter = new StlExporter(UrdfAssetPathHandler.GetFullAssetPath(relativeMeshPath), geometryObject, isCollisionGeometry);
+            StlExporter stlExporter = new StlExporter(newMeshPath, geometryObject, isCollisionGeometry);
             if (!stlExporter.Export())
                 Debug.LogWarning("Mesh export for geometry " + geometryObject.name + " failed.", geometryObject);
             
-            return relativeMeshPath;
+            return newMeshPath;
         }
 
         #endregion

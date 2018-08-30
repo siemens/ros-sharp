@@ -18,7 +18,7 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Export
 {
     [CustomEditor(typeof(UrdfRobot))]
     public class UrdfRobotEditor : Editor
@@ -31,29 +31,13 @@ namespace RosSharp.Urdf
 
             GUILayout.Space(5);
 
-            if (GUILayout.Button("Generate unique joint names"))
-            {
-                urdfRobot.GenerateUniqueJointNames();
-            }
-
-            GUILayout.Space(10);
-
-            StlWriter.fileType = (StlWriter.FileType) EditorGUILayout.EnumPopup("Export new meshes to", StlWriter.fileType);
-            
             if (GUILayout.Button("Export robot to URDF file"))
             {
-                string robotAssetFolder = EditorUtility.OpenFolderPanel(
-                    "Select package root of exported robot",
-                    Application.dataPath,
-                    "");
-                
-                if (UrdfAssetPathHandler.GetRelativeAssetPath(robotAssetFolder) == null)
-                {
-                    Debug.LogWarning("You must select a folder within the Assets folder. Aborting URDF export.");
-                    return;
-                }
-
-                urdfRobot.ExportRobotToUrdf(robotAssetFolder);
+                // Get existing open window or if none, make a new one:
+                UrdfExportEditorWindow window = (UrdfExportEditorWindow)EditorWindow.GetWindow(typeof(UrdfExportEditorWindow));
+                window.urdfRobot = urdfRobot;
+                window.minSize = new Vector2(500, 275);
+                window.Show();
             }
         }
     }

@@ -49,6 +49,8 @@ namespace RosSharp.Urdf
                 collisionObject.transform.localScale = visualToCopy.localScale;
                 collisionObject.transform.rotation = visualToCopy.rotation;
             }
+            else
+                UrdfGeometryCollision.Create(collisionObject.transform, type);
              
             EditorGUIUtility.PingObject(collisionObject);
         }
