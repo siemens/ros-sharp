@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.IO;
-using UnityEngine;
 
 namespace RosSharp.Urdf
 {
@@ -24,66 +23,55 @@ namespace RosSharp.Urdf
         //absolute path to export folder
         private static string exportRoot;
         //Relative to export root folder
-        private static string exportDestination;
+        private static string subfolder;
 
         private const string MeshFolderName = "meshes";
         private const string ResourceFolderName = "resources";
 
-        public static void SetExportRoot(string newPath)
+        public static void SetExportPath(string root, string subRoot = "")
         {
-            exportRoot = newPath;
-        }
+            exportRoot = root;
+            subfolder = subRoot;
 
-        public static bool SetExportDestination(string newDestination)
-        {
-            if (newDestination.Contains(exportRoot))
-            {
-                exportDestination = (newDestination == exportRoot ? "" : newDestination.Substring(exportRoot.Length + 1));
-
-                Directory.CreateDirectory(Path.Combine(GetExportDestination(), MeshFolderName));
-                Directory.CreateDirectory(Path.Combine(GetExportDestination(), ResourceFolderName));
-                return true;
-            }
-
-            Debug.LogWarning("Export destination must be the same as the root folder or a subfolder of it.");
-            exportDestination = "";
-            return false;
-        }
-
-        public static string GetExportDestination()
-        {
-            return exportDestination == null ? exportRoot : Path.Combine(exportRoot, exportDestination);
+            Directory.CreateDirectory(GetExportDestination());
+            Directory.CreateDirectory(Path.Combine(GetExportDestination(), MeshFolderName));
+            Directory.CreateDirectory(Path.Combine(GetExportDestination(), ResourceFolderName));
         }
 
         #region GetExportPaths
+        public static string GetExportDestination()
+        {
+            return subfolder == null ? exportRoot : Path.Combine(exportRoot, subfolder);
+        }
+        
         //Returns an absolute path to the export destination for the mesh
         //meshFileName includes the file extension
         public static string GetNewMeshPath(string meshFileName)
         {
-            return Path.Combine(exportRoot, exportDestination, MeshFolderName, meshFileName);
+            return Path.Combine(exportRoot, subfolder, MeshFolderName, meshFileName);
         }
 
         //Returns an absolute path to the new resource
         public static string GetNewResourcePath(string resourceFileName)
         {
-            return Path.Combine(exportRoot, exportDestination, ResourceFolderName, resourceFileName);
+            return Path.Combine(exportRoot, subfolder, ResourceFolderName, resourceFileName);
         }
 
         public static string GetPackagePathForMesh(string meshPath)
         {
-            return Path.Combine("package://", exportDestination, MeshFolderName, Path.GetFileName(meshPath)).Replace("\\", "/");
+            return Path.Combine("package://", subfolder, MeshFolderName, Path.GetFileName(meshPath)).Replace("\\", "/");
         }
 
         public static string GetPackagePathForResource(string resourcePath)
         {
-            return Path.Combine("package://", exportDestination, ResourceFolderName, Path.GetFileName(resourcePath)).Replace("\\", "/");
+            return Path.Combine("package://", subfolder, ResourceFolderName, Path.GetFileName(resourcePath)).Replace("\\", "/");
         }
         #endregion
 
         public static void Clear()
         {
             exportRoot = "";
-            exportDestination = "";
+            subfolder = "";
         }
     }
 

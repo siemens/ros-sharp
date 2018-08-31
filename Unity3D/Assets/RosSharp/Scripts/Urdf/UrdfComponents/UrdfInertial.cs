@@ -49,13 +49,13 @@ namespace RosSharp.Urdf
 
                 urdfInertial.SetInertiaData(inertial.inertia);
 
-                //Save original rigidbody data from URDF
-                urdfInertial.CenterOfMass = urdfInertial._rigidbody.centerOfMass;
-                urdfInertial.InertiaTensor = urdfInertial._rigidbody.inertiaTensor;
-                urdfInertial.InertiaTensorRotation = urdfInertial._rigidbody.inertiaTensorRotation;
-
                 urdfInertial.UseUrdfData = true;
             }
+
+            //Save original rigidbody data from URDF
+            urdfInertial.CenterOfMass = urdfInertial._rigidbody.centerOfMass;
+            urdfInertial.InertiaTensor = urdfInertial._rigidbody.inertiaTensor;
+            urdfInertial.InertiaTensorRotation = urdfInertial._rigidbody.inertiaTensorRotation;
         }
 
         #region ManageRigidbodyData

@@ -25,10 +25,11 @@ namespace RosSharp.Urdf.Export
     {
         public UrdfRobot urdfRobot;
         public string exportRoot = "";
-        public string exportDestination = "";
-        public bool useExportDestination;
-        public bool generateJointNames;
+        public string subfolder = "";
+        public int selectedSubfolder;
 
+        private static string[] subfolderOptions = { "Export URDF to root folder", "Export URDF to the following subfolder:" };
+        
         private void OnGUI()
         {
             //Styles definitions
@@ -37,73 +38,99 @@ namespace RosSharp.Urdf.Export
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 13
             };
-            GUIStyle popupStyle = new GUIStyle(EditorStyles.popup) { fixedWidth = 100 };
-            GUIStyle buttonStyle = new GUIStyle(EditorStyles.miniButtonRight){ fixedWidth = 100};
+            GUIStyle buttonStyle = new GUIStyle(EditorStyles.miniButtonRight) {fixedWidth = 75};
 
             //Window title
             GUILayout.Space(10);
-            GUILayout.Label("Export " + urdfRobot.gameObject.name + "to URDF", titleStyle);
+            GUILayout.Label("Export " + urdfRobot.gameObject.name + " to URDF", titleStyle);
 
             //Select export root folder
             GUILayout.Space(5);
             EditorGUILayout.BeginHorizontal("HelpBox");
-            exportRoot = EditorGUILayout.TextField("Export root folder", exportRoot); 
-            if (GUILayout.Button("Select folder", buttonStyle))
+            exportRoot = EditorGUILayout.TextField(
+                new GUIContent("Export root folder", "Corresponds to ROS package root folder."),
+                exportRoot);
+            if (GUILayout.Button("Select", buttonStyle))
             {
-                exportRoot = EditorUtility.OpenFolderPanel("Select package root of exported robot", exportRoot, "");
+                exportRoot = EditorUtility.OpenFolderPanel("Select export root folder", exportRoot, "");
             }
+
             EditorGUILayout.EndHorizontal();
 
-            //Select export destination folder
-            GUILayout.Space(10);
-            useExportDestination = GUILayout.Toggle(useExportDestination, " Different export destination");
-            EditorGUILayout.HelpBox("Enable this option in order to select a subfolder of the export root folder" +
-                                    " where all robot assets will be exported. In the URDF, the package path for resources " +
-                                    "like meshes and textures will be relative to the export root folder.", MessageType.Info);
-            if (useExportDestination)
+            //Select subfolder
+            GUILayout.Space(5);
+            selectedSubfolder =
+                GUILayout.SelectionGrid(selectedSubfolder, subfolderOptions, 1, EditorStyles.radioButton);
+
+            EditorGUI.BeginDisabledGroup(selectedSubfolder != 1);
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(30);
+            EditorGUILayout.BeginHorizontal("HelpBox");
+            subfolder = EditorGUILayout.TextField(
+                new GUIContent("Subfolder", "Corresponds to URDF subfolder in ROS package."),
+                subfolder);
+            if (GUILayout.Button("Select", buttonStyle))
             {
-                EditorGUILayout.BeginHorizontal("HelpBox");
-                exportDestination = EditorGUILayout.TextField("Export destination", exportDestination);
-                if (GUILayout.Button("Select folder", buttonStyle))
-                {
-                    exportDestination = EditorUtility.OpenFolderPanel(
-                        "Select export destination for robot asset files (such as meshes, images, etc)",
-                        exportRoot,
-                        "");
-                }
-                EditorGUILayout.EndHorizontal();
+                string subfolderPath = EditorUtility.OpenFolderPanel(
+                    "Select export destination for robot asset files (such as meshes, images, etc)",
+                    exportRoot,
+                    "");
+
+                subfolder = subfolderPath.Contains(exportRoot) ? subfolderPath.Substring(exportRoot.Length) : "";
             }
 
-            //Choose whether to generate joint names
-            GUILayout.Space(10);
-            generateJointNames = GUILayout.Toggle(generateJointNames, " Generate unique joint names");
-            if (generateJointNames)
-                EditorGUILayout.HelpBox("This will overwrite all user defined joint names with automatically generated joint " +
-                                        "names, derived from the parent and child links.", MessageType.Info);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.EndDisabledGroup();
 
             //Choose STL export type
-            GUILayout.Space(5);
-            StlWriter.fileType = (StlWriter.FileType)EditorGUILayout.EnumPopup("Export new meshes to", StlWriter.fileType, popupStyle);
+            GUILayout.Space(10);
+            EditorGUILayout.BeginHorizontal();
+            StlWriter.fileType =
+                (StlWriter.FileType) EditorGUILayout.EnumPopup("Export new meshes to", StlWriter.fileType);
+            EditorGUILayout.LabelField("   STL files");
+            EditorGUILayout.EndHorizontal();
 
             //Export Robot button
             GUILayout.Space(10);
             if (GUILayout.Button("Export Robot"))
             {
-                if (generateJointNames)
-                    urdfRobot.GenerateUniqueJointNames();
-
                 if (exportRoot == "" || !Directory.Exists(exportRoot))
-                    EditorUtility.DisplayDialog("Export Error", "Export root folder must be defined and folder must exist.", "Ok");
+                    EditorUtility.DisplayDialog("Export Error",
+                        "Export root folder must be defined and folder must exist.", "Ok");
                 else
                 {
-                    if (!useExportDestination)
-                        exportDestination = exportRoot;
+                    if (selectedSubfolder == 0)
+                        subfolder = "";
+                    else
+                        subfolder = subfolder.TrimStart(Path.DirectorySeparatorChar)
+                            .TrimStart(Path.AltDirectorySeparatorChar);
 
-                    urdfRobot.ExportRobotToUrdf(exportRoot, exportDestination);
-
+                    urdfRobot.ExportRobotToUrdf(exportRoot, subfolder);
+                    SetEditorPrefs();
                     Close();
                 }
             }
+        }
+
+        public void GetEditorPrefs()
+        {
+            exportRoot = EditorPrefs.HasKey("UrdfExportRoot") ?
+                EditorPrefs.GetString("UrdfExportRoot") : "";
+            
+            subfolder = EditorPrefs.HasKey("UrdfExportSubfolder") ?
+                EditorPrefs.GetString("UrdfExportSubfolder") : "";
+            
+            selectedSubfolder = EditorPrefs.HasKey("UrdfExportSubfolderOption") ?
+                EditorPrefs.GetInt("UrdfExportSubfolderOption") : 0;
+        }
+        private void SetEditorPrefs()
+        {
+            EditorPrefs.SetString("UrdfExportRoot", exportRoot);
+            EditorPrefs.SetString("UrdfExportSubfolder", subfolder);
+            EditorPrefs.SetInt("UrdfExportSubfolderOption", selectedSubfolder);
         }
     }
 }

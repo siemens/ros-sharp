@@ -36,7 +36,8 @@ namespace RosSharp.Urdf.Export
                 // Get existing open window or if none, make a new one:
                 UrdfExportEditorWindow window = (UrdfExportEditorWindow)EditorWindow.GetWindow(typeof(UrdfExportEditorWindow));
                 window.urdfRobot = urdfRobot;
-                window.minSize = new Vector2(500, 275);
+                window.minSize = new Vector2(500, 200);
+                window.GetEditorPrefs();
                 window.Show();
             }
         }

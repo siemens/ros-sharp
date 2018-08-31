@@ -26,10 +26,11 @@ namespace RosSharp.Urdf
         {
             UrdfInertial urdfInertial = (UrdfInertial)target;
 
-            bool newValue = EditorGUILayout.Toggle("Use URDF Data", urdfInertial.UseUrdfData);
+            bool newValue = EditorGUILayout.BeginToggleGroup("Use URDF Data", urdfInertial.UseUrdfData);
             EditorGUILayout.Vector3Field("URDF Center of Mass", urdfInertial.CenterOfMass);
             EditorGUILayout.Vector3Field("URDF Inertia Tensor", urdfInertial.InertiaTensor);
             EditorGUILayout.Vector3Field("URDF Inertia Tensor Rotation", urdfInertial.InertiaTensorRotation.eulerAngles);
+            EditorGUILayout.EndToggleGroup();
 
             if (newValue != urdfInertial.UseUrdfData)
             {

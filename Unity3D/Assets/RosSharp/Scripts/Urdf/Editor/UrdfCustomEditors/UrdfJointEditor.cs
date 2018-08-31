@@ -24,6 +24,7 @@ namespace RosSharp.Urdf.Export
     public class UrdfJointEditor : Editor
     {
         private UrdfJoint urdfJoint;
+        private bool showDetails;
 
         public override void OnInspectorGUI()
         {
@@ -31,13 +32,11 @@ namespace RosSharp.Urdf.Export
 
             GUILayout.Space(5);
 
-            urdfJoint.JointName = EditorGUILayout.TextField("Joint Name", urdfJoint.JointName);
             UrdfJoint.JointTypes newJointType = urdfJoint.JointType;
 
             EditorGUILayout.BeginVertical("HelpBox");
             newJointType = (UrdfJoint.JointTypes)EditorGUILayout.EnumPopup(
                 "Type of joint", newJointType);
-
             if (newJointType != urdfJoint.JointType)
             {
                 if (EditorUtility.DisplayDialog("Confirm joint type change",
@@ -49,39 +48,42 @@ namespace RosSharp.Urdf.Export
             }
             EditorGUILayout.EndVertical();
 
-            if(urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
-                GUILayout.BeginVertical("HelpBox");
-
-            switch (urdfJoint.JointType)
+            showDetails = EditorGUILayout.Foldout(showDetails, "Joint Configuration Hints", true);
+            if (showDetails)
             {
-                case UrdfJoint.JointTypes.Fixed:
-                    break;
-                case UrdfJoint.JointTypes.Continuous:
-                    DisplayDynamicsMessage("HingeJoint > Spring > Damper (for damping) and Spring (for friction)");
-                    DisplayAxisMessage("HingeJoint > Axis");
-                    break;
-                case UrdfJoint.JointTypes.Revolute:
-                    DisplayDynamicsMessage("HingeJoint > Spring > Damper (for damping) and Spring (for friction)");
-                    DisplayAxisMessage("HingeJoint > Axis");
-                    DisplayRequiredLimitMessage("HingeJoint > Limits > Min / Max");
-                    break;
-                case UrdfJoint.JointTypes.Floating:
-                    DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
-                    break;
-                case UrdfJoint.JointTypes.Prismatic:
-                    DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
-                    DisplayAxisMessage("ConfigurableJoint > Axis");
-                    DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
-                    break;
-                case UrdfJoint.JointTypes.Planar:
-                    DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
-                    DisplayAxisMessage("ConfigurableJoint > Axis and Secondary Axis");
-                    DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
-                    break;
-            }
+                if(urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                    GUILayout.BeginVertical("HelpBox");
+                switch (urdfJoint.JointType)
+                {
+                    case UrdfJoint.JointTypes.Fixed:
+                        break;
+                    case UrdfJoint.JointTypes.Continuous:
+                        DisplayDynamicsMessage("HingeJoint > Spring > Damper (for damping) and Spring (for friction)");
+                        DisplayAxisMessage("HingeJoint > Axis");
+                        break;
+                    case UrdfJoint.JointTypes.Revolute:
+                        DisplayDynamicsMessage("HingeJoint > Spring > Damper (for damping) and Spring (for friction)");
+                        DisplayAxisMessage("HingeJoint > Axis");
+                        DisplayRequiredLimitMessage("HingeJoint > Limits > Min / Max");
+                        break;
+                    case UrdfJoint.JointTypes.Floating:
+                        DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
+                        break;
+                    case UrdfJoint.JointTypes.Prismatic:
+                        DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
+                        DisplayAxisMessage("ConfigurableJoint > Axis");
+                        DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
+                        break;
+                    case UrdfJoint.JointTypes.Planar:
+                        DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
+                        DisplayAxisMessage("ConfigurableJoint > Axis and Secondary Axis");
+                        DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
+                        break;
+                }
 
-            if (urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
-                GUILayout.EndVertical();
+                if (urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                    GUILayout.EndVertical();
+            }
         }
 
         private void DisplayDynamicsMessage(string dynamicsLocation)

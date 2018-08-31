@@ -70,7 +70,7 @@ namespace RosSharp.Urdf
                 rb.isKinematic = isKinematic;
         }
 
-        public void GenerateUniqueJointNames()
+        private void GenerateUniqueJointNames()
         {
             foreach (UrdfJoint urdfJoint in GetComponentsInChildren<UrdfJoint>())
                 urdfJoint.GenerateUniqueJointName();
@@ -78,29 +78,25 @@ namespace RosSharp.Urdf
 
         public void ExportRobotToUrdf(string exportRootFolder, string exportDestination)
         {
-            UrdfExportPathHandler.SetExportRoot(exportRootFolder);
+            UrdfExportPathHandler.SetExportPath(exportRootFolder, exportDestination);
+            GenerateUniqueJointNames();
 
-            if (!UrdfExportPathHandler.SetExportDestination(exportDestination))
-                return;
-
-            filePath = Path.Combine(exportDestination, name + ".urdf");
+            filePath = Path.Combine(UrdfExportPathHandler.GetExportDestination(), name + ".urdf");
             filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
     
             Robot robot = GetRobotData();
-
             if (robot == null) return;
-            StartCoroutine(WriteToUrdf(robot));
+
+            WriteToUrdf(robot);
         }
 
-        private static IEnumerator WriteToUrdf(Robot robot) 
+        private void WriteToUrdf(Robot robot) 
         {
             robot.WriteToUrdf();
             Debug.Log(robot.name + " was exported to " + UrdfExportPathHandler.GetExportDestination());
 
             UrdfMaterial.materials.Clear();
             UrdfExportPathHandler.Clear();
-
-            yield return null;
         }
 
         private Robot GetRobotData()
