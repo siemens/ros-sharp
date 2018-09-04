@@ -16,6 +16,9 @@ limitations under the License.
 // Adjustments to new Publication Timing and Execution Framework
 // © Siemens AG, 2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
+// Adding assignedObject.
+// © University of Bremen, 2018, Sebastian Höffner (shoeffner@tzi.de)
+
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -26,6 +29,7 @@ namespace RosSharp.RosBridgeClient
         private Vector3 linearVelocity;
         private Vector3 angularVelocity;
         private bool isMessageReceived;
+        public GameObject assignedObject;
 
 		protected override void Start()
 		{
@@ -53,14 +57,14 @@ namespace RosSharp.RosBridgeClient
         {
             float deltaTime = Time.realtimeSinceStartup-previousRealTime;
 
-            transform.Translate(linearVelocity * deltaTime);
-            transform.Rotate(Vector3.forward, angularVelocity.x * deltaTime);
-            transform.Rotate(Vector3.up, angularVelocity.y * deltaTime);
-            transform.Rotate(Vector3.left, angularVelocity.z * deltaTime);
+            assignedObject.transform.Translate(linearVelocity * deltaTime);
+            assignedObject.transform.Rotate(Vector3.forward, angularVelocity.x * deltaTime);
+            assignedObject.transform.Rotate(Vector3.up, angularVelocity.y * deltaTime);
+            assignedObject.transform.Rotate(Vector3.left, angularVelocity.z * deltaTime);
 
             previousRealTime = Time.realtimeSinceStartup;
 
             isMessageReceived = false;
-        }     
+        }
     }
 }
