@@ -72,7 +72,7 @@ namespace RosSharp.Urdf
             {
                 visuals = gameObject.GetComponentInChildren<UrdfVisuals>().GetVisualsData(),
                 collisions = gameObject.GetComponentInChildren<UrdfCollisions>().GetCollisionsData(),
-                inertial = UrdfInertial.GetInertialData(GetComponent<Rigidbody>())
+                inertial = gameObject.GetComponent<UrdfInertial>().GetInertialData()
             };
             
             return link;

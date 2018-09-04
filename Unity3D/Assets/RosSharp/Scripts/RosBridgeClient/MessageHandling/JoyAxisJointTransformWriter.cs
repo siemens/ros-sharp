@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient
     public class JoyAxisJointTransformWriter : JoyAxisWriter
     {
         public float StepLength;
-        public bool DoApplyUnityJointLimits;
+        public bool ApplyUnityJointLimits;
 
         private Joint joint;
         private JointStateWriter jointStateWriter;
@@ -58,13 +58,15 @@ namespace RosSharp.RosBridgeClient
         {
             state = (state >= limit.x) ? state : limit.x;
             state = (state <= limit.y) ? state : limit.y;
-
         }
 
         public override void Write(float value)
         {
+            //TODO: fix this calculation so that state is the actual position of
+            //the joint, not the delta movement.
             state = value * StepLength;
-            if (DoApplyUnityJointLimits)
+
+            if (ApplyUnityJointLimits)
                 ApplyLimits();
 
             jointStateWriter.Write(state);

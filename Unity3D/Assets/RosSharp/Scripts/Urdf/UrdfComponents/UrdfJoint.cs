@@ -95,7 +95,8 @@ namespace RosSharp.Urdf
         {
             JointType = newJointType;
             
-            transform.DestroyImmediateIfExists<JointLimitsManager>();
+            transform.DestroyImmediateIfExists<HingeJointLimitsManager>();
+            transform.DestroyImmediateIfExists<PrismaticJointLimitsManager>();
             transform.DestroyImmediateIfExists<UnityEngine.Joint>();
 
             AddCorrectJointType();
@@ -122,7 +123,7 @@ namespace RosSharp.Urdf
                 if (JointType == JointTypes.Revolute)
                 {
                     ((HingeJoint)unityJoint).useLimits = true;
-                    gameObject.AddComponent<JointLimitsManager>();
+                    gameObject.AddComponent<HingeJointLimitsManager>();
                 }
             }
             else
@@ -140,6 +141,8 @@ namespace RosSharp.Urdf
                     cJoint.angularXMotion = ConfigurableJointMotion.Locked;
                     cJoint.angularYMotion = ConfigurableJointMotion.Locked;
                     cJoint.angularZMotion = ConfigurableJointMotion.Locked;
+
+                    gameObject.AddComponent<PrismaticJointLimitsManager>();
                 }
                 else if (IsPlanar)
                 {
@@ -162,11 +165,6 @@ namespace RosSharp.Urdf
 
         private void SetJointData(Joint joint)
         {
-            //UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
-
-            //unityJoint.autoConfigureConnectedAnchor = false;
-            //unityJoint.connectedAnchor = GetConnectedAnchor(joint);
-
             if (IsRevoluteOrContinuous)
                 ConfigureRevoluteOrContinuousJoint(joint);
             else if (IsPrismatic)
@@ -183,19 +181,10 @@ namespace RosSharp.Urdf
             if (joint.dynamics != null)
                 hingeJoint.spring = GetJointSpring(joint.dynamics);
 
-            if (joint.type == "revolute" && joint.limit != null)
+            if (JointType == JointTypes.Revolute && joint.limit != null)
             {
-                hingeJoint.limits = GetJointLimits(joint.limit);
-
-                // large joint limits:
-                //TODO: Test that this works
-                if (hingeJoint.limits.min < -180 || hingeJoint.limits.max > 180)
-                {
-                    JointLimitsManager jointLimitsManager = GetComponent<JointLimitsManager>();
-                    jointLimitsManager.InitializeLimits(hingeJoint.limits);
-                }
-                else
-                    hingeJoint.useLimits = true;
+                HingeJointLimitsManager hingeJointLimitsManager = GetComponent<HingeJointLimitsManager>();
+                hingeJointLimitsManager.InitializeLimits(joint.limit, hingeJoint);
             }
         }
 
@@ -209,8 +198,8 @@ namespace RosSharp.Urdf
 
             if (joint.limit != null)
             {
-                prismaticJoint.linearLimit = GetLinearLimit(joint.limit);
-                //Todo: use lower limit as well? GetLinearLimit only uses upper.
+                PrismaticJointLimitsManager prismaticLimits = GetComponent<PrismaticJointLimitsManager>();
+                prismaticLimits.InitializeLimits(joint.limit);
             }
         }
 
@@ -318,42 +307,59 @@ namespace RosSharp.Urdf
                 joint.axis = GetAxisData(Vector3.Cross(cJoint.axis, cJoint.secondaryAxis));
             }
             else if (JointType != JointTypes.Fixed)
-            {
                 joint.axis = GetAxisData(unityJoint.axis);
-            }
 
             //HingeJoint data
             if (IsRevoluteOrContinuous)
             {
                 HingeJoint hingeJoint = (HingeJoint)unityJoint;
-
                 joint.dynamics = new Joint.Dynamics(hingeJoint.spring.damper, hingeJoint.spring.spring);
-
-                if (JointType == JointTypes.Revolute)
-                    joint.limit = GetLimitData(hingeJoint.limits.min, hingeJoint.limits.max);
+                
             }
             //ConfigurableJoint data
             else if (IsPrismatic || IsPlanar)
             {
                 ConfigurableJoint configurableJoint = GetComponent<ConfigurableJoint>();
                 joint.dynamics = new Joint.Dynamics(configurableJoint.xDrive.positionDamper, configurableJoint.xDrive.positionSpring);
-
-                //linear limit, not angular
-                joint.limit = new Joint.Limit(
-                    Math.Round(-configurableJoint.linearLimit.limit, RoundDigits),
-                    Math.Round(configurableJoint.linearLimit.limit, RoundDigits),
-                    effortLimit, velocityLimit);
             }
 
-            //TODO: Get Floating and Planar joints working
+            joint.limit = GetLimitData();
+            
             return joint;
         }
 
         #region ExportHelpers
 
-        private Joint.Limit GetLimitData(float min, float max)
+        private Joint.Limit GetLimitData()
         {
-            return new Joint.Limit(Math.Round(min * Mathf.Deg2Rad, RoundDigits), Math.Round(max * Mathf.Deg2Rad, RoundDigits), effortLimit, velocityLimit);
+            if (IsPrismatic)
+            {
+                PrismaticJointLimitsManager prismaticLimits = GetComponent<PrismaticJointLimitsManager>();
+                return new Joint.Limit(
+                    Math.Round(prismaticLimits.PositionLimitMin, RoundDigits),
+                    Math.Round(prismaticLimits.PositionLimitMax, RoundDigits),
+                    effortLimit,
+                    velocityLimit);
+            }
+            if (JointType == JointTypes.Revolute)
+            {
+                HingeJointLimitsManager hingeJointLimits = GetComponent<HingeJointLimitsManager>();
+                return new Joint.Limit(
+                    Math.Round(hingeJointLimits.LargeAngleLimitMin * Mathf.Deg2Rad, RoundDigits), 
+                    Math.Round(hingeJointLimits.LargeAngleLimitMax * Mathf.Deg2Rad, RoundDigits), 
+                    effortLimit, 
+                    velocityLimit);
+            }
+            if (IsPlanar)
+            {
+                ConfigurableJoint configurableJoint = GetComponent<ConfigurableJoint>();
+                return new Joint.Limit(
+                    Math.Round(-configurableJoint.linearLimit.limit, RoundDigits),
+                    Math.Round(configurableJoint.linearLimit.limit, RoundDigits),
+                    effortLimit, velocityLimit);
+            }
+
+            return null;
         }
 
         private Joint.Axis GetAxisData(Vector3 axis)

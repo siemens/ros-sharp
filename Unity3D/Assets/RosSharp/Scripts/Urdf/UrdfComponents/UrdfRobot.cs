@@ -88,6 +88,8 @@ namespace RosSharp.Urdf
             if (robot == null) return;
 
             WriteToUrdf(robot);
+
+            AssetDatabase.Refresh();
         }
 
         private void WriteToUrdf(Robot robot) 

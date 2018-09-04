@@ -30,6 +30,7 @@ namespace RosSharp.RosBridgeClient
         private void Start()
         {
             _hingeJoint = GetComponent<HingeJoint>();
+            _hingeJoint.useMotor = true;
         }
 
         private void Update()

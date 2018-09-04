@@ -18,7 +18,7 @@ using UnityEditor;
 namespace RosSharp.Urdf
 {
     
-    [CustomEditor(typeof(JointLimitsManager))]
+    [CustomEditor(typeof(HingeJointLimitsManager))]
     public class JointLimitsManagerEditor : Editor
     {
         private const float toleranceThreshold = 10;
@@ -27,28 +27,28 @@ namespace RosSharp.Urdf
         {
             base.OnInspectorGUI();
 
-            JointLimitsManager jointLimitsManager = (JointLimitsManager)target;
+            HingeJointLimitsManager hingeJointLimitsManager = (HingeJointLimitsManager)target;
             //if (EditorGUILayout.Foldout(true, "Angles"))
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Actual Angle:", jointLimitsManager.AngleActual.ToString());
-            EditorGUILayout.LabelField("Actual Rotation No.:", jointLimitsManager.RotationNumberActual.ToString());
+            EditorGUILayout.LabelField("Actual Angle:", hingeJointLimitsManager.AngleActual.ToString());
+            EditorGUILayout.LabelField("Actual Rotation No.:", hingeJointLimitsManager.RotationNumberActual.ToString());
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Min Angle:", jointLimitsManager.AngleLimitMin.ToString());
-            EditorGUILayout.LabelField("Min. No. of Rotations:", jointLimitsManager.RotationLimitMin.ToString());
+            EditorGUILayout.LabelField("Min Angle:", hingeJointLimitsManager.AngleLimitMin.ToString());
+            EditorGUILayout.LabelField("Min. No. of Rotations:", hingeJointLimitsManager.RotationNumberMin.ToString());
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Max Angle:", jointLimitsManager.AngleLimitMax.ToString());
-            EditorGUILayout.LabelField("Max. No. of Rotations:", jointLimitsManager.RotationLimitMax.ToString());
+            EditorGUILayout.LabelField("Max Angle:", hingeJointLimitsManager.AngleLimitMax.ToString());
+            EditorGUILayout.LabelField("Max. No. of Rotations:", hingeJointLimitsManager.RotationNumberMax.ToString());
             EditorGUILayout.EndHorizontal();
 
-            if (180 - jointLimitsManager.AngleLimitMin < toleranceThreshold)
+            if (180 - hingeJointLimitsManager.AngleLimitMin < toleranceThreshold)
                 EditorGUILayout.HelpBox("Min. Angle is close to +180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
-            if (180 - jointLimitsManager.AngleLimitMin < toleranceThreshold)
+            if (180 - hingeJointLimitsManager.AngleLimitMax < toleranceThreshold)
                 EditorGUILayout.HelpBox("Max. Angle is close to -180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
         }
