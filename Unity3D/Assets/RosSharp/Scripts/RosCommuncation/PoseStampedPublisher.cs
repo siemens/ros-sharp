@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient
 
         private void FixedUpdate()
         {
-                UpdateMessage();
+            UpdateMessage();
         }
 
         private void InitializeMessage()

@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Adding assignedObject.
+// © University of Bremen, 2018, Sebastian Höffner (shoeffner@tzi.de)
+
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -22,12 +25,13 @@ namespace RosSharp.RosBridgeClient
         private Vector3 position;
         private Quaternion rotation;
         private bool isMessageReceived;
+        public GameObject assignedObject;
 
 		protected override void Start()
         {
 			base.Start();
 		}
-		
+
         private void Update()
         {
             if (isMessageReceived)
@@ -43,8 +47,8 @@ namespace RosSharp.RosBridgeClient
 
         private void ProcessMessage()
         {
-            transform.position = position;
-            transform.rotation = rotation;
+            assignedObject.transform.position = position;
+            assignedObject.transform.rotation = rotation;
         }
 
         private Vector3 GetPosition(Messages.Geometry.PoseStamped message)

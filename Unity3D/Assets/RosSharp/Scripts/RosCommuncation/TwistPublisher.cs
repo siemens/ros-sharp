@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Adding assignedObject.
+// © University of Bremen, 2018, Sebastian Höffner (shoeffner@tzi.de)
+
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -21,9 +24,10 @@ namespace RosSharp.RosBridgeClient
     {
         private Messages.Geometry.Twist message;
 
-        private float previousRealTime;        
+        private float previousRealTime;
         private Vector3 previousPosition = Vector3.zero;
         private Quaternion previousRotation = Quaternion.identity;
+        public GameObject assignedObject;
 
         protected override void Start()
         {
@@ -46,15 +50,15 @@ namespace RosSharp.RosBridgeClient
         {
             float deltaTime = Time.realtimeSinceStartup - previousRealTime;
 
-            Vector3 linearVelocity = (transform.position - previousPosition)/deltaTime;
-            Vector3 angularVelocity = (transform.rotation.eulerAngles - previousRotation.eulerAngles)/deltaTime;
-                
+            Vector3 linearVelocity = (assignedObject.transform.position - previousPosition) / deltaTime;
+            Vector3 angularVelocity = (assignedObject.transform.rotation.eulerAngles - previousRotation.eulerAngles) / deltaTime;
+
             message.linear = GetGeometryVector3(linearVelocity.Unity2Ros()); ;
             message.angular = GetGeometryVector3(- angularVelocity.Unity2Ros());
 
             previousRealTime = Time.realtimeSinceStartup;
-            previousPosition = transform.position;
-            previousRotation = transform.rotation;
+            previousPosition = assignedObject.transform.position;
+            previousRotation = assignedObject.transform.rotation;
 
             Publish(message);
         }
