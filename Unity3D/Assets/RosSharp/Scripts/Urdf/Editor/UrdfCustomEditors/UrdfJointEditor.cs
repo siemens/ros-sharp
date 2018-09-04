@@ -64,7 +64,7 @@ namespace RosSharp.Urdf.Export
                     case UrdfJoint.JointTypes.Revolute:
                         DisplayDynamicsMessage("HingeJoint > Spring > Damper (for damping) and Spring (for friction)");
                         DisplayAxisMessage("HingeJoint > Axis");
-                        DisplayRequiredLimitMessage("HingeJoint > Limits > Min / Max");
+                        DisplayRequiredLimitMessage("Hinge Joint Limits Manager > Large Angle Limit  / Max");
                         break;
                     case UrdfJoint.JointTypes.Floating:
                         DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
@@ -72,7 +72,7 @@ namespace RosSharp.Urdf.Export
                     case UrdfJoint.JointTypes.Prismatic:
                         DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");
                         DisplayAxisMessage("ConfigurableJoint > Axis");
-                        DisplayRequiredLimitMessage("ConfigurableJoint > Linear Limit > Limit");
+                        DisplayRequiredLimitMessage("Prismatic Joint Limits Manager > Position Limit Min / Max");
                         break;
                     case UrdfJoint.JointTypes.Planar:
                         DisplayDynamicsMessage("ConfigurableJoint > xDrive > Position Damper (for Damping) and Position Spring (for friction)");

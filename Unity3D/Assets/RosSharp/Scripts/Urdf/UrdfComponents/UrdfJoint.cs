@@ -37,10 +37,9 @@ namespace RosSharp.Urdf
         public bool IsRevoluteOrContinuous => JointType == JointTypes.Continuous || JointType == JointTypes.Revolute;
         public bool IsPrismatic => JointType == JointTypes.Prismatic;
         public bool IsPlanar => JointType == JointTypes.Planar;
-
-        //TODO: figure out better default limits. Or how to get info from Unity joint
-        public double effortLimit = 50000;
-        public double velocityLimit = 10000;
+        
+        public double effortLimit = Double.PositiveInfinity;
+        public double velocityLimit = Double.PositiveInfinity;
 
         private const int RoundDigits = 4;
         private const float Tolerance = 0.0000001f;
@@ -370,15 +369,20 @@ namespace RosSharp.Urdf
 
         public bool AreLimitsCorrect()
         {
-            if (IsPrismatic || IsPlanar)
+            if (IsPlanar)
             {
                 ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
                 return joint != null && joint.linearLimit.limit != 0;
             }
+            if (IsPrismatic)
+            {
+                PrismaticJointLimitsManager limits = GetComponent<PrismaticJointLimitsManager>();
+                return limits != null && limits.PositionLimitMin < limits.PositionLimitMax;
+            }
             if (JointType == JointTypes.Revolute)
             {
-                HingeJoint joint = GetComponent<HingeJoint>();
-                return joint != null && joint.useLimits && joint.limits.max > joint.limits.min;
+                HingeJointLimitsManager limits = GetComponent<HingeJointLimitsManager>();
+                return limits != null && limits.LargeAngleLimitMin < limits.LargeAngleLimitMax;
             }
 
             return true; //limits aren't needed

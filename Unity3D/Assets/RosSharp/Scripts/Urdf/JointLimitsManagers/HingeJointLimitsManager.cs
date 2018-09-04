@@ -18,6 +18,7 @@ using UnityEngine;
 namespace RosSharp
 {
     [RequireComponent(typeof(HingeJoint))]
+    [ExecuteInEditMode]
     public class HingeJointLimitsManager : MonoBehaviour
     {
         public float LargeAngleLimitMin;
@@ -44,11 +45,9 @@ namespace RosSharp
             RecalculateJointLimits();
         }
 
-        //Called when values change in the inspector
-        private void OnValidate()
+        private void Update()
         {
-            if(_hingeJoint != null) 
-                RecalculateJointLimits();
+            RecalculateJointLimits();
         }
 
         private void FixedUpdate()
