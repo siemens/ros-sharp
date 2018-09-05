@@ -19,15 +19,13 @@ namespace RosSharp.RosBridgeClient
 {
     public class LaserScanPublisher : Publisher<Messages.Sensor.LaserScan>
     {
-        private Messages.Sensor.LaserScan message;
-        private LaserScanReader laserScanReader;
-        private float previousScanTime = 0;
-
-
+        public LaserScanReader laserScanReader;
         public string FrameId = "Unity";
-        public GameObject LaserScannerObject;
 
+        private Messages.Sensor.LaserScan message;
         private float scanPeriod;
+        private float previousScanTime = 0;
+                
         protected override void Start()
         {
             base.Start();
@@ -41,12 +39,10 @@ namespace RosSharp.RosBridgeClient
                 UpdateMessage();
                 previousScanTime = Time.realtimeSinceStartup;
             }
-
         }
 
         private void InitializeMessage()
         {
-            laserScanReader = LaserScannerObject.GetComponent<LaserScanReader>();
             scanPeriod = (float)laserScanReader.samples / (float)laserScanReader.update_rate;
 
             message = new Messages.Sensor.LaserScan

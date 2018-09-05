@@ -19,8 +19,9 @@ namespace RosSharp.RosBridgeClient
 {
     public class TwistPublisher : Publisher<Messages.Geometry.Twist>
     {
-        private Messages.Geometry.Twist message;
+        public Transform PublishedTransform;
 
+        private Messages.Geometry.Twist message;
         private float previousRealTime;        
         private Vector3 previousPosition = Vector3.zero;
         private Quaternion previousRotation = Quaternion.identity;
@@ -46,15 +47,15 @@ namespace RosSharp.RosBridgeClient
         {
             float deltaTime = Time.realtimeSinceStartup - previousRealTime;
 
-            Vector3 linearVelocity = (transform.position - previousPosition)/deltaTime;
-            Vector3 angularVelocity = (transform.rotation.eulerAngles - previousRotation.eulerAngles)/deltaTime;
+            Vector3 linearVelocity = (PublishedTransform.position - previousPosition)/deltaTime;
+            Vector3 angularVelocity = (PublishedTransform.rotation.eulerAngles - previousRotation.eulerAngles)/deltaTime;
                 
             message.linear = GetGeometryVector3(linearVelocity.Unity2Ros()); ;
             message.angular = GetGeometryVector3(- angularVelocity.Unity2Ros());
 
             previousRealTime = Time.realtimeSinceStartup;
-            previousPosition = transform.position;
-            previousRotation = transform.rotation;
+            previousPosition = PublishedTransform.position;
+            previousRotation = PublishedTransform.rotation;
 
             Publish(message);
         }

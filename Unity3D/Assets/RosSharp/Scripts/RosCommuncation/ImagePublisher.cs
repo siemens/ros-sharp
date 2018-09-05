@@ -16,16 +16,14 @@ limitations under the License.
 // Adjustments to new Publication Timing and Execution Framework 
 // © Siemens AG, 2018, Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
-using System.Collections;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-
     public class ImagePublisher : Publisher<Messages.Sensor.CompressedImage>
     {
-        public string FrameId = "Camera";
         public Camera ImageCamera;
+        public string FrameId = "Camera";
         public int resolutionWidth = 640;
         public int resolutionHeight = 480;
         [Range(0, 100)]
@@ -34,9 +32,6 @@ namespace RosSharp.RosBridgeClient
         private Messages.Sensor.CompressedImage message;
         private Texture2D texture2D;
         private Rect rect;
-
-        private float lastCommunicationTime;
-        public float MinTime;
 
         protected override void Start()
         {

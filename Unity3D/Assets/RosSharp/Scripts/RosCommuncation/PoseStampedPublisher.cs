@@ -19,9 +19,10 @@ namespace RosSharp.RosBridgeClient
 {
     public class PoseStampedPublisher : Publisher<Messages.Geometry.PoseStamped>
     {
-        private Messages.Geometry.PoseStamped message;
-        public string FrameId = "Unity";
         public Transform PublishedTransform;
+        public string FrameId = "Unity";
+
+        private Messages.Geometry.PoseStamped message;
 
         protected override void Start()
         {
@@ -31,14 +32,18 @@ namespace RosSharp.RosBridgeClient
 
         private void FixedUpdate()
         {
-                UpdateMessage();
+            UpdateMessage();
         }
 
         private void InitializeMessage()
         {
-            message = new Messages.Geometry.PoseStamped();
-            message.header = new Messages.Standard.Header();
-            message.header.frame_id = FrameId;
+            message = new Messages.Geometry.PoseStamped
+            {
+                header = new Messages.Standard.Header()
+                {
+                    frame_id = FrameId
+                }
+            };
         }
 
         private void UpdateMessage()
@@ -68,5 +73,6 @@ namespace RosSharp.RosBridgeClient
             geometryQuaternion.w = quaternion.w;
             return geometryQuaternion;
         }
+
     }
 }
