@@ -17,11 +17,12 @@ namespace RosSharp.RosBridgeClient
 {
     public class JoyPublisher : Publisher<Messages.Sensor.Joy>
     {
-        private Messages.Sensor.Joy message;
-        public string FrameId = "Unity";
-
         private JoyAxisReader[] JoyAxisReaders;
         private JoyButtonReader[] JoyButtonReaders;
+
+        public string FrameId = "Unity";
+
+        private Messages.Sensor.Joy message;
 
         protected override void Start()
         {
