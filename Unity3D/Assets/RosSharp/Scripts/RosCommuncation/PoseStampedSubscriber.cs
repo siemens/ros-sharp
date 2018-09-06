@@ -19,11 +19,13 @@ namespace RosSharp.RosBridgeClient
 {
     public class PoseStampedSubscriber : Subscriber<Messages.Geometry.PoseStamped>
     {
+        public Transform PublishedTransform;
+
         private Vector3 position;
         private Quaternion rotation;
         private bool isMessageReceived;
 
-		protected override void Start()
+        protected override void Start()
         {
 			base.Start();
 		}
@@ -43,8 +45,8 @@ namespace RosSharp.RosBridgeClient
 
         private void ProcessMessage()
         {
-            transform.position = position;
-            transform.rotation = rotation;
+            PublishedTransform.position = position;
+            PublishedTransform.rotation = rotation;
         }
 
         private Vector3 GetPosition(Messages.Geometry.PoseStamped message)

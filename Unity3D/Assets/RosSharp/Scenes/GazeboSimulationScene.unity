@@ -13843,6 +13843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeout: 10
   Protocol: 1
   RosBridgeServerUrl: ws://192.168.56.102:9090
 --- !u!4 &2016988257
@@ -13871,7 +13872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Topic: /odom
   TimeStep: 0
-  assignedObject: {fileID: 1740361386}
+  PublishedTransform: {fileID: 1740361389}
 --- !u!114 &2016988259
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,15 +22,17 @@ namespace RosSharp.RosBridgeClient
 {
     public class TwistSubscriber : Subscriber<Messages.Geometry.Twist>
     {
+        public Transform SubscribedTransform;
+
         private float previousRealTime;
         private Vector3 linearVelocity;
         private Vector3 angularVelocity;
         private bool isMessageReceived;
 
-		protected override void Start()
-		{
-			base.Start();
-		}
+        protected override void Start()
+        {
+            base.Start();
+        }
 
         protected override void ReceiveMessage(Messages.Geometry.Twist message)
         {
@@ -41,7 +43,7 @@ namespace RosSharp.RosBridgeClient
 
         private static Vector3 ToVector3(Messages.Geometry.Vector3 geometryVector3)
         {
-            return new Vector3(geometryVector3.x,geometryVector3.y,geometryVector3.z);
+            return new Vector3(geometryVector3.x, geometryVector3.y, geometryVector3.z);
         }
 
         private void Update()
@@ -51,16 +53,16 @@ namespace RosSharp.RosBridgeClient
         }
         private void ProcessMessage()
         {
-            float deltaTime = Time.realtimeSinceStartup-previousRealTime;
+            float deltaTime = Time.realtimeSinceStartup - previousRealTime;
 
-            transform.Translate(linearVelocity * deltaTime);
-            transform.Rotate(Vector3.forward, angularVelocity.x * deltaTime);
-            transform.Rotate(Vector3.up, angularVelocity.y * deltaTime);
-            transform.Rotate(Vector3.left, angularVelocity.z * deltaTime);
+            SubscribedTransform.Translate(linearVelocity * deltaTime);
+            SubscribedTransform.Rotate(Vector3.forward, angularVelocity.x * deltaTime);
+            SubscribedTransform.Rotate(Vector3.up, angularVelocity.y * deltaTime);
+            SubscribedTransform.Rotate(Vector3.left, angularVelocity.z * deltaTime);
 
             previousRealTime = Time.realtimeSinceStartup;
 
             isMessageReceived = false;
-        }     
+        }
     }
 }

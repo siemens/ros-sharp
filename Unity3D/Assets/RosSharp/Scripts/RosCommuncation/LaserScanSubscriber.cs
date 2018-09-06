@@ -13,9 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-using System;
-
 namespace RosSharp.RosBridgeClient
 {
     public class LaserScanSubscriber : Subscriber<Messages.Sensor.LaserScan>
@@ -31,6 +28,5 @@ namespace RosSharp.RosBridgeClient
         {
             laserScanWriter.Write(laserScan);
         }
-
     }
 }
