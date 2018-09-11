@@ -254,29 +254,6 @@ namespace RosSharp.Urdf
             };
         }
 
-        private static JointLimits GetJointLimits(Joint.Limit limit)
-        {
-            return new JointLimits
-            {
-                min = (float) limit.lower * Mathf.Rad2Deg,
-                max = (float) limit.upper * Mathf.Rad2Deg
-            };
-            
-        }
-
-        private static SoftJointLimit GetLinearLimit(Joint.Limit limit)
-        {
-            return new SoftJointLimit
-            {
-                limit = (float) limit.upper
-            };
-        }
-
-        private static Vector3 GetConnectedAnchor(Joint joint)
-        {
-            return joint.origin == null ? Vector3.zero : UrdfOrigin.GetPosition(joint.origin);
-        }
-
         #endregion
 
         #endregion

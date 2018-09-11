@@ -22,54 +22,50 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointStateWriter)), RequireComponent(typeof(UrdfJoint))]
     public class JoyAxisJointTransformWriter : JoyAxisWriter
     {
-        public float StepLength;
-        public bool ApplyUnityJointLimits;
+        public float MaximumVelocity;
 
-        private Joint joint;
         private JointStateWriter jointStateWriter;
         private UrdfJoint urdfJoint;
-
+   
+        private float lastMessageTime;
         private float state;
-        private Vector2 limit;
+
+        private HingeJointLimitsManager hingeJointLimitsManager;
+        private PrismaticJointLimitsManager prismaticJointLimitsManager;
+        private bool useLimits;
 
         private void Start()
         {
-            joint = GetComponent<Joint>();
             jointStateWriter = GetComponent<JointStateWriter>();
             urdfJoint = GetComponent<UrdfJoint>();
-
-            SetLimit();
-        }
-        private void SetLimit()
-        {
-            if (urdfJoint.IsRevoluteOrContinuous)
-            {
-                HingeJoint hingeJoint = (HingeJoint)joint;
-                limit = new Vector2(hingeJoint.limits.min, hingeJoint.limits.max) * Mathf.Deg2Rad; ;
-            }
-            else if (urdfJoint.IsPrismatic)
-            {
-                ConfigurableJoint configurableJoint = (ConfigurableJoint)joint;
-                limit = new Vector2(-configurableJoint.linearLimit.limit, configurableJoint.linearLimit.limit);
-            }
+            hingeJointLimitsManager = GetComponent<HingeJointLimitsManager>();
+            prismaticJointLimitsManager = GetComponent<PrismaticJointLimitsManager>();
+            useLimits = (hingeJointLimitsManager != null || prismaticJointLimitsManager != null);
         }
 
         private void ApplyLimits()
         {
-            state = (state >= limit.x) ? state : limit.x;
-            state = (state <= limit.y) ? state : limit.y;
+            Vector2 limits = Vector2.zero;
+            if (urdfJoint.IsRevoluteOrContinuous)
+                limits = new Vector2(hingeJointLimitsManager.LargeAngleLimitMin,hingeJointLimitsManager.LargeAngleLimitMax);
+            else if (urdfJoint.IsPrismatic)
+                limits = new Vector2(prismaticJointLimitsManager.PositionLimitMin, prismaticJointLimitsManager.PositionLimitMax);
+          
+            state = Mathf.Clamp(state, limits.x, limits.y);
         }
 
         public override void Write(float value)
         {
-            //TODO: fix this calculation so that state is the actual position of
-            //the joint, not the delta movement.
-            state = value * StepLength;
-
-            if (ApplyUnityJointLimits)
+            float actualTime = Time.timeSinceLevelLoad;
+            float deltaTime = actualTime - lastMessageTime;
+            state +=  value * MaximumVelocity * deltaTime;
+            if (useLimits)
                 ApplyLimits();
 
-            jointStateWriter.Write(state);
+            lastMessageTime = actualTime;
+
+            jointStateWriter.Write(urdfJoint.IsRevoluteOrContinuous ? state * Mathf.Deg2Rad : state);
         }
+
     }
 }

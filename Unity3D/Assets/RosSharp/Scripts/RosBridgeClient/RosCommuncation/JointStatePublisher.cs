@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace RosSharp.RosBridgeClient
 {
     public class JointStatePublisher : Publisher<Messages.Sensor.JointState>
@@ -20,7 +22,7 @@ namespace RosSharp.RosBridgeClient
         private Messages.Sensor.JointState message;        
         public string FrameId = "Unity";
 
-        public JointStateReader[] JointStateReaders;
+        public List<JointStateReader> JointStateReaders;
 
         protected override void Start()
         {
@@ -35,7 +37,7 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            int jointStateLength = JointStateReaders.Length;
+            int jointStateLength = JointStateReaders.Count;
             message = new Messages.Sensor.JointState
             {
                 header = new Messages.Standard.Header { frame_id = FrameId },
@@ -48,7 +50,7 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            for (int i = 0; i < JointStateReaders.Length; i++)
+            for (int i = 0; i < JointStateReaders.Count; i++)
                 UpdateJointState(i);
 
             Publish(message);
