@@ -109,7 +109,7 @@ namespace RosSharp.Urdf
         {
             string newPrefabPath = UrdfExportPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
 
-            prefabPath = UrdfAssetPathHandler.GetFullAssetPath(prefabPath).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            prefabPath = UrdfAssetPathHandler.GetFullAssetPath(prefabPath);
             newPrefabPath = newPrefabPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             
             if(prefabPath != newPrefabPath) //Don't move prefab if it's already in the right place

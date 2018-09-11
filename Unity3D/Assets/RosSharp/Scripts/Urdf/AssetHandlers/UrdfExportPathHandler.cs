@@ -54,7 +54,8 @@ namespace RosSharp.Urdf
         //Returns an absolute path to the new resource
         public static string GetNewResourcePath(string resourceFileName)
         {
-            return Path.Combine(exportRoot, subfolder, ResourceFolderName, resourceFileName);
+            return Path.Combine(exportRoot, subfolder, ResourceFolderName, resourceFileName)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
 
         public static string GetPackagePathForMesh(string meshPath)

@@ -66,9 +66,10 @@ namespace RosSharp.Urdf
 
         private static Link.Visual.Material.Texture GetTextureData(Texture texture)
         {
-            string oldTexturePath = AssetDatabase.GetAssetPath(texture);
+            string oldTexturePath = UrdfAssetPathHandler.GetFullAssetPath(AssetDatabase.GetAssetPath(texture));
             string newTexturePath = UrdfExportPathHandler.GetNewResourcePath(Path.GetFileName(oldTexturePath));
-            AssetDatabase.CopyAsset(oldTexturePath, newTexturePath);
+            if(oldTexturePath != newTexturePath)
+                File.Copy(oldTexturePath, newTexturePath, true);
 
             string packagePath = UrdfExportPathHandler.GetPackagePathForResource(newTexturePath);
             return new Link.Visual.Material.Texture(packagePath);
