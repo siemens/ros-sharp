@@ -16,25 +16,34 @@ limitations under the License.
 */
 
 using UnityEditor;
+using UnityEngine;
 
 namespace RosSharp.Urdf
 {
     [CustomEditor(typeof(UrdfInertial))]
-    public class RigidBodyUrdfDataManagerEditor : Editor
+    public class UrdfInertialEditor : Editor
     {
+        private Vector3 testVector;
+
         public override void OnInspectorGUI()
         {
-            UrdfInertial urdfInertial = (UrdfInertial)target;
+            UrdfInertial urdfInertial = (UrdfInertial) target;
+
+            GUILayout.Space(5);
+            urdfInertial.DisplayInertiaGizmo =
+                EditorGUILayout.ToggleLeft("Display Inertia Gizmo", urdfInertial.DisplayInertiaGizmo);
+            GUILayout.Space(5);
 
             bool newValue = EditorGUILayout.BeginToggleGroup("Use URDF Data", urdfInertial.UseUrdfData);
             EditorGUILayout.Vector3Field("URDF Center of Mass", urdfInertial.CenterOfMass);
             EditorGUILayout.Vector3Field("URDF Inertia Tensor", urdfInertial.InertiaTensor);
-            EditorGUILayout.Vector3Field("URDF Inertia Tensor Rotation", urdfInertial.InertiaTensorRotation.eulerAngles);
+            EditorGUILayout.Vector3Field("URDF Inertia Tensor Rotation",
+                urdfInertial.InertiaTensorRotation.eulerAngles);
             EditorGUILayout.EndToggleGroup();
 
             if (newValue != urdfInertial.UseUrdfData)
             {
-                urdfInertial.UseUrdfData = newValue;                    
+                urdfInertial.UseUrdfData = newValue;
                 urdfInertial.UpdateRigidBodyData();
             }
         }
