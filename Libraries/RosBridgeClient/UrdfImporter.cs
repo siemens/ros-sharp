@@ -173,6 +173,7 @@ namespace RosSharp.RosBridgeClient
         {
             return Path.GetExtension(uri.LocalPath) == ".dae";
         }
+
         private void ImportColladaTextureFiles(Uri daeFileUri, string fileContents)
         {
             var serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, fileContents));

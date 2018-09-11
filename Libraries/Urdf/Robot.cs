@@ -90,6 +90,9 @@ namespace RosSharp.Urdf
 
         private static Link FindRootLink(List<Link> Links, List<Joint> Joints, int startIdx = 0)
         {
+            if (Joints.Count == 0)
+                return Links[0];
+
             Joint joint = Joints[0];
             string parent;
             do
