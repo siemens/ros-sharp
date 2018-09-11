@@ -112,7 +112,7 @@ namespace RosSharp.Urdf.Import
                 "Do you want to generate a " + robotName + " GameObject now?",
                 "Yes", "No"))
             {
-                RobotFactory.Create(Path.Combine(localDirectory, "robot_description.urdf"));
+                UrdfRobot.Create(Path.Combine(localDirectory, "robot_description.urdf"));
             }
 
             StatusEvents["importComplete"].Set();

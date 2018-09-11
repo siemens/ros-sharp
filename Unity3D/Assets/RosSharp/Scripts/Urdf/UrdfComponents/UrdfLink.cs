@@ -36,7 +36,7 @@ namespace RosSharp.Urdf
                 linkObject.name = link.name;
 
                 if (joint?.origin != null)
-                    UrdfOrigin.SetTransform(urdfLink.transform, joint.origin);
+                    UrdfOrigin.SetTransformFromUrdf(urdfLink.transform, joint.origin);
 
                 if (link.inertial != null)
                 {

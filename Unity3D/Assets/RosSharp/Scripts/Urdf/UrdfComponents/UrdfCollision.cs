@@ -63,7 +63,7 @@ namespace RosSharp.Urdf
             urdfCollision.geometryType = UrdfGeometry.GetGeometryType(collision.geometry);
 
             UrdfGeometryCollision.Create(collisionObject.transform, urdfCollision.geometryType, collision.geometry);
-            UrdfOrigin.SetTransform(collisionObject.transform, collision.origin);
+            UrdfOrigin.SetTransformFromUrdf(collisionObject.transform, collision.origin);
         }
     
         public Link.Collision GetCollisionData()
@@ -73,13 +73,13 @@ namespace RosSharp.Urdf
             Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform, true);
             string collisionName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Collision(geometry, collisionName, UrdfOrigin.GetOriginData(transform));
+            return new Link.Collision(geometry, collisionName, UrdfOrigin.ExportOriginToUrdf(transform));
         }
 
         private void CheckForUrdfCompatibility()
         {
             Transform childTransform = transform.GetChild(0);
-            if (childTransform.IsTransformed(geometryType))
+            if (IsTransformed())
                 Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
                                  "Make any translation, rotation, or scale changes to the parent Collision object instead.",
                     childTransform);
@@ -89,5 +89,14 @@ namespace RosSharp.Urdf
                                  + transform.parent.parent.name + ", move each Geometry into its own Visual element.", gameObject);
         }
 
+        public bool IsTransformed()
+        {
+            Transform childTransform = transform.GetChild(0);
+
+            //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
+            return (childTransform.localPosition != Vector3.zero
+                    || childTransform.localScale != Vector3.one
+                    || (geometryType != UrdfGeometry.GeometryTypes.Mesh && childTransform.localRotation != Quaternion.identity));
+        }
     }
 }

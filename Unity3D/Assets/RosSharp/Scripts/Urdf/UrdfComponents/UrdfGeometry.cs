@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace RosSharp.Urdf
 {
     public class UrdfGeometry
     {
+        private const int RoundDigits = 6;
         public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
         public static Link.Geometry GetGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
@@ -31,18 +33,18 @@ namespace RosSharp.Urdf
             switch (geometryType)
             {
                 case GeometryTypes.Box:
-                    geometry = new Link.Geometry(new Link.Geometry.Box(transform.GetUrdfSize()));
+                    geometry = new Link.Geometry(new Link.Geometry.Box(GetUrdfSize(transform)));
                     break;
                 case GeometryTypes.Cylinder:
                     geometry = new Link.Geometry(
                         null,
-                        new Link.Geometry.Cylinder(transform.GetRadius(), transform.GetCylinderHeight()));
+                        new Link.Geometry.Cylinder(GetUrdfRadius(transform), GetCylinderHeight(transform)));
                     break;
                 case GeometryTypes.Sphere:
-                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(transform.GetRadius()));
+                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(GetUrdfRadius(transform)));
                     break;
                 case GeometryTypes.Mesh:
-                    geometry = GetGeometryMeshData(transform.GetChild(0).gameObject, transform.GetUrdfSize(), isCollisionGeometry);
+                    geometry = GetGeometryMeshData(transform.GetChild(0).gameObject, GetUrdfSize(transform), isCollisionGeometry);
                     break;
             }
 
@@ -60,6 +62,25 @@ namespace RosSharp.Urdf
 
             return GeometryTypes.Mesh;
         }
+
+        #region Simple Shape Export Helpers
+
+        private static double[] GetUrdfSize(Transform transform)
+        {
+            return transform.localScale.Unity2RosScale().ToRoundedDoubleArray();
+        }
+
+        private static double GetUrdfRadius(Transform transform)
+        {
+            return Math.Round(transform.localScale.x / 2, RoundDigits);
+        }
+
+        private static double GetCylinderHeight(Transform transform)
+        {
+            return Math.Round(transform.localScale.y * 2, RoundDigits);
+        }
+
+        #endregion
 
         #region Mesh Export Helpers
 
@@ -130,6 +151,7 @@ namespace RosSharp.Urdf
         }
 
         #endregion
+
 
         public static Mesh GetCylinderMesh(Link.Geometry.Cylinder cylinder)
         {
@@ -344,10 +366,7 @@ namespace RosSharp.Urdf
                 case GeometryTypes.Mesh:
                     if (geometry?.mesh?.scale != null)
                     {
-                        Vector3 scale = new Vector3(
-                            (float)geometry.mesh.scale[2], 
-                            (float)geometry.mesh.scale[0], 
-                            (float)geometry.mesh.scale[1]);
+                        Vector3 scale = geometry.mesh.scale.ToVector3().Ros2UnityScale();
 
                         transform.localScale = Vector3.Scale(transform.localScale, scale);
                         transform.localPosition = Vector3.Scale(transform.localPosition, scale);

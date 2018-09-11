@@ -49,7 +49,7 @@ namespace RosSharp.Urdf
             
             UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
             UrdfMaterialHandler.SetUrdfMaterial(visualObject, visual.material);
-            UrdfOrigin.SetTransform(visualObject.transform, visual.origin);
+            UrdfOrigin.SetTransformFromUrdf(visualObject.transform, visual.origin);
         }
 
 
@@ -68,13 +68,13 @@ namespace RosSharp.Urdf
             Link.Visual.Material material = UrdfMaterial.GetMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Visual(geometry, visualName, UrdfOrigin.GetOriginData(transform), material);
+            return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginToUrdf(transform), material);
         }
         
         private void CheckForUrdfCompatibility()
         {
             Transform childTransform = transform.GetChild(0);
-            if (childTransform.IsTransformed(geometryType))
+            if (IsTransformed())
                 Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
                                  "Make any translation, rotation, or scale changes to the parent Visual object instead.",
                                   childTransform);
@@ -82,6 +82,16 @@ namespace RosSharp.Urdf
             if (!transform.HasExactlyOneChild()) 
                 Debug.LogWarning("Only one Geometry element is allowed for each Visual element. In "
                                  + transform.parent.parent.name + ", move each Geometry into its own Visual element.", gameObject);
+        }
+        
+        public bool IsTransformed()
+        {
+            Transform childTransform = transform.GetChild(0);
+
+            //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
+            return (childTransform.localPosition != Vector3.zero
+                    || childTransform.localScale != Vector3.one
+                    || (geometryType != UrdfGeometry.GeometryTypes.Mesh && childTransform.localRotation != Quaternion.identity));
         }
     }
 }

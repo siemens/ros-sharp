@@ -43,7 +43,7 @@ namespace RosSharp.Urdf
                 _rigidbody.mass = (float) inertial.mass;
 
                 if (inertial.origin != null)
-                    _rigidbody.centerOfMass = UrdfOrigin.GetPosition(inertial.origin);
+                    _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
 
                 urdfInertial.SetInertiaData(inertial.inertia);
 

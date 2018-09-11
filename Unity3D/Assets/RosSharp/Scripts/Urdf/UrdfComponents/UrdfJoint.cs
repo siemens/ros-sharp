@@ -270,7 +270,7 @@ namespace RosSharp.Urdf
                 GetJointTypeName(JointType),
                 gameObject.transform.parent.name,
                 gameObject.name,
-                UrdfOrigin.GetOriginData(transform));
+                UrdfOrigin.ExportOriginToUrdf(transform));
 
             UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
 

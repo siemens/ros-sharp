@@ -46,7 +46,7 @@ namespace RosSharp.Urdf.Export
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Visual element must have one and only one child Geometry element.", MessageType.Error);
             }
-            else if (urdfCollision.transform.GetChild(0).IsTransformed(urdfCollision.geometryType))
+            else if (urdfCollision.IsTransformed())
             {
                 GUILayout.BeginVertical("HelpBox");
                 EditorGUILayout.HelpBox("Changes to the transform of the child Geometry element cannot be exported to URDF. " +

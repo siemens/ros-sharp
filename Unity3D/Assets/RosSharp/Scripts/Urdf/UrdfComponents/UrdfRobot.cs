@@ -38,8 +38,10 @@ namespace RosSharp.Urdf
             urdfLink.name = "base_link";
         }
 
-        public static UrdfRobot Create(Robot robot)
+        public static UrdfRobot Create(string filename)
         {
+            Robot robot = new Robot(filename);
+
             if (!UrdfAssetPathHandler.IsValidAssetPath(robot.filename))
             {
                 Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);

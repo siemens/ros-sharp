@@ -29,7 +29,7 @@ namespace RosSharp.Urdf.Import
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
 
             if (Path.GetExtension(assetPath)?.ToLower() == ".urdf")
-                RobotFactory.Create(UrdfAssetPathHandler.GetFullAssetPath(assetPath));
+                UrdfRobot.Create(UrdfAssetPathHandler.GetFullAssetPath(assetPath));
             else
                 EditorUtility.DisplayDialog("URDF Import",
                     "The file you selected was not a URDF file. A robot can only be imported from a valid URDF file.", "Ok");

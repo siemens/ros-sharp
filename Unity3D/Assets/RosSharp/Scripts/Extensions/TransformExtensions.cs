@@ -22,7 +22,7 @@ namespace RosSharp
 {
     public static class TransformExtensions
     {
-        private const int RoundDigits = 4;
+        private const int RoundDigits = 6;
 
         public static void DestroyImmediateIfExists<T>(this Transform transform) where T : Component
         {
@@ -30,13 +30,6 @@ namespace RosSharp
             if (component != null)
                 Object.DestroyImmediate(component);
         }
-
-        public static void DestroyChildrenImmediate(this Transform transform)
-        {
-            while(transform.childCount != 0)
-                Object.DestroyImmediate(transform.GetChild(0).gameObject);
-        }
-
 
         public static T AddComponentIfNotExists<T>(this Transform transform) where T : Component
         {
@@ -68,15 +61,7 @@ namespace RosSharp
             return transform.childCount == 1;
         }
 
-        public static bool IsTransformed(this Transform transform, UrdfGeometry.GeometryTypes geometryType)
-        {
-            //Ignore rotation if geometry is a mesh. This is because meshes may be rotated during import. 
-            return (transform.localPosition != Vector3.zero
-                    || transform.localScale != Vector3.one
-                    || (geometryType != UrdfGeometry.GeometryTypes.Mesh && transform.localRotation != Quaternion.identity));
-        }
-
-        public static  void MoveChildTransformToParent(this Transform parent, bool transferRotation = true)
+        public static void MoveChildTransformToParent(this Transform parent, bool transferRotation = true)
         {
             //Detach child in order to get a transform indenpendent from parent
             Transform childTransform = parent.GetChild(0);
@@ -98,40 +83,6 @@ namespace RosSharp
             childTransform.localScale = Vector3.one;
         }
 
-        public static double[] GetUrdfSize(this Transform transform)
-        {
-            return new double []
-            {
-                Math.Round(transform.localScale.z, RoundDigits),
-                Math.Round(transform.localScale.x, RoundDigits),
-                Math.Round(transform.localScale.y, RoundDigits)
-            };
-        }
-
-        public static double GetRadius(this Transform transform)
-        {
-            return Math.Round(transform.localScale.x / 2, RoundDigits);
-        }
-
-        public static double GetCylinderHeight(this Transform transform)
-        {
-            return Math.Round(transform.localScale.y * 2, RoundDigits);
-        }
-        
-        public static Transform FindDeepChild(this Transform parent, string name)
-        {
-            Transform result = parent.Find(name);
-            if (result != null)
-                return result;
-            foreach (Transform child in parent)
-            {
-                result = child.FindDeepChild(name);
-                if (result != null)
-                    return result;
-            }
-            return null;
-        }
-
         public static Vector3 Ros2Unity(this Vector3 vector3)
         {
             return new Vector3(-vector3.y, vector3.z, vector3.x);
@@ -140,6 +91,16 @@ namespace RosSharp
         public static Vector3 Unity2Ros(this Vector3 vector3)
         {
             return new Vector3(vector3.z, -vector3.x, vector3.y);
+        }
+
+        public static Vector3 Ros2UnityScale(this Vector3 vector3)
+        {
+            return new Vector3(vector3.y, vector3.z, vector3.x);
+        }
+
+        public static Vector3 Unity2RosScale(this Vector3 vector3)
+        {
+            return new Vector3(vector3.z, vector3.x, vector3.y);
         }
 
         public static Quaternion Ros2Unity(this Quaternion quaternion)

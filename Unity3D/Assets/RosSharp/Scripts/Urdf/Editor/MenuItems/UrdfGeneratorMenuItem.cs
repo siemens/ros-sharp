@@ -32,8 +32,7 @@ namespace RosSharp.Urdf.Import
                 "urdf");
 
             if (urdfFile != "")
-                RobotFactory.Create(urdfFile);
-
+                UrdfRobot.Create(urdfFile);
         }
     }
 }
