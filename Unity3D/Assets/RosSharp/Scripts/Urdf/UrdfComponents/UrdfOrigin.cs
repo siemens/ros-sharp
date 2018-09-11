@@ -41,13 +41,10 @@ namespace RosSharp.Urdf
         public static Vector3 GetRotationFromUrdf(Origin origin)
         {
             if (origin.Rpy != null)
-            {
-                Vector3 rotation = origin.Rpy.ToVector3();
-            }
-            return new Vector3(
-                (float)+origin.Rpy[1] * Mathf.Rad2Deg,
-                (float)-origin.Rpy[2] * Mathf.Rad2Deg,
-                (float)-origin.Rpy[0] * Mathf.Rad2Deg);
+                return new Vector3(
+                    (float)+origin.Rpy[1] * Mathf.Rad2Deg,
+                    (float)-origin.Rpy[2] * Mathf.Rad2Deg,
+                    (float)-origin.Rpy[0] * Mathf.Rad2Deg);
 
             return Vector3.zero;
         }

@@ -38,14 +38,14 @@ namespace RosSharp.Urdf
             urdfLink.name = "base_link";
         }
 
-        public static UrdfRobot Create(string filename)
+        public static void Create(string filename)
         {
             Robot robot = new Robot(filename);
 
             if (!UrdfAssetPathHandler.IsValidAssetPath(robot.filename))
             {
                 Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);
-                return null;
+                return;
             }
 
             GameObject robotGameObject = new GameObject(robot.name);
@@ -60,8 +60,6 @@ namespace RosSharp.Urdf
             GameObjectUtility.SetParentAndAlign(robotGameObject, Selection.activeObject as GameObject);
             Undo.RegisterCreatedObjectUndo(robotGameObject, "Create " + robotGameObject.name);
             Selection.activeObject = robotGameObject;
-            
-            return urdfRobot;
         }
 
         private void GenerateUniqueJointNames()
@@ -76,7 +74,6 @@ namespace RosSharp.Urdf
             GenerateUniqueJointNames();
 
             filePath = Path.Combine(UrdfExportPathHandler.GetExportDestination(), name + ".urdf");
-            filePath = filePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
     
             Robot robot = GetRobotData();
             if (robot == null) return;

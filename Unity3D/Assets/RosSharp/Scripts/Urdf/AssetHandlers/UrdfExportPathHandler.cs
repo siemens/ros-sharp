@@ -41,30 +41,32 @@ namespace RosSharp.Urdf
         #region GetExportPaths
         public static string GetExportDestination()
         {
-            return subfolder == null ? exportRoot : Path.Combine(exportRoot, subfolder);
+            return subfolder == null ? exportRoot : Path.Combine(exportRoot, subfolder).SetSeparatorChar();
         }
         
         //Returns an absolute path to the export destination for the mesh
         //meshFileName includes the file extension
         public static string GetNewMeshPath(string meshFileName)
         {
-            return Path.Combine(exportRoot, subfolder, MeshFolderName, meshFileName);
+            return Path.Combine(exportRoot, subfolder, MeshFolderName, meshFileName).SetSeparatorChar();
         }
 
         //Returns an absolute path to the new resource
         public static string GetNewResourcePath(string resourceFileName)
         {
             return Path.Combine(exportRoot, subfolder, ResourceFolderName, resourceFileName)
-                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                .SetSeparatorChar();
         }
 
         public static string GetPackagePathForMesh(string meshPath)
         {
+            //All package paths should use forward slashes
             return Path.Combine("package://", subfolder, MeshFolderName, Path.GetFileName(meshPath)).Replace("\\", "/");
         }
 
         public static string GetPackagePathForResource(string resourcePath)
         {
+            //All package paths should use forward slashes
             return Path.Combine("package://", subfolder, ResourceFolderName, Path.GetFileName(resourcePath)).Replace("\\", "/");
         }
         #endregion

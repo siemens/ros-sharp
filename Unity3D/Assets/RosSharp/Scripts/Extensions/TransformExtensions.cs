@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 using System;
-using RosSharp.Urdf;
+using System.IO;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -125,6 +125,11 @@ namespace RosSharp
         public static Vector3 ToVector3(this double[] array)
         {
             return new Vector3((float)array[0], (float)array[1], (float)array[2]);
+        }
+
+        public static string SetSeparatorChar(this string path)
+        {
+            return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
     }
 }

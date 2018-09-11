@@ -196,9 +196,7 @@ namespace RosSharp
             Matrix3x3 B = (matrix3x3 * (1f / p)) + (new Matrix3x3(new float[] { -q / p, -q / p, -q / p }));
             float angle = Mathf.Clamp(B.Determinant() / 2f, -1, 1);
             float theta = Mathf.Acos(angle) / 3;
-
-            Debug.Log("Determinant: " + (B.Determinant() / 2));
-
+            
             Vector3 beta = new Vector3();
             Vector3 alpha = new Vector3();
             for (int k = 0; k < 3; k++)

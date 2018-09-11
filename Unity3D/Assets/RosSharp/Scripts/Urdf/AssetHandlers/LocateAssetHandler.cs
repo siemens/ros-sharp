@@ -26,7 +26,7 @@ namespace RosSharp.Urdf
     {
         public static T FindUrdfAsset<T>(string urdfFileName) where T : UnityEngine.Object
         {
-            string fileAssetPath = GetAssetPathFromUrdfPath(urdfFileName);
+            string fileAssetPath = UrdfAssetPathHandler.GetRelativeAssetPathFromUrdfPath(urdfFileName);
             T assetObject = AssetDatabase.LoadAssetAtPath<T>(fileAssetPath);
 
             if (assetObject != null)
@@ -45,7 +45,7 @@ namespace RosSharp.Urdf
             switch (option)
             {
                 case 0:
-                    fileAssetPath = LocateAssetFile<T>(invalidPath);
+                    fileAssetPath = LocateAssetFile(invalidPath);
                     break;
                 case 1: break;
                 case 2:
@@ -73,10 +73,10 @@ namespace RosSharp.Urdf
             else 
                 Debug.LogWarning("Selected package root " + newAssetPath + " is not within the Assets folder.");
 
-            return GetAssetPathFromUrdfPath(urdfFileName);
+            return UrdfAssetPathHandler.GetRelativeAssetPathFromUrdfPath(urdfFileName);
         }
 
-        private static string LocateAssetFile<T>(string invalidPath) where T : UnityEngine.Object
+        private static string LocateAssetFile(string invalidPath)
         {
             string fileExtension = Path.GetExtension(invalidPath)?.Replace(".", "");
 
@@ -100,24 +100,7 @@ namespace RosSharp.Urdf
                 throw new InterruptedUrdfImportException("User cancelled URDF import. Model may be incomplete.");
             }
         }
-
-        private static string GetAssetPathFromUrdfPath(string urdfPath)
-        {
-            if (!urdfPath.StartsWith(@"package://"))
-            {
-                Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
-                return null;
-            }
-
-            var path = urdfPath.Substring(10)
-                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-
-            if (Path.GetExtension(path).ToLowerInvariant() == ".stl")
-                path = path.Substring(0, path.Length - 3) + "prefab";
-
-            return Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), path);
-        }
-
+        
         private class InterruptedUrdfImportException : Exception
         {
             public InterruptedUrdfImportException(string message) : base(message)

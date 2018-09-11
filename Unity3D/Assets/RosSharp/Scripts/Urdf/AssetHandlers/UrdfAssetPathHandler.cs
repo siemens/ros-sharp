@@ -45,18 +45,34 @@ namespace RosSharp.Urdf
         
         public static string GetRelativeAssetPath(string absolutePath)
         {
-            var absolutePathUnityFormat = absolutePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var absolutePathUnityFormat = absolutePath.SetSeparatorChar();
             if (!absolutePathUnityFormat.StartsWith(Application.dataPath))
                 return null;
 
             var assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
-            return assetPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            return assetPath.SetSeparatorChar();
         }
 
         public static string GetFullAssetPath(string relativePath)
         {
             string fullPath = Application.dataPath + relativePath.Substring("Assets".Length);
-            return fullPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            return fullPath.SetSeparatorChar();
+        }
+
+        public static string GetRelativeAssetPathFromUrdfPath(string urdfPath)
+        {
+            if (!urdfPath.StartsWith(@"package://"))
+            {
+                Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
+                return null;
+            }
+
+            var path = urdfPath.Substring(10).SetSeparatorChar();
+
+            if (Path.GetExtension(path)?.ToLowerInvariant() == ".stl")
+                path = path.Substring(0, path.Length - 3) + "prefab";
+
+            return Path.Combine(packageRoot, path);
         }
         #endregion
 
