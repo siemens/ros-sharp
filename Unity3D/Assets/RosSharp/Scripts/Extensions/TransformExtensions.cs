@@ -37,6 +37,15 @@ namespace RosSharp
                 Object.DestroyImmediate(transform.GetChild(0).gameObject);
         }
 
+
+        public static T AddComponentIfNotExists<T>(this Transform transform) where T : Component
+        {
+            T component = transform.GetComponent<T>();
+            if (component == null)
+                component = transform.gameObject.AddComponent<T>();
+            return component;
+        }
+
         public static void SetParentAndAlign(this Transform transform, Transform parent, bool keepLocalTransform = true)
         {
             Vector3 localPosition = transform.localPosition;

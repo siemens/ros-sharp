@@ -15,11 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using RosSharp.RosBridgeClient;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,6 +32,7 @@ namespace RosSharp.Urdf
         {
             GameObject robotGameObject = new GameObject("Robot");
             robotGameObject.AddComponent<UrdfRobot>();
+            robotGameObject.AddComponent<RobotConfigurator>();
 
             UrdfLink urdfLink = UrdfLink.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
@@ -48,6 +48,7 @@ namespace RosSharp.Urdf
 
             GameObject robotGameObject = new GameObject(robot.name);
             UrdfRobot urdfRobot = robotGameObject.AddComponent<UrdfRobot>();
+            robotGameObject.AddComponent<RobotConfigurator>();
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
             UrdfMaterialHandler.InitializeRobotMaterials(robot);
@@ -57,17 +58,8 @@ namespace RosSharp.Urdf
             GameObjectUtility.SetParentAndAlign(robotGameObject, Selection.activeObject as GameObject);
             Undo.RegisterCreatedObjectUndo(robotGameObject, "Create " + robotGameObject.name);
             Selection.activeObject = robotGameObject;
-
-            urdfRobot.SetKinematic(true);
-
+            
             return urdfRobot;
-        }
-
-        private void SetKinematic(bool isKinematic)
-        {
-            Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-            foreach (Rigidbody rb in rigidbodies)
-                rb.isKinematic = isKinematic;
         }
 
         private void GenerateUniqueJointNames()
@@ -87,20 +79,15 @@ namespace RosSharp.Urdf
             Robot robot = GetRobotData();
             if (robot == null) return;
 
-            WriteToUrdf(robot);
-
-            AssetDatabase.Refresh();
-        }
-
-        private void WriteToUrdf(Robot robot) 
-        {
             robot.WriteToUrdf();
+
             Debug.Log(robot.name + " was exported to " + UrdfExportPathHandler.GetExportDestination());
 
             UrdfMaterial.materials.Clear();
             UrdfExportPathHandler.Clear();
+            AssetDatabase.Refresh();
         }
-
+        
         private Robot GetRobotData()
         {
             Robot robot = new Robot(filePath, gameObject.name);
