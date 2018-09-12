@@ -18,41 +18,31 @@ using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
-    [CustomEditor(typeof(RobotConfigurator))]
-    public class RobotConfiguratorEditor : Editor
+    [CustomEditor(typeof(RosCommunicationPatcher))]
+    public class RosCommunicationPatcherEditor : Editor
     {
-        private RobotConfigurator robotConfigurator;
+        private RosCommunicationPatcher rosCommunicationPatcher;
         private static GUIStyle buttonStyle;
 
         public override void OnInspectorGUI()
         {
+            DrawDefaultInspector();
+
             if (buttonStyle == null)
                 buttonStyle = new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 };
 
-            robotConfigurator = (RobotConfigurator) target;
-
-            GUILayout.Space(5);
-            GUILayout.Label("All Rigidbodies", EditorStyles.boldLabel);
-            DisplaySettingsToggle(new GUIContent("Is Kinematic"), robotConfigurator.SetRigidbodiesIsKinematic);
-            DisplaySettingsToggle(new GUIContent("Use Gravity"), robotConfigurator.SetRigidbodiesUseGravity);
-            DisplaySettingsToggle(new GUIContent("Use Inertia from URDF", "If disabled, Unity will generate new inertia tensor values automatically."), 
-                robotConfigurator.SetUseUrdfInertiaData);
-
-            GUILayout.Space(5);
-            GUILayout.Label("All Colliders", EditorStyles.boldLabel);
-            DisplaySettingsToggle(new GUIContent("Convex"), robotConfigurator.SetCollidersConvex);
-
-            GUILayout.Space(5);
+            rosCommunicationPatcher = (RosCommunicationPatcher) target;
+            
             GUILayout.Label("All Urdf Joints", EditorStyles.boldLabel);
             DisplaySettingsToggle(new GUIContent("Publish Joint State", "Adds/removes a Joint State Reader on each joint."),
-                robotConfigurator.SetPublishJointStates);
+                rosCommunicationPatcher.SetPublishJointStates);
             DisplaySettingsToggle(new GUIContent("Subscribe Joint State", "Adds/removes a Joint State Writer on each joint."),
-                robotConfigurator.SetSubscribeJointStates);
+                rosCommunicationPatcher.SetSubscribeJointStates);
         }
 
         private delegate void SettingsHandler(bool enable);
 
-        private void DisplaySettingsToggle(GUIContent label, SettingsHandler handler)
+        private static void DisplaySettingsToggle(GUIContent label, SettingsHandler handler)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(label);

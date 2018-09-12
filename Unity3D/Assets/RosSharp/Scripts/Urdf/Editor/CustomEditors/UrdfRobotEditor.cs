@@ -15,22 +15,45 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using RosSharp.Urdf.Export;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf
 {
     [CustomEditor(typeof(UrdfRobot))]
     public class UrdfRobotEditor : Editor
     {
         private UrdfRobot urdfRobot;
+        private static GUIStyle buttonStyle;
 
         public override void OnInspectorGUI()
         {
-            urdfRobot = (UrdfRobot)target;
+            if (buttonStyle == null)
+                buttonStyle = new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 };
+
+            urdfRobot = (UrdfRobot) target;
 
             GUILayout.Space(5);
+            GUILayout.Label("All Rigidbodies", EditorStyles.boldLabel);
+            DisplaySettingsToggle(new GUIContent("Is Kinematic"), urdfRobot.SetRigidbodiesIsKinematic);
+            DisplaySettingsToggle(new GUIContent("Use Gravity"), urdfRobot.SetRigidbodiesUseGravity);
+            DisplaySettingsToggle(new GUIContent("Use Inertia from URDF", "If disabled, Unity will generate new inertia tensor values automatically."),
+                urdfRobot.SetUseUrdfInertiaData);
 
+            GUILayout.Space(5);
+            GUILayout.Label("All Colliders", EditorStyles.boldLabel);
+            DisplaySettingsToggle(new GUIContent("Convex"), urdfRobot.SetCollidersConvex);
+
+            GUILayout.Space(5);
+            GUILayout.Label("All Joints", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Generate Unique Joint Names");
+            if (GUILayout.Button("Generate", new GUIStyle (EditorStyles.miniButton) {fixedWidth = 155}))
+                urdfRobot.GenerateUniqueJointNames();
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(5);
             if (GUILayout.Button("Export robot to URDF file"))
             {
                 // Get existing open window or if none, make a new one:
@@ -40,6 +63,19 @@ namespace RosSharp.Urdf.Export
                 window.GetEditorPrefs();
                 window.Show();
             }
+        }
+
+        private delegate void SettingsHandler(bool enable);
+
+        private static void DisplaySettingsToggle(GUIContent label, SettingsHandler handler)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel(label);
+            if (GUILayout.Button("Enable", buttonStyle))
+                handler(true);
+            if (GUILayout.Button("Disable", buttonStyle))
+                handler(false);
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

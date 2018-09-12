@@ -232,7 +232,7 @@ namespace RosSharp.Urdf
                      Math.Abs(joint.axis.z) < Tolerance);
         }
 
-        private void GenerateUniqueJointName()
+        public void GenerateUniqueJointName()
         {
             JointName = transform.parent.name + "_" + transform.name + "_joint";
         }

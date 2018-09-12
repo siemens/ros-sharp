@@ -32,11 +32,12 @@ namespace RosSharp.Urdf
         {
             GameObject robotGameObject = new GameObject("Robot");
             robotGameObject.AddComponent<UrdfRobot>();
-            robotGameObject.AddComponent<RobotConfigurator>();
 
             UrdfLink urdfLink = UrdfLink.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
         }
+
+        #region Import
 
         public static void Create(string filename)
         {
@@ -50,7 +51,6 @@ namespace RosSharp.Urdf
 
             GameObject robotGameObject = new GameObject(robot.name);
             robotGameObject.AddComponent<UrdfRobot>();
-            robotGameObject.AddComponent<RobotConfigurator>();
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
             UrdfMaterialHandler.InitializeRobotMaterials(robot);
@@ -61,6 +61,44 @@ namespace RosSharp.Urdf
             Undo.RegisterCreatedObjectUndo(robotGameObject, "Create " + robotGameObject.name);
             Selection.activeObject = robotGameObject;
         }
+
+        #endregion
+
+        #region Configure Robot
+
+        public void SetCollidersConvex(bool convex)
+        {
+            foreach (MeshCollider meshCollider in GetComponentsInChildren<MeshCollider>())
+                meshCollider.convex = convex;
+        }
+
+        public void SetRigidbodiesIsKinematic(bool isKinematic)
+        {
+            foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+                rb.isKinematic = isKinematic;
+        }
+
+        public void SetUseUrdfInertiaData(bool useUrdfData)
+        {
+            foreach (UrdfInertial urdfInertial in GetComponentsInChildren<UrdfInertial>())
+                urdfInertial.UseUrdfData = useUrdfData;
+        }
+
+        public void SetRigidbodiesUseGravity(bool useGravity)
+        {
+            foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+                rb.useGravity = useGravity;
+        }
+
+        public void GenerateUniqueJointNames()
+        {
+            foreach (UrdfJoint urdfJoint in GetComponentsInChildren<UrdfJoint>())
+                urdfJoint.GenerateUniqueJointName();
+        }
+
+        #endregion
+
+        #region Export
 
         public void ExportRobotToUrdf(string exportRootFolder, string exportDestination)
         {
@@ -79,7 +117,7 @@ namespace RosSharp.Urdf
             UrdfExportPathHandler.Clear();
             AssetDatabase.Refresh();
         }
-        
+
         private Robot ExportRobotData()
         {
             Robot robot = new Robot(filePath, gameObject.name);
@@ -120,5 +158,7 @@ namespace RosSharp.Urdf
 
             return robot;
         }
+
+        #endregion
     }
 }
