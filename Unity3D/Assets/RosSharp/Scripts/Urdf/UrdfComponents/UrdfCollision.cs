@@ -60,7 +60,7 @@ namespace RosSharp.Urdf
             urdfCollision.geometryType = UrdfGeometry.GetGeometryType(collision.geometry);
 
             UrdfGeometryCollision.Create(collisionObject.transform, urdfCollision.geometryType, collision.geometry);
-            UrdfOrigin.SetTransformFromUrdf(collisionObject.transform, collision.origin);
+            UrdfOrigin.ImportOriginData(collisionObject.transform, collision.origin);
         }
     
         public Link.Collision ExportCollisionData()

@@ -54,7 +54,7 @@ namespace RosSharp.Urdf
                 UrdfInertial.Create(gameObject, link.inertial);
 
                 if (joint != null)
-                    UrdfJoint.Create(gameObject, joint);
+                    UrdfJoint.Create(gameObject, UrdfJoint.GetJointType(joint.type), joint);
             }
             else if (joint != null)
                 Debug.LogWarning("No Joint Component will be created in GameObject \"" + gameObject.name + "\" as it has no Rigidbody Component.\n"

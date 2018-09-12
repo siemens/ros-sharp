@@ -19,15 +19,17 @@ namespace RosSharp.Urdf
 {
     
     [CustomEditor(typeof(HingeJointLimitsManager))]
-    public class JointLimitsManagerEditor : Editor
+    public class HingeJointLimitsManagerEditor : Editor
     {
         private const float toleranceThreshold = 10;
+
+        private HingeJointLimitsManager hingeJointLimitsManager;
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            HingeJointLimitsManager hingeJointLimitsManager = (HingeJointLimitsManager)target;
+            hingeJointLimitsManager = (HingeJointLimitsManager)target;
             //if (EditorGUILayout.Foldout(true, "Angles"))
 
             EditorGUILayout.BeginHorizontal();

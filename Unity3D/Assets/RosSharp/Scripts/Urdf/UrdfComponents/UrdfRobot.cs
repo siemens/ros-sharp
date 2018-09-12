@@ -62,16 +62,9 @@ namespace RosSharp.Urdf
             Selection.activeObject = robotGameObject;
         }
 
-        private void GenerateUniqueJointNames()
-        {
-            foreach (UrdfJoint urdfJoint in GetComponentsInChildren<UrdfJoint>())
-                urdfJoint.GenerateUniqueJointName();
-        }
-
         public void ExportRobotToUrdf(string exportRootFolder, string exportDestination)
         {
             UrdfExportPathHandler.SetExportPath(exportRootFolder, exportDestination);
-            GenerateUniqueJointNames();
 
             filePath = Path.Combine(UrdfExportPathHandler.GetExportDestination(), name + ".urdf");
     
@@ -109,7 +102,7 @@ namespace RosSharp.Urdf
             List<string> jointNames = new List<string>();
             foreach (UrdfJoint urdfJoint in gameObject.GetComponentsInChildren<UrdfJoint>())
             {
-                Joint joint = urdfJoint.GetJointData();
+                Joint joint = urdfJoint.ExportJointData();
                 if (jointNames.Contains(urdfJoint.JointName))
                 {
                     EditorUtility.DisplayDialog("URDF Export Error",

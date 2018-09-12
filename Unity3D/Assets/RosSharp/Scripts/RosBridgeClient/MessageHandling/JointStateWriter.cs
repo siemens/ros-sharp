@@ -22,7 +22,6 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(Joint)), RequireComponent(typeof(UrdfJoint))]
     public class JointStateWriter : MonoBehaviour
     {
-        private Joint joint;
         private UrdfJoint urdfJoint;
 
         private float newState; // rad or m
@@ -31,7 +30,6 @@ namespace RosSharp.RosBridgeClient
 
         private void Start()
         {
-            joint = GetComponent<Joint>();
             urdfJoint = GetComponent<UrdfJoint>();
         }
 
@@ -45,25 +43,9 @@ namespace RosSharp.RosBridgeClient
         }
         private void WriteUpdate()
         {
-            if (urdfJoint.IsRevoluteOrContinuous)
-                WriteHingeJointUpdate();
-            else if (urdfJoint.JointType == UrdfJoint.JointTypes.Prismatic)
-                WritePrismaticJointUpdate();
-            
+            urdfJoint.UpdateJointState(newState-prevState);
+
             prevState = newState;
-        }
-
-        private void WriteHingeJointUpdate()
-        {
-            Vector3 anchor = transform.TransformPoint(joint.anchor);
-            Vector3 axis = transform.TransformDirection(joint.axis);
-            transform.RotateAround(anchor, axis, -(newState - prevState) * Mathf.Rad2Deg);
-        }
-
-        private void WritePrismaticJointUpdate()
-        {
-            Vector3 axis = transform.TransformDirection(joint.axis);
-            transform.Translate(axis * (newState - prevState));
         }
 
         public void Write(float state)

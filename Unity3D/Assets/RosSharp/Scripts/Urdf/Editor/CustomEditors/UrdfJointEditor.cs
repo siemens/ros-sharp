@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Export
 {
-    [CustomEditor(typeof(UrdfJoint))]
+    [CustomEditor(typeof(UrdfJoint), true)]
     public class UrdfJointEditor : Editor
     {
         private UrdfJoint urdfJoint;
@@ -43,7 +43,7 @@ namespace RosSharp.Urdf.Export
                     "Are you sure you want to change the joint type? This will erase all information currently stored in the joint.",
                     "Continue", "Cancel"))
                 {
-                    urdfJoint.ChangeJointType(newJointType);
+                    UrdfJoint.ChangeJointType(urdfJoint.gameObject, newJointType);
                 }
             }
             EditorGUILayout.EndVertical();
@@ -109,8 +109,8 @@ namespace RosSharp.Urdf.Export
             GUILayout.Space(5);
             EditorGUILayout.LabelField("Joint Limits");
 
-            urdfJoint.effortLimit = EditorGUILayout.DoubleField("Effort Limit", urdfJoint.effortLimit);
-            urdfJoint.velocityLimit = EditorGUILayout.DoubleField("Velocity Limit", urdfJoint.velocityLimit);
+            urdfJoint.EffortLimit = EditorGUILayout.DoubleField("Effort Limit", urdfJoint.EffortLimit);
+            urdfJoint.VelocityLimit = EditorGUILayout.DoubleField("Velocity Limit", urdfJoint.VelocityLimit);
 
             if (!urdfJoint.AreLimitsCorrect())
                 EditorGUILayout.HelpBox("Limits are required for this joint type. Please enter valid limit values in " + limitLocation + ".", MessageType.Warning);

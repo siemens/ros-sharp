@@ -41,7 +41,7 @@ namespace RosSharp.Urdf.Export
             if (GUILayout.Button("Add child link (with joint)"))
             {
                 UrdfLink childLink = UrdfLink.Create(urdfLink.transform);
-                UrdfJoint.Create(childLink.gameObject, "joint", jointType);
+                UrdfJoint.Create(childLink.gameObject, jointType);
             }
         }
     }
