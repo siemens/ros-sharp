@@ -19,11 +19,11 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    class UrdfOrigin
+    public static class UrdfOrigin
     {
         #region Import
 
-        public static void SetTransformFromUrdf(Transform transform, Origin origin)
+        public static void ImportOriginData(Transform transform, Origin origin)
         {
             if (origin != null)
             {
@@ -53,10 +53,10 @@ namespace RosSharp.Urdf
 
         #region Export
 
-        public static Origin ExportOriginToUrdf(Transform transform)
+        public static Origin ExportOriginData(Transform transform)
         {
-            double[] xyz = ExportXyzToUrdf(transform);
-            double[] rpy = ExportRpyToUrdf(transform);
+            double[] xyz = ExportXyzData(transform);
+            double[] rpy = ExportRpyData(transform);
 
             if (xyz != null || rpy != null)
                 return new Origin(xyz, rpy);
@@ -64,13 +64,13 @@ namespace RosSharp.Urdf
             return null;
         }
 
-        private static double[] ExportXyzToUrdf(Transform transform)
+        private static double[] ExportXyzData(Transform transform)
         {
             Vector3 xyzVector = transform.localPosition.Unity2Ros();
             return xyzVector == Vector3.zero ? null : xyzVector.ToRoundedDoubleArray();
         }
 
-        private static double[] ExportRpyToUrdf(Transform transform)
+        private static double[] ExportRpyData(Transform transform)
         {
             Vector3 rpyVector = new Vector3(
                 -transform.localEulerAngles.z * Mathf.Deg2Rad,

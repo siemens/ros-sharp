@@ -22,7 +22,7 @@ namespace RosSharp.Urdf
 {
     class UrdfGeometryVisual : UrdfGeometry
     {
-        public static GameObject Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
+        public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
         {
             GameObject geometryGameObject = null;
 
@@ -42,7 +42,7 @@ namespace RosSharp.Urdf
                     break;
                 case GeometryTypes.Mesh:
                     if (geometry != null)
-                        geometryGameObject = CreateMeshVisual(parent, geometry.mesh);
+                        geometryGameObject = CreateMeshVisual(geometry.mesh);
                     //else, let user add their own mesh gameObject
                     break;
             }
@@ -53,11 +53,9 @@ namespace RosSharp.Urdf
                 if (geometry != null)
                     SetScale(parent, geometry, geometryType);
             }
-            
-            return geometryGameObject;
         }
 
-        private static GameObject CreateMeshVisual(Transform parent, Link.Geometry.Mesh mesh)
+        private static GameObject CreateMeshVisual(Link.Geometry.Mesh mesh)
         {
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
             return meshObject == null ? null : (GameObject)PrefabUtility.InstantiatePrefab(meshObject);

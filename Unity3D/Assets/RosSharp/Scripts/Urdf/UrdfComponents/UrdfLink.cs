@@ -32,47 +32,51 @@ namespace RosSharp.Urdf
             UrdfCollisions.Create(linkObject.transform, link?.collisions);
             
             if (link != null)
-            {
-                linkObject.name = link.name;
-
-                if (joint?.origin != null)
-                    UrdfOrigin.SetTransformFromUrdf(urdfLink.transform, joint.origin);
-
-                if (link.inertial != null)
-                {
-                    UrdfInertial.Create(linkObject, link.inertial);
-
-                    if(joint != null)
-                        UrdfJoint.Create(linkObject, joint);
-                }
-                else if (joint != null)
-                    Debug.LogWarning("No Joint Component will be created in GameObject \"" + urdfLink.name + "\" as it has no Rigidbody Component.\n"
-                                     + "Please define an Inertial for Link \"" + link.name + "\" in the URDF file to create a Rigidbody Component.\n", linkObject);
-
-                foreach (Joint childJoint in link.joints)
-                {
-                    Link child = childJoint.ChildLink;
-                    UrdfLink.Create(urdfLink.transform, child, childJoint);
-                }
-            }
+                urdfLink.ImportLinkData(link, joint);
             else
+            {
                 UrdfInertial.Create(linkObject);
-            
-            EditorGUIUtility.PingObject(linkObject);
+                EditorGUIUtility.PingObject(linkObject);
+            }
 
             return urdfLink;
         }
+
+        private void ImportLinkData(Link link, Joint joint)
+        {
+            gameObject.name = link.name;
+
+            if (joint?.origin != null)
+                UrdfOrigin.ImportOriginData(transform, joint.origin);
+
+            if (link.inertial != null)
+            {
+                UrdfInertial.Create(gameObject, link.inertial);
+
+                if (joint != null)
+                    UrdfJoint.Create(gameObject, joint);
+            }
+            else if (joint != null)
+                Debug.LogWarning("No Joint Component will be created in GameObject \"" + gameObject.name + "\" as it has no Rigidbody Component.\n"
+                                 + "Please define an Inertial for Link \"" + link.name + "\" in the URDF file to create a Rigidbody Component.\n", gameObject);
+
+            foreach (Joint childJoint in link.joints)
+            {
+                Link child = childJoint.ChildLink;
+                UrdfLink.Create(transform, child, childJoint);
+            }
+        } 
         
-        public Link GetLinkData()
+        public Link ExportLinkData()
         {
             if(transform.localScale != Vector3.one)
                 Debug.LogWarning("Only visuals should be scaled. Scale on link \"" + gameObject.name + "\" cannot be saved to the URDF file.", gameObject);
 
             Link link = new Link(gameObject.name)
             {
-                visuals = gameObject.GetComponentInChildren<UrdfVisuals>().GetVisualsData(),
-                collisions = gameObject.GetComponentInChildren<UrdfCollisions>().GetCollisionsData(),
-                inertial = gameObject.GetComponent<UrdfInertial>()?.ExportInertial()
+                visuals = gameObject.GetComponentInChildren<UrdfVisuals>().ExportVisualsData(),
+                collisions = gameObject.GetComponentInChildren<UrdfCollisions>().ExportCollisionsData(),
+                inertial = gameObject.GetComponent<UrdfInertial>()?.ExportInertialData()
             };
             
             return link;

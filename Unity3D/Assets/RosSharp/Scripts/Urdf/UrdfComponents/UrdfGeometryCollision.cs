@@ -17,11 +17,10 @@ limitations under the License.
 
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace RosSharp.Urdf
 {
-    class UrdfGeometryCollision : UrdfGeometry
+    public class UrdfGeometryCollision : UrdfGeometry
     {
         public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
         {
@@ -79,15 +78,15 @@ namespace RosSharp.Urdf
 
             Link.Geometry.Cylinder cylinder = new Link.Geometry.Cylinder(0.5, 2); //Default unity cylinder sizes
 
-            meshCollider.sharedMesh = GetCylinderMesh(cylinder);
+            meshCollider.sharedMesh = CreateCylinderMesh(cylinder);
             meshCollider.convex = true;
 
             return gameObject;
         }
 
-        public static GameObject CreateMatchingMeshCollision(Transform visualToCopy)
+        public static void CreateMatchingMeshCollision(Transform parent, Transform visualToCopy)
         {
-            if (visualToCopy.childCount == 0) return null;
+            if (visualToCopy.childCount == 0) return;
 
             GameObject objectToCopy = visualToCopy.GetChild(0).gameObject;
             GameObject prefabObject = (GameObject)PrefabUtility.GetCorrespondingObjectFromSource(objectToCopy);
@@ -100,8 +99,8 @@ namespace RosSharp.Urdf
 
             collisionObject.name = objectToCopy.name;
             ConvertMeshToColliders(collisionObject, true);
-            return collisionObject;
 
+            collisionObject.transform.SetParentAndAlign(parent);
         }
 
         private static void ConvertMeshToColliders(GameObject gameObject, bool inflateColliders = false)

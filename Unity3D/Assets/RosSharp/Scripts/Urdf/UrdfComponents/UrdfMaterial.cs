@@ -23,28 +23,28 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    class UrdfMaterial
+    public static class UrdfMaterial
     {
         private const int RoundDigits = 4;
 
-        public static Dictionary<string, Link.Visual.Material> materials =
+        public static Dictionary<string, Link.Visual.Material> Materials =
             new Dictionary<string, Link.Visual.Material>();
 
         public static Link.Visual.Material GetMaterialData(Material material)
         {
             if (material == null) return null;
 
-            if (!materials.ContainsKey(material.name))
+            if (!Materials.ContainsKey(material.name))
             {
                 if (material.mainTexture != null)
                 {
                     Link.Visual.Material.Texture texture = GetTextureData(material.mainTexture);
-                    materials[material.name] = new Link.Visual.Material(material.name, null, texture);
+                    Materials[material.name] = new Link.Visual.Material(material.name, null, texture);
                 }
                 else if (!material.color.Equals(Color.clear))
                 {
                     Link.Visual.Material.Color color = new Link.Visual.Material.Color(GetRgba(material));
-                    materials[material.name] = new Link.Visual.Material(material.name, color);
+                    Materials[material.name] = new Link.Visual.Material(material.name, color);
                 }
                 else
                     return null;

@@ -24,7 +24,7 @@ namespace RosSharp.Urdf
     public class UrdfInertial : MonoBehaviour
     {
         private const int RoundDigits = 10;
-        private const float minInertia = 1e-8f;
+        private const float MinInertia = 1e-8f;
 
         public bool DisplayInertiaGizmo;
 
@@ -45,7 +45,7 @@ namespace RosSharp.Urdf
                 if (inertial.origin != null)
                     _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
 
-                urdfInertial.SetInertiaData(inertial.inertia);
+                urdfInertial.ImportInertiaData(inertial.inertia);
 
                 urdfInertial.UseUrdfData = true;
             }
@@ -96,8 +96,9 @@ namespace RosSharp.Urdf
         }
         #endregion
 
-        #region SetInertiaData
-        private void SetInertiaData(Link.Inertial.Inertia inertia)
+        #region Import
+   
+        private void ImportInertiaData(Link.Inertial.Inertia inertia)
         {
             Vector3 eigenvalues;
             Vector3[] eigenvectors;
@@ -127,8 +128,8 @@ namespace RosSharp.Urdf
         {
             for (int i = 0; i < 3; i++)
             {
-                if (vector3[i] < minInertia)
-                    vector3[i] = minInertia;
+                if (vector3[i] < MinInertia)
+                    vector3[i] = MinInertia;
             }
             return vector3;
         }
@@ -172,10 +173,11 @@ namespace RosSharp.Urdf
             }
             return new Quaternion(qx, qy, qz, qw);
         }
+
         #endregion
         
         #region Export
-        public Link.Inertial ExportInertial()
+        public Link.Inertial ExportInertialData()
         {
             Rigidbody _rigidbody = GetComponent<Rigidbody>();
 
@@ -184,12 +186,12 @@ namespace RosSharp.Urdf
 
             UpdateRigidBodyData();
             Origin inertialOrigin = new Origin(_rigidbody.centerOfMass.Unity2Ros().ToRoundedDoubleArray(), new double[] { 0, 0, 0 });
-            Link.Inertial.Inertia inertia = ExportInertia(_rigidbody);
+            Link.Inertial.Inertia inertia = ExportInertiaData(_rigidbody);
 
             return new Link.Inertial(Math.Round(_rigidbody.mass, RoundDigits), inertialOrigin, inertia);
         }
 
-        private Link.Inertial.Inertia ExportInertia(Rigidbody _rigidbody)
+        private Link.Inertial.Inertia ExportInertiaData(Rigidbody _rigidbody)
         {
             Matrix3x3 lamdaMatrix = new Matrix3x3(new [] {
                 _rigidbody.inertiaTensor[0],
@@ -201,9 +203,8 @@ namespace RosSharp.Urdf
             Matrix3x3 qMatrixTransposed = qMatrix.Transpose();
             
             Matrix3x3 inertiaMatrix = qMatrix * lamdaMatrix * qMatrixTransposed;
-            Link.Inertial.Inertia inertia = ToInertia(inertiaMatrix);
 
-            return ToRosCoordinates(inertia);
+            return ToRosCoordinates(ToInertia(inertiaMatrix));
         }
 
         private static Matrix3x3 Quaternion2Matrix(Quaternion quaternion)

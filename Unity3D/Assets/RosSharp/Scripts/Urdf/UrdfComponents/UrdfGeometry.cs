@@ -16,8 +16,6 @@ limitations under the License.
 */
 
 using System;
-using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -27,29 +25,31 @@ namespace RosSharp.Urdf
         private const int RoundDigits = 6;
         public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
-        public static Link.Geometry GetGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
+        public static Link.Geometry ExportGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
         {
             Link.Geometry geometry = null;
             switch (geometryType)
             {
                 case GeometryTypes.Box:
-                    geometry = new Link.Geometry(new Link.Geometry.Box(GetUrdfSize(transform)));
+                    geometry = new Link.Geometry(new Link.Geometry.Box(ExportUrdfSize(transform)));
                     break;
                 case GeometryTypes.Cylinder:
                     geometry = new Link.Geometry(
                         null,
-                        new Link.Geometry.Cylinder(GetUrdfRadius(transform), GetCylinderHeight(transform)));
+                        new Link.Geometry.Cylinder(ExportUrdfRadius(transform), ExportCylinderHeight(transform)));
                     break;
                 case GeometryTypes.Sphere:
-                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(GetUrdfRadius(transform)));
+                    geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(ExportUrdfRadius(transform)));
                     break;
                 case GeometryTypes.Mesh:
-                    geometry = GetGeometryMeshData(transform.GetChild(0).gameObject, GetUrdfSize(transform), isCollisionGeometry);
+                    geometry = ExportGeometryMeshData(transform.GetChild(0).gameObject, ExportUrdfSize(transform), isCollisionGeometry);
                     break;
             }
 
             return geometry;
         }
+        
+        #region Import Helpers
 
         public static GeometryTypes GetGeometryType(Link.Geometry geometry)
         {
@@ -63,97 +63,39 @@ namespace RosSharp.Urdf
             return GeometryTypes.Mesh;
         }
 
-        #region Simple Shape Export Helpers
-
-        private static double[] GetUrdfSize(Transform transform)
+        public static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
         {
-            return transform.localScale.Unity2RosScale().ToRoundedDoubleArray();
-        }
-
-        private static double GetUrdfRadius(Transform transform)
-        {
-            return Math.Round(transform.localScale.x / 2, RoundDigits);
-        }
-
-        private static double GetCylinderHeight(Transform transform)
-        {
-            return Math.Round(transform.localScale.y * 2, RoundDigits);
-        }
-
-        #endregion
-
-        #region Mesh Export Helpers
-
-        private static Link.Geometry GetGeometryMeshData(GameObject geometryObject, double[] urdfSize, bool isCollisionGeometry)
-        {
-            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(geometryObject));
-            bool foundExistingColladaOrStl = false;
-
-            if (prefabPath != null && prefabPath != "")
+            switch (geometryType)
             {
-                if (prefabPath.ToLower().Contains(".dae"))
-                    foundExistingColladaOrStl = true;
-                else //Find STL file that corresponds to the prefab, if it already exists
-                {
-                    string[] foldersToSearch = { Path.GetDirectoryName(prefabPath) };
-                    string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
-                    
-                    foreach (string guid2 in AssetDatabase.FindAssets(prefabName, foldersToSearch))
+                case GeometryTypes.Box:
+                    transform.localScale =
+                        new Vector3((float)geometry.box.size[1], (float)geometry.box.size[2], (float)geometry.box.size[0]);
+                    break;
+                case GeometryTypes.Cylinder:
+                    transform.localScale = new Vector3(
+                        (float)geometry.cylinder.radius * 2,
+                        (float)geometry.cylinder.length / 2,
+                        (float)geometry.cylinder.radius * 2);
+                    break;
+                case GeometryTypes.Sphere:
+                    transform.localScale = new Vector3(
+                        (float)geometry.sphere.radius * 2,
+                        (float)geometry.sphere.radius * 2,
+                        (float)geometry.sphere.radius * 2);
+                    break;
+                case GeometryTypes.Mesh:
+                    if (geometry?.mesh?.scale != null)
                     {
-                        if (AssetDatabase.GUIDToAssetPath(guid2).ToLower().Contains(".stl"))
-                        {
-                            prefabPath = AssetDatabase.GUIDToAssetPath(guid2);
-                            foundExistingColladaOrStl = true;
-                            break;
-                        }
+                        Vector3 scale = geometry.mesh.scale.ToVector3().Ros2UnityScale();
+
+                        transform.localScale = Vector3.Scale(transform.localScale, scale);
+                        transform.localPosition = Vector3.Scale(transform.localPosition, scale);
                     }
-                }
+                    break;
             }
-
-            string newFilePath = "";
-            if (foundExistingColladaOrStl)
-                newFilePath = CopyAssetToExportDestination(prefabPath);
-            else
-            {
-                Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
-                          + geometryObject.name + ". Exporting a new STL file.", geometryObject);
-
-                newFilePath = CreateNewStlFile(geometryObject, isCollisionGeometry);
-            }
-
-            string packagePath = UrdfExportPathHandler.GetPackagePathForMesh(newFilePath);
-
-            return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, urdfSize));
         }
 
-        private static string CopyAssetToExportDestination(string prefabPath)
-        {
-            string newPrefabPath = UrdfExportPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
-            newPrefabPath = newPrefabPath.SetSeparatorChar();
-
-            prefabPath = UrdfAssetPathHandler.GetFullAssetPath(prefabPath);
-
-            if(prefabPath != newPrefabPath) //Don't move prefab if it's already in the right place
-                File.Copy(prefabPath, newPrefabPath, true);
-
-            return newPrefabPath;
-        }
-
-        private static string CreateNewStlFile(GameObject geometryObject, bool isCollisionGeometry)
-        {
-            string newMeshPath = UrdfExportPathHandler.GetNewMeshPath(geometryObject.name + ".stl");
-
-            StlExporter stlExporter = new StlExporter(newMeshPath, geometryObject, isCollisionGeometry);
-            if (!stlExporter.Export())
-                Debug.LogWarning("Mesh export for geometry " + geometryObject.name + " failed.", geometryObject);
-            
-            return newMeshPath;
-        }
-
-        #endregion
-
-
-        public static Mesh GetCylinderMesh(Link.Geometry.Cylinder cylinder)
+        public static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
         {
             float height = (float)cylinder.length;
             float bottomRadius = (float)cylinder.radius;
@@ -162,6 +104,7 @@ namespace RosSharp.Urdf
             int nbHeightSeg = 30;
 
             int nbVerticesCap = nbSides + 1;
+
             #region Vertices
 
             // bottom + top + sides
@@ -331,49 +274,45 @@ namespace RosSharp.Urdf
             }
             #endregion
 
-            Mesh mesh = new Mesh();
-
-            mesh.vertices = vertices;
-            mesh.normals = normales;
-            mesh.uv = uvs;
-            mesh.triangles = triangles;
+            Mesh mesh = new Mesh
+            {
+                vertices = vertices,
+                normals = normales,
+                uv = uvs,
+                triangles = triangles
+            };
 
             mesh.RecalculateBounds();
-
             return mesh;
         }
 
-        public static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
+        #endregion
+
+        #region Export Helpers
+
+        private static double[] ExportUrdfSize(Transform transform)
         {
-            switch (geometryType)
-            {
-                case GeometryTypes.Box:
-                    transform.localScale =
-                        new Vector3((float)geometry.box.size[1], (float)geometry.box.size[2], (float)geometry.box.size[0]);
-                    break;
-                case GeometryTypes.Cylinder:
-                    transform.localScale = new Vector3(
-                        (float) geometry.cylinder.radius * 2,
-                        (float) geometry.cylinder.length / 2,
-                        (float) geometry.cylinder.radius * 2);
-                    break;
-                case GeometryTypes.Sphere:
-                    transform.localScale = new Vector3(
-                        (float)geometry.sphere.radius * 2,
-                        (float)geometry.sphere.radius * 2,
-                        (float)geometry.sphere.radius * 2);
-                    break;
-                case GeometryTypes.Mesh:
-                    if (geometry?.mesh?.scale != null)
-                    {
-                        Vector3 scale = geometry.mesh.scale.ToVector3().Ros2UnityScale();
-
-                        transform.localScale = Vector3.Scale(transform.localScale, scale);
-                        transform.localPosition = Vector3.Scale(transform.localPosition, scale);
-                    }
-                    break;
-            }
-
+            return transform.localScale.Unity2RosScale().ToRoundedDoubleArray();
         }
+
+        private static double ExportUrdfRadius(Transform transform)
+        {
+            return Math.Round(transform.localScale.x / 2, RoundDigits);
+        }
+
+        private static double ExportCylinderHeight(Transform transform)
+        {
+            return Math.Round(transform.localScale.y * 2, RoundDigits);
+        }
+
+        private static Link.Geometry ExportGeometryMeshData(GameObject geometryObject, double[] urdfSize, bool isCollisionGeometry)
+        {
+            string newFilePath = UrdfMeshExportHandler.CopyOrCreateMesh(geometryObject, isCollisionGeometry);
+            string packagePath = UrdfExportPathHandler.GetPackagePathForMesh(newFilePath);
+
+            return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, urdfSize));
+        }
+
+        #endregion
     }
 }

@@ -22,7 +22,7 @@ namespace RosSharp.Urdf
 {
     public class UrdfVisuals : MonoBehaviour
     {
-        public static UrdfVisuals Create(Transform parent, List<Link.Visual> visuals = null)
+        public static void Create(Transform parent, List<Link.Visual> visuals = null)
         {
             GameObject visualsObject = new GameObject("Visuals");
             visualsObject.transform.SetParentAndAlign(parent);
@@ -36,15 +36,13 @@ namespace RosSharp.Urdf
                 foreach (Link.Visual visual in visuals)
                     UrdfVisual.Create(urdfVisuals.transform, visual);
             }
-
-            return urdfVisuals;
         }
 
-        public List<Link.Visual> GetVisualsData()
+        public List<Link.Visual> ExportVisualsData()
         {
             UrdfVisual[] urdfVisuals = gameObject.GetComponentsInChildren<UrdfVisual>();
 
-            return urdfVisuals.Select(urdfCollision => urdfCollision.GetVisualData()).ToList();
+            return urdfVisuals.Select(urdfCollision => urdfCollision.ExportVisualData()).ToList();
         }
     }
 }

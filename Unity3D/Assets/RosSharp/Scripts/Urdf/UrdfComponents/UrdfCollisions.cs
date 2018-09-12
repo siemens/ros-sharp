@@ -23,7 +23,7 @@ namespace RosSharp.Urdf
 { 
     public class UrdfCollisions : MonoBehaviour
     {
-        public static UrdfCollisions Create(Transform parent, List<Link.Collision> collisions = null)
+        public static void Create(Transform parent, List<Link.Collision> collisions = null)
         {
             GameObject collisionsObject = new GameObject("Collisions");
             collisionsObject.transform.SetParentAndAlign(parent);
@@ -37,15 +37,12 @@ namespace RosSharp.Urdf
                 foreach (Link.Collision collision in collisions)
                     UrdfCollision.Create(urdfCollisions.transform, collision);
             }
-
-            return urdfCollisions;
         }
         
-        public List<Link.Collision> GetCollisionsData()
+        public List<Link.Collision> ExportCollisionsData()
         {
             UrdfCollision[] urdfCollisions = gameObject.GetComponentsInChildren<UrdfCollision>();
-
-            return urdfCollisions.Select(urdfCollision => urdfCollision.GetCollisionData()).ToList();
+            return urdfCollisions.Select(urdfCollision => urdfCollision.ExportCollisionData()).ToList();
         }
     }
 }

@@ -37,10 +37,7 @@ namespace RosSharp.Urdf
             if (visualToCopy != null)
             {
                 if (urdfCollision.geometryType == UrdfGeometry.GeometryTypes.Mesh)
-                {
-                    GameObject geometryGameObject = UrdfGeometryCollision.CreateMatchingMeshCollision(visualToCopy);
-                    geometryGameObject.transform.SetParentAndAlign(collisionObject.transform);
-                }
+                    UrdfGeometryCollision.CreateMatchingMeshCollision(collisionObject.transform, visualToCopy);
                 else
                     UrdfGeometryCollision.Create(collisionObject.transform, type);
 
@@ -66,14 +63,14 @@ namespace RosSharp.Urdf
             UrdfOrigin.SetTransformFromUrdf(collisionObject.transform, collision.origin);
         }
     
-        public Link.Collision GetCollisionData()
+        public Link.Collision ExportCollisionData()
         {
             CheckForUrdfCompatibility();
 
-            Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform, true);
+            Link.Geometry geometry = UrdfGeometry.ExportGeometryData(geometryType, transform, true);
             string collisionName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Collision(geometry, collisionName, UrdfOrigin.ExportOriginToUrdf(transform));
+            return new Link.Collision(geometry, collisionName, UrdfOrigin.ExportOriginData(transform));
         }
 
         private void CheckForUrdfCompatibility()
@@ -92,7 +89,6 @@ namespace RosSharp.Urdf
         public bool IsTransformed()
         {
             Transform childTransform = transform.GetChild(0);
-
             //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
             return (childTransform.localPosition != Vector3.zero
                     || childTransform.localScale != Vector3.one

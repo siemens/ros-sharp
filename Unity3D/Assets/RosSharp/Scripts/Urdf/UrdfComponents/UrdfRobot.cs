@@ -49,7 +49,7 @@ namespace RosSharp.Urdf
             }
 
             GameObject robotGameObject = new GameObject(robot.name);
-            UrdfRobot urdfRobot = robotGameObject.AddComponent<UrdfRobot>();
+            robotGameObject.AddComponent<UrdfRobot>();
             robotGameObject.AddComponent<RobotConfigurator>();
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
@@ -75,19 +75,19 @@ namespace RosSharp.Urdf
 
             filePath = Path.Combine(UrdfExportPathHandler.GetExportDestination(), name + ".urdf");
     
-            Robot robot = GetRobotData();
+            Robot robot = ExportRobotData();
             if (robot == null) return;
 
             robot.WriteToUrdf();
 
             Debug.Log(robot.name + " was exported to " + UrdfExportPathHandler.GetExportDestination());
 
-            UrdfMaterial.materials.Clear();
+            UrdfMaterial.Materials.Clear();
             UrdfExportPathHandler.Clear();
             AssetDatabase.Refresh();
         }
         
-        private Robot GetRobotData()
+        private Robot ExportRobotData()
         {
             Robot robot = new Robot(filePath, gameObject.name);
 
@@ -102,7 +102,7 @@ namespace RosSharp.Urdf
                         "Ok");
                     return null;
                 }
-                robot.links.Add(urdfLink.GetLinkData());
+                robot.links.Add(urdfLink.ExportLinkData());
                 linkNames.Add(urdfLink.name);
             }
 
@@ -123,7 +123,7 @@ namespace RosSharp.Urdf
                 if (joint != null) robot.joints.Add(joint);
             }
 
-            robot.materials = UrdfMaterial.materials.Values.ToList();
+            robot.materials = UrdfMaterial.Materials.Values.ToList();
 
             return robot;
         }

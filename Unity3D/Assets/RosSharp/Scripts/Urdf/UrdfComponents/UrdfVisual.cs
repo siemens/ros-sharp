@@ -33,9 +33,7 @@ namespace RosSharp.Urdf
             UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
 
             urdfVisual.geometryType = type;
-            GameObject geometryGameObject = UrdfGeometryVisual.Create(visualObject.transform, type);
-
-            if (geometryGameObject == null) return;
+            UrdfGeometryVisual.Create(visualObject.transform, type);
             
             EditorGUIUtility.PingObject(visualObject);
         }
@@ -45,13 +43,13 @@ namespace RosSharp.Urdf
             GameObject visualObject = new GameObject(visual.name ?? "unnamed");
             visualObject.transform.SetParentAndAlign(parent);
             UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
-            urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
-            
-            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
-            UrdfMaterialHandler.SetUrdfMaterial(visualObject, visual.material);
-            UrdfOrigin.SetTransformFromUrdf(visualObject.transform, visual.origin);
-        }
 
+            urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
+            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
+
+            UrdfMaterialHandler.SetUrdfMaterial(visualObject, visual.material);
+            UrdfOrigin.ImportOriginData(visualObject.transform, visual.origin);
+        }
 
         public void AddCorrespondingCollision()
         {
@@ -59,16 +57,16 @@ namespace RosSharp.Urdf
             UrdfCollision.Create(collisions.transform, geometryType, transform);
         }
 
-        public Link.Visual GetVisualData()
+        public Link.Visual ExportVisualData()
         {
             CheckForUrdfCompatibility();
 
-            Link.Geometry geometry = UrdfGeometry.GetGeometryData(geometryType, transform);
+            Link.Geometry geometry = UrdfGeometry.ExportGeometryData(geometryType, transform);
 
             Link.Visual.Material material = UrdfMaterial.GetMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
-            return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginToUrdf(transform), material);
+            return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginData(transform), material);
         }
         
         private void CheckForUrdfCompatibility()

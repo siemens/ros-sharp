@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient
 
             if (urdfJoint.IsRevoluteOrContinuous)
                 joint = new RevoluteJoint(GetComponent<HingeJoint>());
-            else if (urdfJoint.IsPrismatic)
+            else if (urdfJoint.JointType == UrdfJoint.JointTypes.Prismatic)
                 joint = new PrismaticJoint(GetComponent<ConfigurableJoint>());
         }
 

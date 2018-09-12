@@ -35,11 +35,9 @@ namespace RosSharp.Urdf
         public JointTypes JointType;
 
         public bool IsRevoluteOrContinuous => JointType == JointTypes.Continuous || JointType == JointTypes.Revolute;
-        public bool IsPrismatic => JointType == JointTypes.Prismatic;
-        public bool IsPlanar => JointType == JointTypes.Planar;
         
-        public double effortLimit = Double.PositiveInfinity;
-        public double velocityLimit = Double.PositiveInfinity;
+        public double EffortLimit = double.PositiveInfinity;
+        public double VelocityLimit = double.PositiveInfinity;
 
         private const int RoundDigits = 4;
         private const float Tolerance = 0.0000001f;
@@ -131,7 +129,7 @@ namespace RosSharp.Urdf
                 unityJoint.autoConfigureConnectedAnchor = true;
 
                 ConfigurableJoint cJoint = (ConfigurableJoint)unityJoint;
-                if (IsPrismatic)
+                if (JointType == JointTypes.Prismatic)
                 {
                     // degrees of freedom:
                     cJoint.xMotion = ConfigurableJointMotion.Limited;
@@ -143,7 +141,7 @@ namespace RosSharp.Urdf
 
                     gameObject.AddComponent<PrismaticJointLimitsManager>();
                 }
-                else if (IsPlanar)
+                else if (JointType == JointTypes.Planar)
                 {
                     // degrees of freedom:
                     cJoint.xMotion = ConfigurableJointMotion.Free;
@@ -166,9 +164,9 @@ namespace RosSharp.Urdf
         {
             if (IsRevoluteOrContinuous)
                 ConfigureRevoluteOrContinuousJoint(joint);
-            else if (IsPrismatic)
+            else if (JointType == JointTypes.Prismatic)
                 ConfigurePrismaticJoint(joint);
-            else if (IsPlanar)
+            else if (JointType == JointTypes.Planar)
                 ConfigurePlanarJoint(joint);
         }
 
@@ -270,14 +268,14 @@ namespace RosSharp.Urdf
                 GetJointTypeName(JointType),
                 gameObject.transform.parent.name,
                 gameObject.name,
-                UrdfOrigin.ExportOriginToUrdf(transform));
+                UrdfOrigin.ExportOriginData(transform));
 
             UnityEngine.Joint unityJoint = GetComponent<UnityEngine.Joint>();
 
             if (unityJoint == null)
                 return joint;
 
-            if (IsPlanar)
+            if (JointType == JointTypes.Planar)
             {
                 ConfigurableJoint cJoint = GetComponent<ConfigurableJoint>();
                 joint.axis = GetAxisData(Vector3.Cross(cJoint.axis, cJoint.secondaryAxis));
@@ -293,7 +291,7 @@ namespace RosSharp.Urdf
                 
             }
             //ConfigurableJoint data
-            else if (IsPrismatic || IsPlanar)
+            else if (JointType == JointTypes.Prismatic || JointType == JointTypes.Planar)
             {
                 ConfigurableJoint configurableJoint = GetComponent<ConfigurableJoint>();
                 joint.dynamics = new Joint.Dynamics(configurableJoint.xDrive.positionDamper, configurableJoint.xDrive.positionSpring);
@@ -308,14 +306,14 @@ namespace RosSharp.Urdf
 
         private Joint.Limit GetLimitData()
         {
-            if (IsPrismatic)
+            if (JointType == JointTypes.Prismatic)
             {
                 PrismaticJointLimitsManager prismaticLimits = GetComponent<PrismaticJointLimitsManager>();
                 return new Joint.Limit(
                     Math.Round(prismaticLimits.PositionLimitMin, RoundDigits),
                     Math.Round(prismaticLimits.PositionLimitMax, RoundDigits),
-                    effortLimit,
-                    velocityLimit);
+                    EffortLimit,
+                    VelocityLimit);
             }
             if (JointType == JointTypes.Revolute)
             {
@@ -323,16 +321,16 @@ namespace RosSharp.Urdf
                 return new Joint.Limit(
                     Math.Round(hingeJointLimits.LargeAngleLimitMin * Mathf.Deg2Rad, RoundDigits), 
                     Math.Round(hingeJointLimits.LargeAngleLimitMax * Mathf.Deg2Rad, RoundDigits), 
-                    effortLimit, 
-                    velocityLimit);
+                    EffortLimit, 
+                    VelocityLimit);
             }
-            if (IsPlanar)
+            if (JointType == JointTypes.Planar)
             {
                 ConfigurableJoint configurableJoint = GetComponent<ConfigurableJoint>();
                 return new Joint.Limit(
                     Math.Round(-configurableJoint.linearLimit.limit, RoundDigits),
                     Math.Round(configurableJoint.linearLimit.limit, RoundDigits),
-                    effortLimit, velocityLimit);
+                    EffortLimit, VelocityLimit);
             }
 
             return null;
@@ -346,12 +344,12 @@ namespace RosSharp.Urdf
 
         public bool AreLimitsCorrect()
         {
-            if (IsPlanar)
+            if (JointType == JointTypes.Planar)
             {
                 ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
                 return joint != null && joint.linearLimit.limit != 0;
             }
-            if (IsPrismatic)
+            if (JointType == JointTypes.Prismatic)
             {
                 PrismaticJointLimitsManager limits = GetComponent<PrismaticJointLimitsManager>();
                 return limits != null && limits.PositionLimitMin < limits.PositionLimitMax;
@@ -367,14 +365,14 @@ namespace RosSharp.Urdf
 
         private bool IsJointAxisDefined()
         {
-            if (IsRevoluteOrContinuous || IsPrismatic)
+            if (IsRevoluteOrContinuous || JointType == JointTypes.Prismatic)
             {
                 UnityEngine.Joint joint = GetComponent<UnityEngine.Joint>();
                 return !(Math.Abs(joint.axis.x) < Tolerance && 
                          Math.Abs(joint.axis.y) < Tolerance && 
                          Math.Abs(joint.axis.z) < Tolerance);
             }
-            if (IsPlanar)
+            if (JointType == JointTypes.Planar)
             {
                 ConfigurableJoint joint = GetComponent<ConfigurableJoint>();
                 return !(Math.Abs(joint.axis.x) < Tolerance &&

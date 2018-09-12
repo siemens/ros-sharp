@@ -47,7 +47,7 @@ namespace RosSharp.RosBridgeClient
         {
             if (urdfJoint.IsRevoluteOrContinuous)
                 WriteHingeJointUpdate();
-            else if (urdfJoint.IsPrismatic)
+            else if (urdfJoint.JointType == UrdfJoint.JointTypes.Prismatic)
                 WritePrismaticJointUpdate();
             
             prevState = newState;
