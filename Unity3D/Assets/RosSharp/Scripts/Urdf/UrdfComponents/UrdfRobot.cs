@@ -18,7 +18,6 @@ limitations under the License.
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RosSharp.RosBridgeClient;
 using UnityEditor;
 using UnityEngine;
 
@@ -53,7 +52,7 @@ namespace RosSharp.Urdf
             robotGameObject.AddComponent<UrdfRobot>();
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
-            UrdfMaterialHandler.InitializeRobotMaterials(robot);
+            UrdfMaterial.InitializeRobotMaterials(robot);
 
             UrdfLink.Create(robotGameObject.transform, robot.root);
 

@@ -24,6 +24,7 @@ namespace RosSharp.Urdf
     {
         //Relative to Assets folder
         private static string packageRoot;
+        private const string MaterialFolderName = "Materials";
 
         #region SetAssetRootFolder
         public static void SetPackageRoot(string newPath, bool correctingIncorrectPackageRoot = false)
@@ -32,8 +33,10 @@ namespace RosSharp.Urdf
 
             packageRoot = GetRelativeAssetPath(newPath);
 
-            if(correctingIncorrectPackageRoot)
-                UrdfMaterialHandler.MoveMaterialsToNewLocation(oldPackagePath);
+            AssetDatabase.CreateFolder(packageRoot, MaterialFolderName);
+
+            if (correctingIncorrectPackageRoot)
+                MoveMaterialsToNewLocation(oldPackagePath);
         }
         #endregion
 
@@ -80,6 +83,27 @@ namespace RosSharp.Urdf
         {
             return GetRelativeAssetPath(path) != null;
         }
+
+        #region Materials
+
+
+        private static void MoveMaterialsToNewLocation(string oldPackageRoot)
+        {
+            //TODO: fix issue where moving materials causes texture references to be lost
+            if (AssetDatabase.IsValidFolder(Path.Combine(oldPackageRoot, MaterialFolderName)))
+                AssetDatabase.MoveAsset(
+                    Path.Combine(oldPackageRoot, MaterialFolderName),
+                    Path.Combine(UrdfAssetPathHandler.GetPackageRoot(), MaterialFolderName));
+            else
+                AssetDatabase.CreateFolder(UrdfAssetPathHandler.GetPackageRoot(), MaterialFolderName);
+        }
+
+        public static string GetMaterialAssetPath(string materialName)
+        {
+            return Path.Combine(packageRoot, MaterialFolderName, Path.GetFileName(materialName) + ".mat");
+        }
+
+        #endregion
     }
 
 }

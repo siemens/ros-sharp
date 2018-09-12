@@ -47,7 +47,7 @@ namespace RosSharp.Urdf
             urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
             UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
 
-            UrdfMaterialHandler.SetUrdfMaterial(visualObject, visual.material);
+            UrdfMaterial.ImportUrdfMaterial(visualObject, visual.material);
             UrdfOrigin.ImportOriginData(visualObject.transform, visual.origin);
         }
 
@@ -63,7 +63,7 @@ namespace RosSharp.Urdf
 
             Link.Geometry geometry = UrdfGeometry.ExportGeometryData(geometryType, transform);
 
-            Link.Visual.Material material = UrdfMaterial.GetMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
+            Link.Visual.Material material = UrdfMaterial.ExportMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
             return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginData(transform), material);
