@@ -63,7 +63,10 @@ namespace RosSharp.Urdf
 
             Link.Geometry geometry = UrdfGeometry.ExportGeometryData(geometryType, transform);
 
-            Link.Visual.Material material = UrdfMaterial.ExportMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
+            Link.Visual.Material material = null;
+            if (!(geometry.mesh != null && geometry.mesh.filename.ToLower().EndsWith(".dae"))) //Collada files contain their own materials
+                material = UrdfMaterial.ExportMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
+
             string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
 
             return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginData(transform), material);

@@ -4,63 +4,89 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    public static class UrdfMeshExportHandler {
-
+    public static class UrdfMeshExportHandler
+    {
         public static string CopyOrCreateMesh(GameObject geometryObject, bool isCollisionGeometry)
         {
-            string prefabPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(geometryObject));
-            bool foundExistingColladaOrStl = false;
+            string prefabPath = GetPrefabPath(geometryObject);
 
+            bool foundExistingColladaOrStl = false;
             if (prefabPath != null && prefabPath != "")
             {
-                if (prefabPath.ToLower().Contains(".dae"))
+                if (Path.GetExtension(prefabPath).ToLower() == ".dae")
+                {
                     foundExistingColladaOrStl = true;
+                }
                 else //Find STL file that corresponds to the prefab, if it already exists
                 {
-                    string[] foldersToSearch = { Path.GetDirectoryName(prefabPath) };
+                    string[] foldersToSearch = {Path.GetDirectoryName(prefabPath)};
                     string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
 
                     foreach (string guid2 in AssetDatabase.FindAssets(prefabName, foldersToSearch))
                     {
-                        if (AssetDatabase.GUIDToAssetPath(guid2).ToLower().Contains(".stl"))
+                        string possiblePath = AssetDatabase.GUIDToAssetPath(guid2);
+                        if (possiblePath.ToLower().Contains(".stl"))
                         {
-                            prefabPath = AssetDatabase.GUIDToAssetPath(guid2);
+                            prefabPath = possiblePath;
                             foundExistingColladaOrStl = true;
                             break;
                         }
                     }
                 }
             }
-
-            string newFilePath = "";
+            
             if (foundExistingColladaOrStl)
-                newFilePath = CopyAssetToExportDestination(prefabPath);
-            else
-            {
-                Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
-                          + geometryObject.name + ". Exporting a new STL file.", geometryObject);
+                return CopyMeshToExportDestination(prefabPath);
 
-                newFilePath = CreateNewStlFile(geometryObject, isCollisionGeometry);
-            }
-
-            return newFilePath;
+            return CreateNewStlFile(geometryObject, isCollisionGeometry);
         }
 
-        private static string CopyAssetToExportDestination(string prefabPath)
+        private static void CopyDaeTextureToExportDestination(string prefabPath, string newFolderLocation)
+        {
+            //Get material from Collada prefab
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(prefabPath);
+
+            if (material.mainTexture == null) return;
+            
+            //Get relative subfolder where texture is, compared to the DAE file.
+            string commonFolder = Path.GetDirectoryName(prefabPath).SetSeparatorChar();
+            string texturePath = AssetDatabase.GetAssetPath(material.mainTexture).SetSeparatorChar();
+            string relativeLocation = "";
+            if (texturePath.Contains(commonFolder))
+                relativeLocation = texturePath.Substring(commonFolder.Length + 1);
+                
+            string newTexturePath = Path.Combine(newFolderLocation, relativeLocation);
+            Directory.CreateDirectory(Path.GetDirectoryName(newTexturePath));
+
+            if (UrdfAssetPathHandler.IsValidAssetPath(newTexturePath))
+                CopyFileToNewLocation(texturePath, newTexturePath);
+        }
+
+        private static string CopyMeshToExportDestination(string prefabPath)
         {
             string newPrefabPath = UrdfExportPathHandler.GetNewMeshPath(Path.GetFileName(prefabPath));
-            newPrefabPath = newPrefabPath.SetSeparatorChar();
+
+            if (Path.GetExtension(prefabPath)?.ToLower() == ".dae")
+                CopyDaeTextureToExportDestination(prefabPath, Path.GetDirectoryName(newPrefabPath));
 
             prefabPath = UrdfAssetPathHandler.GetFullAssetPath(prefabPath);
-
-            if (prefabPath != newPrefabPath) //Don't move prefab if it's already in the right place
-                File.Copy(prefabPath, newPrefabPath, true);
+            
+            CopyFileToNewLocation(prefabPath, newPrefabPath);
 
             return newPrefabPath;
         }
 
+        private static void CopyFileToNewLocation(string oldPath, string newPath)
+        {
+            if (oldPath != newPath)
+                File.Copy(oldPath, newPath, true);
+        }
+
         private static string CreateNewStlFile(GameObject geometryObject, bool isCollisionGeometry)
         {
+            Debug.Log("Did not find an existing STL or DAE file for Geometry Mesh "
+                      + geometryObject.name + ". Exporting a new STL file.", geometryObject);
+
             string newMeshPath = UrdfExportPathHandler.GetNewMeshPath(geometryObject.name + ".stl");
 
             StlExporter stlExporter = new StlExporter(newMeshPath, geometryObject, isCollisionGeometry);
@@ -69,6 +95,10 @@ namespace RosSharp.Urdf
 
             return newMeshPath;
         }
-        
+
+        private static string GetPrefabPath(GameObject gameObject)
+        {
+            return AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(gameObject));
+        } 
     }
 }

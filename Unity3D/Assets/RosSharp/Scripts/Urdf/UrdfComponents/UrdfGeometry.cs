@@ -63,7 +63,7 @@ namespace RosSharp.Urdf
             return GeometryTypes.Mesh;
         }
 
-        public static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
+        protected static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
         {
             switch (geometryType)
             {
@@ -95,7 +95,7 @@ namespace RosSharp.Urdf
             }
         }
 
-        public static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
+        protected static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
         {
             float height = (float)cylinder.length;
             float bottomRadius = (float)cylinder.radius;
