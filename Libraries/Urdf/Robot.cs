@@ -106,7 +106,7 @@ namespace RosSharp.Urdf
 
         public void WriteToUrdf()
         {
-            Directory.CreateDirectory(Directory.GetParent(filename).FullName);
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
             XmlWriterSettings settings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = false };
 
             using (XmlWriter writer = XmlWriter.Create(filename, settings))
@@ -124,6 +124,8 @@ namespace RosSharp.Urdf
                
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
+
+                writer.Close();
             }
         }
     }

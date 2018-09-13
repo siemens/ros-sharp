@@ -4,15 +4,15 @@ using RosSharp.Urdf;
 
 namespace RosSharp.UrdfTest
 {
-    public class UrdfExportConsoleExample
+    public static class UrdfExportConsoleExample
     {
         private static void Main(string[] args)
         {
-            char slash = Path.DirectorySeparatorChar;
-            string newRobotAssetPath = Directory.GetCurrentDirectory() + slash + ".." + slash + ".." + slash + "TestResults";
+            string newRobotAssetPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "TestResults");
             Directory.CreateDirectory(newRobotAssetPath);
 
-            Robot robot = new Robot(newRobotAssetPath + slash + "TESTING_EXPORT.urdf", "MrTesty");
+            string exportPath = Path.Combine(newRobotAssetPath, "testing_export.urdf");
+            Robot robot = new Robot(exportPath, "TestRobot");
 
             //Test material library
             Link.Visual.Material material = new Link.Visual.Material("blue", new Link.Visual.Material.Color(new double[] { 0, 0, 1, 1 }));
@@ -23,7 +23,7 @@ namespace RosSharp.UrdfTest
                 111.0,
                 new Origin(new double[] { 0, 1, 2 },
                             new double[] { 0, 1, 2 }),
-                new Link.Inertial.Inertia(0.01, 0.01, 0.01, 0.01, 0.01, 0.01)
+                new Link.Inertial.Inertia(0.01, 0.02, 0.03, 0.04, 0.05, 0.06)
                 ));
 
             link.visuals.Add(new Link.Visual(
@@ -63,6 +63,22 @@ namespace RosSharp.UrdfTest
 
             //Test export to URDF
             robot.WriteToUrdf();
+
+            //Output file to console
+            Console.WriteLine("Test URDF was written to " + exportPath + "\n");
+
+            if (File.Exists(exportPath))
+            {
+                using (TextReader tr = new StreamReader(exportPath))
+                {
+                    string line;
+                    while((line = tr.ReadLine()) != null)
+                        Console.WriteLine(line);
+                }
+            }
+
+            Console.WriteLine("\nPress any key to close...");
+            Console.ReadKey(true);
         }
     }
 }
