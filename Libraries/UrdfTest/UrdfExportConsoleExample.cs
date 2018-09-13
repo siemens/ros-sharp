@@ -61,6 +61,10 @@ namespace RosSharp.UrdfTest
 
             robot.joints.Add(joint);
 
+            //Test plugin
+            Plugin plugin = new Plugin("<hello>\n\tWORLD!\n</hello>");
+            robot.plugins.Add(plugin);
+
             //Test export to URDF
             robot.WriteToUrdf();
 

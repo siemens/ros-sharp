@@ -32,6 +32,7 @@ namespace RosSharp.Urdf
 
         public List<Link> links;
         public List<Joint> joints;
+        public List<Plugin> plugins;
 
         public Robot(string filename)
         {
@@ -40,9 +41,10 @@ namespace RosSharp.Urdf
             XElement node = xdoc.Element("robot");
             name = node.Attribute("name").Value;
 
-            materials = ReadMaterials(node); // multiple
-            links = ReadLinks(node); // multiple
-            joints = ReadJoints(node); // multiple
+            materials = ReadMaterials(node);
+            links = ReadLinks(node); 
+            joints = ReadJoints(node); 
+            plugins = ReadPlugins(node); 
 
             // build tree structure from link and joint lists:
             foreach (Link link in links)
@@ -61,6 +63,7 @@ namespace RosSharp.Urdf
 
             links = new List<Link>();
             joints = new List<Joint>();
+            plugins = new List<Plugin>();
             materials = new List<Link.Visual.Material>();
         }
 
@@ -88,20 +91,29 @@ namespace RosSharp.Urdf
             return joints.ToList();
         }
 
-        private static Link FindRootLink(List<Link> Links, List<Joint> Joints, int startIdx = 0)
+        private List<Plugin> ReadPlugins(XElement node)
         {
-            if (Joints.Count == 0)
-                return Links[0];
+            var plugins =
+                from child in node.Elements()
+                where child.Name != "link" && child.Name != "joint" && child.Name != "material"
+                select new Plugin(child.ToString());
+            return plugins.ToList();
+        }
 
-            Joint joint = Joints[0];
+        private static Link FindRootLink(List<Link> links, List<Joint> joints)
+        {
+            if (joints.Count == 0)
+                return links[0];
+
+            Joint joint = joints[0];
             string parent;
             do
             {
                 parent = joint.parent;
-                joint = Joints.Find(v => v.child == parent);
+                joint = joints.Find(v => v.child == parent);
             }
             while (joint != null);
-            return Links.Find(v => v.name == parent);
+            return links.Find(v => v.name == parent);
         }
 
         public void WriteToUrdf()
@@ -121,7 +133,9 @@ namespace RosSharp.Urdf
                     link.WriteToUrdf(writer);
                 foreach (var joint in joints)
                     joint.WriteToUrdf(writer);
-               
+                foreach (var plugin in plugins)
+                    plugin.WriteToUrdf(writer);
+                
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
 

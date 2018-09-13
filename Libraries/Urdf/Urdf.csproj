@@ -47,6 +47,7 @@
     <Compile Include="Joint.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Origin.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Robot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XAttributeExtensions.cs" />

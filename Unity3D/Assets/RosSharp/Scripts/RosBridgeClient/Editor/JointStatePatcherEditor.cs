@@ -18,10 +18,10 @@ using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
-    [CustomEditor(typeof(RosCommunicationPatcher))]
-    public class RosCommunicationPatcherEditor : Editor
+    [CustomEditor(typeof(JointStatePatcher))]
+    public class JointStatePatcherEditor : Editor
     {
-        private RosCommunicationPatcher rosCommunicationPatcher;
+        private JointStatePatcher jointStatePatcher;
         private static GUIStyle buttonStyle;
 
         public override void OnInspectorGUI()
@@ -31,13 +31,13 @@ namespace RosSharp.RosBridgeClient
             if (buttonStyle == null)
                 buttonStyle = new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 };
 
-            rosCommunicationPatcher = (RosCommunicationPatcher) target;
+            jointStatePatcher = (JointStatePatcher) target;
             
             GUILayout.Label("All Urdf Joints", EditorStyles.boldLabel);
             DisplaySettingsToggle(new GUIContent("Publish Joint State", "Adds/removes a Joint State Reader on each joint."),
-                rosCommunicationPatcher.SetPublishJointStates);
+                jointStatePatcher.SetPublishJointStates);
             DisplaySettingsToggle(new GUIContent("Subscribe Joint State", "Adds/removes a Joint State Writer on each joint."),
-                rosCommunicationPatcher.SetSubscribeJointStates);
+                jointStatePatcher.SetSubscribeJointStates);
         }
 
         private delegate void SettingsHandler(bool enable);

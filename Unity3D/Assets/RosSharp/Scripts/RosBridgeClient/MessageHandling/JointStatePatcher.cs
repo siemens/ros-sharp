@@ -19,9 +19,9 @@ using RosSharp.Urdf;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class RosCommunicationPatcher : MonoBehaviour
+    public class JointStatePatcher : MonoBehaviour
     {
-        public UrdfRobot urdfRobot;
+        public UrdfRobot UrdfRobot;
 
         public void SetPublishJointStates(bool publish) 
         {
@@ -30,14 +30,14 @@ namespace RosSharp.RosBridgeClient
                 JointStatePublisher jointStatePublisher = transform.AddComponentIfNotExists<JointStatePublisher>();
                 jointStatePublisher.JointStateReaders = new List<JointStateReader>();
 
-                foreach (UrdfJoint urdfJoint in urdfRobot.GetComponentsInChildren<UrdfJoint>())
+                foreach (UrdfJoint urdfJoint in UrdfRobot.GetComponentsInChildren<UrdfJoint>())
                     jointStatePublisher.JointStateReaders.Add(urdfJoint.transform.AddComponentIfNotExists<JointStateReader>());
             }
             else
             {
                 GetComponent<JointStatePublisher>()?.JointStateReaders.Clear();
 
-                foreach (JointStateReader reader in urdfRobot.GetComponentsInChildren<JointStateReader>())
+                foreach (JointStateReader reader in UrdfRobot.GetComponentsInChildren<JointStateReader>())
                     reader.transform.DestroyImmediateIfExists<JointStateReader>();
             }
         }
@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClient
                 jointStateSubscriber.JointStateWriters = new List<JointStateWriter>();
                 jointStateSubscriber.JointNames = new List<string>();
 
-                foreach (UrdfJoint urdfJoint in urdfRobot.GetComponentsInChildren<UrdfJoint>()) {
+                foreach (UrdfJoint urdfJoint in UrdfRobot.GetComponentsInChildren<UrdfJoint>()) {
                     jointStateSubscriber.JointStateWriters.Add(urdfJoint.transform.AddComponentIfNotExists<JointStateWriter>());
                     jointStateSubscriber.JointNames.Add(urdfJoint.JointName);
                 }
@@ -60,7 +60,7 @@ namespace RosSharp.RosBridgeClient
                 GetComponent<JointStateSubscriber>()?.JointStateWriters.Clear();
                 GetComponent<JointStateSubscriber>()?.JointNames.Clear();
 
-                foreach (JointStateWriter writer in urdfRobot.GetComponentsInChildren<JointStateWriter>())
+                foreach (JointStateWriter writer in UrdfRobot.GetComponentsInChildren<JointStateWriter>())
                     writer.transform.DestroyImmediateIfExists<JointStateWriter>();
             }
         }

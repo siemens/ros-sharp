@@ -32,6 +32,8 @@ namespace RosSharp.Urdf
             GameObject robotGameObject = new GameObject("Robot");
             robotGameObject.AddComponent<UrdfRobot>();
 
+            UrdfPlugins.Create(robotGameObject.transform);
+
             UrdfLink urdfLink = UrdfLink.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
             urdfLink.isBaseLink = true;
@@ -54,6 +56,7 @@ namespace RosSharp.Urdf
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
             UrdfMaterial.InitializeRobotMaterials(robot);
+            UrdfPlugins.Create(robotGameObject.transform, robot.plugins);
 
             UrdfLink.Create(robotGameObject.transform, robot.root);
 
@@ -148,6 +151,7 @@ namespace RosSharp.Urdf
             }
 
             robot.materials = UrdfMaterial.Materials.Values.ToList();
+            robot.plugins = GetComponentInChildren<UrdfPlugins>().ExportPluginsData();
 
             return robot;
         }
