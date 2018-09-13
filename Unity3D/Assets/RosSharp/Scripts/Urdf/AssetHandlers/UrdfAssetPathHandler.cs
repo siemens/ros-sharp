@@ -33,7 +33,8 @@ namespace RosSharp.Urdf
 
             packageRoot = GetRelativeAssetPath(newPath);
 
-            AssetDatabase.CreateFolder(packageRoot, MaterialFolderName);
+            if(!AssetDatabase.IsValidFolder(Path.Combine(packageRoot, MaterialFolderName)))
+                AssetDatabase.CreateFolder(packageRoot, MaterialFolderName);
 
             if (correctingIncorrectPackageRoot)
                 MoveMaterialsToNewLocation(oldPackagePath);

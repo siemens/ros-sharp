@@ -207,6 +207,16 @@ namespace RosSharp.Urdf
             return ExportSpecificJointData(joint);
         }
 
+        public static Joint ExportDefaultJoint(Transform transform)
+        {
+            return new Joint(
+                transform.parent.name + "_" + transform.name + "_joint",
+                JointTypes.Fixed.ToString().ToLower(),
+                transform.parent.name,
+                transform.name,
+                UrdfOrigin.ExportOriginData(transform));
+        }
+
         #region ExportHelpers
 
         protected virtual Joint ExportSpecificJointData(Joint joint)

@@ -28,21 +28,22 @@ namespace RosSharp.Urdf.Export
 
         public override void OnInspectorGUI()
         {
-            urdfLink = (UrdfLink)target;
-
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("Add child link"))
-            //    UrdfLink.Create(urdfLink.transform);
+            urdfLink = (UrdfLink) target;
 
             GUILayout.Space(5);
+            urdfLink.isBaseLink = EditorGUILayout.Toggle("Is Base Link", urdfLink.isBaseLink);
+            GUILayout.Space(5);
+
+            EditorGUILayout.BeginVertical("HelpBox");
             jointType = (UrdfJoint.JointTypes) EditorGUILayout.EnumPopup(
-                "Joint type", jointType);
+                "Child Joint Type", jointType);
 
             if (GUILayout.Button("Add child link (with joint)"))
             {
                 UrdfLink childLink = UrdfLink.Create(urdfLink.transform);
                 UrdfJoint.Create(childLink.gameObject, jointType);
             }
+            EditorGUILayout.EndVertical();
         }
     }
 }

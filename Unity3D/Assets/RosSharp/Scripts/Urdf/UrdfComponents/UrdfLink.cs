@@ -21,7 +21,9 @@ using UnityEngine;
 namespace RosSharp.Urdf
 {
     public class UrdfLink : MonoBehaviour
-    {
+    { 
+        public bool isBaseLink;
+
         public static UrdfLink Create(Transform parent, Link link = null, Joint joint = null)
         {
             GameObject linkObject = new GameObject("link");
@@ -44,6 +46,9 @@ namespace RosSharp.Urdf
 
         private void ImportLinkData(Link link, Joint joint)
         {
+            if (link.inertial == null && joint == null)
+                isBaseLink = true;
+
             gameObject.name = link.name;
 
             if (joint?.origin != null)
@@ -72,11 +77,12 @@ namespace RosSharp.Urdf
             if(transform.localScale != Vector3.one)
                 Debug.LogWarning("Only visuals should be scaled. Scale on link \"" + gameObject.name + "\" cannot be saved to the URDF file.", gameObject);
 
+            UrdfInertial urdfInertial = gameObject.GetComponent<UrdfInertial>();
             Link link = new Link(gameObject.name)
             {
                 visuals = gameObject.GetComponentInChildren<UrdfVisuals>().ExportVisualsData(),
                 collisions = gameObject.GetComponentInChildren<UrdfCollisions>().ExportCollisionsData(),
-                inertial = gameObject.GetComponent<UrdfInertial>()?.ExportInertialData()
+                inertial = urdfInertial == null ? null : urdfInertial.ExportInertialData()
             };
             
             return link;
