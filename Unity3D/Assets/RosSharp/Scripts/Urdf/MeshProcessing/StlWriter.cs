@@ -42,48 +42,33 @@ namespace RosSharp.Urdf
             this.meshes = meshes;
             this.convertToRightHandedCoordinates = convertToRightHandedCoordinates;
         }
-        
-		/**
-		 *	Write a collection of mesh assets to an STL file.
-		 *	No transformations are performed on meshes in this method.
-		 *	Eg, if you want to export a set of a meshes in a transform
-		 *	hierarchy the meshes should be transformed prior to this call.
-		 */
+
 		public bool WriteFile()
 		{
-            try
-            {
-                switch (fileType)
-				{
-					case FileType.Binary:
-					    // http://paulbourke.net/dataformats/stl/
-						// http://www.fabbers.com/tech/STL_Format
-					    WriteToBinaryFile();
-					break;
-                    case FileType.Ascii:
-                        WriteToAsciiFile();
-                        break;
-				}
-            }
-            catch(System.Exception e)
-            {
-            	Debug.LogError(e.ToString());
-            	return false;
-            }
+		    try
+		    {
+		        if (fileType == FileType.Binary)
+		            WriteToBinaryFile();
+		        else
+		            WriteToAsciiFile();
 
-            return true;
+		        return true;
+		    }
+		    catch (System.Exception e)
+		    {
+		        Debug.LogError(e.ToString());
+		        return false;
+		    }
 		}
 
 	    private void WriteToBinaryFile()
 	    {
 	        using (BinaryWriter writer = new BinaryWriter(File.Open(exportPath, FileMode.Create), new ASCIIEncoding()))
 	        {
-	            // 80 byte header
+                //80 byte header
 	            writer.Write(new byte[80]);
 
 	            uint totalTriangleCount = (uint) (meshes.Sum(x => x.triangles.Length) / 3);
-
-	            // unsigned long facet count (4 bytes)
 	            writer.Write(totalTriangleCount);
 
 	            foreach (Mesh mesh in meshes)
@@ -180,16 +165,11 @@ namespace RosSharp.Urdf
 	    private static Vector3[] Left2Right(Vector3[] v)
 	    {
 	        Vector3[] r = new Vector3[v.Length];
-
-	        for (int i = 0; i < v.Length; i++)
-	            r[i] = new Vector3(v[i].z, -v[i].x, v[i].y);
-
+            for (int i = 0; i < v.Length; i++)
+	            r[i] = v[i].Unity2Ros();
 	        return r;
 	    }
 
-        /**
-		 *	Average of 3 vectors.
-		 */
         private static Vector3 AverageNormal(Vector3 a, Vector3 b, Vector3 c)
 		{
 			return new Vector3(

@@ -42,7 +42,7 @@ namespace RosSharp
 
         private static GameObject CreateStlParent(string stlFile)
         {
-            Mesh[] meshes = StlImporter.Import(stlFile);
+            Mesh[] meshes = Urdf.StlImporter.ImportMesh(stlFile);
             if (meshes == null)
                 return null;
 

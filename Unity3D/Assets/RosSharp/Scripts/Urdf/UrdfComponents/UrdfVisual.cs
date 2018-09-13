@@ -47,7 +47,7 @@ namespace RosSharp.Urdf
             urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
             UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
 
-            UrdfMaterial.ImportUrdfMaterial(visualObject, visual.material);
+            UrdfMaterial.SetUrdfMaterial(visualObject, visual.material);
             UrdfOrigin.ImportOriginData(visualObject.transform, visual.origin);
         }
 
