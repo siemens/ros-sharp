@@ -128,8 +128,11 @@ namespace RosSharp.RosBridgeClient
 
         private static List<Uri> ReadResourceFileUris(string robotDescription)
         {
-            XElement root = XElement.Parse(robotDescription);
-            return (from seg in root.Descendants("mesh") where seg.Attribute("filename") != null select new Uri(seg.Attribute("filename").Value)).ToList();
+            return (
+                from xElement in XElement.Parse(robotDescription).Descendants()
+                where (xElement.Name.ToString().Equals("mesh") || xElement.Name.ToString().Equals("texture")) 
+                      && xElement.Attribute("filename") != null
+                select new Uri(xElement.Attribute("filename").Value)).ToList();
         }
 
         private List<ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse>> RequestResourceFiles(List<Uri> resourceFileUris)

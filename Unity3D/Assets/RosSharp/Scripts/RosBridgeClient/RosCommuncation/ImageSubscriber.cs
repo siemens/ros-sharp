@@ -20,12 +20,11 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(RosConnector))]
     public class ImageSubscriber : Subscriber<Messages.Sensor.CompressedImage>
     {
+        public MeshRenderer meshRenderer;
+
+        private Texture2D texture2D;
         private byte[] imageData;
         private bool isMessageReceived;
-
-        public MeshRenderer meshRenderer;
-        private Texture2D texture2D;
-
 
         protected override void Start()
         {
@@ -52,6 +51,7 @@ namespace RosSharp.RosBridgeClient
             meshRenderer.material.SetTexture("_MainTex", texture2D);
             isMessageReceived = false;
         }
+
     }
 }
 

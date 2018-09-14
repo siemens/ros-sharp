@@ -19,11 +19,11 @@ namespace RosSharp.RosBridgeClient
 {
     public class JointStatePublisher : Publisher<Messages.Sensor.JointState>
     {
-        private Messages.Sensor.JointState message;        
+        public List<JointStateReader> JointStateReaders;
         public string FrameId = "Unity";
 
-        public List<JointStateReader> JointStateReaders;
-
+        private Messages.Sensor.JointState message;    
+        
         protected override void Start()
         {
             base.Start();
@@ -47,6 +47,7 @@ namespace RosSharp.RosBridgeClient
                 effort = new float[jointStateLength]
             };
         }
+
         private void UpdateMessage()
         {
             message.header.Update();
