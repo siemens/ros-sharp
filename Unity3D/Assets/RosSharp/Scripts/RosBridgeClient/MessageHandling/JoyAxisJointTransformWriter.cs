@@ -80,6 +80,5 @@ namespace RosSharp.RosBridgeClient
             currentAxisValue = value;
             isMessageReceived = true;
         }
-
     }
 }
