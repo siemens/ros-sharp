@@ -45,6 +45,9 @@ namespace RosSharp.Urdf
 
         public static void Create(GameObject linkObject, JointTypes jointType, Joint joint = null)
         {
+            Rigidbody parentRigidbody = linkObject.transform.parent.gameObject.GetComponent<Rigidbody>();
+            if (parentRigidbody == null) return;
+
             UrdfJoint urdfJoint = AddCorrectJointType(linkObject, jointType);
 
             if (joint != null)

@@ -31,7 +31,10 @@ namespace RosSharp.RosBridgeClient
                 jointStatePublisher.JointStateReaders = new List<JointStateReader>();
 
                 foreach (UrdfJoint urdfJoint in UrdfRobot.GetComponentsInChildren<UrdfJoint>())
-                    jointStatePublisher.JointStateReaders.Add(urdfJoint.transform.AddComponentIfNotExists<JointStateReader>());
+                {
+                    if(urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                        jointStatePublisher.JointStateReaders.Add(urdfJoint.transform.AddComponentIfNotExists<JointStateReader>());
+                }
             }
             else
             {

@@ -22,17 +22,19 @@ namespace RosSharp.RosBridgeClient
     [RequireComponent(typeof(Joint)), RequireComponent(typeof(JointStateWriter)), RequireComponent(typeof(UrdfJoint))]
     public class JoyAxisJointTransformWriter : JoyAxisWriter
     {
-        public float MaximumVelocity;
+        public float MaxVelocity;
 
         private JointStateWriter jointStateWriter;
         private UrdfJoint urdfJoint;
-   
+
+        private bool isMessageReceived;
         private float lastMessageTime;
         private float state;
 
         private HingeJointLimitsManager hingeJointLimitsManager;
         private PrismaticJointLimitsManager prismaticJointLimitsManager;
         private bool useLimits;
+        private float currentAxisValue;
 
         private void Start()
         {
@@ -54,17 +56,29 @@ namespace RosSharp.RosBridgeClient
             state = Mathf.Clamp(state, limits.x, limits.y);
         }
 
-        public override void Write(float value)
+        private void Update()
         {
-            float actualTime = Time.timeSinceLevelLoad;
-            float deltaTime = actualTime - lastMessageTime;
-            state +=  value * MaximumVelocity * deltaTime;
+            if (isMessageReceived)
+                ProcessMessage();
+        }
+
+        private void ProcessMessage()
+        {
+            float deltaTime = Time.timeSinceLevelLoad - lastMessageTime;
+            state += currentAxisValue * MaxVelocity * deltaTime;
             if (useLimits)
                 ApplyLimits();
 
-            lastMessageTime = actualTime;
+            lastMessageTime = Time.timeSinceLevelLoad;
 
             jointStateWriter.Write(urdfJoint.IsRevoluteOrContinuous ? state * Mathf.Deg2Rad : state);
+            isMessageReceived = false;
+        }
+
+        public override void Write(float value)
+        {
+            currentAxisValue = value;
+            isMessageReceived = true;
         }
 
     }
