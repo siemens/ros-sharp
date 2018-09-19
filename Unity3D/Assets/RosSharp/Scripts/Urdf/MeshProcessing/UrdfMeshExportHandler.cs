@@ -74,7 +74,6 @@ namespace RosSharp.Urdf
         {
             //Get material from Collada prefab
             Material material = AssetDatabase.LoadAssetAtPath<Material>(prefabPath);
-
             if (material.mainTexture == null) return;
             
             //Get relative subfolder where texture is, compared to the DAE file.
@@ -83,12 +82,11 @@ namespace RosSharp.Urdf
             string relativeLocation = "";
             if (texturePath.Contains(commonFolder))
                 relativeLocation = texturePath.Substring(commonFolder.Length + 1);
-                
             string newTexturePath = Path.Combine(newFolderLocation, relativeLocation);
-            Directory.CreateDirectory(Path.GetDirectoryName(newTexturePath));
 
-            if (UrdfAssetPathHandler.IsValidAssetPath(newTexturePath))
-                CopyFileToNewLocation(UrdfAssetPathHandler.GetFullAssetPath(texturePath), newTexturePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(newTexturePath));
+            
+            CopyFileToNewLocation(UrdfAssetPathHandler.GetFullAssetPath(texturePath), newTexturePath);
         }
 
         private static void CopyFileToNewLocation(string oldPath, string newPath)
