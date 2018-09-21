@@ -61,8 +61,7 @@ namespace RosSharp.RosBridgeClient
             if (Publishers.ContainsKey(id))
                 Unadvertise(id);
 
-            Advertisement advertisement;
-            Publishers.Add(id, new Publisher<T>(id, topic, out advertisement));
+            Publishers.Add(id, new Publisher<T>(id, topic, out Advertisement advertisement));
             Send(advertisement);
             return id;
         }
@@ -195,7 +194,7 @@ namespace RosSharp.RosBridgeClient
             int I = 0;
             string id;
             do
-                id = name + ":" + (I++).ToString();
+                id = name + ":" + I++;
             while (dictionary.ContainsKey(id));
             return id;
         }
