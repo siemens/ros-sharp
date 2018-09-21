@@ -151,7 +151,7 @@ namespace RosSharp.RosBridgeClient
 
         private void ReceiveResourceFile(ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse> serviceReceiver, file_server.GetBinaryFileResponse serviceResponse)
         {
-            byte[] fileContents = (serviceResponse).value;
+            byte[] fileContents = serviceResponse.value;
             Uri resourceFileUri = new Uri((serviceReceiver.ServiceParameter).name);
 
             if (IsColladaFile(resourceFileUri))

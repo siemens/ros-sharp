@@ -20,7 +20,7 @@ using UnityEditor;
 
 namespace RosSharp.Urdf.Import
 {
-    public static class UrdfImportContextMenuItem
+    public static class UrdfGeneratorContextMenuItem
     {
         [MenuItem("Assets/Import Robot from URDF")]
         private static void CreateUrdfObject()

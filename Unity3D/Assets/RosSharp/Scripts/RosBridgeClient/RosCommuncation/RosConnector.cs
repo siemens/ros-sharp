@@ -34,26 +34,31 @@ namespace RosSharp.RosBridgeClient
 
         public void Awake()
         {
-            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol();
-            protocol.OnConnected += OnConnected;
-            protocol.OnClosed += OnClosed;
+            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed);
 
-            RosSocket = new RosSocket(protocol);
-        
             if (!IsConnected.WaitOne(timeout * 1000))
-            {
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
-            }
         }
 
-        private RosBridgeClient.Protocols.IProtocol GetProtocol()
+        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null)
         {
-            switch (Protocol)
+            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol(protocolType, serverUrl);
+            protocol.OnConnected += onConnected;
+            protocol.OnClosed += onClosed;
+
+            return new RosSocket(protocol);
+        }
+
+        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)
+        {
+            switch (protocol)
             {
                 case Protocols.WebSocketSharp:
-                    return new RosBridgeClient.Protocols.WebSocketSharpProtocol(RosBridgeServerUrl);
+                    return new RosBridgeClient.Protocols.WebSocketSharpProtocol(rosBridgeServerUrl);
+                case Protocols.WebSocketNET:
+                    return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
                 default:
-                    return new RosBridgeClient.Protocols.WebSocketNetProtocol(RosBridgeServerUrl);
+                    return null;
             }
         }
 

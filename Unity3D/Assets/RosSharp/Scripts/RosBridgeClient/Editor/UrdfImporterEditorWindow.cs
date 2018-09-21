@@ -20,12 +20,11 @@ using System.Threading;
 using UnityEngine;
 using UnityEditor;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.RosBridgeClient
 {
     public class UrdfImporterEditorWindow : EditorWindow
     {
-        private readonly string[] Protocols = new string[] { "WebSocketSharpProtocol", "WebSocketNetProtocol" };
-        private static int protocolNumber;
+        private static RosConnector.Protocols protocolType;
         private static string address;
         private static int timeout;
         private static string assetPath;
@@ -67,7 +66,7 @@ namespace RosSharp.Urdf.Import
         }
         private void GetEditorPrefs()
         {
-            protocolNumber = (EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
+            protocolType = (RosConnector.Protocols)(EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
                 EditorPrefs.GetInt("UrdfImporterProtocolNumber") : 1);
 
             address = (EditorPrefs.HasKey("UrdfImporterAddress") ?
@@ -84,7 +83,7 @@ namespace RosSharp.Urdf.Import
         }
         private void SetEditorPrefs()
         {
-            EditorPrefs.SetInt("UrdfImporterProtocol", protocolNumber);
+            EditorPrefs.SetInt("UrdfImporterProtocol", protocolType.GetHashCode());
             EditorPrefs.SetString("UrdfImporterAddress", address);
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
@@ -95,13 +94,21 @@ namespace RosSharp.Urdf.Import
             GUILayout.Label("URDF Asset Importer", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 100;
-            protocolNumber = EditorGUILayout.Popup("Protocol", protocolNumber, Protocols);
+            protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
             address = EditorGUILayout.TextField("Address", address);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
             timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
             EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.BeginHorizontal();
             assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
             EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
             if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
@@ -118,7 +125,7 @@ namespace RosSharp.Urdf.Import
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolNumber, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolType, address, timeout, assetPath));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
