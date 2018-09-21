@@ -151,7 +151,7 @@ namespace RosSharp.RosBridgeClient
 
         private void ReceiveResourceFile(ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse> serviceReceiver, file_server.GetBinaryFileResponse serviceResponse)
         {
-            byte[] fileContents = (serviceResponse).value;
+            byte[] fileContents = serviceResponse.value;
             Uri resourceFileUri = new Uri((serviceReceiver.ServiceParameter).name);
 
             if (IsColladaFile(resourceFileUri))
@@ -176,6 +176,7 @@ namespace RosSharp.RosBridgeClient
         {
             return Path.GetExtension(uri.LocalPath) == ".dae";
         }
+
         private void ImportColladaTextureFiles(Uri daeFileUri, string fileContents)
         {
             var serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, fileContents));

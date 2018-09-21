@@ -55,7 +55,7 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
-            OnConnected(null, EventArgs.Empty);
+            OnConnected?.Invoke(null, EventArgs.Empty);
             StartListen();
         }
 
@@ -65,7 +65,7 @@ namespace RosSharp.RosBridgeClient.Protocols
             {
                 await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
                 IsConnected.Reset();
-                OnClosed(null, EventArgs.Empty);
+                OnClosed?.Invoke(null, EventArgs.Empty);
             }
         }
 
@@ -85,9 +85,7 @@ namespace RosSharp.RosBridgeClient.Protocols
             IsConnected.WaitOne();
 
             if (clientWebSocket.State != WebSocketState.Open)
-            {
                 throw new WebSocketException(WebSocketError.InvalidState, "Error Sending Message. WebSocket State is: " + clientWebSocket.State);
-            }
 
             int messageCount = (int)Math.Ceiling((double)message.Length / SendChunkSize);
 
@@ -121,7 +119,7 @@ namespace RosSharp.RosBridgeClient.Protocols
 
                 } while (!result.EndOfMessage);
 
-                OnReceive.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
+                OnReceive?.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
             }
         }
     }
