@@ -52,6 +52,7 @@ namespace RosSharp.RosBridgeClient
     {
         private RosSocket rosSocket;
         private string localDirectory;
+        private string robotDescriptionParamName;
         public string RobotName { get; private set; }
 
         public string LocalDirectory
@@ -72,10 +73,11 @@ namespace RosSharp.RosBridgeClient
 
         public Dictionary<Uri, bool> RequestedResourceFiles = new Dictionary<Uri, bool>();
 
-        public UrdfImporter(RosSocket _rosSocket, string _localDirectory)
+        public UrdfImporter(RosSocket _rosSocket, string _localDirectory, string _robotDescriptionParamName = "/robot_description")
         {
             rosSocket = _rosSocket;
             localDirectory = _localDirectory;
+            robotDescriptionParamName = _robotDescriptionParamName;
         }
 
         public bool Import(int maxTimeOut = int.MaxValue)
@@ -85,7 +87,7 @@ namespace RosSharp.RosBridgeClient
                                                                                     new rosapi.GetParamRequest("/robot/name", "default"));
 
             var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(rosSocket, "/rosapi/get_param",
-                                                                                        new rosapi.GetParamRequest("/robot_description", "default"),
+                                                                                        new rosapi.GetParamRequest(robotDescriptionParamName, "default"),
                                                                                         Path.DirectorySeparatorChar + "robot_description.urdf");
 
             robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;

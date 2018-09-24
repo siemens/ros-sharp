@@ -31,6 +31,7 @@ namespace RosSharp.RosBridgeClient
 
         private int timeout;
         private string assetPath;
+        private string robotDescriptionParamName;
 
         private RosSocket rosSocket;
 
@@ -48,10 +49,11 @@ namespace RosSharp.RosBridgeClient
                 };
         }
 
-        public void BeginRosImport(RosConnector.Protocols protocolType, string serverUrl, int timeout, string assetPath)
+        public void BeginRosImport(RosConnector.Protocols protocolType, string serverUrl, int timeout, string assetPath, string robotDescriptionParamName = "/robot_description")
         {
             this.timeout = timeout;
             this.assetPath = assetPath;
+            this.robotDescriptionParamName = robotDescriptionParamName;
 
             // initialize
             ResetStatusEvents();
@@ -70,7 +72,7 @@ namespace RosSharp.RosBridgeClient
         private void ImportAssets()
         {
             // setup urdfImporter
-            UrdfImporter urdfImporter = new UrdfImporter(rosSocket, assetPath);
+            UrdfImporter urdfImporter = new UrdfImporter(rosSocket, assetPath, robotDescriptionParamName);
             StatusEvents["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
             StatusEvents["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
             StatusEvents["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];

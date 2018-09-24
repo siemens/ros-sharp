@@ -28,7 +28,8 @@ namespace RosSharp.RosBridgeClient
         private static string address;
         private static int timeout;
         private static string assetPath;
-      
+        private static string robotDescriptionParamName;
+
         private RosImportHandler importHandler;
 
         [MenuItem("RosBridgeClient/Import URDF Assets...")]
@@ -63,6 +64,7 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.DeleteKey("UrdfImporterAddress");
             EditorPrefs.DeleteKey("UrdfImporterAssetPath");
             EditorPrefs.DeleteKey("UrdfImporterTimeout");
+            EditorPrefs.DeleteKey("UrdfImporterRobotDescriptionParamName");
         }
         private void GetEditorPrefs()
         {
@@ -80,6 +82,10 @@ namespace RosSharp.RosBridgeClient
             timeout = (EditorPrefs.HasKey("UrdfImporterTimeout") ?
                 EditorPrefs.GetInt("UrdfImporterTimeout") :
                 10);
+
+            robotDescriptionParamName = (EditorPrefs.HasKey("UrdfImporterRobotDescriptionParamName") ?
+                EditorPrefs.GetString("UrdfImporterRobotDescriptionParamName") :
+                "/robot_description");
         }
         private void SetEditorPrefs()
         {
@@ -87,6 +93,7 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.SetString("UrdfImporterAddress", address);
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
+            EditorPrefs.SetString("UrdfImporterRobotDescriptionParamName", robotDescriptionParamName);
         }
 
         private void OnGUI()
@@ -110,6 +117,10 @@ namespace RosSharp.RosBridgeClient
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
+            EditorGUIUtility.labelWidth = 200;
+            robotDescriptionParamName = EditorGUILayout.TextField("Robot Description Param Name", robotDescriptionParamName);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
             if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
             {
@@ -125,7 +136,7 @@ namespace RosSharp.RosBridgeClient
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolType, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolType, address, timeout, assetPath, robotDescriptionParamName));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
