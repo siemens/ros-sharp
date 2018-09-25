@@ -18,7 +18,7 @@ using RosSharp.RosBridgeClient;
 
 // commands on ROS system:
 // launch before starting:
-// roslaunch file_server roslaunch file_server publish_description_turtlebot2.launch
+// roslaunch file_server publish_description_turtlebot2.launch
 
 namespace RosSharp.RosBridgeClientTest
 {

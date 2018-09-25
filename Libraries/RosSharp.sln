@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RosBridgeClient", "RosBridgeClient\RosBridgeClient.csproj", "{27CD898A-8840-4CDD-A475-4A672FD2EF50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RosBridgeClientTest", "RosBridgeClientTest\RosBridgeClientTest.csproj", "{4E1BB3D0-8254-4D23-BD1B-F6EC7AA562FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfImporter", "UrdfImporter\UrdfImporter.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urdf", "Urdf\Urdf.csproj", "{D33101DA-7196-4545-B708-C8E0C308C5FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfTest", "UrdfTest\UrdfTest.csproj", "{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RosBridgeClientUWP", "RosBridgeClientUWP\RosBridgeClientUWP.csproj", "{473E1A95-178E-4377-97A5-91D0FDACFE7E}"
 EndProject

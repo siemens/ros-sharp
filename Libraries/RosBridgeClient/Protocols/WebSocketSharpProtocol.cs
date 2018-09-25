@@ -59,17 +59,17 @@ namespace RosSharp.RosBridgeClient.Protocols
         
         private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
         {
-            OnReceive(sender, new MessageEventArgs(e.RawData));
+            OnReceive?.Invoke(sender, new MessageEventArgs(e.RawData));
         }
 
         private void Closed(object sender, EventArgs e)
         {
-            OnClosed(sender, e);
+            OnClosed?.Invoke(sender, e);
         }
 
         private void Connected(object sender, EventArgs e)
         {
-            OnConnected(sender, e);
+            OnConnected?.Invoke(sender, e);
         }
     }
 }
