@@ -55,15 +55,15 @@ namespace RosSharp.Urdf
 
         #endregion
 
-        protected override void ImportJointData(Joint joint)
+        public override void ImportJointData(Joint joint)
         {
             UnityJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
 
             if (joint.dynamics != null)
                 ((HingeJoint)UnityJoint).spring = GetJointSpring(joint.dynamics);
         }
-        
-        protected override Joint ExportSpecificJointData(Joint joint)
+
+        public override Joint ExportSpecificJointData(Joint joint)
         {
             joint.axis = GetAxisData(UnityJoint.axis);
             joint.dynamics = new Joint.Dynamics(

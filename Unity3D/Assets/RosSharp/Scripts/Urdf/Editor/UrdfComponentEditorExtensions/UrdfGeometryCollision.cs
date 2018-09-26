@@ -15,31 +15,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometryCollision : UrdfGeometry
     {
-        public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
+        public static void Create(Transform parent, UrdfRobot.GeometryTypes geometryType, Link.Geometry geometry = null)
         {
             GameObject geometryGameObject = null;
 
             switch (geometryType)
             {
-                case GeometryTypes.Box:
+                case UrdfRobot.GeometryTypes.Box:
                     geometryGameObject = new GameObject(geometryType.ToString());
                     geometryGameObject.AddComponent<BoxCollider>();
                     break;
-                case GeometryTypes.Cylinder:
+                case UrdfRobot.GeometryTypes.Cylinder:
                     geometryGameObject = CreateCylinderCollider();
                     break;
-                case GeometryTypes.Sphere:
+                case UrdfRobot.GeometryTypes.Sphere:
                     geometryGameObject = new GameObject(geometryType.ToString());
                     geometryGameObject.AddComponent<SphereCollider>();
                     break;
-                case GeometryTypes.Mesh:
+                case UrdfRobot.GeometryTypes.Mesh:
                     if (geometry != null)
                         geometryGameObject = CreateMeshCollider(geometry.mesh);
                     else

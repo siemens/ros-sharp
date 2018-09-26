@@ -15,32 +15,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
-    class UrdfGeometryVisual : UrdfGeometry
+    public class UrdfGeometryVisual : UrdfGeometry
     {
-        public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
+        public static void Create(Transform parent, UrdfRobot.GeometryTypes geometryType, Link.Geometry geometry = null)
         {
             GameObject geometryGameObject = null;
 
             switch (geometryType)
             {
-                case GeometryTypes.Box:
+                case UrdfRobot.GeometryTypes.Box:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     geometryGameObject.transform.DestroyImmediateIfExists<BoxCollider>();
                     break;
-                case GeometryTypes.Cylinder:
+                case UrdfRobot.GeometryTypes.Cylinder:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     geometryGameObject.transform.DestroyImmediateIfExists<CapsuleCollider>();
                     break;
-                case GeometryTypes.Sphere:
+                case UrdfRobot.GeometryTypes.Sphere:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     geometryGameObject.transform.DestroyImmediateIfExists<SphereCollider>();
                     break;
-                case GeometryTypes.Mesh:
+                case UrdfRobot.GeometryTypes.Mesh:
                     if (geometry != null)
                         geometryGameObject = CreateMeshVisual(geometry.mesh);
                     //else, let user add their own mesh gameObject
@@ -58,8 +57,7 @@ namespace RosSharp.Urdf
         private static GameObject CreateMeshVisual(Link.Geometry.Mesh mesh)
         {
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
-            return meshObject == null ? null : (GameObject)PrefabUtility.InstantiatePrefab(meshObject);
+            return meshObject == null ? null : (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(meshObject);
         }
-        
     }
 }

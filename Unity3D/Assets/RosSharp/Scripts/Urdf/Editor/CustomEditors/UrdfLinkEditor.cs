@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfLink))]
-    public class UrdfLinkEditor : Editor
+    public class UrdfLinkEditor : UnityEditor.Editor
     {
         private UrdfLink urdfLink;
         private UrdfJoint.JointTypes jointType = UrdfJoint.JointTypes.Fixed;
@@ -31,7 +31,7 @@ namespace RosSharp.Urdf.Export
             urdfLink = (UrdfLink) target;
 
             GUILayout.Space(5);
-            urdfLink.isBaseLink = EditorGUILayout.Toggle("Is Base Link", urdfLink.isBaseLink);
+            urdfLink.IsBaseLink = EditorGUILayout.Toggle("Is Base Link", urdfLink.IsBaseLink);
             GUILayout.Space(5);
 
             EditorGUILayout.BeginVertical("HelpBox");
@@ -40,8 +40,8 @@ namespace RosSharp.Urdf.Export
 
             if (GUILayout.Button("Add child link (with joint)"))
             {
-                UrdfLink childLink = UrdfLink.Create(urdfLink.transform);
-                UrdfJoint.Create(childLink.gameObject, jointType);
+                UrdfLink childLink = UrdfLinkExtensions.Create(urdfLink.transform);
+                UrdfJointExtensions.Create(childLink.gameObject, jointType);
             }
             EditorGUILayout.EndVertical();
         }

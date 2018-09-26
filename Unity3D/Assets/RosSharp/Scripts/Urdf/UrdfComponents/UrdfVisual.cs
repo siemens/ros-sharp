@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf
@@ -24,75 +23,6 @@ namespace RosSharp.Urdf
     public class UrdfVisual : MonoBehaviour
     {
         [SerializeField]
-        public UrdfGeometry.GeometryTypes geometryType;
-
-        public static void Create(Transform parent, UrdfGeometry.GeometryTypes type)
-        {
-            GameObject visualObject = new GameObject("unnamed");
-            visualObject.transform.SetParentAndAlign(parent);
-            UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
-
-            urdfVisual.geometryType = type;
-            UrdfGeometryVisual.Create(visualObject.transform, type);
-            
-            EditorGUIUtility.PingObject(visualObject);
-        }
-
-        public static void Create(Transform parent, Link.Visual visual)
-        {
-            GameObject visualObject = new GameObject(visual.name ?? "unnamed");
-            visualObject.transform.SetParentAndAlign(parent);
-            UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
-
-            urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
-            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
-
-            UrdfMaterial.SetUrdfMaterial(visualObject, visual.material);
-            UrdfOrigin.ImportOriginData(visualObject.transform, visual.origin);
-        }
-
-        public void AddCorrespondingCollision()
-        {
-            UrdfCollisions collisions = GetComponentInParent<UrdfLink>().GetComponentInChildren<UrdfCollisions>();
-            UrdfCollision.Create(collisions.transform, geometryType, transform);
-        }
-
-        public Link.Visual ExportVisualData()
-        {
-            CheckForUrdfCompatibility();
-
-            Link.Geometry geometry = UrdfGeometry.ExportGeometryData(geometryType, transform);
-
-            Link.Visual.Material material = null;
-            if (!(geometry.mesh != null && geometry.mesh.filename.ToLower().EndsWith(".dae"))) //Collada files contain their own materials
-                material = UrdfMaterial.ExportMaterialData(gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial);
-
-            string visualName = gameObject.name == "unnamed" ? null : gameObject.name;
-
-            return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginData(transform), material);
-        }
-        
-        private void CheckForUrdfCompatibility()
-        {
-            Transform childTransform = transform.GetChild(0);
-            if (IsTransformed())
-                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
-                                 "Make any translation, rotation, or scale changes to the parent Visual object instead.",
-                                  childTransform);
-
-            if (!transform.HasExactlyOneChild()) 
-                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. In "
-                                 + transform.parent.parent.name + ", move each Geometry into its own Visual element.", gameObject);
-        }
-        
-        public bool IsTransformed()
-        {
-            Transform childTransform = transform.GetChild(0);
-
-            //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
-            return (childTransform.localPosition != Vector3.zero
-                    || childTransform.localScale != Vector3.one
-                    || (geometryType != UrdfGeometry.GeometryTypes.Mesh && childTransform.localRotation != Quaternion.identity));
-        }
+        public UrdfRobot.GeometryTypes geometryType;
     }
 }

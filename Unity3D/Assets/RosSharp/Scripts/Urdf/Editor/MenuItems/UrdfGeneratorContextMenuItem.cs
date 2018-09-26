@@ -18,7 +18,7 @@ limitations under the License.
 using System.IO;
 using UnityEditor;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf.Editor
 {
     public static class UrdfGeneratorContextMenuItem
     {
@@ -29,7 +29,7 @@ namespace RosSharp.Urdf.Import
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
 
             if (Path.GetExtension(assetPath)?.ToLower() == ".urdf")
-                UrdfRobot.Create(UrdfAssetPathHandler.GetFullAssetPath(assetPath));
+                UrdfRobotExtensions.Create(UrdfAssetPathHandler.GetFullAssetPath(assetPath));
             else
                 EditorUtility.DisplayDialog("URDF Import",
                     "The file you selected was not a URDF file. A robot can only be imported from a valid URDF file.", "Ok");

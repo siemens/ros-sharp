@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfJoint), true)]
-    public class UrdfJointEditor : Editor
+    public class UrdfJointEditor : UnityEditor.Editor
     {
         private UrdfJoint urdfJoint;
         private bool showDetails;
@@ -43,7 +43,7 @@ namespace RosSharp.Urdf.Export
                     "Are you sure you want to change the joint type? This will erase all information currently stored in the joint.",
                     "Continue", "Cancel"))
                 {
-                    UrdfJoint.ChangeJointType(urdfJoint.gameObject, newJointType);
+                    UrdfJointExtensions.ChangeJointType(urdfJoint.gameObject, newJointType);
                 }
             }
             EditorGUILayout.EndVertical();

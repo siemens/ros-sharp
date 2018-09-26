@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfVisual))]
-    class UrdfVisualEditor : Editor
+    class UrdfVisualEditor : UnityEditor.Editor
     {
         private UrdfVisual urdfVisual;
 
@@ -59,7 +59,7 @@ namespace RosSharp.Urdf.Export
 
                 if (GUILayout.Button("Fix transformations"))
                 {
-                    bool transferRotation = urdfVisual.geometryType != UrdfGeometry.GeometryTypes.Mesh;
+                    bool transferRotation = urdfVisual.geometryType != UrdfRobot.GeometryTypes.Mesh;
                     urdfVisual.transform.MoveChildTransformToParent(transferRotation);
                 }
             }

@@ -14,36 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace RosSharp.Urdf
 {
     public class UrdfVisuals : MonoBehaviour
     {
-        public static void Create(Transform parent, List<Link.Visual> visuals = null)
-        {
-            GameObject visualsObject = new GameObject("Visuals");
-            visualsObject.transform.SetParentAndAlign(parent);
-            UrdfVisuals urdfVisuals = visualsObject.AddComponent<UrdfVisuals>();
-
-            visualsObject.hideFlags = HideFlags.NotEditable;
-            urdfVisuals.hideFlags = HideFlags.None;
-
-            if (visuals != null)
-            {
-                foreach (Link.Visual visual in visuals)
-                    UrdfVisual.Create(urdfVisuals.transform, visual);
-            }
-        }
-
-        public List<Link.Visual> ExportVisualsData()
-        {
-            UrdfVisual[] urdfVisuals = gameObject.GetComponentsInChildren<UrdfVisual>();
-
-            return urdfVisuals.Select(urdfCollision => urdfCollision.ExportVisualData()).ToList();
-        }
+        
     }
 }
 

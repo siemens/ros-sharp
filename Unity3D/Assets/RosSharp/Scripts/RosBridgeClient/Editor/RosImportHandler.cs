@@ -104,7 +104,7 @@ namespace RosSharp.RosBridgeClient
                 "Do you want to generate a " + robotName + " GameObject now?",
                 "Yes", "No"))
             {
-                Urdf.UrdfRobot.Create(Path.Combine(localDirectory, "robot_description.urdf"));
+                Urdf.Editor.UrdfRobotExtensions.Create(Path.Combine(localDirectory, "robot_description.urdf"));
             }
 
             StatusEvents["importComplete"].Set();

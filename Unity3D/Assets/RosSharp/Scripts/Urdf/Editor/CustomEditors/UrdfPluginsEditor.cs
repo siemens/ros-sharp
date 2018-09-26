@@ -18,12 +18,12 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfPlugins))]
-    class UrdfPluginsEditor : Editor
+    class UrdfPluginsEditor : UnityEditor.Editor
     {
-        private UrdfGeometry.GeometryTypes geometryType;
+        private UrdfRobot.GeometryTypes geometryType;
 
         public override void OnInspectorGUI()
         {
@@ -32,7 +32,7 @@ namespace RosSharp.Urdf.Export
             GUILayout.Space(8);
 
             if (GUILayout.Button("Add Plugin"))
-                UrdfPlugin.Create(urdfPlugins.transform);
+                UrdfPluginExtensions.Create(urdfPlugins.transform);
         }
     }
 }

@@ -15,11 +15,11 @@ limitations under the License.
 
 using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     
     [CustomEditor(typeof(HingeJointLimitsManager))]
-    public class HingeJointLimitsManagerEditor : Editor
+    public class HingeJointLimitsManagerEditor : UnityEditor.Editor
     {
         private const float toleranceThreshold = 10;
 

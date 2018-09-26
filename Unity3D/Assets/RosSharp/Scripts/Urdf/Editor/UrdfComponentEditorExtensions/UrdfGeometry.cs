@@ -18,30 +18,29 @@ limitations under the License.
 using System;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometry
     {
         private const int RoundDigits = 6;
-        public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
-        public static Link.Geometry ExportGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
+        public static Link.Geometry ExportGeometryData(UrdfRobot.GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
         {
             Link.Geometry geometry = null;
             switch (geometryType)
             {
-                case GeometryTypes.Box:
+                case UrdfRobot.GeometryTypes.Box:
                     geometry = new Link.Geometry(new Link.Geometry.Box(ExportUrdfSize(transform)));
                     break;
-                case GeometryTypes.Cylinder:
+                case UrdfRobot.GeometryTypes.Cylinder:
                     geometry = new Link.Geometry(
                         null,
                         new Link.Geometry.Cylinder(ExportUrdfRadius(transform), ExportCylinderHeight(transform)));
                     break;
-                case GeometryTypes.Sphere:
+                case UrdfRobot.GeometryTypes.Sphere:
                     geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(ExportUrdfRadius(transform)));
                     break;
-                case GeometryTypes.Mesh:
+                case UrdfRobot.GeometryTypes.Mesh:
                     geometry = ExportGeometryMeshData(transform.GetChild(0).gameObject, ExportUrdfSize(transform), isCollisionGeometry);
                     break;
             }
@@ -51,39 +50,39 @@ namespace RosSharp.Urdf
         
         #region Import Helpers
 
-        public static GeometryTypes GetGeometryType(Link.Geometry geometry)
+        public static UrdfRobot.GeometryTypes GetGeometryType(Link.Geometry geometry)
         {
             if (geometry.box != null)
-                return GeometryTypes.Box;
+                return UrdfRobot.GeometryTypes.Box;
             if (geometry.cylinder != null)
-                return GeometryTypes.Cylinder;
+                return UrdfRobot.GeometryTypes.Cylinder;
             if (geometry.sphere != null)
-                return GeometryTypes.Sphere;
+                return UrdfRobot.GeometryTypes.Sphere;
 
-            return GeometryTypes.Mesh;
+            return UrdfRobot.GeometryTypes.Mesh;
         }
 
-        protected static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
+        public static void SetScale(Transform transform, Link.Geometry geometry, UrdfRobot.GeometryTypes geometryType)
         {
             switch (geometryType)
             {
-                case GeometryTypes.Box:
+                case UrdfRobot.GeometryTypes.Box:
                     transform.localScale =
                         new Vector3((float)geometry.box.size[1], (float)geometry.box.size[2], (float)geometry.box.size[0]);
                     break;
-                case GeometryTypes.Cylinder:
+                case UrdfRobot.GeometryTypes.Cylinder:
                     transform.localScale = new Vector3(
                         (float)geometry.cylinder.radius * 2,
                         (float)geometry.cylinder.length / 2,
                         (float)geometry.cylinder.radius * 2);
                     break;
-                case GeometryTypes.Sphere:
+                case UrdfRobot.GeometryTypes.Sphere:
                     transform.localScale = new Vector3(
                         (float)geometry.sphere.radius * 2,
                         (float)geometry.sphere.radius * 2,
                         (float)geometry.sphere.radius * 2);
                     break;
-                case GeometryTypes.Mesh:
+                case UrdfRobot.GeometryTypes.Mesh:
                     if (geometry?.mesh?.scale != null)
                     {
                         Vector3 scale = geometry.mesh.scale.ToVector3().Ros2UnityScale();
@@ -95,7 +94,7 @@ namespace RosSharp.Urdf
             }
         }
 
-        protected static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
+        public static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
         {
             float height = (float)cylinder.length;
             float bottomRadius = (float)cylinder.radius;

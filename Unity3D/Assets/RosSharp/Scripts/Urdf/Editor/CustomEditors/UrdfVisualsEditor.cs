@@ -18,24 +18,24 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfVisuals))]
     class UrdfVisualsEditor : UnityEditor.Editor
     {
         private UrdfVisuals urdfVisuals;
-        private UrdfGeometry.GeometryTypes geometryType = UrdfGeometry.GeometryTypes.Box;
+        private UrdfRobot.GeometryTypes geometryType = UrdfRobot.GeometryTypes.Box;
 
         public override void OnInspectorGUI()
         {
             urdfVisuals = (UrdfVisuals)target;
 
             GUILayout.Space(10);
-            geometryType = (UrdfGeometry.GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
+            geometryType = (UrdfRobot.GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
             
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add visual"))
-                UrdfVisual.Create(urdfVisuals.transform, geometryType);
+                UrdfVisualExtensions.Create(urdfVisuals.transform, geometryType);
             EditorGUILayout.EndHorizontal();
         }
     }

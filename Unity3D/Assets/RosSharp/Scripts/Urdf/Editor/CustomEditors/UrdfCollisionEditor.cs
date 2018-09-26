@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfCollision))]
-    class UrdfCollisionEditor : Editor
+    class UrdfCollisionEditor : UnityEditor.Editor
     {
         private UrdfCollision urdfCollision;
 
@@ -55,7 +55,7 @@ namespace RosSharp.Urdf.Export
                 if (GUILayout.Button("Fix transformations"))
                 {
                     //Only transfer rotation if geometry is not a mesh
-                    bool transferRotation = urdfCollision.geometryType != UrdfGeometry.GeometryTypes.Mesh;
+                    bool transferRotation = urdfCollision.geometryType != UrdfRobot.GeometryTypes.Mesh;
                     urdfCollision.transform.MoveChildTransformToParent(transferRotation);
                 }
                 GUILayout.EndVertical();

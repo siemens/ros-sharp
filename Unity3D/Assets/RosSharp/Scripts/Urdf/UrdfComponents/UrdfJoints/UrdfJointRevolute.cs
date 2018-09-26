@@ -60,7 +60,7 @@ namespace RosSharp.Urdf
 
         #endregion
 
-        protected override void ImportJointData(Joint joint)
+        public override void ImportJointData(Joint joint)
         {
             UnityJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
 
@@ -71,7 +71,7 @@ namespace RosSharp.Urdf
                 GetComponent<HingeJointLimitsManager>().InitializeLimits(joint.limit, (HingeJoint)UnityJoint);
         }
 
-        protected override Joint ExportSpecificJointData(Joint joint)
+        public override Joint ExportSpecificJointData(Joint joint)
         {
             joint.axis = GetAxisData(UnityJoint.axis);
             joint.dynamics = new Joint.Dynamics(((HingeJoint)UnityJoint).spring.damper, ((HingeJoint)UnityJoint).spring.spring);
@@ -87,7 +87,7 @@ namespace RosSharp.Urdf
             return limits != null && limits.LargeAngleLimitMin < limits.LargeAngleLimitMax;
         }
 
-        protected override Joint.Limit ExportLimitData()
+        public override Joint.Limit ExportLimitData()
         {
             HingeJointLimitsManager hingeJointLimits = GetComponent<HingeJointLimitsManager>();
             return new Joint.Limit(

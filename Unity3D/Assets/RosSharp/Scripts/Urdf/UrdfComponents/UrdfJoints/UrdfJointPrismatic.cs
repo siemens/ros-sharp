@@ -61,7 +61,7 @@ namespace RosSharp.Urdf
 
         #region Import
 
-        protected override void ImportJointData(Joint joint)
+        public override void ImportJointData(Joint joint)
         {
             ConfigurableJoint prismaticJoint = (ConfigurableJoint) UnityJoint;
             prismaticJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
@@ -80,7 +80,7 @@ namespace RosSharp.Urdf
 
         #region Export
 
-        protected override Joint ExportSpecificJointData(Joint joint)
+        public override Joint ExportSpecificJointData(Joint joint)
         {
             ConfigurableJoint configurableJoint = (ConfigurableJoint)UnityJoint;
 
@@ -97,7 +97,7 @@ namespace RosSharp.Urdf
             return limits != null && limits.PositionLimitMin < limits.PositionLimitMax;
         }
 
-        protected override Joint.Limit ExportLimitData()
+        public override Joint.Limit ExportLimitData()
         {
             PrismaticJointLimitsManager prismaticLimits = GetComponent<PrismaticJointLimitsManager>();
             return new Joint.Limit(
