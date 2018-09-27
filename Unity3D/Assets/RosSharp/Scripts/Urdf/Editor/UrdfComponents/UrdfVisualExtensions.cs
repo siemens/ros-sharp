@@ -21,17 +21,15 @@ namespace RosSharp.Urdf.Editor
 {
     public static class UrdfVisualExtensions
     {
-        public static void Create(Transform parent, UrdfRobot.GeometryTypes type)
+        public static void Create(Transform parent, GeometryTypes type)
         {
             GameObject visualObject = new GameObject("unnamed");
             visualObject.transform.SetParentAndAlign(parent);
             UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
 
-            urdfVisual.geometryType = type;
+            urdfVisual.GeometryType = type;
             UrdfGeometryVisual.Create(visualObject.transform, type);
-#if UNITY_EDITOR
             UnityEditor.EditorGUIUtility.PingObject(visualObject);
-#endif
         }
 
         public static void Create(Transform parent, Link.Visual visual)
@@ -40,8 +38,8 @@ namespace RosSharp.Urdf.Editor
             visualObject.transform.SetParentAndAlign(parent);
             UrdfVisual urdfVisual = visualObject.AddComponent<UrdfVisual>();
 
-            urdfVisual.geometryType = UrdfGeometry.GetGeometryType(visual.geometry);
-            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.geometryType, visual.geometry);
+            urdfVisual.GeometryType = UrdfGeometry.GetGeometryType(visual.geometry);
+            UrdfGeometryVisual.Create(visualObject.transform, urdfVisual.GeometryType, visual.geometry);
 
             UrdfMaterial.SetUrdfMaterial(visualObject, visual.material);
             UrdfOrigin.ImportOriginData(visualObject.transform, visual.origin);
@@ -50,14 +48,14 @@ namespace RosSharp.Urdf.Editor
         public static void AddCorrespondingCollision(this UrdfVisual urdfVisual)
         {
             UrdfCollisions collisions = urdfVisual.GetComponentInParent<UrdfLink>().GetComponentInChildren<UrdfCollisions>();
-            UrdfCollisionExtensions.Create(collisions.transform, urdfVisual.geometryType, urdfVisual.transform);
+            UrdfCollisionExtensions.Create(collisions.transform, urdfVisual.GeometryType, urdfVisual.transform);
         }
 
         public static Link.Visual ExportVisualData(this UrdfVisual urdfVisual)
         {
-            urdfVisual.CheckForUrdfCompatibility();
+            UrdfGeometry.CheckForUrdfCompatibility(urdfVisual.transform, urdfVisual.GeometryType);
 
-            Link.Geometry geometry = UrdfGeometry.ExportGeometryData(urdfVisual.geometryType, urdfVisual.transform);
+            Link.Geometry geometry = UrdfGeometry.ExportGeometryData(urdfVisual.GeometryType, urdfVisual.transform);
 
             Link.Visual.Material material = null;
             if (!(geometry.mesh != null && geometry.mesh.filename.ToLower().EndsWith(".dae"))) //Collada files contain their own materials
@@ -66,29 +64,6 @@ namespace RosSharp.Urdf.Editor
             string visualName = urdfVisual.name == "unnamed" ? null : urdfVisual.name;
 
             return new Link.Visual(geometry, visualName, UrdfOrigin.ExportOriginData(urdfVisual.transform), material);
-        }
-
-        private static void CheckForUrdfCompatibility(this UrdfVisual urdfVisual)
-        {
-            Transform childTransform = urdfVisual.transform.GetChild(0);
-            if (urdfVisual.IsTransformed())
-                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
-                                 "Make any translation, rotation, or scale changes to the parent Visual object instead.",
-                                  childTransform);
-
-            if (!urdfVisual.transform.HasExactlyOneChild()) 
-                Debug.LogWarning("Only one Geometry element is allowed for each Visual element. In "
-                                 + urdfVisual.transform.parent.parent.name + ", move each Geometry into its own Visual element.", urdfVisual.gameObject);
-        }
-        
-        public static bool IsTransformed(this UrdfVisual urdfVisual)
-        {
-            Transform childTransform = urdfVisual.transform.GetChild(0);
-
-            //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
-            return (childTransform.localPosition != Vector3.zero
-                    || childTransform.localScale != Vector3.one
-                    || (urdfVisual.geometryType != UrdfRobot.GeometryTypes.Mesh && childTransform.localRotation != Quaternion.identity));
         }
     }
 }

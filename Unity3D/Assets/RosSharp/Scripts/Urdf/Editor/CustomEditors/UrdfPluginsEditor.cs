@@ -23,7 +23,7 @@ namespace RosSharp.Urdf.Editor
     [CustomEditor(typeof(UrdfPlugins))]
     class UrdfPluginsEditor : UnityEditor.Editor
     {
-        private UrdfRobot.GeometryTypes geometryType;
+        private GeometryTypes geometryType;
 
         public override void OnInspectorGUI()
         {
@@ -32,7 +32,7 @@ namespace RosSharp.Urdf.Editor
             GUILayout.Space(8);
 
             if (GUILayout.Button("Add Plugin"))
-                UrdfPluginExtensions.Create(urdfPlugins.transform);
+                UrdfPlugin.Create(urdfPlugins.transform);
         }
     }
 }

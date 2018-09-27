@@ -34,7 +34,7 @@ namespace RosSharp.Urdf.Editor
                 urdfLink.ImportLinkData(link, joint);
             else
             {
-                UrdfInertialExtensions.Create(linkObject);
+                UrdfInertial.Create(linkObject);
                 UnityEditor.EditorGUIUtility.PingObject(linkObject);
             }
 
@@ -53,10 +53,10 @@ namespace RosSharp.Urdf.Editor
 
             if (link.inertial != null)
             {
-                UrdfInertialExtensions.Create(urdfLink.gameObject, link.inertial);
+                UrdfInertial.Create(urdfLink.gameObject, link.inertial);
 
                 if (joint != null)
-                    UrdfJointExtensions.Create(urdfLink.gameObject, UrdfJointExtensions.GetJointType(joint.type), joint);
+                    UrdfJoint.Create(urdfLink.gameObject, UrdfJoint.GetJointType(joint.type), joint);
             }
             else if (joint != null)
                 Debug.LogWarning("No Joint Component will be created in GameObject \"" + urdfLink.gameObject.name + "\" as it has no Rigidbody Component.\n"

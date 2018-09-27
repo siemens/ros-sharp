@@ -23,6 +23,7 @@ namespace RosSharp.Urdf
     public class UrdfCollision : MonoBehaviour
     {
         [SerializeField]
-        public UrdfRobot.GeometryTypes geometryType;
+        public GeometryTypes geometryType;
+
     }
 }

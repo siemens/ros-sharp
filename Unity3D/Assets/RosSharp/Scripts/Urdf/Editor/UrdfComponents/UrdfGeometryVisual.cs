@@ -21,25 +21,25 @@ namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometryVisual : UrdfGeometry
     {
-        public static void Create(Transform parent, UrdfRobot.GeometryTypes geometryType, Link.Geometry geometry = null)
+        public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
         {
             GameObject geometryGameObject = null;
 
             switch (geometryType)
             {
-                case UrdfRobot.GeometryTypes.Box:
+                case GeometryTypes.Box:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     geometryGameObject.transform.DestroyImmediateIfExists<BoxCollider>();
                     break;
-                case UrdfRobot.GeometryTypes.Cylinder:
+                case GeometryTypes.Cylinder:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     geometryGameObject.transform.DestroyImmediateIfExists<CapsuleCollider>();
                     break;
-                case UrdfRobot.GeometryTypes.Sphere:
+                case GeometryTypes.Sphere:
                     geometryGameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     geometryGameObject.transform.DestroyImmediateIfExists<SphereCollider>();
                     break;
-                case UrdfRobot.GeometryTypes.Mesh:
+                case GeometryTypes.Mesh:
                     if (geometry != null)
                         geometryGameObject = CreateMeshVisual(geometry.mesh);
                     //else, let user add their own mesh gameObject

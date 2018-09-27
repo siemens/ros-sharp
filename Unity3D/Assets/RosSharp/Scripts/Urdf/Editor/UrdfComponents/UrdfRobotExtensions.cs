@@ -30,7 +30,7 @@ namespace RosSharp.Urdf.Editor
             GameObject robotGameObject = new GameObject("Robot");
             robotGameObject.AddComponent<UrdfRobot>();
 
-            UrdfPluginsExtensions.Create(robotGameObject.transform);
+            UrdfPlugins.Create(robotGameObject.transform);
 
             UrdfLink urdfLink = UrdfLinkExtensions.Create(robotGameObject.transform);
             urdfLink.name = "base_link";
@@ -54,47 +54,13 @@ namespace RosSharp.Urdf.Editor
 
             UrdfAssetPathHandler.SetPackageRoot(Path.GetDirectoryName(robot.filename));
             UrdfMaterial.InitializeRobotMaterials(robot);
-            UrdfPluginsExtensions.Create(robotGameObject.transform, robot.plugins);
+            UrdfPlugins.Create(robotGameObject.transform, robot.plugins);
 
             UrdfLinkExtensions.Create(robotGameObject.transform, robot.root);
 
             GameObjectUtility.SetParentAndAlign(robotGameObject, Selection.activeObject as GameObject);
             Undo.RegisterCreatedObjectUndo(robotGameObject, "Create " + robotGameObject.name);
             Selection.activeObject = robotGameObject;
-        }
-
-        #endregion
-
-        #region Configure Robot
-
-        public static void SetCollidersConvex(this UrdfRobot urdfRobot, bool convex)
-        {
-            foreach (MeshCollider meshCollider in urdfRobot.GetComponentsInChildren<MeshCollider>())
-                meshCollider.convex = convex;
-        }
-
-        public static void SetRigidbodiesIsKinematic(this UrdfRobot urdfRobot, bool isKinematic)
-        {
-            foreach (Rigidbody rb in urdfRobot.GetComponentsInChildren<Rigidbody>())
-                rb.isKinematic = isKinematic;
-        }
-
-        public static void SetUseUrdfInertiaData(this UrdfRobot urdfRobot, bool useUrdfData)
-        {
-            foreach (UrdfInertial urdfInertial in urdfRobot.GetComponentsInChildren<UrdfInertial>())
-                urdfInertial.UseUrdfData = useUrdfData;
-        }
-
-        public static void SetRigidbodiesUseGravity(this UrdfRobot urdfRobot, bool useGravity)
-        {
-            foreach (Rigidbody rb in urdfRobot.GetComponentsInChildren<Rigidbody>())
-                rb.useGravity = useGravity;
-        }
-
-        public static void GenerateUniqueJointNames(this UrdfRobot urdfRobot)
-        {
-            foreach (UrdfJoint urdfJoint in urdfRobot.GetComponentsInChildren<UrdfJoint>())
-                urdfJoint.GenerateUniqueJointName();
         }
 
         #endregion
@@ -145,7 +111,7 @@ namespace RosSharp.Urdf.Editor
                     robot.joints.Add(urdfJoint.ExportJointData());
                 else if (!urdfLink.IsBaseLink) 
                     //Make sure that links with no rigidbodies are still connected to the robot by a default joint
-                    robot.joints.Add(UrdfJointExtensions.ExportDefaultJoint(urdfLink.transform));
+                    robot.joints.Add(UrdfJoint.ExportDefaultJoint(urdfLink.transform));
             }
 
             robot.materials = UrdfMaterial.Materials.Values.ToList();

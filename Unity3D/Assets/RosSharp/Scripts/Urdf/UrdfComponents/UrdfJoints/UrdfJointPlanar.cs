@@ -48,7 +48,7 @@ namespace RosSharp.Urdf
             return distanceFromAnchor.magnitude;
         }
 
-        public override void ImportJointData(Joint joint)
+        protected override void ImportJointData(Joint joint)
         {
             ConfigurableJoint configurableJoint = (ConfigurableJoint) UnityJoint;
 
@@ -72,7 +72,7 @@ namespace RosSharp.Urdf
 
         #region Export
 
-        public override Joint ExportSpecificJointData(Joint joint)
+        protected override Joint ExportSpecificJointData(Joint joint)
         {
             ConfigurableJoint configurableJoint = (ConfigurableJoint) UnityJoint;
 
@@ -83,7 +83,7 @@ namespace RosSharp.Urdf
             return joint;
         }
 
-        public override Joint.Limit ExportLimitData()
+        protected override Joint.Limit ExportLimitData()
         {
             ConfigurableJoint configurableJoint = (ConfigurableJoint)UnityJoint;
             return new Joint.Limit(
@@ -98,7 +98,7 @@ namespace RosSharp.Urdf
             return joint != null && joint.linearLimit.limit != 0;
         }
 
-        public override bool IsJointAxisDefined()
+        protected override bool IsJointAxisDefined()
         {
             ConfigurableJoint joint = (ConfigurableJoint)UnityJoint;
             return !(Math.Abs(joint.axis.x) < Tolerance &&

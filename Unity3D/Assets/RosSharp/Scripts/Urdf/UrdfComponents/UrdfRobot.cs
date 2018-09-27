@@ -19,10 +19,44 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
+    public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
+
     public class UrdfRobot : MonoBehaviour
     {
         public string FilePath;
+        
+        #region Configure Robot
 
-        public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
+        public void SetCollidersConvex(bool convex)
+        {
+            foreach (MeshCollider meshCollider in GetComponentsInChildren<MeshCollider>())
+                meshCollider.convex = convex;
+        }
+
+        public void SetRigidbodiesIsKinematic(bool isKinematic)
+        {
+            foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+                rb.isKinematic = isKinematic;
+        }
+
+        public void SetUseUrdfInertiaData(bool useUrdfData)
+        {
+            foreach (UrdfInertial urdfInertial in GetComponentsInChildren<UrdfInertial>())
+                urdfInertial.UseUrdfData = useUrdfData;
+        }
+
+        public void SetRigidbodiesUseGravity(bool useGravity)
+        {
+            foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+                rb.useGravity = useGravity;
+        }
+
+        public void GenerateUniqueJointNames()
+        {
+            foreach (UrdfJoint urdfJoint in GetComponentsInChildren<UrdfJoint>())
+                urdfJoint.GenerateUniqueJointName();
+        }
+
+        #endregion
     }
 }

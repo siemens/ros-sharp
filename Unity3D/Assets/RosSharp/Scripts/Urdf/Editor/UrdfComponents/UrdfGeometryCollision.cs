@@ -22,24 +22,24 @@ namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometryCollision : UrdfGeometry
     {
-        public static void Create(Transform parent, UrdfRobot.GeometryTypes geometryType, Link.Geometry geometry = null)
+        public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
         {
             GameObject geometryGameObject = null;
 
             switch (geometryType)
             {
-                case UrdfRobot.GeometryTypes.Box:
+                case GeometryTypes.Box:
                     geometryGameObject = new GameObject(geometryType.ToString());
                     geometryGameObject.AddComponent<BoxCollider>();
                     break;
-                case UrdfRobot.GeometryTypes.Cylinder:
+                case GeometryTypes.Cylinder:
                     geometryGameObject = CreateCylinderCollider();
                     break;
-                case UrdfRobot.GeometryTypes.Sphere:
+                case GeometryTypes.Sphere:
                     geometryGameObject = new GameObject(geometryType.ToString());
                     geometryGameObject.AddComponent<SphereCollider>();
                     break;
-                case UrdfRobot.GeometryTypes.Mesh:
+                case GeometryTypes.Mesh:
                     if (geometry != null)
                         geometryGameObject = CreateMeshCollider(geometry.mesh);
                     else

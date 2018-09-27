@@ -40,7 +40,7 @@ namespace RosSharp.Urdf
 
         #endregion
 
-        public override bool IsJointAxisDefined()
+        protected override bool IsJointAxisDefined()
         {
             return true; //Axis isn't used
         }

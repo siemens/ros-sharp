@@ -24,23 +24,23 @@ namespace RosSharp.Urdf.Editor
     {
         private const int RoundDigits = 6;
 
-        public static Link.Geometry ExportGeometryData(UrdfRobot.GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
+        public static Link.Geometry ExportGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
         {
             Link.Geometry geometry = null;
             switch (geometryType)
             {
-                case UrdfRobot.GeometryTypes.Box:
+                case GeometryTypes.Box:
                     geometry = new Link.Geometry(new Link.Geometry.Box(ExportUrdfSize(transform)));
                     break;
-                case UrdfRobot.GeometryTypes.Cylinder:
+                case GeometryTypes.Cylinder:
                     geometry = new Link.Geometry(
                         null,
                         new Link.Geometry.Cylinder(ExportUrdfRadius(transform), ExportCylinderHeight(transform)));
                     break;
-                case UrdfRobot.GeometryTypes.Sphere:
+                case GeometryTypes.Sphere:
                     geometry = new Link.Geometry(null, null, new Link.Geometry.Sphere(ExportUrdfRadius(transform)));
                     break;
-                case UrdfRobot.GeometryTypes.Mesh:
+                case GeometryTypes.Mesh:
                     geometry = ExportGeometryMeshData(transform.GetChild(0).gameObject, ExportUrdfSize(transform), isCollisionGeometry);
                     break;
             }
@@ -50,39 +50,39 @@ namespace RosSharp.Urdf.Editor
         
         #region Import Helpers
 
-        public static UrdfRobot.GeometryTypes GetGeometryType(Link.Geometry geometry)
+        public static GeometryTypes GetGeometryType(Link.Geometry geometry)
         {
             if (geometry.box != null)
-                return UrdfRobot.GeometryTypes.Box;
+                return GeometryTypes.Box;
             if (geometry.cylinder != null)
-                return UrdfRobot.GeometryTypes.Cylinder;
+                return GeometryTypes.Cylinder;
             if (geometry.sphere != null)
-                return UrdfRobot.GeometryTypes.Sphere;
+                return GeometryTypes.Sphere;
 
-            return UrdfRobot.GeometryTypes.Mesh;
+            return GeometryTypes.Mesh;
         }
 
-        public static void SetScale(Transform transform, Link.Geometry geometry, UrdfRobot.GeometryTypes geometryType)
+        public static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
         {
             switch (geometryType)
             {
-                case UrdfRobot.GeometryTypes.Box:
+                case GeometryTypes.Box:
                     transform.localScale =
                         new Vector3((float)geometry.box.size[1], (float)geometry.box.size[2], (float)geometry.box.size[0]);
                     break;
-                case UrdfRobot.GeometryTypes.Cylinder:
+                case GeometryTypes.Cylinder:
                     transform.localScale = new Vector3(
                         (float)geometry.cylinder.radius * 2,
                         (float)geometry.cylinder.length / 2,
                         (float)geometry.cylinder.radius * 2);
                     break;
-                case UrdfRobot.GeometryTypes.Sphere:
+                case GeometryTypes.Sphere:
                     transform.localScale = new Vector3(
                         (float)geometry.sphere.radius * 2,
                         (float)geometry.sphere.radius * 2,
                         (float)geometry.sphere.radius * 2);
                     break;
-                case UrdfRobot.GeometryTypes.Mesh:
+                case GeometryTypes.Mesh:
                     if (geometry?.mesh?.scale != null)
                     {
                         Vector3 scale = geometry.mesh.scale.ToVector3().Ros2UnityScale();
@@ -310,6 +310,28 @@ namespace RosSharp.Urdf.Editor
             string packagePath = UrdfExportPathHandler.GetPackagePathForMesh(newFilePath);
 
             return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, urdfSize));
+        }
+
+        public static void CheckForUrdfCompatibility(Transform transform, GeometryTypes type)
+        {
+            Transform childTransform = transform.GetChild(0);
+            if (IsTransformed(childTransform, type))
+            {
+                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
+                                 "Make any translation, rotation, or scale changes to the parent Visual or Collision object instead.",
+                    childTransform);
+            }
+
+            if (!transform.HasExactlyOneChild())
+                Debug.LogWarning("Only one Geometry element is allowed for each Visual or Collision element. In "
+                                 + transform.parent.parent.name + ", move each Geometry into its own Visual or Collision.", transform);
+        }
+
+        public static bool IsTransformed(Transform transform, GeometryTypes type)
+        {
+            return transform.localPosition != Vector3.zero
+                   || transform.localScale != Vector3.one
+                   || (type != GeometryTypes.Mesh && transform.localRotation != Quaternion.identity);
         }
 
         #endregion

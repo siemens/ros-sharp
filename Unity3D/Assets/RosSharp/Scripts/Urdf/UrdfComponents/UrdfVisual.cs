@@ -23,6 +23,6 @@ namespace RosSharp.Urdf
     public class UrdfVisual : MonoBehaviour
     {
         [SerializeField]
-        public UrdfRobot.GeometryTypes geometryType;
+        public GeometryTypes GeometryType;
     }
 }

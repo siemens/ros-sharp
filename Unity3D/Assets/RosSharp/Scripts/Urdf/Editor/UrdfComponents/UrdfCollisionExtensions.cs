@@ -21,7 +21,7 @@ namespace RosSharp.Urdf.Editor
 {
     public static class UrdfCollisionExtensions
     {
-        public static void Create(Transform parent, UrdfRobot.GeometryTypes type, Transform visualToCopy = null)
+        public static void Create(Transform parent, GeometryTypes type, Transform visualToCopy = null)
         {
             GameObject collisionObject = new GameObject("unnamed");
             collisionObject.transform.SetParentAndAlign(parent);
@@ -31,7 +31,7 @@ namespace RosSharp.Urdf.Editor
 
             if (visualToCopy != null)
             {
-                if (urdfCollision.geometryType == UrdfRobot.GeometryTypes.Mesh)
+                if (urdfCollision.geometryType == GeometryTypes.Mesh)
                     UrdfGeometryCollision.CreateMatchingMeshCollision(collisionObject.transform, visualToCopy);
                 else
                     UrdfGeometryCollision.Create(collisionObject.transform, type);
@@ -60,34 +60,12 @@ namespace RosSharp.Urdf.Editor
     
         public static Link.Collision ExportCollisionData(this UrdfCollision urdfCollision)
         {
-            urdfCollision.CheckForUrdfCompatibility();
+            UrdfGeometry.CheckForUrdfCompatibility(urdfCollision.transform, urdfCollision.geometryType);
 
             Link.Geometry geometry = UrdfGeometry.ExportGeometryData(urdfCollision.geometryType, urdfCollision.transform, true);
             string collisionName = urdfCollision.name == "unnamed" ? null : urdfCollision.name;
 
             return new Link.Collision(geometry, collisionName, UrdfOrigin.ExportOriginData(urdfCollision.transform));
-        }
-
-        private static void CheckForUrdfCompatibility(this UrdfCollision urdfCollision)
-        {
-            Transform childTransform = urdfCollision.transform.GetChild(0);
-            if (urdfCollision.IsTransformed())
-                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
-                                 "Make any translation, rotation, or scale changes to the parent Collision object instead.",
-                    childTransform);
-
-            if (!urdfCollision.transform.HasExactlyOneChild())
-                Debug.LogWarning("Only one Geometry element is allowed for each Collision element. In "
-                                 + urdfCollision.transform.parent.parent.name + ", move each Geometry into its own Visual element.", urdfCollision.gameObject);
-        }
-
-        public static bool IsTransformed(this UrdfCollision urdfCollision)
-        {
-            Transform childTransform = urdfCollision.transform.GetChild(0);
-            //Ignore rotation if geometry is a mesh, because meshes may be rotated during import. 
-            return (childTransform.localPosition != Vector3.zero
-                    || childTransform.localScale != Vector3.one
-                    || (urdfCollision.geometryType != UrdfRobot.GeometryTypes.Mesh && childTransform.localRotation != Quaternion.identity));
         }
     }
 }

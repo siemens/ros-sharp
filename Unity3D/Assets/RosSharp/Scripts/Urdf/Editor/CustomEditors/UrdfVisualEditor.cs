@@ -33,7 +33,7 @@ namespace RosSharp.Urdf.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Geometry Type");
-            EditorGUILayout.LabelField(urdfVisual.geometryType.ToString());
+            EditorGUILayout.LabelField(urdfVisual.GeometryType.ToString());
             EditorGUILayout.EndHorizontal();
             
             if (GUILayout.Button("Add collision to match visual"))
@@ -51,7 +51,7 @@ namespace RosSharp.Urdf.Editor
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Visual element must have one and only one child Geometry element.", MessageType.Error);
             }
-            else if (urdfVisual.IsTransformed())
+            else if (UrdfGeometry.IsTransformed(urdfVisual.transform, urdfVisual.GeometryType))
             {
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Changes to the transform of the child Geometry element cannot be exported to URDF. " +
@@ -59,7 +59,7 @@ namespace RosSharp.Urdf.Editor
 
                 if (GUILayout.Button("Fix transformations"))
                 {
-                    bool transferRotation = urdfVisual.geometryType != UrdfRobot.GeometryTypes.Mesh;
+                    bool transferRotation = urdfVisual.GeometryType != GeometryTypes.Mesh;
                     urdfVisual.transform.MoveChildTransformToParent(transferRotation);
                 }
             }

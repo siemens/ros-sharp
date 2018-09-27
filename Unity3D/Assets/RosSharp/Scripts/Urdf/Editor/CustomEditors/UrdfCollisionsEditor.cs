@@ -24,14 +24,14 @@ namespace RosSharp.Urdf.Editor
     class UrdfCollisionsEditor : UnityEditor.Editor
     {
         private UrdfCollisions urdfCollisions;
-        private UrdfRobot.GeometryTypes geometryType;
+        private GeometryTypes geometryType;
 
         public override void OnInspectorGUI()
         {
             urdfCollisions = (UrdfCollisions)target;
 
             GUILayout.Space(10);
-            geometryType = (UrdfRobot.GeometryTypes)EditorGUILayout.EnumPopup("Type of collision", geometryType);
+            geometryType = (GeometryTypes)EditorGUILayout.EnumPopup("Type of collision", geometryType);
 
             if (GUILayout.Button("Add collision"))
                 UrdfCollisionExtensions.Create(urdfCollisions.transform, geometryType);

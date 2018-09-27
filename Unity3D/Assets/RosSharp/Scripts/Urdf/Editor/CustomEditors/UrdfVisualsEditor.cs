@@ -24,14 +24,14 @@ namespace RosSharp.Urdf.Editor
     class UrdfVisualsEditor : UnityEditor.Editor
     {
         private UrdfVisuals urdfVisuals;
-        private UrdfRobot.GeometryTypes geometryType = UrdfRobot.GeometryTypes.Box;
+        private GeometryTypes geometryType = GeometryTypes.Box;
 
         public override void OnInspectorGUI()
         {
             urdfVisuals = (UrdfVisuals)target;
 
             GUILayout.Space(10);
-            geometryType = (UrdfRobot.GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
+            geometryType = (GeometryTypes)EditorGUILayout.EnumPopup("Type of visual", geometryType);
             
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add visual"))

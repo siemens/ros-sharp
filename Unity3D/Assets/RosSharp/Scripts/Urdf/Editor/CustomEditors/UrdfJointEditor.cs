@@ -43,7 +43,7 @@ namespace RosSharp.Urdf.Editor
                     "Are you sure you want to change the joint type? This will erase all information currently stored in the joint.",
                     "Continue", "Cancel"))
                 {
-                    UrdfJointExtensions.ChangeJointType(urdfJoint.gameObject, newJointType);
+                    UrdfJoint.ChangeJointType(urdfJoint.gameObject, newJointType);
                 }
             }
             EditorGUILayout.EndVertical();

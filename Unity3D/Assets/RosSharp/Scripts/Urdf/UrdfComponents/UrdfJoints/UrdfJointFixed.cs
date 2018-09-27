@@ -31,7 +31,7 @@ namespace RosSharp.Urdf
             return urdfJoint;
         }
 
-        public override bool IsJointAxisDefined()
+        protected override bool IsJointAxisDefined()
         {
             return true; //Axis isn't used
         }
