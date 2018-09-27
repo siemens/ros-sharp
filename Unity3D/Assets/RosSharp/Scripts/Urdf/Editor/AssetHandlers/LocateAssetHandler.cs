@@ -20,7 +20,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public static class LocateAssetHandler
     {

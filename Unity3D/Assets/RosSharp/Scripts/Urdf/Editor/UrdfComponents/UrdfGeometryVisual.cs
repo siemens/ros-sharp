@@ -15,12 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
-    class UrdfGeometryVisual : UrdfGeometry
+    public class UrdfGeometryVisual : UrdfGeometry
     {
         public static void Create(Transform parent, GeometryTypes geometryType, Link.Geometry geometry = null)
         {
@@ -58,8 +57,7 @@ namespace RosSharp.Urdf
         private static GameObject CreateMeshVisual(Link.Geometry.Mesh mesh)
         {
             GameObject meshObject = LocateAssetHandler.FindUrdfAsset<GameObject>(mesh.filename);
-            return meshObject == null ? null : (GameObject)PrefabUtility.InstantiatePrefab(meshObject);
+            return meshObject == null ? null : (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(meshObject);
         }
-        
     }
 }

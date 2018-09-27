@@ -18,12 +18,11 @@ limitations under the License.
 using System;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometry
     {
         private const int RoundDigits = 6;
-        public enum GeometryTypes { Box, Cylinder, Sphere, Mesh }
 
         public static Link.Geometry ExportGeometryData(GeometryTypes geometryType, Transform transform, bool isCollisionGeometry = false)
         {
@@ -63,7 +62,7 @@ namespace RosSharp.Urdf
             return GeometryTypes.Mesh;
         }
 
-        protected static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
+        public static void SetScale(Transform transform, Link.Geometry geometry, GeometryTypes geometryType)
         {
             switch (geometryType)
             {
@@ -95,7 +94,7 @@ namespace RosSharp.Urdf
             }
         }
 
-        protected static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
+        public static Mesh CreateCylinderMesh(Link.Geometry.Cylinder cylinder)
         {
             float height = (float)cylinder.length;
             float bottomRadius = (float)cylinder.radius;
@@ -311,6 +310,28 @@ namespace RosSharp.Urdf
             string packagePath = UrdfExportPathHandler.GetPackagePathForMesh(newFilePath);
 
             return new Link.Geometry(null, null, null, new Link.Geometry.Mesh(packagePath, urdfSize));
+        }
+
+        public static void CheckForUrdfCompatibility(Transform transform, GeometryTypes type)
+        {
+            Transform childTransform = transform.GetChild(0);
+            if (IsTransformed(childTransform, type))
+            {
+                Debug.LogWarning("Changes to the transform of " + childTransform.name + " cannot be exported to URDF. " +
+                                 "Make any translation, rotation, or scale changes to the parent Visual or Collision object instead.",
+                    childTransform);
+            }
+
+            if (!transform.HasExactlyOneChild())
+                Debug.LogWarning("Only one Geometry element is allowed for each Visual or Collision element. In "
+                                 + transform.parent.parent.name + ", move each Geometry into its own Visual or Collision.", transform);
+        }
+
+        public static bool IsTransformed(Transform transform, GeometryTypes type)
+        {
+            return transform.localPosition != Vector3.zero
+                   || transform.localScale != Vector3.one
+                   || (type != GeometryTypes.Mesh && transform.localRotation != Quaternion.identity);
         }
 
         #endregion

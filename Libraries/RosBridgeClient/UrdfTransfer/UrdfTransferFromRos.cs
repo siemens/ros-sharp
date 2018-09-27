@@ -120,17 +120,18 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private void ReceiveResourceFile(ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse> serviceReceiver, file_server.GetBinaryFileResponse serviceResponse)
         {
             byte[] fileContents = serviceResponse.value;
-            Uri resourceFileUri = new Uri((serviceReceiver.ServiceParameter).name);
+            Uri resourceFileUri = new Uri(serviceReceiver.ServiceParameter.name);
 
             if (IsColladaFile(resourceFileUri))
             {
                 Thread importResourceFilesThread = new Thread(() => ImportColladaTextureFiles(resourceFileUri, System.Text.Encoding.UTF8.GetString(fileContents)));
                 importResourceFilesThread.Start();
             }
+            else
+                UpdateFileRequestStatus(resourceFileUri.ToString());
+
             Thread writeTextFileThread = new Thread(() => WriteBinaryResponseToFile((string)serviceReceiver.HandlerParameter, fileContents));
             writeTextFileThread.Start();
-
-            UpdateFileRequestStatus(resourceFileUri.ToString());
         }
 
         private void UpdateFileRequestStatus(string resourceFilePath)
@@ -146,6 +147,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             var serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, xDocument));
             foreach (var serviceReceiver in serviceReceivers)
                 serviceReceiver.ReceiveEventHandler += ReceiveTextureFiles;
+
+            //Only update DAE file request status once its texture files have been requested
+            UpdateFileRequestStatus(daeFileUri.ToString());
         }
 
         private void ReceiveTextureFiles(ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse> serviceReceiver, file_server.GetBinaryFileResponse serviceResponse)

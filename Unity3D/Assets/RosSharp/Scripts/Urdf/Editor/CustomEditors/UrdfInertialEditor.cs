@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfInertial))]
-    public class UrdfInertialEditor : Editor
+    public class UrdfInertialEditor : UnityEditor.Editor
     {
         private Vector3 testVector;
 
