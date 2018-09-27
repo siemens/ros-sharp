@@ -18,7 +18,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public static class UrdfAssetPathHandler
     {

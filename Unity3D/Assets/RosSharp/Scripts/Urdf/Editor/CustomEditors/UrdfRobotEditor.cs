@@ -15,14 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using RosSharp.Urdf.Export;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfRobot))]
-    public class UrdfRobotEditor : Editor
+    public class UrdfRobotEditor : UnityEditor.Editor
     {
         private UrdfRobot urdfRobot;
         private static GUIStyle buttonStyle;
@@ -77,5 +76,6 @@ namespace RosSharp.Urdf
                 handler(false);
             EditorGUILayout.EndHorizontal();
         }
+
     }
 }

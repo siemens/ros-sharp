@@ -62,7 +62,7 @@ namespace RosSharp.Urdf
             if (joint.dynamics != null)
                 ((HingeJoint)UnityJoint).spring = GetJointSpring(joint.dynamics);
         }
-        
+
         protected override Joint ExportSpecificJointData(Joint joint)
         {
             joint.axis = GetAxisData(UnityJoint.axis);

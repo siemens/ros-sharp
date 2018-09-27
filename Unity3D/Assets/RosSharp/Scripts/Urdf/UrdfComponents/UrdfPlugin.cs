@@ -16,7 +16,6 @@ limitations under the License.
 */
 
 using System.Xml;
-using UnityEditor;
 using UnityEngine;
 
 namespace RosSharp.Urdf

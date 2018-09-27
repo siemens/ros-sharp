@@ -18,12 +18,12 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfPlugins))]
-    class UrdfPluginsEditor : Editor
+    class UrdfPluginsEditor : UnityEditor.Editor
     {
-        private UrdfGeometry.GeometryTypes geometryType;
+        private GeometryTypes geometryType;
 
         public override void OnInspectorGUI()
         {
