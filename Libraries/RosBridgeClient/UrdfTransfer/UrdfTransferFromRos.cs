@@ -19,78 +19,50 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
-
 using file_server = RosSharp.RosBridgeClient.Services.FileServer;
 using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.UrdfTransfer
 {
-    public delegate void ReceiveEventHandler<Tin, Tout>(ServiceReceiver<Tin, Tout> sender, Tout ServiceResponse) where Tin : Message where Tout : Message;
-
-    public class ServiceReceiver<Tin,Tout> where Tin: Message where Tout:Message
+    public class UrdfTransferFromRos : UrdfTransfer
     {
-        public string Service { get; private set; }
-        public Tin ServiceParameter { get; private set; }
-        public object HandlerParameter { get; set; }
-        public event ReceiveEventHandler<Tin, Tout> ReceiveEventHandler;
-
-        public ServiceReceiver(RosSocket rosSocket, string service, Tin parameter, object handlerParameter)
-        {
-            Service = service;
-            ServiceParameter = parameter;
-            HandlerParameter = handlerParameter;
-            rosSocket.CallService<Tin,Tout>(Service, Receive, ServiceParameter);
-        }
-        private void Receive(Tout ServiceResponse)
-        {
-            if (ReceiveEventHandler != null)
-                ReceiveEventHandler.Invoke(this, ServiceResponse);
-        }
-    }
-
-    public class UrdfImporter
-    {
-        private RosSocket rosSocket;
-        private string localDirectory;
-        public string RobotName { get; private set; }
-
-        public string LocalDirectory
+        private readonly string localUrdfDirectory;
+        
+        public string LocalUrdfDirectory
         {
             get
             {
                 Status["robotNameReceived"].WaitOne();
-                return Path.Combine(localDirectory, RobotName);
+                return Path.Combine(localUrdfDirectory, RobotName);
             }
         }
 
-        public Dictionary<string, ManualResetEvent> Status = new Dictionary<string, ManualResetEvent>
+        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory)
         {
-            { "robotNameReceived",new ManualResetEvent(false) },
-            { "robotDescriptionReceived", new ManualResetEvent(false) },
-            { "resourceFilesReceived", new ManualResetEvent(false) }
-        };
+            RosSocket = rosSocket;
+            this.localUrdfDirectory = localUrdfDirectory;
 
-        public Dictionary<Uri, bool> RequestedResourceFiles = new Dictionary<Uri, bool>();
+            Status = new Dictionary<string, ManualResetEvent>
+            {
+                {"robotNameReceived", new ManualResetEvent(false)},
+                {"robotDescriptionReceived", new ManualResetEvent(false)},
+                {"resourceFilesReceived", new ManualResetEvent(false)}
+            };
 
-        public UrdfImporter(RosSocket _rosSocket, string _localDirectory)
-        {
-            rosSocket = _rosSocket;
-            localDirectory = _localDirectory;
+            FilesBeingProcessed = new Dictionary<string, bool>();
         }
 
-        public bool Import(int maxTimeOut = int.MaxValue)
+        public override void Transfer()
         {
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
+            RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
                                                                                     ReceiveRobotName,
                                                                                     new rosapi.GetParamRequest("/robot/name", "default"));
 
-            var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(rosSocket, "/rosapi/get_param",
+            var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
                                                                                         new rosapi.GetParamRequest("/robot_description", "default"),
                                                                                         Path.DirectorySeparatorChar + "robot_description.urdf");
 
-            robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;
-
-            return (WaitHandle.WaitAll(Status.Values.ToArray(), maxTimeOut));
+            robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;  
         }
 
         private void ReceiveRobotName(object serviceResponse)
@@ -114,7 +86,8 @@ namespace RosSharp.RosBridgeClient
 
         private void ImportResourceFiles(string fileContents)
         {
-            var serviceReceivers = RequestResourceFiles(ReadResourceFileUris(fileContents));
+            List<Uri> resourceFileUris = ReadResourceFileUris(XDocument.Parse(fileContents));
+            var serviceReceivers = RequestResourceFiles(resourceFileUris);
             if (serviceReceivers.Count == 0)
             {
                 Status["resourceFilesReceived"].Set();
@@ -123,16 +96,6 @@ namespace RosSharp.RosBridgeClient
 
             foreach (var serviceReceiver in serviceReceivers)
                 serviceReceiver.ReceiveEventHandler += ReceiveResourceFile;
-
-        }
-
-        private static List<Uri> ReadResourceFileUris(string robotDescription)
-        {
-            return (
-                from xElement in XElement.Parse(robotDescription).Descendants()
-                where (xElement.Name.ToString().Equals("mesh") || xElement.Name.ToString().Equals("texture")) 
-                      && xElement.Attribute("filename") != null
-                select new Uri(xElement.Attribute("filename").Value)).ToList();
         }
 
         private List<ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse>> RequestResourceFiles(List<Uri> resourceFileUris)
@@ -140,10 +103,15 @@ namespace RosSharp.RosBridgeClient
             var serviceReceivers = new List<ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse>>();
             foreach (Uri resourceFilePath in resourceFileUris)
             {
-                if (!RequestedResourceFiles.ContainsKey(resourceFilePath))
+                if (!FilesBeingProcessed.ContainsKey(resourceFilePath.ToString()))
                 {
-                    RequestedResourceFiles.Add(resourceFilePath, false);
-                    serviceReceivers.Add(new ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse>(rosSocket, "/file_server/get_file", new file_server.GetBinaryFileRequest(resourceFilePath.ToString()), GetLocalFilename(resourceFilePath)));
+                    FilesBeingProcessed.Add(resourceFilePath.ToString(), false);
+                    serviceReceivers.Add(
+                        new ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse>(
+                            RosSocket,
+                            "/file_server/get_file",
+                            new file_server.GetBinaryFileRequest(resourceFilePath.ToString()),
+                            GetLocalFilename(resourceFilePath)));
                 }
             }
             return serviceReceivers;
@@ -162,53 +130,40 @@ namespace RosSharp.RosBridgeClient
             Thread writeTextFileThread = new Thread(() => WriteBinaryResponseToFile((string)serviceReceiver.HandlerParameter, fileContents));
             writeTextFileThread.Start();
 
-            UpdateFileRequestStatus(resourceFileUri);
+            UpdateFileRequestStatus(resourceFileUri.ToString());
         }
 
-        private void UpdateFileRequestStatus(Uri resourceFileUri)
+        private void UpdateFileRequestStatus(string resourceFilePath)
         {
-            RequestedResourceFiles[resourceFileUri] = true;
-            if (RequestedResourceFiles.Values.All(x => x == true))
+            FilesBeingProcessed[resourceFilePath] = true;
+            if (FilesBeingProcessed.Values.All(x => x == true))
                 Status["resourceFilesReceived"].Set();
         }
-
-        private static bool IsColladaFile(Uri uri)
-        {
-            return Path.GetExtension(uri.LocalPath) == ".dae";
-        }
-
+        
         private void ImportColladaTextureFiles(Uri daeFileUri, string fileContents)
         {
-            var serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, fileContents));
+            XDocument xDocument = XDocument.Parse(fileContents);
+            var serviceReceivers = RequestResourceFiles(ReadDaeTextureUris(daeFileUri, xDocument));
             foreach (var serviceReceiver in serviceReceivers)
                 serviceReceiver.ReceiveEventHandler += ReceiveTextureFiles;
-        }
-
-        private List<Uri> ReadDaeTextureUris(Uri resourceFileUri, string fileContents)
-        {
-            XNamespace xmlns = "http://www.collada.org/2005/11/COLLADASchema";
-            XElement root = XElement.Parse(fileContents);
-            return (from x in root.Elements()
-                    where x.Name.LocalName == "library_images"
-                    select new Uri(resourceFileUri, x.Element(xmlns + "image").Element(xmlns + "init_from").Value)).ToList();
         }
 
         private void ReceiveTextureFiles(ServiceReceiver<file_server.GetBinaryFileRequest, file_server.GetBinaryFileResponse> serviceReceiver, file_server.GetBinaryFileResponse serviceResponse)
         {
             WriteBinaryResponseToFile((string)serviceReceiver.HandlerParameter, serviceResponse.value);
-            UpdateFileRequestStatus(new Uri(serviceReceiver.ServiceParameter.name));
+            UpdateFileRequestStatus(serviceReceiver.ServiceParameter.name);
         }
 
         private void WriteBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)
         {
-            string filename = LocalDirectory + relativeLocalFilename;
+            string filename = LocalUrdfDirectory + relativeLocalFilename;
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllBytes(filename, fileContents);
         }
 
         private void WriteTextFile(string relativeLocalFilename, string fileContents)
         {
-            string filename = LocalDirectory + relativeLocalFilename;
+            string filename = LocalUrdfDirectory + relativeLocalFilename;
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllText(filename, fileContents);
         }
@@ -231,6 +186,26 @@ namespace RosSharp.RosBridgeClient
 
             // replace \n newline sign by actual new line:
             return fileContents.Replace("\\n", Environment.NewLine);
+        }
+    }
+
+    public delegate void ReceiveEventHandler<Tin, Tout>(ServiceReceiver<Tin, Tout> sender, Tout ServiceResponse) where Tin : Message where Tout : Message;
+
+    public class ServiceReceiver<Tin, Tout> where Tin : Message where Tout : Message
+    {
+        public readonly Tin ServiceParameter;
+        public readonly object HandlerParameter;
+        public event ReceiveEventHandler<Tin, Tout> ReceiveEventHandler;
+
+        public ServiceReceiver(RosSocket rosSocket, string service, Tin parameter, object handlerParameter)
+        {
+            ServiceParameter = parameter;
+            HandlerParameter = handlerParameter;
+            rosSocket.CallService<Tin, Tout>(service, Receive, ServiceParameter);
+        }
+        private void Receive(Tout serviceResponse)
+        {
+            ReceiveEventHandler?.Invoke(this, serviceResponse);
         }
     }
 }

@@ -20,11 +20,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.IO;
+using RosSharp.RosBridgeClient.UrdfTransfer;
 using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class RosImportHandler
+    public class TransferFromRosHandler
     {
         private string robotName;
         private string localDirectory;
@@ -36,7 +37,7 @@ namespace RosSharp.RosBridgeClient
 
         public Dictionary<string, ManualResetEvent> StatusEvents;
 
-        public RosImportHandler()
+        public TransferFromRosHandler()
         {
             StatusEvents = new Dictionary<string, ManualResetEvent>{
                 { "connected", new ManualResetEvent(false) },
@@ -69,23 +70,23 @@ namespace RosSharp.RosBridgeClient
 
         private void ImportAssets()
         {
-            // setup urdfImporter
-            UrdfImporter urdfImporter = new UrdfImporter(rosSocket, assetPath);
-            StatusEvents["robotNameReceived"] = urdfImporter.Status["robotNameReceived"];
-            StatusEvents["robotDescriptionReceived"] = urdfImporter.Status["robotDescriptionReceived"];
-            StatusEvents["resourceFilesReceived"] = urdfImporter.Status["resourceFilesReceived"];
+            // setup Urdf Transfer
+            UrdfTransferFromRos urdfTransfer = new UrdfTransferFromRos(rosSocket, assetPath);
+            StatusEvents["robotNameReceived"] = urdfTransfer.Status["robotNameReceived"];
+            StatusEvents["robotDescriptionReceived"] = urdfTransfer.Status["robotDescriptionReceived"];
+            StatusEvents["resourceFilesReceived"] = urdfTransfer.Status["resourceFilesReceived"];
 
-            urdfImporter.Import();
+            urdfTransfer.Transfer();
 
             if (StatusEvents["robotNameReceived"].WaitOne(timeout * 1000))
             {
-                robotName = urdfImporter.RobotName;
-                localDirectory = urdfImporter.LocalDirectory;
+                robotName = urdfTransfer.RobotName;
+                localDirectory = urdfTransfer.LocalUrdfDirectory;
             }
 
             // import URDF assets:
             if (StatusEvents["resourceFilesReceived"].WaitOne(timeout * 1000))
-                Debug.Log("Imported urdf resources to " + urdfImporter.LocalDirectory);
+                Debug.Log("Imported urdf resources to " + localDirectory);
             else
                 Debug.LogWarning("Not all resource files have been received before timeout.");
 

@@ -15,6 +15,7 @@ limitations under the License.
 
 using System;
 using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.UrdfTransfer;
 
 // commands on ROS system:
 // launch before starting:
@@ -22,31 +23,29 @@ using RosSharp.RosBridgeClient;
 
 namespace RosSharp.RosBridgeClientTest
 {
-    public class UrdfImporterConsoleTest
+    public class UrdfTransferFromRosConsoleExample
     {
         public static void Main(string[] args)
         {
             string uri = "ws://192.168.56.102:9090";
-            RosBridgeClient.Protocols.WebSocketNetProtocol webSocketNetProtocol;
-            RosSocket rosSocket;
 
             for (int i = 1; i < 3; i++)
             {
-                webSocketNetProtocol = new RosBridgeClient.Protocols.WebSocketNetProtocol(uri);
-                rosSocket = new RosSocket(webSocketNetProtocol);
+                var webSocketNetProtocol = new RosBridgeClient.Protocols.WebSocketNetProtocol(uri);
+                var rosSocket = new RosSocket(webSocketNetProtocol);
 
                 // Publication:
-                UrdfImporter urdfImporter = new UrdfImporter(rosSocket, System.IO.Directory.GetCurrentDirectory());
-                urdfImporter.Import();
+                UrdfTransferFromRos transferor = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory());
+                transferor.Transfer();
 
-                urdfImporter.Status["robotNameReceived"].WaitOne();
-                Console.WriteLine("Robot Name Received: " + urdfImporter.RobotName);
+                transferor.Status["robotNameReceived"].WaitOne();
+                Console.WriteLine("Robot Name Received: " + transferor.RobotName);
 
-                urdfImporter.Status["robotDescriptionReceived"].WaitOne();
+                transferor.Status["robotDescriptionReceived"].WaitOne();
                 Console.WriteLine("Robot Description received... ");
 
-                urdfImporter.Status["resourceFilesReceived"].WaitOne();
-                Console.WriteLine("Resource Files received " + urdfImporter.RequestedResourceFiles.Count);
+                transferor.Status["resourceFilesReceived"].WaitOne();
+                Console.WriteLine("Resource Files received " + transferor.FilesBeingProcessed.Count);
 
                 rosSocket.Close();
             }
