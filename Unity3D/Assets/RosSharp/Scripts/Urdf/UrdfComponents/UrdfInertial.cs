@@ -33,6 +33,31 @@ namespace RosSharp.Urdf
         private const int RoundDigits = 10;
         private const float MinInertia = 1e-8f;
 
+        public static void Create(GameObject linkObject, Link.Inertial inertial = null)
+        {
+            UrdfInertial urdfInertial = linkObject.AddComponent<UrdfInertial>();
+            Rigidbody _rigidbody = urdfInertial.GetComponent<Rigidbody>();
+
+            if (inertial != null)
+            {
+                _rigidbody.mass = (float)inertial.mass;
+
+                if (inertial.origin != null)
+                    _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
+
+                urdfInertial.ImportInertiaData(inertial.inertia);
+
+                urdfInertial.UseUrdfData = true;
+            }
+
+            urdfInertial.DisplayInertiaGizmo = false;
+
+            //Save original rigidbody data from URDF
+            urdfInertial.CenterOfMass = _rigidbody.centerOfMass;
+            urdfInertial.InertiaTensor = _rigidbody.inertiaTensor;
+            urdfInertial.InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
+        }
+
         #region Runtime
 
         private void Start()
@@ -71,31 +96,6 @@ namespace RosSharp.Urdf
         }
 
         #endregion
-
-        public static void Create(GameObject linkObject, Link.Inertial inertial = null)
-        {
-            UrdfInertial urdfInertial = linkObject.AddComponent<UrdfInertial>();
-            Rigidbody _rigidbody = urdfInertial.GetComponent<Rigidbody>();
-
-            if (inertial != null)
-            {
-                _rigidbody.mass = (float)inertial.mass;
-
-                if (inertial.origin != null)
-                    _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
-
-                urdfInertial.ImportInertiaData(inertial.inertia);
-
-                urdfInertial.UseUrdfData = true;
-            }
-
-            urdfInertial.DisplayInertiaGizmo = false;
-
-            //Save original rigidbody data from URDF
-            urdfInertial.CenterOfMass = _rigidbody.centerOfMass;
-            urdfInertial.InertiaTensor = _rigidbody.inertiaTensor;
-            urdfInertial.InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
-        }
 
         #region Import
 
