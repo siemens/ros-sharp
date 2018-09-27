@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeometryCollision : UrdfGeometry
     {

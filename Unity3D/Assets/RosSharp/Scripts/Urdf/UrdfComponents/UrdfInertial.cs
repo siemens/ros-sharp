@@ -23,15 +23,15 @@ namespace RosSharp.Urdf
     [RequireComponent(typeof(Rigidbody))]
     public class UrdfInertial : MonoBehaviour
     {
-        private const int RoundDigits = 10;
-        private const float MinInertia = 1e-8f;
-
         public bool DisplayInertiaGizmo;
 
         public bool UseUrdfData;
         public Vector3 CenterOfMass;
         public Vector3 InertiaTensor;
         public Quaternion InertiaTensorRotation;
+
+        private const int RoundDigits = 10;
+        private const float MinInertia = 1e-8f;
 
         public static void Create(GameObject linkObject, Link.Inertial inertial = null)
         {
@@ -40,7 +40,7 @@ namespace RosSharp.Urdf
 
             if (inertial != null)
             {
-                _rigidbody.mass = (float) inertial.mass;
+                _rigidbody.mass = (float)inertial.mass;
 
                 if (inertial.origin != null)
                     _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
@@ -58,7 +58,7 @@ namespace RosSharp.Urdf
             urdfInertial.InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
         }
 
-        #region ManageRigidbodyData
+        #region Runtime
 
         private void Start()
         {
@@ -94,10 +94,11 @@ namespace RosSharp.Urdf
                 Gizmos.DrawRay(transform.position, GetComponent<Rigidbody>().inertiaTensorRotation * Vector3.right * GetComponent<Rigidbody>().inertiaTensor.x);
             }
         }
+
         #endregion
 
         #region Import
-   
+
         private void ImportInertiaData(Link.Inertial.Inertia inertia)
         {
             Vector3 eigenvalues;
@@ -110,7 +111,7 @@ namespace RosSharp.Urdf
             _rigidbody.inertiaTensor = ToUnityInertiaTensor(FixMinInertia(eigenvalues));
             _rigidbody.inertiaTensorRotation = ToQuaternion(eigenvectors[0], eigenvectors[1], eigenvectors[2]).Ros2Unity();
         }
-        
+
         private static Vector3 ToUnityInertiaTensor(Vector3 vector3)
         {
             return new Vector3(vector3.y, vector3.z, vector3.x);
@@ -119,7 +120,7 @@ namespace RosSharp.Urdf
         private static Matrix3x3 ToMatrix3x3(Link.Inertial.Inertia inertia)
         {
             return new Matrix3x3(
-                new [] { (float)inertia.ixx, (float)inertia.ixy, (float)inertia.ixz,
+                new[] { (float)inertia.ixx, (float)inertia.ixy, (float)inertia.ixz,
                                              (float)inertia.iyy, (float)inertia.iyz,
                                                                  (float)inertia.izz });
         }
@@ -175,7 +176,7 @@ namespace RosSharp.Urdf
         }
 
         #endregion
-        
+
         #region Export
         public Link.Inertial ExportInertialData()
         {
@@ -191,9 +192,9 @@ namespace RosSharp.Urdf
             return new Link.Inertial(Math.Round(_rigidbody.mass, RoundDigits), inertialOrigin, inertia);
         }
 
-        private Link.Inertial.Inertia ExportInertiaData(Rigidbody _rigidbody)
+        private static Link.Inertial.Inertia ExportInertiaData(Rigidbody _rigidbody)
         {
-            Matrix3x3 lamdaMatrix = new Matrix3x3(new [] {
+            Matrix3x3 lamdaMatrix = new Matrix3x3(new[] {
                 _rigidbody.inertiaTensor[0],
                 _rigidbody.inertiaTensor[1],
                 _rigidbody.inertiaTensor[2] });
@@ -201,7 +202,7 @@ namespace RosSharp.Urdf
             Matrix3x3 qMatrix = Quaternion2Matrix(_rigidbody.inertiaTensorRotation);
 
             Matrix3x3 qMatrixTransposed = qMatrix.Transpose();
-            
+
             Matrix3x3 inertiaMatrix = qMatrix * lamdaMatrix * qMatrixTransposed;
 
             return ToRosCoordinates(ToInertia(inertiaMatrix));
@@ -210,8 +211,8 @@ namespace RosSharp.Urdf
         private static Matrix3x3 Quaternion2Matrix(Quaternion quaternion)
         {
             Quaternion rosQuaternion = Quaternion.Normalize(quaternion);
-            float qx = rosQuaternion.x; 
-            float qy = rosQuaternion.y; 
+            float qx = rosQuaternion.x;
+            float qy = rosQuaternion.y;
             float qz = rosQuaternion.z;
             float qw = rosQuaternion.w;
 

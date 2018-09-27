@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfCollision))]
-    class UrdfCollisionEditor : Editor
+    class UrdfCollisionEditor : UnityEditor.Editor
     {
         private UrdfCollision urdfCollision;
 
@@ -46,7 +46,7 @@ namespace RosSharp.Urdf.Export
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Visual element must have one and only one child Geometry element.", MessageType.Error);
             }
-            else if (urdfCollision.IsTransformed())
+            else if (UrdfGeometry.IsTransformed(urdfCollision.transform.GetChild(0), urdfCollision.geometryType))
             {
                 GUILayout.BeginVertical("HelpBox");
                 EditorGUILayout.HelpBox("Changes to the transform of the child Geometry element cannot be exported to URDF. " +
@@ -55,7 +55,7 @@ namespace RosSharp.Urdf.Export
                 if (GUILayout.Button("Fix transformations"))
                 {
                     //Only transfer rotation if geometry is not a mesh
-                    bool transferRotation = urdfCollision.geometryType != UrdfGeometry.GeometryTypes.Mesh;
+                    bool transferRotation = urdfCollision.geometryType != GeometryTypes.Mesh;
                     urdfCollision.transform.MoveChildTransformToParent(transferRotation);
                 }
                 GUILayout.EndVertical();

@@ -18,10 +18,10 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace RosSharp.Urdf
+namespace RosSharp.Urdf.Editor
 {
     public static class UrdfMaterial
     {
@@ -30,8 +30,7 @@ namespace RosSharp.Urdf
 
         public static Dictionary<string, Link.Visual.Material> Materials =
             new Dictionary<string, Link.Visual.Material>();
-
-
+        
         #region Import
         private static Material CreateMaterial(this Link.Visual.Material urdfMaterial)
         {

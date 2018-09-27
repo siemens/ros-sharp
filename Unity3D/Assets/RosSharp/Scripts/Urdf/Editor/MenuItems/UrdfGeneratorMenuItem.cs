@@ -19,7 +19,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Import
+namespace RosSharp.Urdf.Editor
 {
     public class UrdfGeneratorMenuItem
     {
@@ -32,7 +32,7 @@ namespace RosSharp.Urdf.Import
                 "urdf");
 
             if (urdfFile != "")
-                UrdfRobot.Create(urdfFile);
+                UrdfRobotExtensions.Create(urdfFile);
         }
     }
 }

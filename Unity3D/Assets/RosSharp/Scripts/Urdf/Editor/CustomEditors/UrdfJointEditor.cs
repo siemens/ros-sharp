@@ -18,10 +18,10 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.Urdf.Export
+namespace RosSharp.Urdf.Editor
 {
     [CustomEditor(typeof(UrdfJoint), true)]
-    public class UrdfJointEditor : Editor
+    public class UrdfJointEditor : UnityEditor.Editor
     {
         private UrdfJoint urdfJoint;
         private bool showDetails;
