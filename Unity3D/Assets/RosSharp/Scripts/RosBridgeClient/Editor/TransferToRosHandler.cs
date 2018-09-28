@@ -41,14 +41,20 @@ namespace RosSharp.RosBridgeClient
             };
         }
 
-        public void PublishDescription(RosConnector.Protocols protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage)
+        public void Transfer(RosConnector.Protocols protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage)
         {
             if (Path.GetExtension(urdfPath)?.ToLowerInvariant() != ".urdf")
             {
                 Debug.LogWarning("Please select a valid URDF file to publish.");
                 return;
             }
+                        
+            Thread transferToRos = new Thread(() => TransferAsync(protocolType, serverUrl, timeout, urdfPath, rosPackage));
+            transferToRos.Start();
+        }
 
+        private void TransferAsync(RosConnector.Protocols protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage)
+        {
             RosSocket = RosConnector.ConnectToRos(protocolType, serverUrl, OnConnected, OnClose);
 
             if (!StatusEvents["connected"].WaitOne(timeout * 1000))
@@ -65,8 +71,7 @@ namespace RosSharp.RosBridgeClient
             StatusEvents["robotDescriptionPublished"] = urdfTransferToRos.Status["robotDescriptionPublished"];
             StatusEvents["resourceFilesSent"] = urdfTransferToRos.Status["resourceFilesSent"];
 
-            Thread rosSocketConnectThread = new Thread(() => urdfTransferToRos.Transfer());
-            rosSocketConnectThread.Start();
+            urdfTransferToRos.Transfer();
         }
 
         private void OnClose(object sender, EventArgs e)

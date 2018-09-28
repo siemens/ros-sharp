@@ -31,11 +31,11 @@ namespace RosSharp.RosBridgeClient
         
         private TransferToRosHandler transferHandler;
 
-        [MenuItem("RosBridgeClient/Publish URDF Assets...")]
+        [MenuItem("RosBridgeClient/Transfer URDF to ROS...")]
         private static void Init()
         {
             TransferToRosEditorWindow editorWindow = GetWindow<TransferToRosEditorWindow>();
-            editorWindow.minSize = new Vector2(500, 250);
+            editorWindow.minSize = new Vector2(500, 300);
 
             editorWindow.transferHandler = new TransferToRosHandler();
             editorWindow.GetEditorPrefs();
@@ -45,7 +45,7 @@ namespace RosSharp.RosBridgeClient
 
         private void OnGUI()
         {
-            GUILayout.Label("URDF Publisher", EditorStyles.boldLabel);
+            GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 100;
@@ -87,10 +87,10 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Space(10);
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Publish Robot Description."))
+            if (GUILayout.Button("Publish Robot Description"))
             { 
                 SetEditorPrefs();
-                transferHandler.PublishDescription(protocolType, serverUrl, timeout, urdfPath, rosPackage);
+                transferHandler.Transfer(protocolType, serverUrl, timeout, urdfPath, rosPackage);
             }
             EditorGUILayout.EndHorizontal();
 

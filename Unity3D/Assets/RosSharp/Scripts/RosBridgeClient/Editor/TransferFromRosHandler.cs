@@ -49,7 +49,7 @@ namespace RosSharp.RosBridgeClient
                 };
         }
 
-        public void BeginRosImport(RosConnector.Protocols protocolType, string serverUrl, int timeout, string assetPath)
+        public void TransferUrdf(RosConnector.Protocols protocolType, string serverUrl, int timeout, string assetPath)
         {
             this.timeout = timeout;
             this.assetPath = assetPath;

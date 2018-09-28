@@ -31,12 +31,12 @@ namespace RosSharp.RosBridgeClient
       
         private TransferFromRosHandler transferHandler;
 
-        [MenuItem("RosBridgeClient/Import URDF Assets...")]
+        [MenuItem("RosBridgeClient/Transfer URDF from ROS...")]
         private static void Init()
         {
             TransferFromRosEditorWindow editorWindow = GetWindow<TransferFromRosEditorWindow>();
-            editorWindow.minSize = new Vector2(150, 300);
-            
+            editorWindow.minSize = new Vector2(500, 300);
+
             editorWindow.transferHandler = new TransferFromRosHandler();
 
             editorWindow.Show();
@@ -44,7 +44,7 @@ namespace RosSharp.RosBridgeClient
 
         private void OnGUI()
         {
-            GUILayout.Label("URDF Asset Importer", EditorStyles.boldLabel);
+            GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 100;
             protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
@@ -74,11 +74,11 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Read Robot Description."))
+            if (GUILayout.Button("Read Robot Description"))
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => transferHandler.BeginRosImport(protocolType, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
