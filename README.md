@@ -11,6 +11,7 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 The biggest changes are:
 * [Urdf Libary](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf): The UrdfImporter project was renamed to Urdf. It now supports the ability to both read from and write to URDF files. 
 * [Create, Modify, and Export URDF models in Unity](https://github.com/siemens/ros-sharp/tree/master/Unity3D): ROS# now supports creating and exporting URDF models directly in Unity. It is also possible to modify and re-export an existing URDF model.
+* [Transfer URDF files from Unity to ROS](https://github.com/siemens/ros-sharp/wiki/User_App_ROS_TransferURDFToROS): Previously it was only possible to transfer/import URDF files from ROS to Unity. Now ROS# can send a URDF and all its meshes from Unity to a package in ROS.
 
 Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki/), especially [section 3.2](https://github.com/siemens/ros-sharp/wiki/User_App_NoROS_ExportURDFOnWindows), for an explanation of how to use the new framework.
 

@@ -22,25 +22,97 @@ using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class UrdfImporterEditorWindow : EditorWindow
+    public class TransferFromRosEditorWindow : EditorWindow
     {
         private static RosConnector.Protocols protocolType;
         private static string address;
         private static int timeout;
         private static string assetPath;
       
-        private RosImportHandler importHandler;
+        private TransferFromRosHandler transferHandler;
 
-        [MenuItem("RosBridgeClient/Import URDF Assets...")]
+        [MenuItem("RosBridgeClient/Transfer URDF from ROS...")]
         private static void Init()
         {
-            UrdfImporterEditorWindow editorWindow = GetWindow<UrdfImporterEditorWindow>();
-            editorWindow.minSize = new Vector2(150, 300);
-            
-            editorWindow.importHandler = new RosImportHandler();
+            TransferFromRosEditorWindow editorWindow = GetWindow<TransferFromRosEditorWindow>();
+            editorWindow.minSize = new Vector2(500, 300);
+
+            editorWindow.transferHandler = new TransferFromRosHandler();
 
             editorWindow.Show();
         }
+
+        private void OnGUI()
+        {
+            GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUIUtility.labelWidth = 100;
+            protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            address = EditorGUILayout.TextField("Address", address);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
+            {
+                DeleteEditorPrefs();
+                GetEditorPrefs();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Read Robot Description"))
+            {
+                SetEditorPrefs();
+
+                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath));
+                rosSocketConnectThread.Start();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(20);
+
+            EditorGUIUtility.labelWidth = 300;
+
+            DrawLabelField("1. rosbridge_server Connected:", "connected");
+            DrawLabelField("2. Robot Name Received:", "robotNameReceived");
+            DrawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
+            DrawLabelField("4. Resource Files Received:", "resourceFilesReceived");
+            DrawLabelField("5. rosbridge_server Disconnected:", "disconnected");
+            DrawLabelField("6. Import Complete:", "importComplete");
+        }
+
+        private void DrawLabelField(string label, string stage)
+        {
+            GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
+            bool state = transferHandler.StatusEvents[stage].WaitOne(0);
+            guiStyle.normal.textColor = state ? Color.green : Color.red;
+            EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
+        }
+
+        private void OnInspectorUpdate()
+        {
+            Repaint();
+
+            // some methods can only be called from main thread:
+            // We check the status to call the methods at the right step in the process:
+            transferHandler.GenerateModelIfReady();
+        }
+
+        #region EditorPrefs
 
         private void OnFocus()
         {
@@ -88,75 +160,7 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
         }
-
-        private void OnGUI()
-        {
-            GUILayout.Label("URDF Asset Importer", EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 100;
-            protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            address = EditorGUILayout.TextField("Address", address);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.Space();
-            if (GUILayout.Button("Reset to Default", GUILayout.Width(150)))
-            {
-                DeleteEditorPrefs();
-                GetEditorPrefs();
-            }
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(20);
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Read Robot Description."))
-            {
-                SetEditorPrefs();
-
-                Thread rosSocketConnectThread = new Thread(() => importHandler.BeginRosImport(protocolType, address, timeout, assetPath));
-                rosSocketConnectThread.Start();
-            }
-            EditorGUILayout.EndHorizontal();
-
-            GUILayout.Space(20);
-
-            EditorGUIUtility.labelWidth = 300;
-
-            DrawLabelField("1. rosbridge_server Connected:", "connected");
-            DrawLabelField("2. Robot Name Received:", "robotNameReceived");
-            DrawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
-            DrawLabelField("4. Resource Files Received:", "resourceFilesReceived");
-            DrawLabelField("5. rosbridge_server Disconnected:", "disconnected");
-            DrawLabelField("6. Import Complete:", "importComplete");
-        }
-
-        private void DrawLabelField(string label, string stage)
-        {
-            GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
-            bool state = importHandler.StatusEvents[stage].WaitOne(0);
-            guiStyle.normal.textColor = state ? Color.green : Color.red;
-            EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
-        }
-
-        private void OnInspectorUpdate()
-        {
-            Repaint();
-
-            // some methods can only be called from main thread:
-            // We check the status to call the methods at the right step in the process:
-            importHandler.GenerateModelIfReady();
-        } 
+        
+        #endregion
     }
 }

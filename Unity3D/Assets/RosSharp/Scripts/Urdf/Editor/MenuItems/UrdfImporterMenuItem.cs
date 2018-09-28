@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace RosSharp.Urdf.Editor
 {
-    public class UrdfGeneratorMenuItem
+    public class UrdfImporterMenuItem
     {
         [MenuItem("GameObject/3D Object/URDF Model (import)")]
         private static void CreateUrdfObject()
