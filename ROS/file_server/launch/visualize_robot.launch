@@ -1,6 +1,6 @@
 <!--
-© Siemens AG, 2017-2018
-Author: Verena Röhrl (verena.roehrl@siemens.com)
+© Siemens AG, 2018
+Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,5 +14,17 @@ limitations under the License.
 -->
 
 <launch>
-	<node name="file_server" pkg="file_server" type="file_server" output="screen"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+	<param name="rate" value="20.0"/>
+	<param name="use_gui" value="true"/>
+  </node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+	<param name="publish_frequency" value="20.0"/>
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" />
+
 </launch>
+
+

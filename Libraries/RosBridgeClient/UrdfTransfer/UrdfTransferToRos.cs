@@ -29,6 +29,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
     public class UrdfTransferToRos : UrdfTransfer
     {
         private string urdfFilePath;
+        private string assetRootFolder;
         private string rosPackage;
 
         public UrdfTransferToRos(RosSocket rosSocket, string robotName, string urdfFilePath, string rosPackage)
@@ -127,14 +128,13 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private void PublishFiles(List<Uri> resourceFileUris)
         {
+            assetRootFolder = FindAssetRootFolder(resourceFileUris[0].ToString());
             foreach (Uri resourceFilePath in resourceFileUris)
             {
                 string newPackagePath = GetNewPackagePath(resourceFilePath);
-
                 if (FilesBeingProcessed.ContainsKey(newPackagePath)) continue;
 
-                string absolutePath = GetAbsolutePathFromPackagePath(resourceFilePath.ToString());
-
+                string absolutePath = Path.Combine(assetRootFolder, resourceFilePath.ToString().Substring("package://".Length));
                 if (IsColladaFile(resourceFilePath))
                 {
                     List<Uri> colladaTextureFiles = ReadDaeTextureUris(resourceFilePath, XDocument.Load(absolutePath));
@@ -148,7 +148,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine("File not found " + e);
+                    Console.WriteLine("Transfer to ROS: Could not find file " + absolutePath + ".");
                 }
             }
         }
@@ -163,8 +163,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             FilesBeingProcessed.Add(rosPackagePath, false);
         }
 
-        //Todo: Make more stable/bullet-proof
-        private string GetAbsolutePathFromPackagePath(string packagePath)
+        //Finds which part of the package path is common to urdfFilePath.
+        //Based on that, determines the root folder that contains all URDF files.
+        private string FindAssetRootFolder(string packagePath)
         {
             if (!packagePath.Contains("package://"))
                 return null;
@@ -177,7 +178,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             while (true)
             {
                 if (absoluteFolderPath.Contains(prefix) || prefix == "")
-                    return Path.Combine(absoluteFolderPath, suffix);
+                    return absoluteFolderPath.Substring(0, absoluteFolderPath.Length - prefix.Length);
 
                 suffix = Path.Combine(Path.GetFileName(prefix), suffix);
                 prefix = Path.GetDirectoryName(prefix);
