@@ -208,14 +208,26 @@
     <Compile Include="..\RosBridgeClient\Services\FileServer\GetBinaryFile.cs">
       <Link>Services\FileServer\GetBinaryFile.cs</Link>
     </Compile>
+    <Compile Include="..\RosBridgeClient\Services\FileServer\SaveBinaryFile.cs">
+      <Link>Services\FileServer\SaveBinaryFile.cs</Link>
+    </Compile>
     <Compile Include="..\RosBridgeClient\Services\RosApi\GetParam.cs">
       <Link>Services\RosApi\GetParam.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Services\RosApi\SetParam.cs">
+      <Link>Services\RosApi\SetParam.cs</Link>
     </Compile>
     <Compile Include="..\RosBridgeClient\Services\Standard\Trigger.cs">
       <Link>Services\Standard\Trigger.cs</Link>
     </Compile>
-    <Compile Include="..\RosBridgeClient\UrdfImporter.cs">
-      <Link>UrdfImporter.cs</Link>
+    <Compile Include="..\RosBridgeClient\UrdfTransfer\UrdfTransfer.cs">
+      <Link>UrdfTransfer\UrdfTransfer.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\UrdfTransfer\UrdfTransferFromRos.cs">
+      <Link>UrdfTransfer\UrdfTransferFromRos.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\UrdfTransfer\UrdfTransferToRos.cs">
+      <Link>UrdfTransfer\UrdfTransferToRos.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\RosBridgeClientUWP.rd.xml" />
@@ -228,6 +240,7 @@
       <Version>11.0.2</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

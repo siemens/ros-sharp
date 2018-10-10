@@ -82,10 +82,14 @@
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Services\FileServer\GetBinaryFile.cs" />
+    <Compile Include="Services\FileServer\SaveBinaryFile.cs" />
     <Compile Include="Services\RosApi\GetParam.cs" />
+    <Compile Include="Services\RosApi\SetParam.cs" />
     <Compile Include="Services\Standard\Trigger.cs" />
-    <Compile Include="UrdfImporter.cs" />
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
+    <Compile Include="UrdfTransfer\UrdfTransfer.cs" />
+    <Compile Include="UrdfTransfer\UrdfTransferFromRos.cs" />
+    <Compile Include="UrdfTransfer\UrdfTransferToRos.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

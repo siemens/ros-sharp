@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosSharp.RosBridgeClientTest.RosSocketConsoleTestProtocol</StartupObject>
+    <StartupObject>RosSharp.RosBridgeClientTest.UrdfTransferToRosConsoleExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
@@ -54,10 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
-    <Compile Include="UrdfImporterConsoleExample.cs" />
+    <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />
     <Compile Include="RosSocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrdfTransferToRosConsoleExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RosBridgeClient\RosBridgeClient.csproj">

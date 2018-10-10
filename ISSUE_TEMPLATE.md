@@ -8,13 +8,13 @@ Issue Template © Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 -->
 
-* [ ] I am at the right place and my issue is directly related to ROS#. General technical questions I would post e.g. at [ROS Answers](https://answers.ros.org/) or [Stackoverflow](https://stackoverflow.com). For library-specific questions I would look for help in the corresponding library forums.
-* [ ] I have throughly read [the Contributing Guideline](Contributing.md) and writing this issue is the right thing to do in my case.
+* [ ] I am at the right place and my issue is directly related to ROS#. General technical questions I would post e.g. at [ROS Answers](https://answers.ros.org/) or [Stack Overflow](https://stackoverflow.com). For library-specific questions I would look for help in the corresponding library forums.
+* [ ] I have thoroughly read [the Contributing Guideline](Contributing.md) and writing this issue is the right thing to do in my case.
 
 ---
 ## I have a question! ##
 
-* [ ] I searched the [Wiki](https://github.com/siemens/ros-sharp/wiki), [open](https://github.com/siemens/ros-sharp/issues) and [closed](https://github.com/siemens/ros-sharp/issues?q=is%3Aissue+is%3Aclosed) issues for an answer. I tried my best in finding the answer by myself without success. I believe that the discussion we will have in this issue, and the solutions we might find, will help me, and likely other community members who have a similar problem.
+* [ ] I searched the [Wiki](https://github.com/siemens/ros-sharp/wiki), [open](https://github.com/siemens/ros-sharp/issues) and [closed](https://github.com/siemens/ros-sharp/issues?q=is%3Aissue+is%3Aclosed) issues for an answer. I tried my best to find the answer by myself without success. I believe that the discussion we will have in this issue, and the solutions we might find, will help me, and likely other community members who have a similar problem.
 
 **Here is my question:**
 <!-- Insert question here. -->
@@ -36,14 +36,14 @@ Perform the following steps reproduce the bug:
 <!-- Insert steps here. -->
 
 Observed results:
-<!-- Insert observed results here, optionally attach screenshots and log files to this issue. -->
+<!-- Insert observed results here. Optionally attach screenshots and log files to this issue. -->
 
 Expected results:
 <!-- Insert expected results here. -->
 
 Relevant Code:
 ```
-<!-- Insert code here, optionally attrach code or data files to this issue. -->
+<!-- Insert code here. Optionally attach code or data files to this issue. -->
 ```
 ---
 ## I have a feature request! ##
@@ -52,5 +52,5 @@ Relevant Code:
 <!-- Explain your use case here. -->
 
 **For being able to do it, I wish ROS# had the following feature:**
-<!-- Explain the suggested solution of your ue case here. -->
+<!-- Explain the suggested solution of your use case here. -->
 
