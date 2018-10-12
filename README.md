@@ -9,7 +9,7 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 [This](https://github.com/siemens/ros-sharp/commit/acdd1ea7b8de47a23fbf376fa590590cf945b495) commit comes with major changes in how ROS# deals with URDF import/export
 
 The biggest changes are:
-* [Urdf Libary](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf): The UrdfImporter project was renamed to Urdf. It now supports the ability to both read from and write to URDF files. 
+* [Urdf Libary](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf): The UrdfImporter project was renamed to Urdf. It now supports the ability to both read from and write to URDF files.
 * [Create, Modify, and Export URDF models in Unity](https://github.com/siemens/ros-sharp/tree/master/Unity3D): ROS# now supports creating and exporting URDF models directly in Unity. It is also possible to modify and re-export an existing URDF model.
 * [Transfer URDF files from Unity to ROS](https://github.com/siemens/ros-sharp/wiki/User_App_ROS_TransferURDFToROS): Previously it was only possible to transfer/import URDF files from ROS to Unity. Now ROS# can send a URDF and all its meshes from Unity to a package in ROS.
 
@@ -53,36 +53,18 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 * [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on Linux and iOS by community members.
 
-* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) solution is built using .NET Framework 4.6. It requires Unity 2018.x to run. Make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
+* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) solution requires .NET Framework 4.6 and Visual Studio 2017 to compile.
+* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity 2018.x.
+Make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
-* [David Whitney](https://github.com/dwhit) provides a UWP version of ROS# on [his fork](https://github.com/dwhit/ros-sharp).
-
-* Additionally [Blommers](https://github.com/blommers) kindly provides a [.NET Standard 2.0 version of UrdfImporter](https://github.com/blommers/UdrfImporter).
-
-## ROS# Project Team ##
-
-* [Martin Bischoff](https://github.com/MartinBischoff)
-* [Berkay Alp Cakal](https://github.com/berkayalpcakal)
-* [Verena Roehrl](https://github.com/roehrlverena)
-* [Suzannah Smith](https://github.com/SuzannahSmith)
-
-### Former Members and Visitors ###
-
-* [Rahul Warrier](https://github.com/jaguar243)
-
-## Special Thanks ##
-
-* [Karl Henkel](https://github.com/karl-) for providing the [reference](https://github.com/karl-/pb_Stl) for the Unity STL mesh importer/exporter used in this project.
-* [Jeremy Fix](https://github.com/jeremyfix) for providing some helpful ROS communication example scripts in Unity.
-* [Hassanbot](https://github.com/hassanbot) for multiple bug fixes and [communication performance tests](https://github.com/siemens/ros-sharp/issues/66).
-* [David Whitney](https://github.com/dwhit) and  [tarukosu](https://github.com/tarukosu-) for UWP platform support.
-* [Samuel Lindgren](https://github.com/samiamlabs) for adding the ROS Service Providers in Unity.
-* [Interested in contributing as well?](CONTRIBUTING.md)
+* Please find a UWP version of ROS# [here](https://github.com/dwhit/ros-sharp).
+* Please find a .NET Standard 2.0 version of UrdfImporter [here](https://github.com/blommers/UdrfImporter).
 
 ## Further Info ##
 
 * [Read the Wiki](https://github.com/siemens/ros-sharp/wiki)
 * [Contact the project team](mailto:ros-sharp.ct@siemens.com)
+* [Contributors and Acknowledgements](https://github.com/siemens/ros-sharp/wiki/Info_Acknowledgements)
 
 ---
 
