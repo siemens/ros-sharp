@@ -84,6 +84,8 @@
     <Compile Include="Services\FileServer\SaveBinaryFile.cs" />
     <Compile Include="Services\RosApi\GetParam.cs" />
     <Compile Include="Services\RosApi\SetParam.cs" />
+    <Compile Include="Services\RosApi\Topics.cs" />
+    <Compile Include="Services\RosApi\Nodes.cs" />
     <Compile Include="Services\Standard\Trigger.cs" />
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
     <Compile Include="UrdfTransfer\UrdfTransfer.cs" />
