@@ -35,6 +35,9 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+// Make internal classes visible to unit test assembly
+[assembly: InternalsVisibleTo("RosBridgeClientTest")]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("27cd898a-8840-4cdd-a475-4a672fd2ef50")]
 
