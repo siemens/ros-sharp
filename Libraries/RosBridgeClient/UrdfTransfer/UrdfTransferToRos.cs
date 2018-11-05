@@ -145,7 +145,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                     byte[] fileContents = File.ReadAllBytes(absolutePath);
                     SendFileToRos(newPackagePath, fileContents);
                 }
-                catch (IOException e)
+                catch (IOException)
                 {
 
                 }
