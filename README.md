@@ -6,7 +6,7 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 ## Notes On This Fork ##
 
-This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. 
+This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. Like the main ROS# branch, use 2018.2 or later.
 
 #### Installation ### 
 
@@ -28,6 +28,9 @@ In the ROS# Unity project, I first installed the Mixed Reality Toolkit and follo
 
 If you want to make changes to the RosBridgeClient, like adding new messages, for instance, simply edit the code in the RosBridgeClient project (following the instructions from the main ROS# wiki), build the solution, and copy over the new RosBridgeClient.dll and RosBridgeClientUWP.dll.
 
+
+### Compatibile With Mixed Reality Toolkit ###
+This branch is compatible with Microsoft's Mixed Reality Toolkit. See the Preparing Unity Project Section.
 
 ## Recent Changes ##
 
