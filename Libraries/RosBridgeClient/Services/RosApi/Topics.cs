@@ -34,5 +34,6 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
         [JsonIgnore]
         public const string RosMessageName = "ros_api/Topics";
         public string[] topics;
+        public string[] types;
     }
 }
