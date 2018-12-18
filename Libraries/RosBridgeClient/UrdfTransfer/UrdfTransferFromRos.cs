@@ -27,6 +27,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
     public class UrdfTransferFromRos : UrdfTransfer
     {
         private readonly string localUrdfDirectory;
+        private string urdfParameter;
         
         public string LocalUrdfDirectory
         {
@@ -37,10 +38,12 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             }
         }
 
-        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory)
+        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory, string urdfParameter)
         {
             RosSocket = rosSocket;
             this.localUrdfDirectory = localUrdfDirectory;
+            this.urdfParameter = urdfParameter;
+            
 
             Status = new Dictionary<string, ManualResetEvent>
             {
@@ -59,8 +62,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                                                                                     new rosapi.GetParamRequest("/robot/name", "default"));
 
             var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
-                                                                                        new rosapi.GetParamRequest("/robot_description", "default"),
-                                                                                        Path.DirectorySeparatorChar + "robot_description.urdf");
+                                                                                        new rosapi.GetParamRequest(urdfParameter, "default"),
+                                                                                        Path.DirectorySeparatorChar + urdfParameter + ".urdf");
 
             robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;  
         }
