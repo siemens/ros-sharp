@@ -151,7 +151,6 @@ namespace RosSharp.RosBridgeClient
             {
                 case "publish":
                     {
-
                         string topic = jObject.GetValue("topic").ToString();
                         foreach (Subscriber subscriber in SubscribersOf(topic))
                             subscriber.Receive(jObject.GetValue("msg"));
