@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient
         {
             float time = UnityEngine.Time.realtimeSinceStartup;
             int secs = (int)time;
-            int nsecs = (int)(1000 *(time-secs));
+            int nsecs = (int)(1e9 *(time-secs));
             header.seq++;
             header.stamp.secs = secs;
             header.stamp.nsecs = nsecs;
