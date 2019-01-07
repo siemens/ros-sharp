@@ -173,7 +173,7 @@ namespace RosSharp.RosBridgeClient
         }
         private List<Subscriber> SubscribersOf(string topic)
         {
-            return Subscribers.Where(pair => pair.Key.StartsWith(topic)).Select(pair => pair.Value).ToList();
+            return Subscribers.Where(pair => pair.Key.StartsWith(topic + ":")).Select(pair => pair.Value).ToList();
         }
 
         private static byte[] Serialize<T>(T obj)
