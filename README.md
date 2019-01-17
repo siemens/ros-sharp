@@ -6,11 +6,11 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 ## Notes On This Fork ##
 
-This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. 
+This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. Like the main ROS# branch, use 2018.2 or later.
 
 #### Installation ### 
 
-To use ROS# with the HoloLens, simply clone this fork and stay on the master branch. Then open the Unity project and import the [Microsoft Mixed Reality Toolkit](https://github.com/Microsoft/MixedRealityToolkit-Unity). The toolkit provides a version of Newtonsoft.Json that works on the HoloLens, as well as other tools/features you will want during HoloLens development. Follow the Mixed Reality Toolkit configuration instructions, and you will be good to go. 
+To use ROS# with the HoloLens, simply clone this fork and stay on the master branch. Then open the Unity project and import the [Microsoft Mixed Reality Toolkit](https://github.com/Microsoft/MixedRealityToolkit-Unity). The toolkit provides a version of Newtonsoft.Json that works on the HoloLens, as well as other tools/features you will want during HoloLens development. Follow the Mixed Reality Toolkit configuration instructions, and you will be good to go. I use the 2017 version of MRTK, not vNext.
 
 ### Architecture ###
 
@@ -18,7 +18,7 @@ How does this work under the hood? In brief, I wrote a UWP-compatible WebSocket 
 
 #### Creating RosBridgeClientUWP.dll ####
 
-ROS# contains a solution in the Libraries folder, which contains a project called RosBridgeClient. In the Protocols folder, I created a UWP compatible WebSocket interface. Next, I wrapped all WebSocket protocol files in preprocessor directives so only the UWP compatible interface would be compiled in a UWP-build. Finally, I created a second project in the solution called RosBridgeClientUWP. I made it a Windows Universal class library project, and copied all of the RosBridgeClient code over as links. Copying as links means that editing the code in one location changes it in both. Finally, build the solution.
+ROS# contains a solution in the Libraries folder, which contains a project called RosBridgeClient. In the Protocols folder, I created a UWP compatible WebSocket interface. Next, I wrapped all WebSocket protocol files in preprocessor directives so only the UWP compatible interface would be compiled in a UWP-build. Finally, I created a second project in the solution called RosBridgeClientUWP. I made it a Windows Universal class library project, and copied all of the RosBridgeClient code over as links. Copying as links means that editing the code in one location changes it in both. Finally, I built the solution.
 
 #### Preparing the Unity Project ####
 
@@ -28,6 +28,9 @@ In the ROS# Unity project, I first installed the Mixed Reality Toolkit and follo
 
 If you want to make changes to the RosBridgeClient, like adding new messages, for instance, simply edit the code in the RosBridgeClient project (following the instructions from the main ROS# wiki), build the solution, and copy over the new RosBridgeClient.dll and RosBridgeClientUWP.dll.
 
+
+### Compatibile With Mixed Reality Toolkit ###
+This branch is compatible with Microsoft's Mixed Reality Toolkit. See the Preparing Unity Project Section.
 
 ## Recent Changes ##
 
