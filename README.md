@@ -38,7 +38,7 @@ The biggest changes are:
 * [Create, Modify, and Export URDF models in Unity](https://github.com/siemens/ros-sharp/tree/master/Unity3D): ROS# now supports creating and exporting URDF models directly in Unity. It is also possible to modify and re-export an existing URDF model.
 * [Transfer URDF files from Unity to ROS](https://github.com/siemens/ros-sharp/wiki/User_App_ROS_TransferURDFToROS): Previously it was only possible to transfer/import URDF files from ROS to Unity. Now ROS# can send a URDF and all its meshes from Unity to a package in ROS.
 
-Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki/), especially [section 3.2](https://github.com/siemens/ros-sharp/wiki/User_App_NoROS_ExportURDFOnWindows), for an explanation of how to use the new framework.
+Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki/), especially [Section 3.2](https://github.com/siemens/ros-sharp/wiki/User_App_NoROS_ExportURDFOnWindows), for an explanation of how to use the new framework.
 
 ## Contents ##
 
@@ -79,7 +79,7 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 * [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on Linux and iOS by community members.
 
 * The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) solution requires .NET Framework 4.6 and Visual Studio 2017 to compile.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity 2018.x.
+* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.2 and higher.
 Make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
 * Please find a UWP version of ROS# [here](https://github.com/dwhit/ros-sharp).

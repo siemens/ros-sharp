@@ -29,6 +29,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
     public class UrdfTransferFromRos : UrdfTransfer
     {
         private readonly string localUrdfDirectory;
+        private string urdfParameter;
         
         public string LocalUrdfDirectory
         {
@@ -39,10 +40,12 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             }
         }
 
-        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory)
+        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory, string urdfParameter)
         {
             RosSocket = rosSocket;
             this.localUrdfDirectory = localUrdfDirectory;
+            this.urdfParameter = urdfParameter;
+            
 
             Status = new Dictionary<string, ManualResetEvent>
             {
@@ -61,8 +64,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                                                                                     new rosapi.GetParamRequest("/robot/name", "default"));
 
             var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
-                                                                                        new rosapi.GetParamRequest("/robot_description", "default"),
-                                                                                        Path.DirectorySeparatorChar + "robot_description.urdf");
+                                                                                        new rosapi.GetParamRequest(urdfParameter, "default"),
+                                                                                        Path.DirectorySeparatorChar + urdfParameter + ".urdf");
 
             robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;  
         }
@@ -73,14 +76,14 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             Status["robotNameReceived"].Set();
         }
 
-        private void ReceiveRobotDescription(ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse> serviceReciever, rosapi.GetParamResponse serviceResponse)
+        private void ReceiveRobotDescription(ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse> serviceReceiver, rosapi.GetParamResponse serviceResponse)
         {
             string robotDescription = FormatTextFileContents(serviceResponse.value);
 
             Thread importResourceFilesThread = new Thread(() => ImportResourceFiles(robotDescription));
             importResourceFilesThread.Start();
 
-            Thread writeTextFileThread = new Thread(() => WriteTextFile((string)serviceReciever.HandlerParameter, robotDescription));
+            Thread writeTextFileThread = new Thread(() => WriteTextFile((string)serviceReceiver.HandlerParameter, robotDescription));
             writeTextFileThread.Start();
 
             Status["robotDescriptionReceived"].Set();
@@ -183,7 +186,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private static string FormatTextFileContents(string fileContents)
         {
-            // remove enclosing quotations if existend:
+            // remove enclosing quotations if existent:
             if (fileContents.Substring(0, 1) == "\"" && fileContents.Substring(fileContents.Length - 1, 1) == "\"")
                 fileContents = fileContents.Substring(1, fileContents.Length - 2);
 

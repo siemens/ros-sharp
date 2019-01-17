@@ -41,9 +41,9 @@ namespace RosSharp.RosBridgeClient
 
         internal abstract Communication Publish(Message message);
 
-        internal Unadverisement Unadvertise()
+        internal Unadvertisement Unadvertise()
         {
-            return new Unadverisement(Id, Topic);
+            return new Unadvertisement(Id, Topic);
         }
     }
 

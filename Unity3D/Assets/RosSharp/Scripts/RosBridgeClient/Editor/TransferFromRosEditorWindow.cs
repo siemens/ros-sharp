@@ -26,10 +26,13 @@ namespace RosSharp.RosBridgeClient
     {
         private static RosConnector.Protocols protocolType;
         private static string address;
+        private static string urdfParameter;
         private static int timeout;
         private static string assetPath;
       
         private TransferFromRosHandler transferHandler;
+
+        private bool showSettings = false;
 
         [MenuItem("RosBridgeClient/Transfer URDF from ROS...")]
         private static void Init()
@@ -44,23 +47,33 @@ namespace RosSharp.RosBridgeClient
 
         private void OnGUI()
         {
-            GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 100;
-            protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
-            EditorGUILayout.EndHorizontal();
+            GUILayout.Label("URDF Transfer (From ROS to Unity)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
             address = EditorGUILayout.TextField("Address", address);
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
-            EditorGUILayout.EndHorizontal();
+            showSettings = EditorGUILayout.Foldout(showSettings, "Settings");
+            if (showSettings)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUIUtility.labelWidth = 100;
+                protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+                EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
-            EditorGUILayout.EndHorizontal();
+                //TODO URDF Parameter
+                EditorGUILayout.BeginHorizontal();
+                urdfParameter = EditorGUILayout.TextField("URDF Parameter", urdfParameter);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
+                EditorGUILayout.EndHorizontal();
+            }
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
@@ -78,7 +91,7 @@ namespace RosSharp.RosBridgeClient
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath));
+                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath, urdfParameter));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
@@ -87,12 +100,12 @@ namespace RosSharp.RosBridgeClient
 
             EditorGUIUtility.labelWidth = 300;
 
-            DrawLabelField("1. rosbridge_server Connected:", "connected");
-            DrawLabelField("2. Robot Name Received:", "robotNameReceived");
-            DrawLabelField("3. Robot Description Received:", "robotDescriptionReceived");
-            DrawLabelField("4. Resource Files Received:", "resourceFilesReceived");
-            DrawLabelField("5. rosbridge_server Disconnected:", "disconnected");
-            DrawLabelField("6. Import Complete:", "importComplete");
+            DrawLabelField("Connected:", "connected");
+            DrawLabelField("Robot Name Received:", "robotNameReceived");
+            DrawLabelField("Robot Description Received:", "robotDescriptionReceived");
+            DrawLabelField("Resource Files Received:", "resourceFilesReceived");
+            DrawLabelField("Disconnected:", "disconnected");
+            DrawLabelField("Import Complete:", "importComplete");
         }
 
         private void DrawLabelField(string label, string stage)
@@ -135,6 +148,7 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.DeleteKey("UrdfImporterAddress");
             EditorPrefs.DeleteKey("UrdfImporterAssetPath");
             EditorPrefs.DeleteKey("UrdfImporterTimeout");
+            EditorPrefs.DeleteKey("UrdfImporterUrdfParameter");
         }
         private void GetEditorPrefs()
         {
@@ -152,6 +166,10 @@ namespace RosSharp.RosBridgeClient
             timeout = (EditorPrefs.HasKey("UrdfImporterTimeout") ?
                 EditorPrefs.GetInt("UrdfImporterTimeout") :
                 10);
+
+            urdfParameter = (EditorPrefs.HasKey("UrdfImporterUrdfParameter") ?
+                EditorPrefs.GetString("UrdfImporterUrdfParameter") :
+                "robot_description");
         }
         private void SetEditorPrefs()
         {
@@ -159,6 +177,7 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.SetString("UrdfImporterAddress", address);
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetInt("UrdfImporterTimeout", timeout);
+            EditorPrefs.SetString("UrdfImporterUrdfParameter", urdfParameter);
         }
         
         #endregion

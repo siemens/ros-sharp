@@ -31,21 +31,22 @@ namespace RosSharp.RosBridgeClientTest
 
             for (int i = 1; i < 3; i++)
             {
-                var webSocketNetProtocol = new RosBridgeClient.Protocols.WebSocketNetProtocol(uri);
-                var rosSocket = new RosSocket(webSocketNetProtocol);
+                RosBridgeClient.Protocols.WebSocketNetProtocol webSocketNetProtocol = new RosBridgeClient.Protocols.WebSocketNetProtocol(uri);
+                RosSocket rosSocket = new RosSocket(webSocketNetProtocol);
+                string urdfParameter = "/robot_description";
 
                 // Publication:
-                UrdfTransferFromRos transferor = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory());
-                transferor.Transfer();
+                UrdfTransferFromRos urdfTransferFromRos = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory(), urdfParameter);
+                urdfTransferFromRos.Transfer();
 
-                transferor.Status["robotNameReceived"].WaitOne();
-                Console.WriteLine("Robot Name Received: " + transferor.RobotName);
+                urdfTransferFromRos.Status["robotNameReceived"].WaitOne();
+                Console.WriteLine("Robot Name Received: " + urdfTransferFromRos.RobotName);
 
-                transferor.Status["robotDescriptionReceived"].WaitOne();
+                urdfTransferFromRos.Status["robotDescriptionReceived"].WaitOne();
                 Console.WriteLine("Robot Description received... ");
 
-                transferor.Status["resourceFilesReceived"].WaitOne();
-                Console.WriteLine("Resource Files received " + transferor.FilesBeingProcessed.Count);
+                urdfTransferFromRos.Status["resourceFilesReceived"].WaitOne();
+                Console.WriteLine("Resource Files received " + urdfTransferFromRos.FilesBeingProcessed.Count);
 
                 rosSocket.Close();
             }

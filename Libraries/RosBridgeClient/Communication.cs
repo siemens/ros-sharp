@@ -40,12 +40,12 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    internal class Unadverisement : Communication
+    internal class Unadvertisement : Communication
     {
         public override string op { get { return "unadvertise"; } } // required
         public string topic; // required
 
-        internal Unadverisement(string id, string topic) : base(id)
+        internal Unadvertisement(string id, string topic) : base(id)
         {
             this.topic = topic;
         }

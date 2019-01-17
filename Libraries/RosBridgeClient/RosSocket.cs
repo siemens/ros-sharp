@@ -151,7 +151,6 @@ namespace RosSharp.RosBridgeClient
             {
                 case "publish":
                     {
-
                         string topic = jObject.GetValue("topic").ToString();
                         foreach (Subscriber subscriber in SubscribersOf(topic))
                             subscriber.Receive(jObject.GetValue("msg"));
@@ -174,7 +173,7 @@ namespace RosSharp.RosBridgeClient
         }
         private List<Subscriber> SubscribersOf(string topic)
         {
-            return Subscribers.Where(pair => pair.Key.StartsWith(topic)).Select(pair => pair.Value).ToList();
+            return Subscribers.Where(pair => pair.Key.StartsWith(topic + ":")).Select(pair => pair.Value).ToList();
         }
 
         private static byte[] Serialize<T>(T obj)

@@ -31,6 +31,8 @@ namespace RosSharp.RosBridgeClient
         
         private TransferToRosHandler transferHandler;
 
+        private bool showSettings = false;
+
         [MenuItem("RosBridgeClient/Transfer URDF to ROS...")]
         private static void Init()
         {
@@ -48,32 +50,36 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUIUtility.labelWidth = 100;
-            protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
             serverUrl = EditorGUILayout.TextField("Server URL", serverUrl);
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            urdfPath = EditorGUILayout.TextField("URDF to export", urdfPath);
-            if (GUILayout.Button("Select", new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 }))
+            showSettings = EditorGUILayout.Foldout(showSettings, "Settings");
+            if (showSettings)
             {
-                urdfPath = EditorUtility.OpenFilePanel("Select a URDF file", urdfPath, "urdf");
-            }
-            EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUIUtility.labelWidth = 100;
+                protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+                EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            rosPackage = EditorGUILayout.TextField(
-                new GUIContent("ROS package",
-                    "The package where all meshes and resources files will be exported to in ROS."),
-                rosPackage);
-            EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                urdfPath = EditorGUILayout.TextField("URDF to export", urdfPath);
+                if (GUILayout.Button("Select", new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 }))
+                {
+                    urdfPath = EditorUtility.OpenFilePanel("Select a URDF file", urdfPath, "urdf");
+                }
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                rosPackage = EditorGUILayout.TextField(
+                    new GUIContent("ROS package",
+                        "The package where all meshes and resources files will be exported to in ROS."),
+                    rosPackage);
+                EditorGUILayout.EndHorizontal();
+            }
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
