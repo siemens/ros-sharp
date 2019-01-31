@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© Siemens AG, 2019
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,18 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
+using UnityEditor;
+using UnityEngine;
 
-namespace RosSharp.RosBridgeClient.Messages.Standard
+namespace RosBridgeClient.Messages
 {
-    public class String : Message
+    [CustomEditor(typeof(SimpleMessageGenerator))]
+
+    class SimpleMessageGeneratorEditor : Editor
     {
-        [JsonIgnore]
-        public const string RosMessageName = "std_msgs/String";
-        public string data;
-        public String()
+
+        public override void OnInspectorGUI()
         {
-            data = "";
+            base.OnInspectorGUI();
+
+            GUILayout.Space(20);
+            if (GUILayout.Button("Create Message", GUILayout.Height(40)))
+                ((SimpleMessageGenerator)target).Generate();
+
         }
     }
 }
