@@ -16,10 +16,10 @@ limitations under the License.
 namespace RosBridgeClient.Messages
 {
 
-    public class ActionMessageGenerator
+    public static class ActionMessageGenerator
     {
 
-        public void Generate(string ActionName, string RosPackageName,
+        public static void Generate(string ActionName, string RosPackageName,
             MessageElement[] GoalElements, MessageElement[] ResultElements, MessageElement[] FeedbackElements, string AssetPath)
         {
             SimpleMessageGenerator.Generate(ActionName + "Goal", RosPackageName, GoalElements, AssetPath);

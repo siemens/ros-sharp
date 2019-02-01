@@ -20,30 +20,36 @@ using RosBridgeClient.Messages;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class SimpleMessageGenerationEditorWindow : EditorWindow
+    public class ActionMessageGenerationEditorWindow : EditorWindow
     {
         private static string assetPath;
-        private static string messageName;
+        private static string actionName;
         private static string rosPackageName;
-        public MessageElement[] messageElements;
+        public MessageElement[] goalElements;
+        public MessageElement[] resultElements;
+        public MessageElement[] feedbackElements;
 
-        private SerializedObject serializedObject;
-        private SerializedProperty serializedProperty;
+        private SerializedObject    serializedObject_goal;
+        private SerializedProperty  serializedProperty_goal;
+        private SerializedObject    serializedObject_result;
+        private SerializedProperty  serializedProperty_result;
+        private SerializedObject    serializedObject_feedback;
+        private SerializedProperty  serializedProperty_feedback;
 
-        [MenuItem("RosBridgeClient/Generate Messages/Simple Messages")]
+        [MenuItem("RosBridgeClient/Generate Messages/Action Messages")]
         private static void Init()
         {
-            SimpleMessageGenerationEditorWindow editorWindow = GetWindow<SimpleMessageGenerationEditorWindow>();
+            ActionMessageGenerationEditorWindow editorWindow = GetWindow<ActionMessageGenerationEditorWindow>();
             editorWindow.minSize = new Vector2(500, 300);
             editorWindow.Show();
         }
 
         private void OnGUI()
         {
-            GUILayout.Label("Message Generator (Simple Message)", EditorStyles.boldLabel);
+            GUILayout.Label("Message Generator (Action Message)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
-            messageName = EditorGUILayout.TextField("Message Name", messageName);
+            actionName = EditorGUILayout.TextField("Message Name", actionName);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -52,14 +58,32 @@ namespace RosSharp.RosBridgeClient
 
 
             EditorGUILayout.BeginHorizontal();
-            ScriptableObject target = this;
-            serializedObject = new SerializedObject(target);
-            serializedObject.Update();
-            serializedProperty = serializedObject.FindProperty("messageElements");
-            EditorGUILayout.PropertyField(serializedProperty, true);
-            serializedObject.ApplyModifiedProperties();
+            ScriptableObject target_goal = this;
+            serializedObject_goal = new SerializedObject(target_goal);
+            serializedObject_goal.Update();
+            serializedProperty_goal = serializedObject_goal.FindProperty("goalElements");
+            EditorGUILayout.PropertyField(serializedProperty_goal, true);
+            serializedObject_goal.ApplyModifiedProperties();
             EditorGUILayout.EndHorizontal();
-            
+
+            EditorGUILayout.BeginHorizontal();
+            ScriptableObject target = this;
+            serializedObject_result = new SerializedObject(target);
+            serializedObject_result.Update();
+            serializedProperty_result = serializedObject_result.FindProperty("resultElements");
+            EditorGUILayout.PropertyField(serializedProperty_result, true);
+            serializedObject_result.ApplyModifiedProperties();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            ScriptableObject target_feedback = this;
+            serializedObject_feedback = new SerializedObject(target);
+            serializedObject_feedback.Update();
+            serializedProperty_feedback = serializedObject_feedback.FindProperty("feedbackElements");
+            EditorGUILayout.PropertyField(serializedProperty_feedback, true);
+            serializedObject_feedback.ApplyModifiedProperties();
+            EditorGUILayout.EndHorizontal();
+
 
             GUILayout.Space(40);
             EditorGUILayout.BeginHorizontal();
@@ -81,7 +105,8 @@ namespace RosSharp.RosBridgeClient
             if (GUILayout.Button("Generate Simple Message"))
             {
                 SetEditorPrefs();
-                SimpleMessageGenerator.Generate(messageName, rosPackageName, messageElements, assetPath);
+                ActionMessageGenerator.Generate(actionName, rosPackageName, 
+                                                goalElements, resultElements, feedbackElements, assetPath);
                 AssetDatabase.Refresh();
             }
             EditorGUILayout.EndHorizontal();
@@ -129,7 +154,7 @@ namespace RosSharp.RosBridgeClient
         private void SetEditorPrefs()
         {
             EditorPrefs.SetString("AssetPath", assetPath);
-            EditorPrefs.SetString("MessageName", messageName);
+            EditorPrefs.SetString("MessageName", actionName);
             EditorPrefs.SetString("RosPackageName", rosPackageName);
         }
 
