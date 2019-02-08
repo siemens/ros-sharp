@@ -21,30 +21,34 @@ using MessageType = RosBridgeClient.Messages.MessageType;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class SimpleMessageGenerationEditorWindow : EditorWindow
+    public class ServiceMessageGenerationEditorWindow : EditorWindow
     {
         private static string assetPath;
-        private static string messageName;
+        private static string serviceName;
         private static string rosPackageName;
-        public MessageElement[] messageElements;
+        public MessageElement[] requestElements;
+        public MessageElement[] responseElements;
 
-        private SerializedObject serializedObject;
-        private SerializedProperty serializedProperty;
+        private SerializedObject    serializedObject_request;
+        private SerializedProperty  serializedProperty_request;
+        private SerializedObject    serializedObject_response;
+        private SerializedProperty  serializedProperty_response;
 
-        [MenuItem("RosBridgeClient/Generate Messages/Simple Messages")]
+
+        [MenuItem("RosBridgeClient/Generate Messages/Service Messages")]
         private static void Init()
         {
-            SimpleMessageGenerationEditorWindow editorWindow = GetWindow<SimpleMessageGenerationEditorWindow>();
+            ServiceMessageGenerationEditorWindow editorWindow = GetWindow<ServiceMessageGenerationEditorWindow>();
             editorWindow.minSize = new Vector2(500, 300);
             editorWindow.Show();
         }
 
         private void OnGUI()
         {
-            GUILayout.Label("Message Generator (Simple Message)", EditorStyles.boldLabel);
+            GUILayout.Label("Message Generator (Service Message)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
-            messageName = EditorGUILayout.TextField("Message Name", messageName);
+            serviceName = EditorGUILayout.TextField("Service Name", serviceName);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -53,14 +57,22 @@ namespace RosSharp.RosBridgeClient
 
 
             EditorGUILayout.BeginHorizontal();
-            ScriptableObject target = this;
-            serializedObject = new SerializedObject(target);
-            serializedObject.Update();
-            serializedProperty = serializedObject.FindProperty("messageElements");
-            EditorGUILayout.PropertyField(serializedProperty, true);
-            serializedObject.ApplyModifiedProperties();
+            ScriptableObject target_request = this;
+            serializedObject_request = new SerializedObject(target_request);
+            serializedObject_request.Update();
+            serializedProperty_request = serializedObject_request.FindProperty("requestElements");
+            EditorGUILayout.PropertyField(serializedProperty_request, true);
+            serializedObject_request.ApplyModifiedProperties();
             EditorGUILayout.EndHorizontal();
-            
+
+            EditorGUILayout.BeginHorizontal();
+            ScriptableObject target = this;
+            serializedObject_response = new SerializedObject(target);
+            serializedObject_response.Update();
+            serializedProperty_response = serializedObject_response.FindProperty("responseElements");
+            EditorGUILayout.PropertyField(serializedProperty_response, true);
+            serializedObject_response.ApplyModifiedProperties();
+            EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(40);
             EditorGUILayout.BeginHorizontal();
@@ -79,18 +91,15 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Generate Simple Message"))
+            if (GUILayout.Button("Generate Service Message"))
             {
                 SetEditorPrefs();
-                SimpleMessageGenerator.Generate(messageName, rosPackageName, messageElements, assetPath);
+                ServiceMessageGenerator.Generate(serviceName, rosPackageName, requestElements, responseElements, assetPath);
                 AssetDatabase.Refresh();
             }
             EditorGUILayout.EndHorizontal();
-
             GUILayout.Space(20);
-
             EditorGUIUtility.labelWidth = 300;
-
         }
 
         private void OnInspectorUpdate()
@@ -122,27 +131,26 @@ namespace RosSharp.RosBridgeClient
 
         private void GetEditorPrefs()
         {
-            assetPath = (EditorPrefs.HasKey("AssetPath") ?
-                        EditorPrefs.GetString("AssetPath") :
-                        Path.Combine(Path.GetFullPath("."), "Assets"));
+            assetPath       = (EditorPrefs.HasKey("AssetPath") ?
+                              EditorPrefs.GetString("AssetPath") :
+                              Path.Combine(Path.GetFullPath("."), "Assets"));
 
-            messageName = (EditorPrefs.HasKey("Message Name") ?
-                          EditorPrefs.GetString("Message Name") :
-                          "ExampleMessage");
+            serviceName     = (EditorPrefs.HasKey("ServiceName") ?
+                              EditorPrefs.GetString("ServiceName") :
+                              "AddTwoInts");
 
             rosPackageName = (EditorPrefs.HasKey("ROSPackageName") ?
-                             EditorPrefs.GetString("ROSPackageName") :
-                             "beginner_tutorials");
+                              EditorPrefs.GetString("ROSPackageName") :
+                              "beginner_tutorials");
 
-            messageElements = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "a" },
-                                                     new MessageElement { messageType = MessageType.String, messageName = "str" },
-                                                     new MessageElement { messageType = MessageType.Odometry, messageName = "odom" }};
+            requestElements = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "a" }, new MessageElement { messageType = MessageType.@int, messageName = "b" } };
+            responseElements = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "sum" } };
         }
 
         private void SetEditorPrefs()
         {
             EditorPrefs.SetString("AssetPath", assetPath);
-            EditorPrefs.SetString("MessageName", messageName);
+            EditorPrefs.SetString("MessageName", serviceName);
             EditorPrefs.SetString("RosPackageName", rosPackageName);
         }
 

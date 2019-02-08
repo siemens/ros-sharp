@@ -17,7 +17,7 @@ namespace RosBridgeClient.Messages
 {
     public enum MessageType
     {
-        Header, Int32, Int32MultiArray, MultiArrayDimension, MultiArrayLayout, Float64, String, Time,
+        Header, @int, Int32MultiArray, MultiArrayDimension, MultiArrayLayout, @float, String, Time,
         Accel, Point, PointStamped, Pose, PoseWithCovariance, Quaternion, Twist, TwistWithCovariance, Vector3,
         CompressedImage, Image, JointState, Joy, LaserScan, PointCloud2, PointField,
         Odometry, MapMetaData, OccupancyGrid,
@@ -70,4 +70,5 @@ namespace RosBridgeClient.Messages
         }
 
     }
+
 }

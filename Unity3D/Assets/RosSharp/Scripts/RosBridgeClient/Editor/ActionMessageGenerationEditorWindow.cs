@@ -17,6 +17,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using RosBridgeClient.Messages;
+using MessageType = RosBridgeClient.Messages.MessageType;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -49,7 +50,7 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Label("Message Generator (Action Message)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
-            actionName = EditorGUILayout.TextField("Message Name", actionName);
+            actionName = EditorGUILayout.TextField("Action Name", actionName);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -102,7 +103,7 @@ namespace RosSharp.RosBridgeClient
             GUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Generate Simple Message"))
+            if (GUILayout.Button("Generate Action Messages"))
             {
                 SetEditorPrefs();
                 ActionMessageGenerator.Generate(actionName, rosPackageName, 
@@ -149,6 +150,18 @@ namespace RosSharp.RosBridgeClient
             assetPath = (EditorPrefs.HasKey("AssetPath") ?
                         EditorPrefs.GetString("AssetPath") :
                         Path.Combine(Path.GetFullPath("."), "Assets"));
+
+            actionName = (EditorPrefs.HasKey("ActionName") ?
+                          EditorPrefs.GetString("ActionName") :
+                          "Fibonacci");
+
+            rosPackageName = (EditorPrefs.HasKey("ROSPackageName") ?
+                             EditorPrefs.GetString("ROSPackageName") :
+                             "actionlib_tutorials");
+
+            goalElements     = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "order" } };
+            resultElements   = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "sequence", isArray = true } };
+            feedbackElements = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "sequence", isArray = true } };
         }
 
         private void SetEditorPrefs()
