@@ -19,6 +19,7 @@ public class LaserScanVisualizerLines : LaserScanVisualizer
 {
     [Range(0.001f, 0.01f)]
     public float objectWidth;
+    public Material material;
 
     private GameObject[] LaserScan;
     private bool IsCreated = false;
@@ -33,7 +34,7 @@ public class LaserScanVisualizerLines : LaserScanVisualizer
             LaserScan[i].transform.position = origin;
             LaserScan[i].transform.parent = gameObject.transform;
             LaserScan[i].AddComponent<LineRenderer>();
-            LaserScan[i].GetComponent<LineRenderer>().material = new Material(Shader.Find("Particles/Additive"));
+            LaserScan[i].GetComponent<LineRenderer>().material = material;
         }
         IsCreated = true;
     }
