@@ -14,28 +14,44 @@ limitations under the License.
 */
 
 using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 namespace RosBridgeClient.Messages
 {
 
-    public static class SimpleMessageGenerator
+    public class SimpleMessageGenerator : MonoBehaviour
     {
-        public static void Generate(string messageName, string rosPackageName, MessageElement[] messageElements, string assetPath)
+ 
+        public string MessageName;
+        public string RosPackageName;
+        public MessageComponent[] MessageComponents;
+
+        public void Generate()
         {
-            using (StreamWriter outfile = new StreamWriter(assetPath + "/" + messageName + ".cs", false))
+            Generate(MessageName, RosPackageName, MessageComponents);
+        }
+
+        public static void Generate(string messageName, string rosPackageName, MessageComponent[] messageComponents)
+        {
+            string copyPath = "Assets/RosSharp/Scripts/RosbridgeClient/MessageClass/" + messageName + ".cs";
+
+            using (StreamWriter outfile = new StreamWriter(copyPath, false))
             {
                 outfile.WriteLine("/*");
                 outfile.WriteLine("This message class is generated automatically with 'SimpleMessageGenerator' of ROS#");
                 outfile.WriteLine("*/ \n");
+
 
                 outfile.WriteLine(
                     "using Newtonsoft.Json;\n" +
                     "using RosSharp.RosBridgeClient.Messages.Geometry;\n" +
                     "using RosSharp.RosBridgeClient.Messages.Navigation;\n" +
                     "using RosSharp.RosBridgeClient.Messages.Sensor;\n" +
-                    "using RosSharp.RosBridgeClient.Messages.Standard;\n" +
-                    "using RosSharp.RosBridgeClient.Messages.Actionlib;\n\n" +
+                    "using RosSharp.RosBridgeClient.Messages.Standard;\n" + 
+                    "using RosSharp.RosBridgeClient.Messages.Actionlib;\n\n" + 
 
+                    
                     "namespace RosSharp.RosBridgeClient.Messages\n" +
                     "{\n" +
 
@@ -44,22 +60,27 @@ namespace RosBridgeClient.Messages
                             "[JsonIgnore]\n" +
                             "public const string RosMessageName = \"" + rosPackageName + "/" + messageName + "\";\n");
 
-                for (int i = 0; i < messageElements.Length; i++)
-                    outfile.WriteLine(messageElements[i].getDeclerationString());
+                for (int i = 0; i < messageComponents.Length; i++)
+                    outfile.WriteLine(messageComponents[i].getDeclerationString());
+
 
                 outfile.WriteLine(
                             "\npublic " + messageName + "()\n" +
                              "{");
 
-                for (int i = 0; i < messageElements.Length; i++)
-                    outfile.WriteLine(messageElements[i].getDefinitionString());
+                for (int i = 0; i < messageComponents.Length; i++)
+                    outfile.WriteLine(messageComponents[i].getDefinitionString());
 
                 outfile.WriteLine(
                              "}\n" +
 
                         "}\n" +
                     "}\n");
+
             }
+            AssetDatabase.Refresh();
         }
+
+
     }
 }

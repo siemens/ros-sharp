@@ -112,6 +112,136 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &781756813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 781756814}
+  - component: {fileID: 781756815}
+  m_Layer: 0
+  m_Name: SimpleMessageGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &781756814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781756813}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &781756815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781756813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea543a42ceae89d49ab1a49a719d298f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MessageName: SimpleDummyMessage
+  RosPackageName: dummy_ros_pkg
+  MessageComponents:
+  - messageType: 0
+    messageName: header
+    isArray: 0
+  - messageType: 12
+    messageName: pose
+    isArray: 0
+  - messageType: 5
+    messageName: floatarray
+    isArray: 1
+  - messageType: 19
+    messageName: jointstate
+    isArray: 1
+--- !u!1 &1322114359
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1322114361}
+  - component: {fileID: 1322114360}
+  m_Layer: 0
+  m_Name: ActionMessageGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1322114360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322114359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 356f11b04e503744a8837f218119d7a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionName: Dummy
+  RosPackageName: dummy_ros_pkg
+  GoalComponents:
+  - messageType: 1
+    messageName: order
+    isArray: 0
+  - messageType: 19
+    messageName: joint_states
+    isArray: 0
+  ResultComponents:
+  - messageType: 18
+    messageName: images
+    isArray: 1
+  - messageType: 21
+    messageName: laser_scan
+    isArray: 0
+  - messageType: 24
+    messageName: odometry
+    isArray: 0
+  FeedbackComponents:
+  - messageType: 18
+    messageName: images
+    isArray: 1
+  - messageType: 24
+    messageName: odometry
+    isArray: 0
+  - messageType: 19
+    messageName: joint_states
+    isArray: 0
+--- !u!4 &1322114361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322114359}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1921922908
 GameObject:
   m_ObjectHideFlags: 0

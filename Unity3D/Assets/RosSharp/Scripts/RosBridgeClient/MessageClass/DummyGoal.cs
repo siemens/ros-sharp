@@ -1,6 +1,6 @@
 /*
 This message class is generated automatically with 'SimpleMessageGenerator' of ROS#
-*/ 
+*/
 
 using Newtonsoft.Json;
 using RosSharp.RosBridgeClient.Messages.Geometry;
@@ -11,8 +11,19 @@ using RosSharp.RosBridgeClient.Messages.Actionlib;
 
 namespace RosSharp.RosBridgeClient.Messages
 {
-public class  : Message
-{
-[JsonIgnore]
-public const string RosMessageName = "/";
+    public class DummyGoal : Message
+    {
+        [JsonIgnore]
+        public const string RosMessageName = "dummy_ros_pkg/DummyGoal";
+
+        public Int32 order;
+        public JointState joint_states;
+
+        public DummyGoal()
+        {
+            order = new Int32();
+            joint_states = new JointState();
+        }
+    }
+}
 

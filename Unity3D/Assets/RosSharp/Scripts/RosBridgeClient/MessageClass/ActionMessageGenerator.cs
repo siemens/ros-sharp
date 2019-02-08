@@ -13,57 +13,67 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
+using UnityEngine;
+
 namespace RosBridgeClient.Messages
 {
 
-    public class ActionMessageGenerator
+    public class ActionMessageGenerator : MonoBehaviour
     {
+        public string ActionName;
+        public string RosPackageName;
+        public MessageComponent[] GoalComponents;
+        public MessageComponent[] ResultComponents;
+        public MessageComponent[] FeedbackComponents;
 
-        public void Generate(string ActionName, string RosPackageName,
-            MessageElement[] GoalElements, MessageElement[] ResultElements, MessageElement[] FeedbackElements, string AssetPath)
+        public void Generate()
         {
-            SimpleMessageGenerator.Generate(ActionName + "Goal", RosPackageName, GoalElements, AssetPath);
-            SimpleMessageGenerator.Generate(ActionName + "Feedback", RosPackageName, FeedbackElements, AssetPath);
-            SimpleMessageGenerator.Generate(ActionName + "Result", RosPackageName, ResultElements, AssetPath);
+            SimpleMessageGenerator.Generate(ActionName + "Goal", RosPackageName, GoalComponents);
+            SimpleMessageGenerator.Generate(ActionName + "Feedback", RosPackageName, FeedbackComponents);
+            SimpleMessageGenerator.Generate(ActionName + "Result", RosPackageName, ResultComponents);
 
             SimpleMessageGenerator.Generate(ActionName + "ActionGoal", RosPackageName,
-                                    new MessageElement[] {    new MessageElement() { messageType = MessageType.Header,
+                                    new MessageComponent[] {    new MessageComponent() { messageType = MessageType.Header,
                                                                                         messageName = "header",
                                                                                         isArray = false},
 
-                                                                new MessageElement()  {messageType = MessageType.GoalID,
+                                                                new MessageComponent()  {messageType = MessageType.GoalID,
                                                                                         messageName = "goal_id",
                                                                                         isArray = false},
 
-                                                                new MessageElement(    ActionName + "Goal",
+                                                                new MessageComponent(    ActionName + "Goal",
                                                                                         "goal",
-                                                                                        false)        }, AssetPath);
+                                                                                        false)        });
+
 
             SimpleMessageGenerator.Generate(ActionName + "ActionFeedback", RosPackageName,
-                                    new MessageElement[] {    new MessageElement() { messageType = MessageType.Header,
+                                    new MessageComponent[] {    new MessageComponent() { messageType = MessageType.Header,
                                                                                                     messageName = "header",
                                                                                                     isArray = false},
 
-                                                                new MessageElement()  {messageType = MessageType.GoalStatus,
+                                                                new MessageComponent()  {messageType = MessageType.GoalStatus,
                                                                                         messageName = "status",
                                                                                         isArray = false},
 
-                                                                new MessageElement(    ActionName + "Feedback",
+                                                                new MessageComponent(    ActionName + "Feedback",
                                                                                         "feedback",
-                                                                                        false)        }, AssetPath);
+                                                                                        false)        });
 
             SimpleMessageGenerator.Generate(ActionName + "ActionResult", RosPackageName,
-                                    new MessageElement[] {    new MessageElement() { messageType = MessageType.Header,
+                                    new MessageComponent[] {    new MessageComponent() { messageType = MessageType.Header,
                                                                                                     messageName = "header",
                                                                                                     isArray = false},
 
-                                                                new MessageElement()  {messageType = MessageType.GoalStatus,
+                                                                new MessageComponent()  {messageType = MessageType.GoalStatus,
                                                                                         messageName = "status",
                                                                                         isArray = false},
 
-                                                                new MessageElement(    ActionName + "Result",
+                                                                new MessageComponent(    ActionName + "Result",
                                                                                         "result",
-                                                                                        false)        }, AssetPath);
+                                                                                        false)        });
+
+            AssetDatabase.Refresh();
         }
     }
 }

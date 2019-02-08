@@ -48,7 +48,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\ActionMessageGenerator.cs" />
     <Compile Include="Messages\Geometry\Accel.cs" />
     <Compile Include="Messages\Geometry\Point.cs" />
     <Compile Include="Messages\Geometry\PointStamped.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="Messages\Sensor\Joy.cs" />
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
-    <Compile Include="Messages\SimpleMessageGenerator.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
     <Compile Include="Messages\Standard\Float64.cs" />
     <Compile Include="Messages\Standard\Bool.cs" />

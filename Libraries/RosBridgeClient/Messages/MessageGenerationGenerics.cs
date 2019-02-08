@@ -25,7 +25,7 @@ namespace RosBridgeClient.Messages
     };
 
     [System.Serializable]
-    public class MessageElement
+    public class MessageComponent
     {
         public MessageType messageType;
         public string messageName;
@@ -36,10 +36,10 @@ namespace RosBridgeClient.Messages
         private string definitionString;
         private bool isCustom = false;
 
-        public MessageElement()
+        public MessageComponent()
         { }
 
-        public MessageElement(string msgType, string msgName, bool isArray)
+        public MessageComponent(string msgType, string msgName, bool isArray)
         {
             isCustom = true;
             messageTypeString = msgType;
