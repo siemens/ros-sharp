@@ -17,7 +17,6 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using RosBridgeClient.Messages;
-using MessageType = RosBridgeClient.Messages.MessageType;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -69,7 +68,7 @@ namespace RosSharp.RosBridgeClient
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
-            if (GUILayout.Button("Set Default", GUILayout.Width(150)))
+            if (GUILayout.Button("Set Default Path", GUILayout.Width(150)))
             {
                 DeleteEditorPrefs();
                 GetEditorPrefs();
@@ -125,18 +124,6 @@ namespace RosSharp.RosBridgeClient
             assetPath = (EditorPrefs.HasKey("AssetPath") ?
                         EditorPrefs.GetString("AssetPath") :
                         Path.Combine(Path.GetFullPath("."), "Assets"));
-
-            messageName = (EditorPrefs.HasKey("Message Name") ?
-                          EditorPrefs.GetString("Message Name") :
-                          "ExampleMessage");
-
-            rosPackageName = (EditorPrefs.HasKey("ROSPackageName") ?
-                             EditorPrefs.GetString("ROSPackageName") :
-                             "beginner_tutorials");
-
-            messageElements = new MessageElement[] { new MessageElement { messageType = MessageType.@int, messageName = "a" },
-                                                     new MessageElement { messageType = MessageType.String, messageName = "str" },
-                                                     new MessageElement { messageType = MessageType.Odometry, messageName = "odom" }};
         }
 
         private void SetEditorPrefs()
