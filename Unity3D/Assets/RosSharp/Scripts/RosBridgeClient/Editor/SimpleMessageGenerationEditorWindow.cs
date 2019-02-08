@@ -40,7 +40,7 @@ namespace RosSharp.RosBridgeClient
 
         private void OnGUI()
         {
-            GUILayout.Label("Message Generator (Simple Message)", EditorStyles.boldLabel);
+            GUILayout.Label("Custom Message Generator (Simple Message)", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
             messageName = EditorGUILayout.TextField("Message Name", messageName);
@@ -81,6 +81,7 @@ namespace RosSharp.RosBridgeClient
             if (GUILayout.Button("Generate Simple Message"))
             {
                 SetEditorPrefs();
+                Debug.Log("generate button is pressed in editor");
                 SimpleMessageGenerator.Generate(messageName, rosPackageName, messageElements, assetPath);
                 AssetDatabase.Refresh();
             }
