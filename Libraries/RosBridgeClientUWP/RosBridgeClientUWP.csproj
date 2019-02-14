@@ -187,6 +187,9 @@
     <Compile Include="..\RosBridgeClient\Messages\Standard\Time.cs">
       <Link>Messages\Standard\Time.cs</Link>
     </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Standard\Int32.cs">
+      <Link>Messages\Standard\Int32.cs</Link>
+    </Compile>
     <Compile Include="..\RosBridgeClient\PointCloud.cs">
       <Link>PointCloud.cs</Link>
     </Compile>
@@ -237,15 +240,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.7</Version>
+      <Version>6.1.9</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
+      <Version>12.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messages\rosgraph\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
