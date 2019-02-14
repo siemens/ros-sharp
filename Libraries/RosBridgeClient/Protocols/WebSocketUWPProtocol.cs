@@ -38,7 +38,14 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             this.Url = TryGetUri(Url);
             WebSocket = new MessageWebSocket();
-            WebSocket.MessageReceived += Receive;
+            WebSocket.Control.MaxMessageSize = uint.MaxValue;
+            WebSocket.MessageReceived += WebSocket_MessageReceived;
+            WebSocket.Closed += WebSocket_Closed;
+        }
+
+        private void WebSocket_Closed(IWebSocket sender, WebSocketClosedEventArgs args)
+        {
+            OnClosed?.Invoke(null, EventArgs.Empty);
         }
 
         public bool isAlive = false;
@@ -56,7 +63,7 @@ namespace RosSharp.RosBridgeClient.Protocols
                     {
                         MessageWriter = new DataWriter(WebSocket.OutputStream);
                         isAlive = true;
-                        OnConnected(null, EventArgs.Empty);
+                        OnConnected?.Invoke(null, EventArgs.Empty);
                     }
                 };
         }
@@ -68,7 +75,7 @@ namespace RosSharp.RosBridgeClient.Protocols
                 WebSocket.Dispose();
                 WebSocket = null;
                 isAlive = false;
-                OnClosed(null, EventArgs.Empty);
+                OnClosed?.Invoke(null, EventArgs.Empty);
             } 
         }
 
@@ -88,23 +95,26 @@ namespace RosSharp.RosBridgeClient.Protocols
             } 
         }
 
-        void Receive(MessageWebSocket FromSocket, MessageWebSocketMessageReceivedEventArgs InputMessage)
+        private void WebSocket_MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args)
         {
-            try
+            if (args.IsMessageComplete)
             {
-                using (var reader = InputMessage.GetDataReader())
+                try
                 {
-                    var messageLength = InputMessage.GetDataReader().UnconsumedBufferLength;
-                    byte[] receivedMessage = new byte[messageLength];
-                    reader.UnicodeEncoding = UnicodeEncoding.Utf8;
-                    reader.ReadBytes(receivedMessage);
-                    OnReceive.Invoke(this, new MessageEventArgs(receivedMessage));
+                    using (var reader = args.GetDataReader())
+                    {
+                        var messageLength = args.GetDataReader().UnconsumedBufferLength;
+                        byte[] receivedMessage = new byte[messageLength];
+                        reader.UnicodeEncoding = UnicodeEncoding.Utf8;
+                        reader.ReadBytes(receivedMessage);
+                        OnReceive?.Invoke(this, new MessageEventArgs(receivedMessage));
 
+                    }
                 }
-            }
-            catch
-            {
-                return;
+                catch
+                {
+                    return;
+                }
             }
         } 
 
