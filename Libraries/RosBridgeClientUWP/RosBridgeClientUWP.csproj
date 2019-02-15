@@ -11,7 +11,7 @@
     <AssemblyName>RosBridgeClientUWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -154,6 +154,9 @@
     <Compile Include="..\RosBridgeClient\Messages\Navigation\Odometry.cs">
       <Link>Messages\Navigation\Odometry.cs</Link>
     </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\rosgraph\Log.cs">
+      <Link>Messages\rosgraph\Log.cs</Link>
+    </Compile>
     <Compile Include="..\RosBridgeClient\Messages\Sensor\CompressedImage.cs">
       <Link>Messages\Sensor\CompressedImage.cs</Link>
     </Compile>
@@ -183,6 +186,9 @@
     </Compile>
     <Compile Include="..\RosBridgeClient\Messages\Standard\Time.cs">
       <Link>Messages\Standard\Time.cs</Link>
+    </Compile>
+    <Compile Include="..\RosBridgeClient\Messages\Standard\Int32.cs">
+      <Link>Messages\Standard\Int32.cs</Link>
     </Compile>
     <Compile Include="..\RosBridgeClient\PointCloud.cs">
       <Link>PointCloud.cs</Link>
@@ -234,10 +240,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.7</Version>
+      <Version>6.1.9</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
+      <Version>12.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
