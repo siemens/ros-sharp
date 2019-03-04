@@ -48,6 +48,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\Actionlib\FibonacciActionFeedback.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciActionGoal.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciActionResult.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciFeedback.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciGoal.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciResult.cs" />
     <Compile Include="Messages\ActionMessageGenerator.cs" />
     <Compile Include="Messages\Geometry\Accel.cs" />
     <Compile Include="Messages\Geometry\Point.cs" />

@@ -1,4 +1,4 @@
-/*
+﻿/*
 This message class is generated automatically with 'SimpleMessageGenerator' of ROS#
 */
 

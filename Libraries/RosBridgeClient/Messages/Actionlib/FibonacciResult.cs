@@ -1,4 +1,4 @@
-/*
+﻿/*
 This message class is generated automatically with 'SimpleMessageGenerator' of ROS#
 */
 
@@ -11,14 +11,14 @@ using RosSharp.RosBridgeClient.Messages.Actionlib;
 
 namespace RosSharp.RosBridgeClient.Messages
 {
-    public class FibonacciFeedback : Message
+    public class FibonacciResult : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "actionlib_tutorials/FibonacciFeedback";
+        public const string RosMessageName = "actionlib_tutorials/FibonacciResult";
 
         public int[] sequence;
 
-        public FibonacciFeedback()
+        public FibonacciResult()
         {
             sequence = new int[0];
         }
