@@ -18,6 +18,7 @@ limitations under the License.
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -118,6 +119,14 @@ namespace RosSharp.Urdf
 
         public void WriteToUrdf()
         {
+            // executing writeToUrdf() in separate thread to ensure CultureInfo does not change in main thread
+            Thread thread = new Thread(delegate () { writeToUrdf(); });
+            thread.Start();
+            thread.Join();
+        }
+        private void writeToUrdf()
+        {
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             XmlWriterSettings settings = new XmlWriterSettings { Indent = true, NewLineOnAttributes = false };
 

@@ -56,7 +56,10 @@ namespace RosSharp.RosBridgeClientTest
         public void PublicationTest()
         {
             string id = RosSocket.Advertise<std_msgs.String>("/publication_test");
-            std_msgs.String message = new std_msgs.String("publication test message data");
+            std_msgs.String message = new std_msgs.String
+            {
+                data = "publication test message data"
+            };
             RosSocket.Publish(id, message);
             RosSocket.Unadvertise(id);
             Thread.Sleep(100);
