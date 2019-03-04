@@ -17,14 +17,15 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.Messages.Standard
 {
-    public class String : Message
+    public class Int32 : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "std_msgs/String";
-        public string data;
-        public String()
+        public const string RosMessageName = "std_msgs/Int32";
+        public int data;
+
+        public Int32()
         {
-            data = "";
+            data = 0;
         }
     }
 }

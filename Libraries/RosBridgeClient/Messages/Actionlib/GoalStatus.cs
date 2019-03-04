@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© Siemens AG, 2018
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,16 +15,21 @@ limitations under the License.
 
 using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Messages.Standard
+namespace RosSharp.RosBridgeClient.Messages.Actionlib
 {
-    public class String : Message
+    public class GoalStatus : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "std_msgs/String";
-        public string data;
-        public String()
+        public const string RosMessageName = "actionlib_msgs/GoalStatus";
+        public GoalID goal_id;
+        public int status;
+        public string text;
+
+        public GoalStatus()
         {
-            data = "";
+            goal_id = new GoalID();
+            status = 0;
+            text = "";
         }
     }
 }
