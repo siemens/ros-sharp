@@ -128,6 +128,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private void PublishFiles(List<Uri> resourceFileUris)
         {
+            if (resourceFileUris.Count == 0)
+                return;
             assetRootFolder = FindAssetRootFolder(resourceFileUris[0].ToString());
             foreach (Uri resourceFilePath in resourceFileUris)
             {
