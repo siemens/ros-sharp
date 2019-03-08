@@ -103,7 +103,7 @@ namespace RosSharp.Urdf.Editor
             collisionObject.transform.SetParentAndAlign(parent);
         }
 
-        private static void ConvertMeshToColliders(GameObject gameObject, bool inflateColliders = false)
+        private static void ConvertMeshToColliders(GameObject gameObject, bool setConvex = false)
         {
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
             foreach (MeshFilter meshFilter in meshFilters)
@@ -112,12 +112,7 @@ namespace RosSharp.Urdf.Editor
                 MeshCollider meshCollider = child.AddComponent<MeshCollider>();
                 meshCollider.sharedMesh = meshFilter.sharedMesh;
 
-                if (inflateColliders)
-                {
-                    meshCollider.inflateMesh = true;
-                    meshCollider.convex = true;
-                    meshCollider.skinWidth = 0.001f;
-                }
+                meshCollider.convex = setConvex;
 
                 Object.DestroyImmediate(child.GetComponent<MeshRenderer>());
                 Object.DestroyImmediate(meshFilter);
