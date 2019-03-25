@@ -24,10 +24,10 @@ namespace RosSharp.RosBridgeClient
 
         public PointCloud(PointCloud2 pointCloud2)
         {
-            int I = pointCloud2.data.Length / pointCloud2.point_step;
+            long I = pointCloud2.data.Length / pointCloud2.point_step;
             Points = new RgbPoint3[I];
             byte[] byteSlice = new byte[pointCloud2.point_step];
-            for (int i = 0; i < I; i++)
+            for (long i = 0; i < I; i++)
             {
                 Array.Copy(pointCloud2.data, i * pointCloud2.point_step, byteSlice, 0, pointCloud2.point_step);
                 Points[i] = new RgbPoint3(byteSlice, pointCloud2.fields);
@@ -37,15 +37,15 @@ namespace RosSharp.RosBridgeClient
         public PointCloud(Image depthImage, Image rgbImage, float focal)
         {
 
-            int width = depthImage.width;
-            int height = depthImage.height;
+            uint width = depthImage.width;
+            uint height = depthImage.height;
             float invFocal = 1.0f / focal;
 
             Points = new RgbPoint3[width * height];
 
-            for (int v = 0; v < height; v++)
+            for (uint v = 0; v < height; v++)
             {
-                for (int u = 0; u < width; u++)
+                for (uint u = 0; u < width; u++)
                 {
                     float depth = 0;// depthImage[u, v];
                     if (depth == 0)

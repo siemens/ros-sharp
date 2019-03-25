@@ -23,16 +23,17 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
         public const string RosMessageName = "sensor_msgs/JointState";
         public Standard.Header header;
         public string[] name;
-        public float[] position;
-        public float[] velocity;
-        public float[] effort;
+        public double[] position;
+        public double[] velocity;
+        public double[] effort;
+        public Standard.Float64 position1;
         public JointState()
         {
             header = new Standard.Header();
             name = new string[0];
-            position = new float[0];
-            velocity = new float[0];
-            effort = new float[0];
+            position = new double[0];
+            velocity = new double[0];
+            effort = new double[0];
         }
     }
 }

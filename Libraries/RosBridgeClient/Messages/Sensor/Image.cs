@@ -22,11 +22,11 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
         [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/Image";
         public Standard.Header header;
-        public int height;
-        public int width;
+        public uint height;
+        public uint width;
         public string encoding;
         public byte is_bigendian;
-        public int step;
+        public uint step;
         public byte[] data;
         public Image()
         {
