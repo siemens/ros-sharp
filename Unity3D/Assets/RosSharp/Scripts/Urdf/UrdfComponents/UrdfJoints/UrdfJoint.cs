@@ -165,8 +165,8 @@ namespace RosSharp.Urdf
             return new JointDrive
             {
                 maximumForce = float.MaxValue,
-                positionDamper = (float) dynamics.damping,
-                positionSpring = (float) dynamics.friction
+                positionDamper = (float)dynamics.damping,
+                positionSpring = (float)dynamics.friction
             };
         }
 
@@ -174,15 +174,15 @@ namespace RosSharp.Urdf
         {
             return new JointSpring
             {
-                damper = (float) dynamics.damping,
-                spring = (float) dynamics.friction,
+                damper = (float)dynamics.damping,
+                spring = (float)dynamics.friction,
                 targetPosition = 0
             };
         }
 
         protected static SoftJointLimit GetLinearLimit(Joint.Limit limit)
         {
-            return new SoftJointLimit { limit = (float) limit.upper };
+            return new SoftJointLimit { limit = (float)limit.upper };
         }
 
         #endregion
@@ -194,7 +194,6 @@ namespace RosSharp.Urdf
             UnityJoint = GetComponent<UnityEngine.Joint>();
 
             CheckForUrdfCompatibility();
-            GenerateUniqueJointName();
 
             //Data common to all joints
             Joint joint = new Joint(
