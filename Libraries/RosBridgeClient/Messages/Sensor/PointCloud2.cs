@@ -22,12 +22,12 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
         [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/PointCloud2";
         public Standard.Header header;
-        public int height;
-        public int width;
+        public uint height;
+        public uint width;
         public PointField[] fields;
         public bool is_bigendian;
-        public int point_step;
-        public int row_step;
+        public uint point_step;
+        public uint row_step;
 
         public byte[] data;
         public bool is_dense;

@@ -21,8 +21,8 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     {
         [JsonIgnore]
         public const string RosMessageName = "std_msgs/Time";
-        public int secs;
-        public int nsecs;
+        public uint secs;
+        public uint nsecs;
         public Time()
         {
             secs = 0;

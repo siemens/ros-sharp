@@ -21,11 +21,11 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     {
         [JsonIgnore]
         public const string RosMessageName = "std_msgs/Float64";
-        public float data;
+        public double data;
 
         public Float64()
         {
-            data = 0.0f;
+            data = 0.0;
         }
     }
 }
