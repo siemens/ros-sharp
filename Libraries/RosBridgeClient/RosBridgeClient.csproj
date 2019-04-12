@@ -34,8 +34,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,7 +68,10 @@
     <Compile Include="Messages\Sensor\Joy.cs" />
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
+    <Compile Include="Messages\Standard\Float32MultiArray.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
+    <Compile Include="Messages\Standard\MultiArrayDimension.cs" />
+    <Compile Include="Messages\Standard\MultiArrayLayout.cs" />
     <Compile Include="Messages\Standard\String.cs" />
     <Compile Include="Messages\Standard\Time.cs" />
     <Compile Include="Communicators.cs" />
