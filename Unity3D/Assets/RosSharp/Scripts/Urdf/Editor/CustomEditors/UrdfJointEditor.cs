@@ -48,10 +48,12 @@ namespace RosSharp.Urdf.Editor
             }
             EditorGUILayout.EndVertical();
 
-            showDetails = EditorGUILayout.Foldout(showDetails, "Joint Configuration Hints", true);
+            showDetails = EditorGUILayout.Foldout(showDetails, "Joint URDF Configuration", true);
             if (showDetails)
             {
-                if(urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
+                urdfJoint.JointName = EditorGUILayout.TextField("Name", urdfJoint.JointName);
+
+                if (urdfJoint.JointType != UrdfJoint.JointTypes.Fixed)
                     GUILayout.BeginVertical("HelpBox");
                 switch (urdfJoint.JointType)
                 {

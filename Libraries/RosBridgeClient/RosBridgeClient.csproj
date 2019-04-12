@@ -34,8 +34,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+=======
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+>>>>>>> 6687c509e355ddba132457257725e87d5c9b797d
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,6 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\Actionlib\FibonacciActionFeedback.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciActionGoal.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciActionResult.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciFeedback.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciGoal.cs" />
+    <Compile Include="Messages\Actionlib\FibonacciResult.cs" />
     <Compile Include="Messages\Geometry\Accel.cs" />
     <Compile Include="Messages\Geometry\Point.cs" />
     <Compile Include="Messages\Geometry\PointStamped.cs" />
@@ -58,6 +69,9 @@
     <Compile Include="Messages\Geometry\Twist.cs" />
     <Compile Include="Messages\Geometry\TwistWithCovariance.cs" />
     <Compile Include="Messages\Geometry\Vector3.cs" />
+    <Compile Include="Messages\Actionlib\GoalID.cs" />
+    <Compile Include="Messages\Actionlib\GoalStatus.cs" />
+    <Compile Include="Messages\Actionlib\GoalStatusArray.cs" />
     <Compile Include="Messages\Navigation\MapMetaData.cs" />
     <Compile Include="Messages\Navigation\OccupancyGrid.cs" />
     <Compile Include="Messages\Navigation\Odometry.cs" />
@@ -70,8 +84,14 @@
     <Compile Include="Messages\Sensor\PointField.cs" />
     <Compile Include="Messages\Standard\Float32MultiArray.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
+<<<<<<< HEAD
     <Compile Include="Messages\Standard\MultiArrayDimension.cs" />
     <Compile Include="Messages\Standard\MultiArrayLayout.cs" />
+=======
+    <Compile Include="Messages\Standard\Float64.cs" />
+    <Compile Include="Messages\Standard\Bool.cs" />
+    <Compile Include="Messages\Standard\Int32.cs" />
+>>>>>>> 6687c509e355ddba132457257725e87d5c9b797d
     <Compile Include="Messages\Standard\String.cs" />
     <Compile Include="Messages\Standard\Time.cs" />
     <Compile Include="Communicators.cs" />

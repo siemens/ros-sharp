@@ -22,9 +22,9 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
         [JsonIgnore]
         public const string RosMessageName = "std_msgs/String";
         public string data;
-        public String(string data)
+        public String()
         {
-            this.data = data;
+            data = "";
         }
     }
 }

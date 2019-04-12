@@ -20,8 +20,8 @@ namespace RosSharp.RosBridgeClient
         public static void Update(this Messages.Standard.Header header)
         {
             float time = UnityEngine.Time.realtimeSinceStartup;
-            int secs = (int)time;
-            int nsecs = (int)(1e9 *(time-secs));
+            uint secs = (uint)time;
+            uint nsecs = (uint)(1e9 *(time-secs));
             header.seq++;
             header.stamp.secs = secs;
             header.stamp.nsecs = nsecs;
