@@ -178,14 +178,26 @@ namespace RosSharp.RosBridgeClient
 
         private static byte[] Serialize<T>(T obj)
         {
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            Newtonsoft.Json.Bson.BsonDataWriter writer = new Newtonsoft.Json.Bson.BsonDataWriter(ms);
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Serialize(writer, obj);
+            return ms.ToArray();
+            /*
             string json = JsonConvert.SerializeObject(obj);
             return Encoding.ASCII.GetBytes(json);
+            */
         }
 
         private static T Deserialize<T>(byte[] buffer)
         {
+            System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer);
+            Newtonsoft.Json.Bson.BsonDataReader reader = new Newtonsoft.Json.Bson.BsonDataReader(ms);
+            return new JsonSerializer().Deserialize<T>(reader);    
+            /*
             string ascii = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
             return JsonConvert.DeserializeObject<T>(ascii);
+            */
         }
 
         private static string GetUnusedCounterID<T>(Dictionary<string, T> dictionary, string name)
