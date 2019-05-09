@@ -37,6 +37,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -72,7 +75,6 @@
     <Compile Include="Messages\Navigation\MapMetaData.cs" />
     <Compile Include="Messages\Navigation\OccupancyGrid.cs" />
     <Compile Include="Messages\Navigation\Odometry.cs" />
-    <Compile Include="Messages\Navigation\Path.cs" />
     <Compile Include="Messages\Sensor\CompressedImage.cs" />
     <Compile Include="Messages\Sensor\Image.cs" />
     <Compile Include="Messages\Sensor\JointState.cs" />
@@ -81,9 +83,6 @@
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
-    <Compile Include="Messages\Standard\Float64.cs" />
-    <Compile Include="Messages\Standard\Bool.cs" />
-    <Compile Include="Messages\Standard\Int32.cs" />
     <Compile Include="Messages\Standard\String.cs" />
     <Compile Include="Messages\Standard\Time.cs" />
     <Compile Include="Communicators.cs" />
