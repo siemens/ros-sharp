@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Adding BSON (de-)seriliazation option
+// Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,15 +29,18 @@ namespace RosSharp.RosBridgeClient
     public class RosSocket
     {
         public IProtocol protocol;
+        public enum SerializerEnum { JSON, BSON }
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
+        private SerializerEnum Serializer;
 
-        public RosSocket(IProtocol protocol)
+        public RosSocket(IProtocol protocol,SerializerEnum serializer=SerializerEnum.JSON)
         {
             this.protocol = protocol;
+            this.Serializer = serializer;
             this.protocol.OnReceive += (sender, e) => Receive(sender, e);
             this.protocol.Connect();
         }
@@ -176,28 +182,38 @@ namespace RosSharp.RosBridgeClient
             return Subscribers.Where(pair => pair.Key.StartsWith(topic + ":")).Select(pair => pair.Value).ToList();
         }
 
-        private static byte[] Serialize<T>(T obj)
+        private byte[] Serialize<T>(T obj)
         {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            Newtonsoft.Json.Bson.BsonDataWriter writer = new Newtonsoft.Json.Bson.BsonDataWriter(ms);
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Serialize(writer, obj);
-            return ms.ToArray();
-            /*
-            string json = JsonConvert.SerializeObject(obj);
-            return Encoding.ASCII.GetBytes(json);
-            */
+            switch (Serializer)
+            {
+                case SerializerEnum.JSON:
+                    string json = JsonConvert.SerializeObject(obj);
+                    return Encoding.ASCII.GetBytes(json);
+                case SerializerEnum.BSON:
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                    Newtonsoft.Json.Bson.BsonDataWriter writer = new Newtonsoft.Json.Bson.BsonDataWriter(ms);
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(writer, obj);
+                    return ms.ToArray();
+                default:
+                    throw new ArgumentException("Invalid Serializer");
+            }
         }
 
-        private static T Deserialize<T>(byte[] buffer)
+        private T Deserialize<T>(byte[] buffer)
         {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer);
-            Newtonsoft.Json.Bson.BsonDataReader reader = new Newtonsoft.Json.Bson.BsonDataReader(ms);
-            return new JsonSerializer().Deserialize<T>(reader);    
-            /*
-            string ascii = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
-            return JsonConvert.DeserializeObject<T>(ascii);
-            */
+            switch (Serializer)
+            {
+                case SerializerEnum.JSON:
+                    string ascii = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+                    return JsonConvert.DeserializeObject<T>(ascii);
+                case SerializerEnum.BSON:
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer);
+                    Newtonsoft.Json.Bson.BsonDataReader reader = new Newtonsoft.Json.Bson.BsonDataReader(ms);
+                    return new JsonSerializer().Deserialize<T>(reader);
+                default:
+                    throw new ArgumentException("Invalid Serializer");
+            }
         }
 
         private static string GetUnusedCounterID<T>(Dictionary<string, T> dictionary, string name)
