@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Adding Timestamp switching
+// Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
+
 namespace RosSharp.RosBridgeClient
 {
     public interface IRosTimeNow
