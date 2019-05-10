@@ -15,16 +15,36 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public static class HeaderExtensions
+    public interface IRosTimeNow
     {
-        public static void Update(this Messages.Standard.Header header)
+        Messages.Standard.Time Now();
+    }
+    public class DefaultRosTimeNow:IRosTimeNow
+    {
+        public Messages.Standard.Time Now()
         {
+            Messages.Standard.Time stamp = new Messages.Standard.Time();
             float time = UnityEngine.Time.realtimeSinceStartup;
             uint secs = (uint)time;
-            uint nsecs = (uint)(1e9 *(time-secs));
+            uint nsecs = (uint)(1e9 * (time - secs));
+            stamp.secs = secs;
+            stamp.nsecs = nsecs;
+            return stamp;
+        }
+    };
+    public static class HeaderExtensions
+    {
+        private static IRosTimeNow rosTimeNow = null;
+        private static DefaultRosTimeNow defaultRosTimeNow = new DefaultRosTimeNow();
+        public static IRosTimeNow RosTimeNow { set { rosTimeNow = value; } }
+        static HeaderExtensions()
+        {
+            rosTimeNow = defaultRosTimeNow;
+        } 
+        public static void Update(this Messages.Standard.Header header)
+        {
             header.seq++;
-            header.stamp.secs = secs;
-            header.stamp.nsecs = nsecs;
+            header.stamp =rosTimeNow.Now();
         }
     }
 }
