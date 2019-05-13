@@ -16,22 +16,24 @@ limitations under the License.
 // Adding Timestamp switching
 // Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
 
+using UnityEngine;
+
 namespace RosSharp.RosBridgeClient
 {
-    public static class HeaderExtensions
+    public class Timer: MonoBehaviour
     {
-        private static Timer timer = null;
-        private static readonly Timer defaultTimer = new Timer();
-        public static Timer Timer { set { timer = value; } }
-        static HeaderExtensions()
+        protected void Awake()
         {
-            timer = defaultTimer;
+            HeaderExtensions.Timer = this;
         }
 
-        public static void Update(this Messages.Standard.Header header)
+        public virtual Messages.Standard.Time Now()
         {
-            header.seq++;
-            header.stamp = timer.Now();
+            Messages.Standard.Time stamp = new Messages.Standard.Time();
+            float time = Time.realtimeSinceStartup;
+            stamp.secs = (uint)time;
+            stamp.nsecs = (uint)(1e9 * (time - stamp.secs));
+            return stamp;
         }
     }
 }
