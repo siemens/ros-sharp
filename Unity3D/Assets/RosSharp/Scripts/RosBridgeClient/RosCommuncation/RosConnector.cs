@@ -27,6 +27,7 @@ namespace RosSharp.RosBridgeClient
 
         public RosSocket RosSocket { get; private set; }
         public enum Protocols { WebSocketSharp, WebSocketNET };
+        public RosBridgeClient.RosSocket.SerializerEnum Serializer;
         public Protocols Protocol;
         public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
 
@@ -39,19 +40,19 @@ namespace RosSharp.RosBridgeClient
 
         private void ConnectAndWait()
         {
-            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed);
+            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed,Serializer);
 
             if (!isConnected.WaitOne(Timeout * 1000))
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
         
-        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null)
+        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null,RosSocket.SerializerEnum serializer=RosSocket.SerializerEnum.JSON)
         {
             RosBridgeClient.Protocols.IProtocol protocol = GetProtocol(protocolType, serverUrl);
             protocol.OnConnected += onConnected;
             protocol.OnClosed += onClosed;
 
-            return new RosSocket(protocol);
+            return new RosSocket(protocol,serializer);
         }
 
         private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)

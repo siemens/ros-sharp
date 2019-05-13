@@ -36,7 +36,7 @@ namespace RosSharp
             if (gameObject == null)
                 return;
 
-            PrefabUtility.CreatePrefab(getPrefabAssetPath(stlFile), gameObject, ReplacePrefabOptions.Default);
+            PrefabUtility.SaveAsPrefabAsset(gameObject, getPrefabAssetPath(stlFile));
             Object.DestroyImmediate(gameObject);
         }
 

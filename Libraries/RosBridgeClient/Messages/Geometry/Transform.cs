@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© HoloLab Inc., 2019
+Author: Yusuke Furuta (furuta@hololab.co.jp)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@ limitations under the License.
 
 using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Messages.Standard
+namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
-    public class Float64 : Message
+    public class Transform : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "std_msgs/Float64";
-        public double data;
-
-        public Float64()
+        public const string RosMessageName = "geometry_msgs/Transform";
+        public Vector3 translation;
+        public Quaternion rotation;
+        public Transform()
         {
-            data = 0.0;
+            translation = new Vector3();
+            rotation = new Quaternion();
         }
     }
 }

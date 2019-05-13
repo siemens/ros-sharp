@@ -29,7 +29,7 @@ namespace RosSharp.RosBridgeClient
             {
                 index = JointNames.IndexOf(message.name[i]);
                 if (index != -1)
-                    JointStateWriters[index].Write(message.position[i]);
+                    JointStateWriters[index].Write((float) message.position[i]);
             }
         }
     }

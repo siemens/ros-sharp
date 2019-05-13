@@ -37,6 +37,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,7 +57,6 @@
     <Compile Include="Messages\Actionlib\FibonacciFeedback.cs" />
     <Compile Include="Messages\Actionlib\FibonacciGoal.cs" />
     <Compile Include="Messages\Actionlib\FibonacciResult.cs" />
-    <Compile Include="Messages\ActionMessageGenerator.cs" />
     <Compile Include="Messages\Geometry\Accel.cs" />
     <Compile Include="Messages\Geometry\Point.cs" />
     <Compile Include="Messages\Geometry\PointStamped.cs" />
@@ -62,13 +64,14 @@
     <Compile Include="Messages\Geometry\PoseStamped.cs" />
     <Compile Include="Messages\Geometry\PoseWithCovariance.cs" />
     <Compile Include="Messages\Geometry\Quaternion.cs" />
+    <Compile Include="Messages\Geometry\Transform.cs" />
+    <Compile Include="Messages\Geometry\TransformStamped.cs" />
     <Compile Include="Messages\Geometry\Twist.cs" />
     <Compile Include="Messages\Geometry\TwistWithCovariance.cs" />
     <Compile Include="Messages\Geometry\Vector3.cs" />
     <Compile Include="Messages\Actionlib\GoalID.cs" />
     <Compile Include="Messages\Actionlib\GoalStatus.cs" />
     <Compile Include="Messages\Actionlib\GoalStatusArray.cs" />
-    <Compile Include="Messages\MessageGenerationGenerics.cs" />
     <Compile Include="Messages\Navigation\MapMetaData.cs" />
     <Compile Include="Messages\Navigation\OccupancyGrid.cs" />
     <Compile Include="Messages\Navigation\Odometry.cs" />
@@ -79,16 +82,12 @@
     <Compile Include="Messages\Sensor\Joy.cs" />
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
-    <Compile Include="Messages\ServiceMessageGenerator.cs" />
-    <Compile Include="Messages\SimpleMessageGenerator.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
-    <Compile Include="Messages\Standard\Float64.cs" />
-    <Compile Include="Messages\Standard\Bool.cs" />
-    <Compile Include="Messages\Standard\Int32.cs" />
     <Compile Include="Messages\Standard\String.cs" />
     <Compile Include="Messages\Standard\Time.cs" />
     <Compile Include="Communicators.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Messages\TF2\TFMessage.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />

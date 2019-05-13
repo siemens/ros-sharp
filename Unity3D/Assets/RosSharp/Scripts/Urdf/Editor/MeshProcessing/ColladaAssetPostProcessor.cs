@@ -36,7 +36,8 @@ namespace RosSharp
             if (!isCollada)
                 return;
 
-            modelImporter.globalScale = readGlobalScale(getAbsolutePath(modelImporter.assetPath));
+            if(modelImporter.useFileScale)
+                modelImporter.globalScale = readGlobalScale(getAbsolutePath(modelImporter.assetPath));
             modelImporter.animationType = ModelImporterAnimationType.None;
             modelImporter.importCameras = false;
             modelImporter.importLights = false;

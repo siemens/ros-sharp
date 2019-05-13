@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2017-2018
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
+© HoloLab Inc., 2019
+Author: Yusuke Furuta (furuta@hololab.co.jp)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@ limitations under the License.
 
 using Newtonsoft.Json;
 
-namespace RosSharp.RosBridgeClient.Messages.Standard
+namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
-    public class Float64 : Message
+   public class Path : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "std_msgs/Float64";
-        public double data;
-
-        public Float64()
+        public const string RosMessageName = "nav_msgs/Path";
+        public Standard.Header header;
+        public Geometry.PoseStamped[] poses;
+        public Path()
         {
-            data = 0.0;
+            header = new Standard.Header();
+            poses = new Geometry.PoseStamped[0];
         }
     }
 }

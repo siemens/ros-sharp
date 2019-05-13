@@ -42,9 +42,9 @@ namespace RosSharp.RosBridgeClient
             {
                 header = new Messages.Standard.Header { frame_id = FrameId },
                 name = new string[jointStateLength],
-                position = new float[jointStateLength],
-                velocity = new float[jointStateLength],
-                effort = new float[jointStateLength]
+                position = new double[jointStateLength],
+                velocity = new double[jointStateLength],
+                effort = new double[jointStateLength]
             };
         }
 
@@ -59,11 +59,18 @@ namespace RosSharp.RosBridgeClient
 
         private void UpdateJointState(int i)
         {
+
             JointStateReaders[i].Read(
                 out message.name[i],
-                out message.position[i],
-                out message.velocity[i],
-                out message.effort[i]);
+                out float position,
+                out float velocity,
+                out float effort);
+
+            message.position[i] = position;
+            message.velocity[i] = velocity;
+            message.effort[i] = effort;
         }
+
+
     }
 }
