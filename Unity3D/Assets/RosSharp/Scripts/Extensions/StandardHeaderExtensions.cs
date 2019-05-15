@@ -15,13 +15,13 @@ limitations under the License.
 
 // Adding Timestamp switching
 // Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
-
+using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     public static class HeaderExtensions
     {
         private static Timer timer = null;
-        private static readonly Timer defaultTimer = new Timer();
+        private static Timer defaultTimer = null;
         public static Timer Timer { set { timer = value; } }
         static HeaderExtensions()
         {
@@ -30,6 +30,11 @@ namespace RosSharp.RosBridgeClient
 
         public static void Update(this Messages.Standard.Header header)
         {
+            if (timer == null)
+            {
+                GameObject obj = new GameObject("DefaultTimer(UnityEpoch)");
+                timer=defaultTimer=obj.AddComponent<Timer>();
+            }
             header.seq++;
             header.stamp = timer.Now();
         }
