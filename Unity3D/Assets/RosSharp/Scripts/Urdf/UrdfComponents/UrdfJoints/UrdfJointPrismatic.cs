@@ -53,8 +53,7 @@ namespace RosSharp.Urdf
 
         protected override void OnUpdateJointState(float deltaState)
         {
-            Vector3 axis = transform.TransformDirection(UnityJoint.axis);
-            transform.Translate(axis * deltaState);
+            transform.Translate(UnityJoint.axis * deltaState);
         }
 
         #endregion

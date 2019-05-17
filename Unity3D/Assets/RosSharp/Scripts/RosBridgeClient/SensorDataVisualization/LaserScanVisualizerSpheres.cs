@@ -21,6 +21,7 @@ namespace RosSharp.SensorVisualization
     {
         [Range(0.01f, 0.1f)]
         public float objectWidth;
+        public Material material;
 
         private GameObject[] LaserScan;
         private bool IsCreated = false;
@@ -35,7 +36,7 @@ namespace RosSharp.SensorVisualization
                 DestroyImmediate(LaserScan[i].GetComponent<Collider>());                    
                 LaserScan[i].name = "LaserScanSpheres";
                 LaserScan[i].transform.parent = transform;
-                LaserScan[i].GetComponent<Renderer>().material = new Material(Shader.Find("Particles/Additive"));
+                LaserScan[i].GetComponent<Renderer>().material = material;
             }
             IsCreated = true;
         }

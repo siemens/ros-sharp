@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
     {
         [JsonIgnore]
         public const string RosMessageName = "std_msgs/Header";
-        public int seq;
+        public uint seq;
         public Time stamp;
         public string frame_id;
         public Header()

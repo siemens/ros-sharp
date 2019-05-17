@@ -48,9 +48,8 @@ namespace RosSharp.Urdf
 
         protected override void OnUpdateJointState(float deltaState)
         {
-            Vector3 anchor = transform.TransformPoint(UnityJoint.anchor);
-            Vector3 axis = transform.TransformDirection(UnityJoint.axis);
-            transform.RotateAround(anchor, axis, -deltaState * Mathf.Rad2Deg);
+            Quaternion rot = Quaternion.AngleAxis(-deltaState * Mathf.Rad2Deg, UnityJoint.axis);
+            transform.rotation = transform.rotation * rot;
         }
 
         #endregion

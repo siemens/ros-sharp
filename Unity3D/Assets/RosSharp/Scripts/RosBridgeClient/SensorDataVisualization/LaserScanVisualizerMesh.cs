@@ -23,6 +23,7 @@ public class LaserScanVisualizerMesh : LaserScanVisualizer
     private Color[] meshVertexColors;
     private int[] meshTriangles;
     private bool IsCreated = false;
+    public Material material;
 
     private void Create()
     {
@@ -31,7 +32,7 @@ public class LaserScanVisualizerMesh : LaserScanVisualizer
         LaserScan.transform.parent = gameObject.transform;
         LaserScan.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = LaserScan.AddComponent<MeshRenderer>();
-        meshRenderer.material = new Material(Shader.Find("Particles/Additive"));
+        meshRenderer.material = material;
 
         mesh = LaserScan.GetComponent<MeshFilter>().mesh;
         meshVerticies = new Vector3[directions.Length + 1];

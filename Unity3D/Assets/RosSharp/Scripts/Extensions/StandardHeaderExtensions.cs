@@ -13,18 +13,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Adding Timestamp switching
+// Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
+using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     public static class HeaderExtensions
     {
+        private static Timer timer = null;
+        private static Timer defaultTimer = null;
+        public static Timer Timer { set { timer = value; } }
+        static HeaderExtensions()
+        {
+            timer = defaultTimer;
+        }
+
         public static void Update(this Messages.Standard.Header header)
         {
-            float time = UnityEngine.Time.realtimeSinceStartup;
-            int secs = (int)time;
-            int nsecs = (int)(1e9 *(time-secs));
+            if (timer == null)
+            {
+                GameObject obj = new GameObject("DefaultTimer(UnityEpoch)");
+                timer=defaultTimer=obj.AddComponent<Timer>();
+            }
             header.seq++;
-            header.stamp.secs = secs;
-            header.stamp.nsecs = nsecs;
+            header.stamp = timer.Now();
         }
     }
 }

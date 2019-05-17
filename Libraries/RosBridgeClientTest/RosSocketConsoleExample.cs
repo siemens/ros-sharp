@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsole
     {
-        static readonly string uri = "ws://192.168.56.102:9090";
+        static readonly string uri = "ws://192.168.56.103:9090";
 
         public static void Main(string[] args)
         {
@@ -41,7 +41,10 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Publication:
-            std_msgs.String message = new std_msgs.String("publication test message data");
+            std_msgs.String message = new std_msgs.String
+            {
+                data = "publication test message data"
+            };
 
             string publication_id = rosSocket.Advertise<std_msgs.String>("publication_test");
             rosSocket.Publish(publication_id, message);
