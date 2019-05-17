@@ -6,7 +6,7 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 ## Notes On This Fork ##
 
-This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. Like the main ROS# branch, use 2018.2 or later.
+This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. Like the main ROS# branch, use 2019.x or later.
 
 #### Installation ### 
 
