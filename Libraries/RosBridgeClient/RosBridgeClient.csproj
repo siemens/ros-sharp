@@ -82,7 +82,10 @@
     <Compile Include="Messages\Sensor\Joy.cs" />
     <Compile Include="Messages\Sensor\PointCloud2.cs" />
     <Compile Include="Messages\Sensor\PointField.cs" />
+    <Compile Include="Messages\Standard\Bool.cs" />
+    <Compile Include="Messages\Standard\Float64.cs" />
     <Compile Include="Messages\Standard\Header.cs" />
+    <Compile Include="Messages\Standard\Int32.cs" />
     <Compile Include="Messages\Standard\String.cs" />
     <Compile Include="Messages\Standard\Time.cs" />
     <Compile Include="Communicators.cs" />
