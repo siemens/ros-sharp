@@ -38,22 +38,22 @@ namespace RosSharp.Urdf
         
         public override float GetPosition()
         {
-            return -((HingeJoint)UnityJoint).angle * Mathf.Deg2Rad;
+            return ((HingeJoint)UnityJoint).angle * Mathf.Deg2Rad;
         }
 
         public override float GetVelocity()
         {
-            return -((HingeJoint)UnityJoint).velocity * Mathf.Deg2Rad;
+            return ((HingeJoint)UnityJoint).velocity * Mathf.Deg2Rad;
         }
 
         public override float GetEffort()
         {
-            return -((HingeJoint)UnityJoint).motor.force;
+            return ((HingeJoint)UnityJoint).motor.force;
         }
 
         protected override void OnUpdateJointState(float deltaState)
         {
-            Quaternion rot = Quaternion.AngleAxis(-deltaState * Mathf.Rad2Deg, UnityJoint.axis);
+            Quaternion rot = Quaternion.AngleAxis(deltaState * Mathf.Rad2Deg, UnityJoint.axis);
             transform.rotation = transform.rotation * rot;
         }
 
@@ -61,7 +61,7 @@ namespace RosSharp.Urdf
 
         protected override void ImportJointData(Joint joint)
         {
-            UnityJoint.axis = (joint.axis != null) ? GetAxis(joint.axis) : GetDefaultAxis();
+            UnityJoint.axis = (joint.axis != null) ? -GetAxis(joint.axis) : GetDefaultAxis();
 
             if (joint.dynamics != null)
                 ((HingeJoint)UnityJoint).spring = GetJointSpring(joint.dynamics);
