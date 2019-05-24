@@ -86,9 +86,7 @@ namespace RosSharp.RosBridgeClient
                 AssetDatabase.Refresh();
             }
             EditorGUILayout.EndHorizontal();
-
             GUILayout.Space(20);
-
             EditorGUIUtility.labelWidth = 300;
 
         }
@@ -100,8 +98,9 @@ namespace RosSharp.RosBridgeClient
 
         #region EditorPrefs
 
-        private void OnFocus()
+        public void Awake()
         {
+            DeleteEditorPrefs();
             GetEditorPrefs();
         }
 
@@ -118,6 +117,8 @@ namespace RosSharp.RosBridgeClient
         private void DeleteEditorPrefs()
         {
             EditorPrefs.DeleteKey("AssetPath");
+            EditorPrefs.DeleteKey("Message Name");
+            EditorPrefs.DeleteKey("ROSPackageName");
         }
 
         private void GetEditorPrefs()
@@ -142,8 +143,8 @@ namespace RosSharp.RosBridgeClient
         private void SetEditorPrefs()
         {
             EditorPrefs.SetString("AssetPath", assetPath);
-            EditorPrefs.SetString("MessageName", messageName);
-            EditorPrefs.SetString("RosPackageName", rosPackageName);
+            EditorPrefs.SetString("Message Name", messageName);
+            EditorPrefs.SetString("ROSPackageName", rosPackageName);
         }
 
         #endregion
