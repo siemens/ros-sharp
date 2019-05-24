@@ -109,8 +109,9 @@ namespace RosSharp.RosBridgeClient
 
         #region EditorPrefs
 
-        private void OnFocus()
+        public void Awake()
         {
+            DeleteEditorPrefs();
             GetEditorPrefs();
         }
 
@@ -127,6 +128,8 @@ namespace RosSharp.RosBridgeClient
         private void DeleteEditorPrefs()
         {
             EditorPrefs.DeleteKey("AssetPath");
+            EditorPrefs.DeleteKey("ServiceName");
+            EditorPrefs.DeleteKey("ROSPackageName");
         }
 
         private void GetEditorPrefs()
@@ -150,8 +153,8 @@ namespace RosSharp.RosBridgeClient
         private void SetEditorPrefs()
         {
             EditorPrefs.SetString("AssetPath", assetPath);
-            EditorPrefs.SetString("MessageName", serviceName);
-            EditorPrefs.SetString("RosPackageName", rosPackageName);
+            EditorPrefs.SetString("ServiceName", serviceName);
+            EditorPrefs.SetString("ROSPackageName", rosPackageName);
         }
 
         #endregion
