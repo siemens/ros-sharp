@@ -54,7 +54,7 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 * [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on Linux and iOS by community members.
 
 * The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) solution requires .NET Framework 4.6 and Visual Studio 2017 to compile.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.2 and higher.
+* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.3 and higher.
 Make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
 * Please find a UWP version of ROS# [here](https://github.com/dwhit/ros-sharp).
