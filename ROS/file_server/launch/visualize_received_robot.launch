@@ -21,7 +21,7 @@ https://github.com/siemens/ros-sharp/wiki
 
 Usage:
 Under your catkin workspace, type the following:
-`$ roslaunch model:='$(find <package_name>)/robot_description.urdf'`
+`$ roslaunch file_server visualize_received_robot.launch model:='$(find <package_name>)/robot_description.urdf'`
 -->
 
 <launch>
