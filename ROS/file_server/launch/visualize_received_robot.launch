@@ -1,0 +1,40 @@
+<!--
+© Siemens AG, 2019
+Author: Sifan Ye 
+(sifan DOT ye AT siemens DOT com || sye8 AT u DOT rochester DOT edu)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+<http://www.apache.org/licenses/LICENSE-2.0>.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!-- 
+This script is used to visualize the URDF received from Unity
+Part of ROS Sharp Wiki 2.2
+https://github.com/siemens/ros-sharp/wiki
+
+Usage:
+Under your catkin workspace, type the following:
+`$ roslaunch model:='$(find <package_name>)/robot_description.urdf'`
+-->
+
+<launch>
+  
+  <arg name="model"/>
+  <arg name="gui" default="true"/>
+  <arg name="rvizconfig" default="$(find file_server)/rviz/received_turtle.rviz"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
+  <param name="use_gui" value="$(arg gui)"/>
+  
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+</launch>
