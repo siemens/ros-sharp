@@ -30,10 +30,10 @@ namespace RosSharp.RosBridgeClient
         {
             laserScanVisualizers = GetComponents<LaserScanVisualizer>();
             if (isReceived)
-                if(laserScanVisualizers != null)
-                    foreach(LaserScanVisualizer laserScanVisualizer in laserScanVisualizers)
-                        laserScanVisualizer.SetSensorData(transform.position, directions, ranges, range_min, range_max);
-            
+                if (laserScanVisualizers != null)
+                    foreach (LaserScanVisualizer laserScanVisualizer in laserScanVisualizers)
+                        laserScanVisualizer.SetSensorData(gameObject.transform, directions, ranges, range_min, range_max);
+
             isReceived = false;
         }
 
@@ -47,7 +47,7 @@ namespace RosSharp.RosBridgeClient
             for (int i = 0; i < laserScan.ranges.Length; i++)
             {
                 ranges[i] = laserScan.ranges[i];
-                directions[i] = new Vector3(Mathf.Cos(laserScan.angle_min + laserScan.angle_increment * i), 0, Mathf.Sin(laserScan.angle_min + laserScan.angle_increment * i));
+                directions[i] = new Vector3(Mathf.Cos(laserScan.angle_min + laserScan.angle_increment * i), Mathf.Sin(laserScan.angle_min + laserScan.angle_increment * i), 0).Ros2Unity();
             }
             isReceived = true;
         }

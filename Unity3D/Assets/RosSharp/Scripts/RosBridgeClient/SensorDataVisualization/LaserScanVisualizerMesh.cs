@@ -15,60 +15,66 @@ limitations under the License.
 
 using UnityEngine;
 
-public class LaserScanVisualizerMesh : LaserScanVisualizer
+namespace RosSharp.RosBridgeClient
 {
-    private GameObject LaserScan;
-    private Mesh mesh;
-    private Vector3[] meshVerticies;
-    private Color[] meshVertexColors;
-    private int[] meshTriangles;
-    private bool IsCreated = false;
-    public Material material;
-
-    private void Create()
+    public class LaserScanVisualizerMesh : LaserScanVisualizer
     {
-        LaserScan = new GameObject("LaserScanMesh");
-        LaserScan.transform.position = origin;
-        LaserScan.transform.parent = gameObject.transform;
-        LaserScan.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = LaserScan.AddComponent<MeshRenderer>();
-        meshRenderer.material = material;
+        public Material material;
 
-        mesh = LaserScan.GetComponent<MeshFilter>().mesh;
-        meshVerticies = new Vector3[directions.Length + 1];
-        meshTriangles = new int[3 * (directions.Length - 1)];
-        meshVertexColors = new Color[meshVerticies.Length];
-        
-        IsCreated = true;
-    }
+        private GameObject LaserScanMesh;
+        private Mesh mesh;
+        private Vector3[] meshVerticies;
+        private Color[] meshVertexColors;
+        private int[] meshTriangles;
+        private bool IsCreated = false;
 
-    protected override void Visualize()
-    {
-        if (!IsCreated)
-            Create();
-
-        meshVerticies[0] = Vector3.zero;
-        meshVertexColors[0] = Color.green;
-        for (int i = 0; i < meshVerticies.Length - 1; i++)
+        private void Create()
         {
-            meshVerticies[i + 1] = ranges[i] * directions[i];
-            meshVertexColors[i + 1] = GetColor(ranges[i]);
-        }
-        for (int i = 0; i < meshTriangles.Length / 3; i++)
-        {
-            meshTriangles[3 * i] = 0;
-            meshTriangles[3 * i + 1] = i + 2;
-            meshTriangles[3 * i + 2] = i + 1;
+            LaserScanMesh = new GameObject("LaserScanMesh");
+            LaserScanMesh.transform.parent = null;
+
+            LaserScanMesh.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = LaserScanMesh.AddComponent<MeshRenderer>();
+            meshRenderer.material = material;
+
+            mesh = LaserScanMesh.GetComponent<MeshFilter>().mesh;
+            meshVerticies = new Vector3[directions.Length + 1];
+            meshTriangles = new int[3 * (directions.Length - 1)];
+            meshVertexColors = new Color[meshVerticies.Length];
+
+            IsCreated = true;
         }
 
-        mesh.vertices = meshVerticies;
-        mesh.triangles = meshTriangles;
-        mesh.colors = meshVertexColors;
-    }
+        protected override void Visualize()
+        {
+            if (!IsCreated)
+                Create();
 
-    protected override void DestroyObjects()
-    {
-        Destroy(LaserScan);
-        IsCreated = false;
+            LaserScanMesh.transform.SetPositionAndRotation(base_transform.position, base_transform.rotation);
+
+            meshVerticies[0] = Vector3.zero;
+            meshVertexColors[0] = Color.green;
+            for (int i = 0; i < meshVerticies.Length - 1; i++)
+            {
+                meshVerticies[i + 1] = ranges[i] * directions[i];
+                meshVertexColors[i + 1] = GetColor(ranges[i]);
+            }
+            for (int i = 0; i < meshTriangles.Length / 3; i++)
+            {
+                meshTriangles[3 * i] = 0;
+                meshTriangles[3 * i + 1] = i + 2;
+                meshTriangles[3 * i + 2] = i + 1;
+            }
+
+            mesh.vertices = meshVerticies;
+            mesh.triangles = meshTriangles;
+            mesh.colors = meshVertexColors;
+        }
+
+        protected override void DestroyObjects()
+        {
+            Destroy(LaserScanMesh);
+            IsCreated = false;
+        }
     }
 }

@@ -15,54 +15,57 @@ limitations under the License.
 
 using UnityEngine;
 
-public abstract class LaserScanVisualizer : MonoBehaviour
+namespace RosSharp.RosBridgeClient
 {
-    protected Vector3 origin;
-    protected Vector3[] directions;
-    protected float range_min;
-    protected float range_max;
-    protected float[] ranges;
-
-    protected bool IsNewSensorDataReceived;
-    protected bool IsVisualized = false;
-
-    abstract protected void Visualize();
-    abstract protected void DestroyObjects();
-
-    protected void Update()
+    public abstract class LaserScanVisualizer : MonoBehaviour
     {
-        if (!IsNewSensorDataReceived)
-            return;
+        protected Transform base_transform;
+        protected Vector3[] directions;
+        protected float range_min;
+        protected float range_max;
+        protected float[] ranges;
 
-        IsNewSensorDataReceived = false;
-        Visualize();
+        protected bool IsNewSensorDataReceived;
+        protected bool IsVisualized = false;
+
+        abstract protected void Visualize();
+        abstract protected void DestroyObjects();
+
+        protected void Update()
+        {
+            if (!IsNewSensorDataReceived)
+                return;
+
+            IsNewSensorDataReceived = false;
+            Visualize();
+        }
+
+        protected void OnDisable()
+        {
+            DestroyObjects();
+        }
+
+        public void SetSensorData(Transform _base_transform, Vector3[] _directions, float[] _ranges, float _range_min, float _range_max)
+        {
+            base_transform = _base_transform;
+            directions = _directions;
+            ranges = _ranges;
+            range_min = _range_min;
+            range_max = _range_max;
+            IsNewSensorDataReceived = true;
+        }
+
+        protected Color GetColor(float distance)
+        {
+            float h_min = (float)0;
+            float h_max = (float)0.5;
+
+            float h = (float)(h_min + (distance - range_min) / (range_max - range_min) * (h_max - h_min));
+            float s = (float)1.0;
+            float v = (float)1.0;
+
+            return Color.HSVToRGB(h, s, v);
+        }
+
     }
-
-    protected void OnDisable()
-    {
-        DestroyObjects();
-    }
-
-    public void SetSensorData(Vector3 _origin, Vector3[] _directions, float[] _ranges, float _range_min, float _range_max)
-    {
-        origin = _origin;
-        directions = _directions;
-        ranges = _ranges;
-        range_min = _range_min;
-        range_max = _range_max;
-        IsNewSensorDataReceived = true;
-    }
-
-    protected Color GetColor(float distance)
-    {
-        float h_min = (float)0;
-        float h_max = (float)0.5;
-
-        float h = (float)(h_min + (distance - range_min) / (range_max - range_min) * (h_max - h_min));
-        float s = (float)1.0;
-        float v = (float)1.0;
-
-        return Color.HSVToRGB(h, s, v);
-    }
-
 }
