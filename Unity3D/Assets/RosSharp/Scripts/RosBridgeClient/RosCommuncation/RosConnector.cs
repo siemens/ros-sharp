@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,19 +40,19 @@ namespace RosSharp.RosBridgeClient
 
         private void ConnectAndWait()
         {
-            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed,Serializer);
+            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
             if (!isConnected.WaitOne(Timeout * 1000))
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
-        
-        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null,RosSocket.SerializerEnum serializer=RosSocket.SerializerEnum.JSON)
+
+        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON)
         {
             RosBridgeClient.Protocols.IProtocol protocol = GetProtocol(protocolType, serverUrl);
             protocol.OnConnected += onConnected;
             protocol.OnClosed += onClosed;
 
-            return new RosSocket(protocol,serializer);
+            return new RosSocket(protocol, serializer);
         }
 
         private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)
