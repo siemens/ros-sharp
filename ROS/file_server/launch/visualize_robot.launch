@@ -27,7 +27,7 @@ Under your catkin workspace, type the following:
   
   <arg name="model"/>
   <arg name="gui" default="true"/>
-  <arg name="rvizconfig" default="$(find file_server)/rviz/received_turtle.rviz"/>
+  <arg name="rvizconfig" default="$(find file_server)/rviz/config.rviz"/>
   
   <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
   <param name="use_gui" value="$(arg gui)"/>
