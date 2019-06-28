@@ -73,7 +73,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
             //Send URDF file to ROS package
             string urdfPackagePath = "package://" + rosPackage + "/" + Path.GetFileName(urdfFilePath);
-            string urdfFileContents = @"<?xml version='1.0' encoding='utf-8'?>\n" + urdfXDoc.ToString();
+            string urdfFileContents = "<?xml version='1.0' encoding='utf-8'?>\n" + urdfXDoc.ToString();
             byte[] urdfBytes = System.Text.Encoding.UTF8.GetBytes(urdfFileContents);
             
             SendFileToRos(urdfPackagePath, urdfBytes);

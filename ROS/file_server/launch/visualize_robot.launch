@@ -1,6 +1,6 @@
 <!--
-© Siemens AG, 2018
-Author: Suzannah Smith (suzannah.smith@siemens.com)
+© Siemens AG, 2019
+Sifan Ye (sifan.ye@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,17 +13,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+<!-- 
+This script is used to visualize the URDF received from Unity
+Part of ROS Sharp Wiki 2.2
+https://github.com/siemens/ros-sharp/wiki
+
+Usage:
+Under your catkin workspace, type the following:
+`$ roslaunch file_server visualize_robot.launch model:='$(find <package_name>)/robot_description.urdf'`
+-->
+
 <launch>
-
-	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-		<param name="rate" value="20.0" />
-		<param name="use_gui" value="true" />
-	</node>
-
-	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
-		<param name="publish_frequency" value="20.0" />
-	</node>
-
-	<node name="rviz" pkg="rviz" type="rviz" />
+  
+  <arg name="model"/>
+  <arg name="gui" default="true"/>
+  <arg name="rvizconfig" default="$(find file_server)/rviz/config.rviz"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
+  <param name="use_gui" value="$(arg gui)"/>
+  
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 
 </launch>
