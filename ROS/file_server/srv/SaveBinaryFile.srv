@@ -1,4 +1,4 @@
 string name
-char[] value
+uint8[] value
 ---
 string name
