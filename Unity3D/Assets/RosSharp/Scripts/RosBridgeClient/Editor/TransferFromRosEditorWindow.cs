@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient
 
         private bool showSettings = false;
 
-        [MenuItem("RosBridgeClient/Transfer URDF from ROS...")]
+        [MenuItem("RosBridgeClient/Transfer URDF from ROS...", false, 50)]
         private static void Init()
         {
             TransferFromRosEditorWindow editorWindow = GetWindow<TransferFromRosEditorWindow>();

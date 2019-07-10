@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.Xml.Linq;
-using file_server = RosSharp.RosBridgeClient.Services.FileServer;
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using file_server = RosSharp.RosBridgeClient.MessageTypes.FileServer;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClient.UrdfTransfer
 {

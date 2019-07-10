@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urdf", "Urdf\Urdf.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrdfTest", "UrdfTest\UrdfTest.csproj", "{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageGeneration", "MessageGeneration\MessageGeneration.csproj", "{F15D855D-FF65-4ADE-9972-31A3162E640E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageGenerationMain", "MessageGenerationMain\MessageGenerationMain.csproj", "{9BE5E2F6-3731-4843-83CB-226DF5DD58F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC9BA7F5-EE69-47C9-87DE-53AA67253CB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F15D855D-FF65-4ADE-9972-31A3162E640E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F15D855D-FF65-4ADE-9972-31A3162E640E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F15D855D-FF65-4ADE-9972-31A3162E640E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F15D855D-FF65-4ADE-9972-31A3162E640E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BE5E2F6-3731-4843-83CB-226DF5DD58F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BE5E2F6-3731-4843-83CB-226DF5DD58F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BE5E2F6-3731-4843-83CB-226DF5DD58F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BE5E2F6-3731-4843-83CB-226DF5DD58F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
