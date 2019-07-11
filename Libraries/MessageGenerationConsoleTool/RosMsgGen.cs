@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 using RosSharp.RosBridgeClient.MessageGeneration;
 
-namespace RosSharp.RosBridgeClient.MessageAutoGenerationMain
+namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
 {
     class RosMsgGen
     {
