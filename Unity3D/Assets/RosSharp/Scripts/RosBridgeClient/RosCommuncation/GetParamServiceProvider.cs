@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClient
 {

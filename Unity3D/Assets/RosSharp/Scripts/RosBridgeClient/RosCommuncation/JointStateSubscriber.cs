@@ -17,12 +17,12 @@ using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStateSubscriber : Subscriber<Messages.Sensor.JointState>
+    public class JointStateSubscriber : Subscriber<MessageTypes.Sensor.JointState>
     {
         public List<string> JointNames;
         public List<JointStateWriter> JointStateWriters;
 
-        protected override void ReceiveMessage(Messages.Sensor.JointState message)
+        protected override void ReceiveMessage(MessageTypes.Sensor.JointState message)
         {
             int index;
             for (int i = 0; i < message.name.Length; i++)

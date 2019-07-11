@@ -29,8 +29,8 @@ namespace RosSharp.RosBridgeClient
         private RosSocket rosSocket;
         private string CancelPublicationId;
         private string GoalPublicationId;
-        private Messages.Actionlib.GoalID ActionGoalId;
-        private Messages.Actionlib.GoalStatusArray ActionStatus;
+        private MessageTypes.Actionlib.GoalID ActionGoalId;
+        private MessageTypes.Actionlib.GoalStatusArray ActionStatus;
 
         protected ActionServer<Tgoal, Tfeedback, Tresult>.ActionStates ActionState;
         protected Tgoal ActionGoal;
@@ -43,10 +43,10 @@ namespace RosSharp.RosBridgeClient
         {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
-            CancelPublicationId = rosSocket.Advertise<Messages.Actionlib.GoalID>(ActionName + "/cancel");
+            CancelPublicationId = rosSocket.Advertise<MessageTypes.Actionlib.GoalID>(ActionName + "/cancel");
             GoalPublicationId = rosSocket.Advertise<Tgoal>(ActionName + "/goal");
 
-            rosSocket.Subscribe<Messages.Actionlib.GoalStatusArray>(ActionName + "/status", StatusCallback, (int)(TimeStep * 1000));
+            rosSocket.Subscribe<MessageTypes.Actionlib.GoalStatusArray>(ActionName + "/status", StatusCallback, (int)(TimeStep * 1000));
             rosSocket.Subscribe<Tfeedback>(ActionName + "/feedback", FeedbackCallback, (int)(TimeStep * 1000));
             rosSocket.Subscribe<Tresult>(ActionName + "/result", ResultCallback, (int)(TimeStep * 1000));
         }
@@ -58,7 +58,7 @@ namespace RosSharp.RosBridgeClient
 
         public void CancelGoal()
         {
-            ActionGoalId = new Messages.Actionlib.GoalID();
+            ActionGoalId = new MessageTypes.Actionlib.GoalID();
             rosSocket.Publish(CancelPublicationId, ActionGoalId);
         }
 
@@ -72,7 +72,7 @@ namespace RosSharp.RosBridgeClient
             ActionResult = result;
         }
 
-        protected virtual void StatusCallback(Messages.Actionlib.GoalStatusArray actionStatus)
+        protected virtual void StatusCallback(MessageTypes.Actionlib.GoalStatusArray actionStatus)
         {
             ActionStatus = actionStatus;
             ActionState = (ActionServer<Tgoal, Tfeedback, Tresult>.ActionStates)ActionStatus.status_list[0].status;

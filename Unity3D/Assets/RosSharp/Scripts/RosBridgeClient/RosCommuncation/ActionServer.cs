@@ -34,8 +34,8 @@ namespace RosSharp.RosBridgeClient
         private string FeedbackPublicationId;
         private string StatusPublicationId;
         private string ResultPublicationId;
-        private Messages.Actionlib.GoalStatus ActionStatus;
-        private Messages.Actionlib.GoalID ActionGoalId;
+        private MessageTypes.Actionlib.GoalStatus ActionStatus;
+        private MessageTypes.Actionlib.GoalID ActionGoalId;
         private Thread thread;
 
         protected Tgoal ActionGoal;
@@ -49,10 +49,10 @@ namespace RosSharp.RosBridgeClient
             rosSocket = GetComponent<RosConnector>().RosSocket;
             ActionState = ActionStates.Pending;
 
-            rosSocket.Subscribe<Messages.Actionlib.GoalID>(ActionName + "/cancel", CancelCallback, (int)(TimeStep * 1000));
+            rosSocket.Subscribe<MessageTypes.Actionlib.GoalID>(ActionName + "/cancel", CancelCallback, (int)(TimeStep * 1000));
             rosSocket.Subscribe<Tgoal>(ActionName + "/goal", GoalCallback, (int)(TimeStep * 1000));
 
-            StatusPublicationId = rosSocket.Advertise<Messages.Actionlib.GoalStatusArray>(ActionName + "/status");
+            StatusPublicationId = rosSocket.Advertise<MessageTypes.Actionlib.GoalStatusArray>(ActionName + "/status");
             FeedbackPublicationId = rosSocket.Advertise<Tfeedback>(ActionName + "/feedback");
             ResultPublicationId = rosSocket.Advertise<Tresult>(ActionName + "/result");
         }
@@ -72,7 +72,7 @@ namespace RosSharp.RosBridgeClient
             thread.Start();
         }
 
-        protected void CancelCallback(Messages.Actionlib.GoalID actionGoalId)
+        protected void CancelCallback(MessageTypes.Actionlib.GoalID actionGoalId)
         {
             if (ActionState == ActionStates.Active)
             {
@@ -85,10 +85,10 @@ namespace RosSharp.RosBridgeClient
 
         protected void PublishStatus()
         {
-            ActionStatus = new Messages.Actionlib.GoalStatus() { status = (int)ActionState };
+            ActionStatus = new MessageTypes.Actionlib.GoalStatus() { status = (byte)ActionState };
 
             rosSocket.Publish(StatusPublicationId,
-                new Messages.Actionlib.GoalStatusArray { status_list = new Messages.Actionlib.GoalStatus[] { ActionStatus } });
+                new MessageTypes.Actionlib.GoalStatusArray { status_list = new MessageTypes.Actionlib.GoalStatus[] { ActionStatus } });
         }
 
         public void PublishFeedback()

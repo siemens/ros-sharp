@@ -17,12 +17,12 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseStampedPublisher : Publisher<Messages.Geometry.PoseStamped>
+    public class PoseStampedPublisher : Publisher<MessageTypes.Geometry.PoseStamped>
     {
         public Transform PublishedTransform;
         public string FrameId = "Unity";
 
-        private Messages.Geometry.PoseStamped message;
+        private MessageTypes.Geometry.PoseStamped message;
 
         protected override void Start()
         {
@@ -37,9 +37,9 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new Messages.Geometry.PoseStamped
+            message = new MessageTypes.Geometry.PoseStamped
             {
-                header = new Messages.Standard.Header()
+                header = new MessageTypes.Std.Header()
                 {
                     frame_id = FrameId
                 }
@@ -55,18 +55,18 @@ namespace RosSharp.RosBridgeClient
             Publish(message);
         }
 
-        private Messages.Geometry.Point GetGeometryPoint(Vector3 position)
+        private MessageTypes.Geometry.Point GetGeometryPoint(Vector3 position)
         {
-            Messages.Geometry.Point geometryPoint = new Messages.Geometry.Point();
+            MessageTypes.Geometry.Point geometryPoint = new MessageTypes.Geometry.Point();
             geometryPoint.x = position.x;
             geometryPoint.y = position.y;
             geometryPoint.z = position.z;
             return geometryPoint;
         }
 
-        private Messages.Geometry.Quaternion GetGeometryQuaternion(Quaternion quaternion)
+        private MessageTypes.Geometry.Quaternion GetGeometryQuaternion(Quaternion quaternion)
         {
-            Messages.Geometry.Quaternion geometryQuaternion = new Messages.Geometry.Quaternion();
+            MessageTypes.Geometry.Quaternion geometryQuaternion = new MessageTypes.Geometry.Quaternion();
             geometryQuaternion.x = quaternion.x;
             geometryQuaternion.y = quaternion.y;
             geometryQuaternion.z = quaternion.z;

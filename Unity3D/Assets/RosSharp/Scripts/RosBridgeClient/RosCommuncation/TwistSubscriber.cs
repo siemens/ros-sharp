@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistSubscriber : Subscriber<Messages.Geometry.Twist>
+    public class TwistSubscriber : Subscriber<MessageTypes.Geometry.Twist>
     {
         public Transform SubscribedTransform;
 
@@ -34,16 +34,16 @@ namespace RosSharp.RosBridgeClient
             base.Start();
         }
 
-        protected override void ReceiveMessage(Messages.Geometry.Twist message)
+        protected override void ReceiveMessage(MessageTypes.Geometry.Twist message)
         {
             linearVelocity = ToVector3(message.linear).Ros2Unity();
             angularVelocity = -ToVector3(message.angular).Ros2Unity();
             isMessageReceived = true;
         }
 
-        private static Vector3 ToVector3(Messages.Geometry.Vector3 geometryVector3)
+        private static Vector3 ToVector3(MessageTypes.Geometry.Vector3 geometryVector3)
         {
-            return new Vector3(geometryVector3.x, geometryVector3.y, geometryVector3.z);
+            return new Vector3((float)geometryVector3.x, (float)geometryVector3.y, (float)geometryVector3.z);
         }
 
         private void Update()

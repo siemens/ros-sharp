@@ -16,7 +16,7 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using RosSharp.RosBridgeClient.Messages;
+using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClient
 {

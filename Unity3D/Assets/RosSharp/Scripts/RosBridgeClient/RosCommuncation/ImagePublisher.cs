@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class ImagePublisher : Publisher<Messages.Sensor.CompressedImage>
+    public class ImagePublisher : Publisher<MessageTypes.Sensor.CompressedImage>
     {
         public Camera ImageCamera;
         public string FrameId = "Camera";
@@ -29,7 +29,7 @@ namespace RosSharp.RosBridgeClient
         [Range(0, 100)]
         public int qualityLevel = 50;
 
-        private Messages.Sensor.CompressedImage message;
+        private MessageTypes.Sensor.CompressedImage message;
         private Texture2D texture2D;
         private Rect rect;
 
@@ -56,7 +56,7 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new Messages.Sensor.CompressedImage();
+            message = new MessageTypes.Sensor.CompressedImage();
             message.header.frame_id = FrameId;
             message.format = "jpeg";
         }

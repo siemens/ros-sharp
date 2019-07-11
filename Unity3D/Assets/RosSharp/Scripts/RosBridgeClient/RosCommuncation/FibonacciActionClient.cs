@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using RosSharp.RosBridgeClient.Messages;
+using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClient
 {
