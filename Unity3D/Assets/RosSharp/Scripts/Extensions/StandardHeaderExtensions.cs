@@ -29,7 +29,7 @@ namespace RosSharp.RosBridgeClient
             timer = defaultTimer;
         }
 
-        public static void Update(this Messages.Standard.Header header)
+        public static void Update(this MessageTypes.Std.Header header)
         {
             if (timer == null)
             {
