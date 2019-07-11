@@ -53,6 +53,13 @@
   <ItemGroup>
     <Compile Include="Communicators.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciAction.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionFeedback.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionGoal.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionResult.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciFeedback.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciGoal.cs" />
+    <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciResult.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalID.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatus.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatusArray.cs" />

@@ -304,7 +304,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write namespace
                 writer.Write(
-                    "namespace RosSharp.RosBridgeClient.MessageTypes" + MsgAutoGenUtilities.ResolvePackageName(rosPackageName) + "\n" +
+                    "namespace RosSharp.RosBridgeClient.MessageTypes." + MsgAutoGenUtilities.ResolvePackageName(rosPackageName) + "\n" +
                     "{\n"
                     );
 
