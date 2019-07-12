@@ -20,20 +20,20 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
         public const string RosMessageName = "actionlib_tutorials/FibonacciActionGoal";
 
         public Header header;
-        public GoalStatus status;
+        public GoalID goal_id;
         public FibonacciGoal goal;
 
         public FibonacciActionGoal()
         {
             this.header = new Header();
-            this.status = new GoalStatus();
+            this.goal_id = new GoalID();
             this.goal = new FibonacciGoal();
         }
 
-        public FibonacciActionGoal(Header header, GoalStatus status, FibonacciGoal goal)
+        public FibonacciActionGoal(Header header, GoalID goal_id, FibonacciGoal goal)
         {
             this.header = header;
-            this.status = status;
+            this.goal_id = goal_id;
             this.goal = goal;
         }
     }

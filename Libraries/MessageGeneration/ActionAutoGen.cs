@@ -246,7 +246,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 symbolTable.Add("header", "Header");
 
                 // Write GoalID/GoalStatus
-                if (type.Equals("goal"))
+                if (type.Equals("Goal"))
                 {
                     writer.Write(
                         TWO_TABS + "public GoalID goal_id;\n"
