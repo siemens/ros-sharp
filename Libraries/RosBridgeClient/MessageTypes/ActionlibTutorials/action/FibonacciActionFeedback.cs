@@ -14,26 +14,18 @@ using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
-    public class FibonacciActionFeedback : Message
+    public class FibonacciActionFeedback : ActionFeedback<FibonacciFeedback>
     {
         [JsonIgnore]
         public const string RosMessageName = "actionlib_tutorials/FibonacciActionFeedback";
 
-        public Header header;
-        public GoalStatus status;
-        public FibonacciFeedback feedback;
-
-        public FibonacciActionFeedback()
+        public FibonacciActionFeedback() : base()
         {
-            this.header = new Header();
-            this.status = new GoalStatus();
             this.feedback = new FibonacciFeedback();
         }
 
-        public FibonacciActionFeedback(Header header, GoalStatus status, FibonacciFeedback feedback)
+        public FibonacciActionFeedback(Header header, GoalStatus status, FibonacciFeedback feedback) :  base(header, status)
         {
-            this.header = header;
-            this.status = status;
             this.feedback = feedback;
         }
     }

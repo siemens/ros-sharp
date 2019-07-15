@@ -51,8 +51,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractMessages\Actions\Action.cs" />
+    <Compile Include="AbstractMessages\Actions\ActionFeedback.cs" />
+    <Compile Include="AbstractMessages\Actions\ActionGoal.cs" />
+    <Compile Include="AbstractMessages\Actions\ActionResult.cs" />
+    <Compile Include="ActionHandkers\ActionClient.cs" />
+    <Compile Include="ActionHandkers\ActionStatus.cs" />
     <Compile Include="Communicators.cs" />
-    <Compile Include="Message.cs" />
+    <Compile Include="AbstractMessages\Message.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciAction.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionFeedback.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionGoal.cs" />

@@ -14,26 +14,18 @@ using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
-    public class FibonacciActionGoal : Message
+    public class FibonacciActionGoal : ActionGoal<FibonacciGoal>
     {
         [JsonIgnore]
         public const string RosMessageName = "actionlib_tutorials/FibonacciActionGoal";
 
-        public Header header;
-        public GoalID goal_id;
-        public FibonacciGoal goal;
-
-        public FibonacciActionGoal()
+        public FibonacciActionGoal() : base()
         {
-            this.header = new Header();
-            this.goal_id = new GoalID();
             this.goal = new FibonacciGoal();
         }
 
-        public FibonacciActionGoal(Header header, GoalID goal_id, FibonacciGoal goal)
+        public FibonacciActionGoal(Header header, GoalID goal_id, FibonacciGoal goal) : base (header, goal_id)
         {
-            this.header = header;
-            this.goal_id = goal_id;
             this.goal = goal;
         }
     }
