@@ -56,7 +56,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void CancelGoal() {
-            socket.Publish(goalPublicationID, action.action_goal.goal_id);
+            socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
 
         protected void FeedbackCallback(TActionFeedback actionFeedback) {

@@ -43,7 +43,12 @@ namespace RosSharp.RosBridgeClient
 
         protected TAction action;
 
-        protected abstract void GoalHandler(TActionGoal actionGoal);
+        protected virtual void GoalHandler(TActionGoal actionGoal)
+        {
+            action.action_goal = actionGoal;
+            action.action_result.status.goal_id = actionGoal.goal_id;
+            action.action_feedback.status.goal_id = actionGoal.goal_id;
+        }
 
         public ActionServer(RosSocket socket, TAction action, string actionName) {
             this.socket = socket;
@@ -58,6 +63,7 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
         }
 
+        // When receive a new goal
         protected void GoalCallback(TActionGoal actionGoal)
         {
             if (actionStatus == ActionStatus.ACTIVE) {
@@ -68,19 +74,24 @@ namespace RosSharp.RosBridgeClient
             thread.Start();
         }
 
+        
         protected void CancelCallback(GoalID goalID)
         {
             if (actionStatus == ActionStatus.ACTIVE)
             {
-                actionStatus = ActionStatus.PREEMPTING;
+                UpdateAndPublishStatus(ActionStatus.PREEMPTING);
                 action.action_goal.goal_id = goalID;
                 thread.Abort();
-                actionStatus = ActionStatus.PREEMPTED;
+                UpdateAndPublishStatus(ActionStatus.PREEMPTED);
             }
         }
 
-        protected void PublishStatus()
+        protected void UpdateAndPublishStatus(ActionStatus actionStatus)
         {
+            // Update
+            this.actionStatus = actionStatus;
+
+            // Publish status
             socket.Publish(statusPublicationId,
                 new GoalStatusArray
                 {
@@ -94,11 +105,13 @@ namespace RosSharp.RosBridgeClient
 
         public void PublishFeedback()
         {
+            action.action_feedback.status.status = (byte)actionStatus;
             socket.Publish(feedbackPublicationId, action.action_feedback);
         }
 
         public void PublishResult()
         {
+            action.action_result.status.status = (byte)actionStatus;
             socket.Publish(resultPublicationId, action.action_result);
         }
     }
