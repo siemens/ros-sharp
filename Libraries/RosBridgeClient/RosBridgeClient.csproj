@@ -56,6 +56,7 @@
     <Compile Include="AbstractMessages\Actions\ActionGoal.cs" />
     <Compile Include="AbstractMessages\Actions\ActionResult.cs" />
     <Compile Include="ActionHandkers\ActionClient.cs" />
+    <Compile Include="ActionHandkers\ActionServer.cs" />
     <Compile Include="ActionHandkers\ActionStatus.cs" />
     <Compile Include="Communicators.cs" />
     <Compile Include="AbstractMessages\Message.cs" />

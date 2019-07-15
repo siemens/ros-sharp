@@ -25,12 +25,11 @@ namespace RosSharp.RosBridgeClient
         where TGoal : Message
         where TResult : Message
         where TFeedback : Message
-
     {
         public string actionName;
         public float timeStep;
 
-        private RosSocket socket;
+        private readonly RosSocket socket;
 
         private readonly string cancelPublicationID;
         private readonly string goalPublicationID;
@@ -39,10 +38,10 @@ namespace RosSharp.RosBridgeClient
 
         protected TAction action;
 
-        public ActionClient(RosSocket socket, string actionName, TAction action) {
+        public ActionClient(RosSocket socket, TAction action, string actionName) {
             this.socket = socket;
-            this.actionName = actionName;
             this.action = action;
+            this.actionName = actionName;
 
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
