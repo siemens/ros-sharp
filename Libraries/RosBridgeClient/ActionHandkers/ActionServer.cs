@@ -30,12 +30,12 @@ namespace RosSharp.RosBridgeClient
         where TResult : Message
         where TFeedback : Message
     {
-        public string actionName;
-        public float timeStep;
+        protected string actionName;
+        protected float timeStep;
 
-        public bool isRunning = false;
+        protected bool isRunning = false;
 
-        public ActionStatus actionStatus;
+        protected ActionStatus actionStatus;
 
         private readonly RosSocket socket;
 
