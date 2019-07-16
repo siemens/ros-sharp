@@ -13,8 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Threading;
 
+using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
@@ -30,6 +32,8 @@ namespace RosSharp.RosBridgeClient
     {
         public string actionName;
         public float timeStep;
+
+        public bool isRunning = false;
 
         public ActionStatus actionStatus;
 
@@ -50,10 +54,15 @@ namespace RosSharp.RosBridgeClient
             action.action_feedback.status.goal_id = actionGoal.goal_id;
         }
 
-        public ActionServer(RosSocket socket, TAction action, string actionName) {
-            this.socket = socket;
+        public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0) {
             this.action = action;
             this.actionName = actionName;
+
+            RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
+            if (!connector.ConnectAndWait()) {
+                return;
+            }
+            socket = connector.rosSocket;
 
             statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
             feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");
@@ -61,10 +70,22 @@ namespace RosSharp.RosBridgeClient
 
             socket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, (int)(timeStep * 1000));
             socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
+
+            UpdateAndPublishStatus(ActionStatus.PENDING);
+
+            isRunning = true;
+            new Thread(Spin).Start();
+        }
+
+        private void Spin() {
+            while (isRunning) {
+                PublishStatus();
+                Thread.Sleep((int)(timeStep * 1000));
+            }
         }
 
         // When receive a new goal
-        protected void GoalCallback(TActionGoal actionGoal)
+        private void GoalCallback(TActionGoal actionGoal)
         {
             if (actionStatus == ActionStatus.ACTIVE) {
                 thread.Abort();
@@ -74,8 +95,7 @@ namespace RosSharp.RosBridgeClient
             thread.Start();
         }
 
-        
-        protected void CancelCallback(GoalID goalID)
+        private void CancelCallback(GoalID goalID)
         {
             if (actionStatus == ActionStatus.ACTIVE)
             {
@@ -88,14 +108,16 @@ namespace RosSharp.RosBridgeClient
 
         protected void UpdateAndPublishStatus(ActionStatus actionStatus)
         {
-            // Update
             this.actionStatus = actionStatus;
+            PublishStatus();
+        }
 
-            // Publish status
+        protected void PublishStatus()
+        {
             socket.Publish(statusPublicationId,
                 new GoalStatusArray
                 {
-                    status_list = new GoalStatus[] 
+                    status_list = new GoalStatus[]
                     {
                         new GoalStatus { status = (byte)actionStatus }
                     }
@@ -113,6 +135,11 @@ namespace RosSharp.RosBridgeClient
         {
             action.action_result.status.status = (byte)actionStatus;
             socket.Publish(resultPublicationId, action.action_result);
+        }
+
+        public void Stop() {
+            isRunning = false;
+            socket.Close();
         }
     }
 }

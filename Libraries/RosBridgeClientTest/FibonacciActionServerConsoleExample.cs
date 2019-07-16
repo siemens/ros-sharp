@@ -18,13 +18,14 @@ using System.Collections.Generic;
 using System.Threading;
 
 using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClientTest
 {
     public class FibonacciActionServer : ActionServer<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        public FibonacciActionServer(RosSocket socket, FibonacciAction action, string actionName) : base(socket, action, actionName) { }
+        public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
 
         protected override void GoalHandler(FibonacciActionGoal actionGoal)
         {
@@ -58,8 +59,13 @@ namespace RosSharp.RosBridgeClientTest
         }
     }
 
-    public class FibonacciActionServerConsoleTest
+    public class FibonacciActionServerConsoleExample
     {
-        
+        public static void Main(string[] args) {
+            FibonacciActionServer server = new FibonacciActionServer(new FibonacciAction(), "fibonacci", Protocol.WebSocketSharp, "ws://192.168.137.195:9090");
+            Console.WriteLine("Press any key to stop server...");
+            Console.ReadKey(true);
+            server.Stop();
+        }
     }
 }

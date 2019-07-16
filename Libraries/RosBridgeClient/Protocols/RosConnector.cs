@@ -17,51 +17,54 @@ limitations under the License.
 
 using System;
 using System.Threading;
-using UnityEngine;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class RosConnector : MonoBehaviour
+    public class RosConnector
     {
-        public int Timeout = 10;
+        public int timeout;
 
-        public RosSocket RosSocket { get; private set; }
-        public enum Protocols { WebSocketSharp, WebSocketNET };
-        public RosBridgeClient.RosSocket.SerializerEnum Serializer;
-        public Protocols Protocol;
-        public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
+        public RosSocket rosSocket { get; private set; }
+        public RosSocket.SerializerEnum serializer;
+        public Protocol protocol;
+        public string rosBridgeServerUrl;
 
         private ManualResetEvent isConnected = new ManualResetEvent(false);
 
-        public void Awake()
+        public RosConnector(string url, Protocol protocol, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10)
         {
-            new Thread(ConnectAndWait).Start();
+            this.rosBridgeServerUrl = url;
+            this.protocol = protocol;
+            this.serializer = serializer;
+            this.timeout = timeout;
         }
 
-        private void ConnectAndWait()
+        public bool ConnectAndWait()
         {
-            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
-
-            if (!isConnected.WaitOne(Timeout * 1000))
-                Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
+            rosSocket = ConnectToRos(protocol, rosBridgeServerUrl, OnConnected, OnClosed, serializer);
+            if (!isConnected.WaitOne(timeout * 1000)) {
+                Console.WriteLine("Failed to connect to RosBridge at: " + rosBridgeServerUrl);
+                return false;
+            }
+            return true;
         }
 
-        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON)
+        public static RosSocket ConnectToRos(Protocol protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON)
         {
-            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol(protocolType, serverUrl);
+            IProtocol protocol = GetProtocol(protocolType, serverUrl);
             protocol.OnConnected += onConnected;
             protocol.OnClosed += onClosed;
 
             return new RosSocket(protocol, serializer);
         }
 
-        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)
+        private static IProtocol GetProtocol(Protocol protocol, string rosBridgeServerUrl)
         {
             switch (protocol)
             {
-                case Protocols.WebSocketSharp:
+                case Protocol.WebSocketSharp:
                     return new RosBridgeClient.Protocols.WebSocketSharpProtocol(rosBridgeServerUrl);
-                case Protocols.WebSocketNET:
+                case Protocol.WebSocketNET:
                     return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
                 default:
                     return null;
@@ -70,19 +73,19 @@ namespace RosSharp.RosBridgeClient
 
         private void OnApplicationQuit()
         {
-            RosSocket.Close();
+            rosSocket.Close();
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
             isConnected.Set();
-            Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
         }
 
         private void OnClosed(object sender, EventArgs e)
         {
             isConnected.Reset();
-            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
         }
     }
+
+    public enum Protocol { WebSocketSharp, WebSocketNET };
 }

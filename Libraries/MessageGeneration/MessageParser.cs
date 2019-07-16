@@ -27,7 +27,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private List<MessageToken> tokens;
 
         private readonly string inFilePath;
-        private readonly string inFileComment;
         private readonly string inFileName;
 
         private readonly string rosPackageName;
