@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
@@ -38,10 +39,16 @@ namespace RosSharp.RosBridgeClient
 
         protected TAction action;
 
-        public ActionClient(RosSocket socket, TAction action, string actionName) {
-            this.socket = socket;
+        public ActionClient(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10) {
             this.action = action;
             this.actionName = actionName;
+
+            RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
+            if (!connector.ConnectAndWait())
+            {
+                return;
+            }
+            socket = connector.rosSocket;
 
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");

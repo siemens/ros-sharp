@@ -47,16 +47,15 @@ namespace RosSharp.RosBridgeClient
 
         protected TAction action;
 
-        protected virtual void GoalHandler(TActionGoal actionGoal)
-        {
-            action.action_goal = actionGoal;
-            action.action_result.status.goal_id = actionGoal.goal_id;
-            action.action_feedback.status.goal_id = actionGoal.goal_id;
-        }
+        // User override for specific actions
+        protected abstract void GoalHandler();
+        protected abstract bool IsGoalValid();
 
-        public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0) {
+        public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0.1f) {
             this.action = action;
             this.actionName = actionName;
+
+            this.timeStep = timeStep;
 
             RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
             if (!connector.ConnectAndWait()) {
@@ -90,9 +89,20 @@ namespace RosSharp.RosBridgeClient
             if (actionStatus == ActionStatus.ACTIVE) {
                 thread.Abort();
             }
+
             action.action_goal = actionGoal;
-            thread = new Thread(() => GoalHandler(action.action_goal));
-            thread.Start();
+            action.action_result.status.goal_id = actionGoal.goal_id;
+            action.action_feedback.status.goal_id = actionGoal.goal_id;
+
+            if (IsGoalValid())
+            {
+                UpdateAndPublishStatus(ActionStatus.ACTIVE);
+                thread = new Thread(() => GoalHandler());
+                thread.Start();
+            }
+            else {
+                UpdateAndPublishStatus(ActionStatus.REJECTED);
+            }
         }
 
         private void CancelCallback(GoalID goalID)

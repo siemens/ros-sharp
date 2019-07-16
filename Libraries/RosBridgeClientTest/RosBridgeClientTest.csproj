@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FibonacciActionClientConsoleExample.cs" />
     <Compile Include="FibonacciActionServerConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
     <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
