@@ -40,5 +40,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.cell_height = cell_height;
             this.cells = cells;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

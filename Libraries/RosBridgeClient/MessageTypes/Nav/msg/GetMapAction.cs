@@ -34,5 +34,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.action_result = action_result;
             this.action_feedback = action_feedback;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

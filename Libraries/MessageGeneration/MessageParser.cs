@@ -27,7 +27,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private List<MessageToken> tokens;
 
         private readonly string inFilePath;
-        private readonly string inFileComment;
         private readonly string inFileName;
 
         private readonly string rosPackageName;
@@ -137,6 +136,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     writer.Write("\n");
                     writer.Write(GenerateParameterizedConstructor());
                 }
+
+                // Write ToString
+                writer.Write("\n");
+                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
 
                 // Close class
                 writer.Write(MsgAutoGenUtilities.ONE_TAB + "}\n");

@@ -34,5 +34,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
             this.header = header;
             this.status_list = status_list;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

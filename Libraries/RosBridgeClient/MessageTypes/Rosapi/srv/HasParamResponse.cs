@@ -27,5 +27,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         {
             this.exists = exists;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

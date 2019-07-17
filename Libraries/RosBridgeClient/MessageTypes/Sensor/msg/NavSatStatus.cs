@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/NavSatStatus";
 
-        //  Nav Satellite fix status for any Global Nav Satellite System
+        //  Navigation Satellite fix status for any Global Navigation Satellite System
         //  Whether to output an augmented fix is determined by both the fix
         //  type and the last time differential corrections were received.  A
         //  fix is valid when status >= STATUS_FIX.
@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const sbyte STATUS_SBAS_FIX = 1; //  with satellite-based augmentation
         public const sbyte STATUS_GBAS_FIX = 2; //  with ground-based augmentation
         public sbyte status;
-        //  Bits defining which Global Nav Satellite System signals were
+        //  Bits defining which Global Navigation Satellite System signals were
         //  used by the receiver.
         public const ushort SERVICE_GPS = 1;
         public const ushort SERVICE_GLONASS = 2;
@@ -43,6 +43,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         {
             this.status = status;
             this.service = service;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

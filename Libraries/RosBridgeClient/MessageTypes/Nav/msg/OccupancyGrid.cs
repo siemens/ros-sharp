@@ -40,5 +40,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.info = info;
             this.data = data;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

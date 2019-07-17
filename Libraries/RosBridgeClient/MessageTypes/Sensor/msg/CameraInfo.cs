@@ -56,7 +56,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //                       Calibration Parameters                         #
         // ######################################################################
         //  These are fixed during camera calibration. Their values will be the #
-        //  same in all MessageTypes until the camera is recalibrated. Note that    #
+        //  same in all messages until the camera is recalibrated. Note that    #
         //  self-calibrating systems may "recalibrate" frequently.              #
         //                                                                      #
         //  The internal parameters can be used to warp a raw (distorted) image #
@@ -168,6 +168,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.binning_x = binning_x;
             this.binning_y = binning_y;
             this.roi = roi;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

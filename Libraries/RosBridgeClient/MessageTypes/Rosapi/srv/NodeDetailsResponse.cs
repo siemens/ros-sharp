@@ -18,20 +18,25 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 
         public string[] subscribing;
         public string[] publishing;
-        public string[] MessageTypes;
+        public string[] services;
 
         public NodeDetailsResponse()
         {
             this.subscribing = new string[0];
             this.publishing = new string[0];
-            this.MessageTypes = new string[0];
+            this.services = new string[0];
         }
 
-        public NodeDetailsResponse(string[] subscribing, string[] publishing, string[] MessageTypes)
+        public NodeDetailsResponse(string[] subscribing, string[] publishing, string[] services)
         {
             this.subscribing = subscribing;
             this.publishing = publishing;
-            this.MessageTypes = MessageTypes;
+            this.services = services;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

@@ -59,5 +59,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.velocity = velocity;
             this.effort = effort;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

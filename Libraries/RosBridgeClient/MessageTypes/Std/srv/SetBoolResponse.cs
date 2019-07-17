@@ -19,7 +19,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         public bool success;
         //  indicate successful run of triggered service
         public string message;
-        //  informational, e.g. for error MessageTypes
+        //  informational, e.g. for error messages
 
         public SetBoolResponse()
         {
@@ -31,6 +31,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         {
             this.success = success;
             this.message = message;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

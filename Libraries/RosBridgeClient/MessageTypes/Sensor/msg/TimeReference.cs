@@ -40,5 +40,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.time_ref = time_ref;
             this.source = source;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

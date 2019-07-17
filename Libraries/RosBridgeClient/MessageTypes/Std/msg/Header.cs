@@ -18,7 +18,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         [JsonIgnore]
         public const string RosMessageName = "std_msgs/Header";
 
-        //  Std metadata for higher-level stamped data types.
+        //  Standard metadata for higher-level stamped data types.
         //  This is generally used to communicate timestamped data 
         //  in a particular coordinate frame.
         //  
@@ -46,6 +46,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.seq = seq;
             this.stamp = stamp;
             this.frame_id = frame_id;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }
