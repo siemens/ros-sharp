@@ -35,10 +35,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.secs = secs;
             this.nsecs = nsecs;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

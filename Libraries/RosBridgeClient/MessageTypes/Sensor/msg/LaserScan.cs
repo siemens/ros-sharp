@@ -80,10 +80,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.ranges = ranges;
             this.intensities = intensities;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

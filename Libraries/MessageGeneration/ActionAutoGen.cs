@@ -273,10 +273,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(GenerateDefaultValueConstructor(wrapperName) + "\n");
 
                 // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName) + "\n");
-
-                // Write ToString
-                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
+                writer.Write(GenerateParameterizedConstructor(wrapperName));
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");
@@ -292,8 +289,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string outPath = Path.Combine(this.outPath, wrapperName + ".cs");
 
             string imports =
-                "using Newtonsoft.Json;\n\n" +
-                "using RosSharp.RosBridgeClient.MessageTypes." + MsgAutoGenUtilities.ResolvePackageName(rosPackageName) + ";\n\n";
+                "using Newtonsoft.Json;\n\n";
 
             symbolTable = new Dictionary<string, string>();
 
@@ -338,10 +334,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write("\n" + GenerateDefaultValueConstructor(wrapperName) + "\n");
 
                 // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName) + "\n");
-
-                // Write ToString
-                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
+                writer.Write(GenerateParameterizedConstructor(wrapperName));
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");

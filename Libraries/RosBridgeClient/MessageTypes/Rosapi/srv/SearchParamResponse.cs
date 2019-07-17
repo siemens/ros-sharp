@@ -27,10 +27,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         {
             this.global_name = global_name;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

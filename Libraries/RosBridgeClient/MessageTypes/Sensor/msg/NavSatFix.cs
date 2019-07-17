@@ -76,10 +76,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.position_covariance = position_covariance;
             this.position_covariance_type = position_covariance_type;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

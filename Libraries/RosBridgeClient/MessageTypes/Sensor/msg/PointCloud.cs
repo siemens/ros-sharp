@@ -44,10 +44,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.points = points;
             this.channels = channels;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

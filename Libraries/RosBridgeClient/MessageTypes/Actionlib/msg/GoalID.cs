@@ -38,10 +38,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
             this.stamp = stamp;
             this.id = id;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

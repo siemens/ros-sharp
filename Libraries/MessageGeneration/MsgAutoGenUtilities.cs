@@ -34,12 +34,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         public const string ONE_TAB = "    ";
         public const string TWO_TABS = "        ";
 
-        public const string JSON_DUMP = 
-            TWO_TABS + "public override string ToString()\n" +
-            TWO_TABS + "{\n" +
-            TWO_TABS + ONE_TAB + "return JsonConvert.SerializeObject(this);\n" +
-            TWO_TABS + "}\n";
-
         public static readonly Dictionary<string, string> builtInTypesMapping = new Dictionary<string, string>
         {
             {"bool", "bool"},

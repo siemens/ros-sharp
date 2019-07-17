@@ -41,10 +41,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.id = id;
             this.intensity = intensity;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -53,10 +53,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.magnetic_field = magnetic_field;
             this.magnetic_field_covariance = magnetic_field_covariance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

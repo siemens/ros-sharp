@@ -37,10 +37,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.goal_id = goal_id;
             this.goal = goal;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

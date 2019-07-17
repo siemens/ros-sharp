@@ -169,10 +169,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.binning_y = binning_y;
             this.roi = roi;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

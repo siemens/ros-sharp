@@ -64,10 +64,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.linear_acceleration = linear_acceleration;
             this.linear_acceleration_covariance = linear_acceleration_covariance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -30,10 +30,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
             this.name = name;
             this.value = value;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

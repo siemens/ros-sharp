@@ -110,10 +110,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.location = location;
             this.serial_number = serial_number;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

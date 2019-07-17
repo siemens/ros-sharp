@@ -51,10 +51,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.illuminance = illuminance;
             this.variance = variance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

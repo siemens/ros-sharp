@@ -49,10 +49,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.height = height;
             this.origin = origin;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -70,10 +70,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.data = data;
             this.is_dense = is_dense;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -47,10 +47,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.stamp = stamp;
             this.frame_id = frame_id;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

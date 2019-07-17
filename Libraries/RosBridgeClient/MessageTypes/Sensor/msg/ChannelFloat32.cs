@@ -49,10 +49,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.name = name;
             this.values = values;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

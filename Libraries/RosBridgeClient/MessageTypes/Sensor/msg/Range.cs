@@ -77,10 +77,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.max_range = max_range;
             this.range = range;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }
