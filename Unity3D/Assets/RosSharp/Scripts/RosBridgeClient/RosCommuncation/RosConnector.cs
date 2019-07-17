@@ -17,13 +17,14 @@ limitations under the License.
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
     public class RosConnector : MonoBehaviour
     {
-        public int Timeout = 10;
+        public int Timeout = 3;
 
         public RosSocket RosSocket { get; private set; }
         public enum Protocols { WebSocketSharp, WebSocketNET };
@@ -31,19 +32,17 @@ namespace RosSharp.RosBridgeClient
         public Protocols Protocol;
         public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
 
-        private ManualResetEvent isConnected = new ManualResetEvent(false);
+        private bool isConnected = false;
 
         public void Awake()
         {
-            new Thread(ConnectAndWait).Start();
+            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
+            Connect();
         }
 
-        private void ConnectAndWait()
+        private void Connect()
         {
-            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
-
-            if (!isConnected.WaitOne(Timeout * 1000))
-                Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
+            RosSocket.protocol.Connect();
         }
 
         public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON)
@@ -75,14 +74,16 @@ namespace RosSharp.RosBridgeClient
 
         private void OnConnected(object sender, EventArgs e)
         {
-            isConnected.Set();
+            isConnected = true;
             Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
         }
 
-        private void OnClosed(object sender, EventArgs e)
+        private async void OnClosed(object sender, EventArgs e)
         {
-            isConnected.Reset();
-            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            isConnected = false;
+            Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl + ". Retrying in " + Timeout + " seconds.");
+            await Task.Delay(Timeout * 1000);
+            Connect();
         }
     }
 }
