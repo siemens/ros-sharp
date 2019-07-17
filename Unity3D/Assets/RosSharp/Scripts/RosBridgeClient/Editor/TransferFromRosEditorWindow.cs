@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class TransferFromRosEditorWindow : EditorWindow
     {
-        private static RosConnector.Protocols protocolType;
+        private static Protocols.Protocol protocolType;
         private static string address;
         private static string urdfParameter;
         private static int timeout;

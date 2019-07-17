@@ -14,8 +14,6 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Threading;
 
 using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.Protocols;

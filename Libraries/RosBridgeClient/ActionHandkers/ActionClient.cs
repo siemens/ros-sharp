@@ -36,8 +36,6 @@ namespace RosSharp.RosBridgeClient
 
         private readonly RosSocket socket;
 
-        protected bool isConnected = false;
-
         protected bool isServerUp = false;
         protected DateTime lastStatusUpdateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         protected bool isUpdatingServerStatus = false;
@@ -59,10 +57,9 @@ namespace RosSharp.RosBridgeClient
             RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
             if (!connector.ConnectAndWait())
             {
-                return;
+                throw new Exception("Failed to connect to " + serverURL + " in " + timeout + " secs");
             }
-            socket = connector.rosSocket;
-            isConnected = true;
+            socket = connector.RosSocket;
 
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
@@ -75,7 +72,7 @@ namespace RosSharp.RosBridgeClient
             StartUpdateServerStatus();
         }
 
-        protected void WaitForServer() {
+        public void WaitForServer() {
             while (!isServerUp) {
                 Thread.Sleep((int)(timeStep * 1000));
             }
@@ -85,16 +82,12 @@ namespace RosSharp.RosBridgeClient
 
         protected abstract void ResultHandler();
 
-        protected void SendGoal() {
-            if (isConnected) {
-                socket.Publish(goalPublicationID, action.action_goal);
-            }
+        public void SendGoal() {
+            socket.Publish(goalPublicationID, action.action_goal);
         }
 
-        protected void CancelGoal() {
-            if (isConnected) {
-                socket.Publish(cancelPublicationID, action.action_goal.goal_id);
-            }
+        public void CancelGoal() {
+            socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
 
         protected void FeedbackCallback(TActionFeedback actionFeedback) {
@@ -156,7 +149,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        protected void Stop() {
+        public void Stop() {
             StopUpdateServerStatus();
             socket.Close();
         }

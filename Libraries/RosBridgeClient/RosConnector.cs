@@ -18,13 +18,15 @@ limitations under the License.
 using System;
 using System.Threading;
 
-namespace RosSharp.RosBridgeClient.Protocols
+using RosSharp.RosBridgeClient.Protocols;
+
+namespace RosSharp.RosBridgeClient
 {
     public class RosConnector
     {
         public int timeout;
 
-        public RosSocket rosSocket { get; private set; }
+        public RosSocket RosSocket { get; private set; }
         public RosSocket.SerializerEnum serializer;
         public Protocol protocol;
         public string rosBridgeServerUrl;
@@ -41,9 +43,8 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public bool ConnectAndWait()
         {
-            rosSocket = ConnectToRos(protocol, rosBridgeServerUrl, OnConnected, OnClosed, serializer);
+            RosSocket = ConnectToRos(protocol, rosBridgeServerUrl, OnConnected, OnClosed, serializer);
             if (!isConnected.WaitOne(timeout * 1000)) {
-                Console.WriteLine("Failed to connect to RosBridge at: " + rosBridgeServerUrl);
                 return false;
             }
             return true;
@@ -73,7 +74,7 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         private void OnApplicationQuit()
         {
-            rosSocket.Close();
+            RosSocket.Close();
         }
 
         private void OnConnected(object sender, EventArgs e)
@@ -86,6 +87,4 @@ namespace RosSharp.RosBridgeClient.Protocols
             isConnected.Reset();
         }
     }
-
-    public enum Protocol { WebSocketSharp, WebSocketNET };
 }

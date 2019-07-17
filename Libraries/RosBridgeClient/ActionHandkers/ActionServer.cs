@@ -59,9 +59,9 @@ namespace RosSharp.RosBridgeClient
 
             RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
             if (!connector.ConnectAndWait()) {
-                return;
+                throw new Exception("Failed to connect to " + serverURL + " in " + timeout + " secs");
             }
-            socket = connector.rosSocket;
+            socket = connector.RosSocket;
 
             statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
             feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");

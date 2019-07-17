@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class TransferToRosEditorWindow : EditorWindow
     {
-        private static RosConnector.Protocols protocolType;
+        private static Protocols.Protocol protocolType;
         private static string serverUrl = "ws://192.168.56.102:9090";
         private static string urdfPath;
         private static int timeout;
