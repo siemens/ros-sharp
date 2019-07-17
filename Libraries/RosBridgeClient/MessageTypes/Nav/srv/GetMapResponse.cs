@@ -29,10 +29,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
         {
             this.map = map;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

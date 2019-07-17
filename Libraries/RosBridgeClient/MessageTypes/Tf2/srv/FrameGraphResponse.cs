@@ -27,10 +27,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         {
             this.frame_yaml = frame_yaml;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

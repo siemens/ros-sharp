@@ -27,10 +27,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         {
             this.service = service;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

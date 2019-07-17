@@ -21,10 +21,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         public LookupTransformFeedback()
         {
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

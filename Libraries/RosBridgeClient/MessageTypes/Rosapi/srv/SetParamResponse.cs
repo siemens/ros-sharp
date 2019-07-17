@@ -20,10 +20,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         public SetParamResponse()
         {
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

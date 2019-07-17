@@ -43,10 +43,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.fluid_pressure = fluid_pressure;
             this.variance = variance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

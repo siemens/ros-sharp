@@ -28,10 +28,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         {
             this.array = array;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

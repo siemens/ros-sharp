@@ -40,10 +40,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.goal = goal;
             this.tolerance = tolerance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

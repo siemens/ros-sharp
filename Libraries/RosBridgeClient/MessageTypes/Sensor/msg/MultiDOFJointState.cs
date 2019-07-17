@@ -61,10 +61,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.twist = twist;
             this.wrench = wrench;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

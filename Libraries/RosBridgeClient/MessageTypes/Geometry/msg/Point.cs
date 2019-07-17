@@ -34,10 +34,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.y = y;
             this.z = z;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

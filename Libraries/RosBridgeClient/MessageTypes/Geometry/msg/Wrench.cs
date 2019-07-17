@@ -32,10 +32,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.force = force;
             this.torque = torque;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

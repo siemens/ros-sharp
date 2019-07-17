@@ -42,10 +42,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.pose = pose;
             this.twist = twist;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -44,10 +44,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.status = status;
             this.service = service;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

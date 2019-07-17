@@ -54,10 +54,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.dim = dim;
             this.data_offset = data_offset;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -42,10 +42,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.child_frame_id = child_frame_id;
             this.transform = transform;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

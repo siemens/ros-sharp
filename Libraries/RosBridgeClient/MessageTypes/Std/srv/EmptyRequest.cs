@@ -20,10 +20,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         public EmptyRequest()
         {
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

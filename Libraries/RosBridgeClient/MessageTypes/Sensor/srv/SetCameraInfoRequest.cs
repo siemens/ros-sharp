@@ -37,10 +37,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         {
             this.camera_info = camera_info;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

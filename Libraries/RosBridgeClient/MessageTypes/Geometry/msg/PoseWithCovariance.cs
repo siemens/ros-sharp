@@ -35,10 +35,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.pose = pose;
             this.covariance = covariance;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

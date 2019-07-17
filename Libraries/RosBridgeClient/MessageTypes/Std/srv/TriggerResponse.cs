@@ -32,10 +32,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.success = success;
             this.message = message;
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -20,10 +20,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         public FrameGraphRequest()
         {
         }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }
