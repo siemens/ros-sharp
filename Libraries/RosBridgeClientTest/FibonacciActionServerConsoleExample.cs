@@ -29,28 +29,47 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override bool IsGoalValid()
         {
+            if (action.action_goal.goal.order <= 0) {
+                Console.WriteLine("Cannot generate fibonacci sequence of order less than 1");
+            }
             return action.action_goal.goal.order > 0;
         }
 
         protected override void GoalHandler()
         {
+            Console.WriteLine("Generating Fibonacci sequence of order 20 with seeds 0, 1");
+
             List<int> sequence = new List<int> { 0, 1 };
 
             action.action_feedback.feedback.sequence = sequence.ToArray();
             PublishFeedback();
 
-            for (int i = 1; i <= action.action_goal.goal.order; i++)
+            for (int i = 1; i < action.action_goal.goal.order; i++)
             {
-                
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
+                Console.WriteLine("Feedback @ " + DateTime.Now);
+                PrintIntArray(action.action_feedback.feedback.sequence);
+                Console.WriteLine("---");
+
                 Thread.Sleep((int)(timeStep * 1000));
             }
 
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
             PublishResult();
+            Console.WriteLine("Result @ " + DateTime.Now);
+            PrintIntArray(action.action_result.result.sequence);
+            Console.WriteLine("---");
+
+            UpdateAndPublishStatus(ActionStatus.PENDING);
+            Console.WriteLine("\nPress any key to stop server...\n");
+        }
+
+        private void PrintIntArray(int[] array)
+        {
+            Console.WriteLine("[{0}]", string.Join(", ", array));
         }
     }
 
@@ -58,7 +77,7 @@ namespace RosSharp.RosBridgeClientTest
     {
         public static void Main(string[] args) {
             FibonacciActionConsoleServer server = new FibonacciActionConsoleServer(new FibonacciAction(), "fibonacci", Protocol.WebSocketSharp, "ws://192.168.137.195:9090");
-            Console.WriteLine("Press any key to stop server...");
+            Console.WriteLine("Press any key to stop server...\n");
             Console.ReadKey(true);
             server.Stop();
         }

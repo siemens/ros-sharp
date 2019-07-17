@@ -81,11 +81,9 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        protected void WaitForResult() {
-            while (actionStatus < ActionStatus.PREEMPTED) {
-                Thread.Sleep((int)(timeStep * 1000));
-            }
-        }
+        protected abstract void FeedbackHandler();
+
+        protected abstract void ResultHandler();
 
         protected void SendGoal() {
             if (isConnected) {
@@ -102,10 +100,13 @@ namespace RosSharp.RosBridgeClient
         protected void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
             actionStatus = (ActionStatus)actionFeedback.status.status;
+            FeedbackHandler();
         }
 
         protected void ResultCallback(TActionResult actionResult) {
             action.action_result = actionResult;
+            actionStatus = (ActionStatus)actionResult.status.status;
+            ResultHandler();
         }
 
         protected void StatusCallback(GoalStatusArray actionGoalStatusArray) {
@@ -136,10 +137,6 @@ namespace RosSharp.RosBridgeClient
                 }
                 Thread.Sleep((int)(timeStep * 1000));
             }
-        }
-
-        protected TResult GetResult() {
-            return action.action_result.result;
         }
     }
 }

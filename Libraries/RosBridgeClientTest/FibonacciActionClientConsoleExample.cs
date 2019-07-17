@@ -28,13 +28,27 @@ namespace RosSharp.RosBridgeClientTest
         public FibonacciActionConsoleClient(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
 
         public void Execute() {
-            Console.WriteLine("Waiting for server...");
+            Console.WriteLine("Waiting for server...\n");
             WaitForServer();
-            Console.WriteLine("Send goal...");
+            Console.WriteLine("Send goal...\n");
             SendGoal();
-            Console.WriteLine("Waiting for result...");
-            WaitForResult();
-            PrintIntArray(GetResult().sequence);
+        }
+
+        protected override void FeedbackHandler()
+        {
+            Console.WriteLine("Feedback @ " + DateTime.Now);
+            Console.WriteLine("Server status: " + (ActionStatus)action.action_feedback.status.status);
+            Console.WriteLine("Sequence: ");
+            PrintIntArray(action.action_feedback.feedback.sequence);
+            Console.WriteLine("---");
+        }
+
+        protected override void ResultHandler()
+        {
+            Console.WriteLine("Result @ " + DateTime.Now);
+            Console.WriteLine("Server status: " + (ActionStatus)action.action_result.status.status);
+            Console.WriteLine("Sequence: ");
+            PrintIntArray(action.action_result.result.sequence);
             StopUpdateServerStatus();
         }
 
