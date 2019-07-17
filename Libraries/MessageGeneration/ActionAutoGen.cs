@@ -273,7 +273,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(GenerateDefaultValueConstructor(wrapperName) + "\n");
 
                 // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName));
+                writer.Write(GenerateParameterizedConstructor(wrapperName) + "\n");
+
+                // Write ToString
+                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");
@@ -335,7 +338,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write("\n" + GenerateDefaultValueConstructor(wrapperName) + "\n");
 
                 // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName));
+                writer.Write(GenerateParameterizedConstructor(wrapperName) + "\n");
+
+                // Write ToString
+                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");

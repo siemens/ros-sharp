@@ -49,9 +49,7 @@ namespace RosSharp.RosBridgeClientTest
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
-                Console.WriteLine("Feedback @ " + DateTime.Now);
-                PrintIntArray(action.action_feedback.feedback.sequence);
-                Console.WriteLine("---");
+                Console.WriteLine(FeedbackLogString());
 
                 Thread.Sleep((int)(timeStep * 1000));
             }
@@ -59,17 +57,10 @@ namespace RosSharp.RosBridgeClientTest
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
             PublishResult();
-            Console.WriteLine("Result @ " + DateTime.Now);
-            PrintIntArray(action.action_result.result.sequence);
-            Console.WriteLine("---");
+            Console.WriteLine(ResultLogString());
 
             UpdateAndPublishStatus(ActionStatus.PENDING);
-            Console.WriteLine("\nPress any key to stop server...\n");
-        }
-
-        private void PrintIntArray(int[] array)
-        {
-            Console.WriteLine("[{0}]", string.Join(", ", array));
+            Console.WriteLine("Press any key to stop server...\n");
         }
     }
 

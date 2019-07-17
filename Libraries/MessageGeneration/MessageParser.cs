@@ -137,6 +137,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     writer.Write(GenerateParameterizedConstructor());
                 }
 
+                // Write ToString
+                writer.Write("\n");
+                writer.Write(MsgAutoGenUtilities.JSON_DUMP);
+
                 // Close class
                 writer.Write(MsgAutoGenUtilities.ONE_TAB + "}\n");
                 // Close namespace

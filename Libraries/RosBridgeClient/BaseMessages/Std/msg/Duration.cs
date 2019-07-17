@@ -1,7 +1,6 @@
 /*
 © Siemens AG, 2019
-Author: Sifan Ye
-(sifan DOT ye AT siemens DOT com || sye8 AT u DOT rochester DOT com)
+Author: Sifan Ye (sifan.ye@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,5 +31,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             nsecs = 0;
         }
 
+        public Duration(uint secs, uint nsecs)
+        {
+        	this.secs = secs;
+        	this.nsecs = nsecs;
+        }
+
+        public override string ToString()
+        {
+        	return JsonConvert.SerializeObject(this);
+        }
 	}
 }

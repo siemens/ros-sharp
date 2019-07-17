@@ -23,10 +23,22 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         public const string RosMessageName = "std_msgs/Time";
         public uint secs;
         public uint nsecs;
+
         public Time()
         {
             secs = 0;
             nsecs = 0;
+        }
+
+        public Time(uint secs, uint nsecs)
+        {
+            this.secs = secs;
+            this.nsecs = nsecs;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

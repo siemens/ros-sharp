@@ -36,24 +36,13 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void FeedbackHandler()
         {
-            Console.WriteLine("Feedback @ " + DateTime.Now);
-            Console.WriteLine("Server status: " + (ActionStatus)action.action_feedback.status.status);
-            Console.WriteLine("Sequence: ");
-            PrintIntArray(action.action_feedback.feedback.sequence);
-            Console.WriteLine("---");
+            Console.WriteLine(FeedbackLogString());
         }
 
         protected override void ResultHandler()
         {
-            Console.WriteLine("Result @ " + DateTime.Now);
-            Console.WriteLine("Server status: " + (ActionStatus)action.action_result.status.status);
-            Console.WriteLine("Sequence: ");
-            PrintIntArray(action.action_result.result.sequence);
-            StopUpdateServerStatus();
-        }
-
-        private void PrintIntArray(int[] array) {
-            Console.WriteLine("[{0}]", string.Join(", ", array));
+            Console.WriteLine(ResultLogString());
+            Stop();
         }
     }
 

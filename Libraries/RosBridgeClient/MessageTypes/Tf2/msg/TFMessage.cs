@@ -29,5 +29,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         {
             this.transforms = transforms;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

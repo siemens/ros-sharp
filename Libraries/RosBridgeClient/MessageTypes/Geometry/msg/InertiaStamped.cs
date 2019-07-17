@@ -32,5 +32,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.header = header;
             this.inertia = inertia;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

@@ -51,5 +51,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
             this.fixed_frame = fixed_frame;
             this.advanced = advanced;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

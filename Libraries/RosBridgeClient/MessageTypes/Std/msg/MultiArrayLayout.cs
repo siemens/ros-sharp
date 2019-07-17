@@ -28,7 +28,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         //  
         //  multiarray(i,j,k) = data[data_offset + dim_stride[1]*i + dim_stride[2]*j + k]
         // 
-        //  A Std, 3-channel 640x480 image with interleaved color channels
+        //  A standard, 3-channel 640x480 image with interleaved color channels
         //  would be specified as:
         // 
         //  dim[0].label  = "height"
@@ -53,6 +53,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         {
             this.dim = dim;
             this.data_offset = data_offset;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

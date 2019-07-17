@@ -28,5 +28,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         {
             this.points = points;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

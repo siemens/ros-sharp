@@ -44,5 +44,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.relative_humidity = relative_humidity;
             this.variance = variance;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/NavSatFix";
 
-        //  Nav Satellite fix for any Global Nav Satellite System
+        //  Navigation Satellite fix for any Global Navigation Satellite System
         // 
         //  Specified using the WGS 84 reference ellipsoid
         //  header.stamp specifies the ROS time for this measurement (the
@@ -75,6 +75,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.altitude = altitude;
             this.position_covariance = position_covariance;
             this.position_covariance_type = position_covariance_type;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

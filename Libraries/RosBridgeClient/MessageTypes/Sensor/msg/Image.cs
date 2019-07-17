@@ -69,5 +69,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.step = step;
             this.data = data;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

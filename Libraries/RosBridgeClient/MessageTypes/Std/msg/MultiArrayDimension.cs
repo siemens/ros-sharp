@@ -36,5 +36,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
             this.size = size;
             this.stride = stride;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

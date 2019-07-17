@@ -30,5 +30,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
             this.name = name;
             this.value = value;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

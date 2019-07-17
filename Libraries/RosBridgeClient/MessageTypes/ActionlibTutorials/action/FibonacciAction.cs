@@ -22,5 +22,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
             this.action_result = new FibonacciActionResult();
             this.action_feedback = new FibonacciActionFeedback();
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

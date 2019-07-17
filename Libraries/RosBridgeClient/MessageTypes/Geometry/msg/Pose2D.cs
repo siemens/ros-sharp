@@ -38,5 +38,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
             this.y = y;
             this.theta = theta;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

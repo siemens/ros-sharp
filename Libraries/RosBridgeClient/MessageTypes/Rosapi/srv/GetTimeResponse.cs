@@ -29,5 +29,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         {
             this.time = time;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

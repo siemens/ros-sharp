@@ -138,5 +138,27 @@ namespace RosSharp.RosBridgeClient
                 Thread.Sleep((int)(timeStep * 1000));
             }
         }
+
+        protected string FeedbackLogString() {
+            return
+                "Feedback @ " + DateTime.Now + "\n" +
+                action.action_feedback.ToString() + "\n" +
+                "Server status: " + (ActionStatus)action.action_feedback.status.status + "\n" +
+                "---\n";
+        }
+
+        protected string ResultLogString()
+        {
+            return
+                "Result @ " + DateTime.Now + "\n" +
+                action.action_result.ToString() + "\n" +
+                "Server status: " + (ActionStatus)action.action_result.status.status + "\n" +
+                "---\n";
+        }
+
+        protected void Stop() {
+            StopUpdateServerStatus();
+            socket.Close();
+        }
     }
 }

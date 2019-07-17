@@ -28,5 +28,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
         {
             this.order = order;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

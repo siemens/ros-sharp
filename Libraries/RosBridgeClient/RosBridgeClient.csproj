@@ -51,15 +51,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractMessages\Actions\Action.cs" />
-    <Compile Include="AbstractMessages\Actions\ActionFeedback.cs" />
-    <Compile Include="AbstractMessages\Actions\ActionGoal.cs" />
-    <Compile Include="AbstractMessages\Actions\ActionResult.cs" />
+    <Compile Include="BaseMessages\Actions\Action.cs" />
+    <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
+    <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
+    <Compile Include="BaseMessages\Actions\ActionResult.cs" />
     <Compile Include="ActionHandkers\ActionClient.cs" />
     <Compile Include="ActionHandkers\ActionServer.cs" />
     <Compile Include="ActionHandkers\ActionStatus.cs" />
+    <Compile Include="BaseMessages\Std\msg\Duration.cs" />
+    <Compile Include="BaseMessages\Std\msg\Time.cs" />
     <Compile Include="Communicators.cs" />
-    <Compile Include="AbstractMessages\Message.cs" />
+    <Compile Include="BaseMessages\Message.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciAction.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionFeedback.cs" />
     <Compile Include="MessageTypes\ActionlibTutorials\action\FibonacciActionGoal.cs" />
@@ -204,7 +206,6 @@
     <Compile Include="MessageTypes\Std\msg\ByteMultiArray.cs" />
     <Compile Include="MessageTypes\Std\msg\Char.cs" />
     <Compile Include="MessageTypes\Std\msg\ColorRGBA.cs" />
-    <Compile Include="MessageTypes\Std\msg\Duration.cs" />
     <Compile Include="MessageTypes\Std\msg\Empty.cs" />
     <Compile Include="MessageTypes\Std\msg\Float32.cs" />
     <Compile Include="MessageTypes\Std\msg\Float32MultiArray.cs" />
@@ -222,7 +223,6 @@
     <Compile Include="MessageTypes\Std\msg\MultiArrayDimension.cs" />
     <Compile Include="MessageTypes\Std\msg\MultiArrayLayout.cs" />
     <Compile Include="MessageTypes\Std\msg\String.cs" />
-    <Compile Include="MessageTypes\Std\msg\Time.cs" />
     <Compile Include="MessageTypes\Std\msg\UInt16.cs" />
     <Compile Include="MessageTypes\Std\msg\UInt16MultiArray.cs" />
     <Compile Include="MessageTypes\Std\msg\UInt32.cs" />

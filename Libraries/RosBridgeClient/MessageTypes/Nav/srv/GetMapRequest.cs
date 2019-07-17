@@ -21,5 +21,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
         public GetMapRequest()
         {
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

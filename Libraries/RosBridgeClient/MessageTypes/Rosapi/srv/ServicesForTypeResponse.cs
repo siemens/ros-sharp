@@ -16,16 +16,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         [JsonIgnore]
         public const string RosMessageName = "rosapi/ServicesForType";
 
-        public string[] MessageTypes;
+        public string[] services;
 
         public ServicesForTypeResponse()
         {
-            this.MessageTypes = new string[0];
+            this.services = new string[0];
         }
 
-        public ServicesForTypeResponse(string[] MessageTypes)
+        public ServicesForTypeResponse(string[] services)
         {
-            this.MessageTypes = MessageTypes;
+            this.services = services;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

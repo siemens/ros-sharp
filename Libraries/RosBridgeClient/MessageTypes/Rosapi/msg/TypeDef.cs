@@ -39,5 +39,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
             this.fieldarraylen = fieldarraylen;
             this.examples = examples;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

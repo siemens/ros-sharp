@@ -34,5 +34,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
             this.map = map;
             this.initial_pose = initial_pose;
         }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }
