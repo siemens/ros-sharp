@@ -29,7 +29,6 @@ namespace RosSharp.RosBridgeClient
         public Protocol protocol = Protocol.WebSocketSharp;
         public string serverURL = "ws://192.168.137.195:9090";
         public RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
-        public bool serverIsUp = false;
         public int timeout = 10;
         public float timeStep = 0.2f;
         public int fibonacciOrder = 10;
@@ -47,7 +46,7 @@ namespace RosSharp.RosBridgeClient
         // Update is called once per frame
         private void Update()
         {
-            serverIsUp = client.IsSeverUp();
+
         }
 
         private void OnDestroy()
@@ -105,8 +104,10 @@ namespace RosSharp.RosBridgeClient
             result = String.Join(",", action.action_result.result.sequence);
         }
 
-        public bool IsSeverUp() {
-            return isServerUp;
+        public override void WaitForServer()
+        {
+            // We don't wait for server in this example.
+            // Please make sure that the server is indeed running
         }
 
         public string GetStatus()
