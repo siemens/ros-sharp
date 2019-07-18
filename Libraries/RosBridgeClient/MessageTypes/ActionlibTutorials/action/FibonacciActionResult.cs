@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
             this.result = new FibonacciResult();
         }
 
-        public FibonacciActionResult(Header header, GoalStatus status, FibonacciResult result) : base (header, status)
+        public FibonacciActionResult(Header header, GoalStatus status, FibonacciResult result) : base(header, status)
         {
             this.result = result;
         }

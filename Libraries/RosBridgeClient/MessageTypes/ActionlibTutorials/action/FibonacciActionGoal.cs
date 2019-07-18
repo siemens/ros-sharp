@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
             this.goal = new FibonacciGoal();
         }
 
-        public FibonacciActionGoal(Header header, GoalID goal_id, FibonacciGoal goal) : base (header, goal_id)
+        public FibonacciActionGoal(Header header, GoalID goal_id, FibonacciGoal goal) : base(header, goal_id)
         {
             this.goal = goal;
         }

@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
             this.feedback = new FibonacciFeedback();
         }
 
-        public FibonacciActionFeedback(Header header, GoalStatus status, FibonacciFeedback feedback) :  base(header, status)
+        public FibonacciActionFeedback(Header header, GoalStatus status, FibonacciFeedback feedback) : base(header, status)
         {
             this.feedback = feedback;
         }
