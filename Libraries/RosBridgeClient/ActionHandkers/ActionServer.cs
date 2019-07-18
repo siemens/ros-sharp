@@ -43,7 +43,8 @@ namespace RosSharp.RosBridgeClient
         private readonly string statusPublicationId;
         private readonly string resultPublicationId;
 
-        private Thread thread;
+        private Thread spin;
+        private Thread goalHandler;
 
         protected TAction action;
 
@@ -73,7 +74,8 @@ namespace RosSharp.RosBridgeClient
             UpdateAndPublishStatus(ActionStatus.PENDING);
 
             isRunning = true;
-            new Thread(Spin).Start();
+            spin = new Thread(Spin);
+            spin.Start();
         }
 
         private void Spin() {
@@ -87,7 +89,7 @@ namespace RosSharp.RosBridgeClient
         private void GoalCallback(TActionGoal actionGoal)
         {
             if (actionStatus == ActionStatus.ACTIVE) {
-                thread.Abort();
+                goalHandler.Abort();
             }
 
             action.action_goal = actionGoal;
@@ -97,8 +99,8 @@ namespace RosSharp.RosBridgeClient
             if (IsGoalValid())
             {
                 UpdateAndPublishStatus(ActionStatus.ACTIVE);
-                thread = new Thread(() => GoalHandler());
-                thread.Start();
+                goalHandler = new Thread(() => GoalHandler());
+                goalHandler.Start();
             }
             else {
                 UpdateAndPublishStatus(ActionStatus.REJECTED);
@@ -111,7 +113,7 @@ namespace RosSharp.RosBridgeClient
             {
                 UpdateAndPublishStatus(ActionStatus.PREEMPTING);
                 action.action_goal.goal_id = goalID;
-                thread.Abort();
+                goalHandler.Abort();
                 UpdateAndPublishStatus(ActionStatus.PREEMPTED);
             }
         }
@@ -167,6 +169,7 @@ namespace RosSharp.RosBridgeClient
 
         public void Stop() {
             isRunning = false;
+            spin.Join();
             socket.Close();
         }
     }
