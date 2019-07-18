@@ -62,12 +62,12 @@ namespace RosSharp.RosBridgeClient
             client.CancelGoal();
         }
 
-        public string GetStatus()
+        public string GetStatusString()
         {
             if (client == null) {
                 return "";
             }
-            return client.GetStatus();
+            return client.GetStatusToString();
         }
 
         public string GetFeedback() {
@@ -110,7 +110,7 @@ namespace RosSharp.RosBridgeClient
             // Please make sure that the server is indeed running
         }
 
-        public string GetStatus()
+        public string GetStatusToString()
         {
             return actionStatus.ToString();
         }
@@ -138,7 +138,7 @@ namespace RosSharp.RosBridgeClient
                 ((FibonacciActionClientComponent)target).CancelGoal();
             }
 
-            EditorGUILayout.TextField("Status: ", ((FibonacciActionClientComponent)target).GetStatus());
+            EditorGUILayout.TextField("Status: ", ((FibonacciActionClientComponent)target).GetStatusString());
             EditorGUILayout.TextField("Feedback: ", ((FibonacciActionClientComponent)target).GetFeedback());
             EditorGUILayout.TextField("Result: ", ((FibonacciActionClientComponent)target).GetResult());
 

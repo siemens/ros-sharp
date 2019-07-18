@@ -59,7 +59,6 @@ namespace RosSharp.RosBridgeClientTest
             PublishResult();
             Console.WriteLine(ResultLogString());
 
-            UpdateAndPublishStatus(ActionStatus.PENDING);
             Console.WriteLine("Press any key to stop server...\n");
         }
     }

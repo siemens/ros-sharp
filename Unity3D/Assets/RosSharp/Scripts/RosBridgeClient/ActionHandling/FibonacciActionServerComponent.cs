@@ -13,7 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -96,8 +95,6 @@ namespace RosSharp.RosBridgeClient
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
             PublishResult();
-
-            UpdateAndPublishStatus(ActionStatus.PENDING);
         }
 
         public string GetStatusString()
