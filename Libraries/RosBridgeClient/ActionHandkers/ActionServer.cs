@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClient
         protected string actionName;
         protected float timeStep;
 
-        protected bool isRunning = false;
+        protected ManualResetEvent isRunning = new ManualResetEvent(false);
 
         protected ActionStatus actionStatus;
 
@@ -73,13 +73,13 @@ namespace RosSharp.RosBridgeClient
 
             UpdateAndPublishStatus(ActionStatus.PENDING);
 
-            isRunning = true;
+            isRunning.Set();
             spin = new Thread(Spin);
             spin.Start();
         }
 
         private void Spin() {
-            while (isRunning) {
+            while (isRunning.WaitOne(0)) {
                 PublishStatus();
                 Thread.Sleep((int)(timeStep * 1000));
             }
@@ -168,7 +168,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
-            isRunning = false;
+            isRunning.Reset();
             spin.Join();
             socket.Close();
         }
