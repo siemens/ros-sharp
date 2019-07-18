@@ -36,10 +36,9 @@ namespace RosSharp.RosBridgeClient
 
         private readonly RosSocket socket;
 
-        protected bool isServerUp = false;
         protected DateTime lastStatusUpdateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        protected bool isUpdatingServerStatus = false;
-        private readonly Thread updateServerStatus;
+
+        protected ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
         private readonly string cancelPublicationID;
         private readonly string goalPublicationID;
@@ -67,23 +66,35 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, (int)(timeStep * 1000));
             socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, (int)(timeStep * 1000));
             socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
-
-            updateServerStatus = new Thread(UpdateServerStatus);
-            StartUpdateServerStatus();
         }
 
-        public void WaitForServer() {
-            while (!isServerUp) {
+        public bool WaitForServer(int timeout = -1) {
+            DateTime waitStartTime = DateTime.Now;
+            while (!IsServerUp()) { 
                 Thread.Sleep((int)(timeStep * 1000));
+                if (timeout > -1 && (DateTime.Now - waitStartTime).TotalSeconds > timeout) {
+                    return false;
+                }
             }
+            return true;
         }
 
-        protected abstract void FeedbackHandler();
+        public bool WaitForResult(int timeout = -1) {
+            if (timeout < 0) {
+                return isResultReceived.WaitOne();
+            }
+            return isResultReceived.WaitOne(timeout * 1000);
+        }
 
-        protected abstract void ResultHandler();
+        protected abstract void FeedbackHandler();       // Implement by user to handle feedback.
+
+        protected abstract void ResultHandler();         // Implement by user to handle result.
+
+        protected abstract bool IsServerUp(); // Implement by user to check if action server is up. Required for WaitForServer()
 
         public void SendGoal() {
             socket.Publish(goalPublicationID, action.action_goal);
+            isResultReceived.Reset();
         }
 
         public void CancelGoal() {
@@ -100,6 +111,7 @@ namespace RosSharp.RosBridgeClient
             action.action_result = actionResult;
             actionStatus = (ActionStatus)actionResult.status.status;
             ResultHandler();
+            isResultReceived.Set();
         }
 
         protected void StatusCallback(GoalStatusArray actionGoalStatusArray) {
@@ -107,29 +119,6 @@ namespace RosSharp.RosBridgeClient
                 actionStatus = (ActionStatus)actionGoalStatusArray.status_list[0].status;
             }
             lastStatusUpdateTime = DateTime.Now;
-            isServerUp = true;
-        }
-
-        protected void StartUpdateServerStatus()
-        {
-            isUpdatingServerStatus = true;
-            updateServerStatus.Start();
-        }
-
-        protected void StopUpdateServerStatus()
-        {
-            isUpdatingServerStatus = false;
-            updateServerStatus.Join();
-        }
-
-        protected void UpdateServerStatus() {
-            while (isUpdatingServerStatus) {
-                if ((long)(DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > timeout * 1000)
-                {
-                    isServerUp = false;
-                }
-                Thread.Sleep((int)(timeStep * 1000));
-            }
         }
 
         protected string FeedbackLogString() {
@@ -150,7 +139,6 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
-            StopUpdateServerStatus();
             socket.Close();
         }
     }

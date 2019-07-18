@@ -30,6 +30,8 @@ namespace RosSharp.RosBridgeClientTest
             WaitForServer();
             Console.WriteLine("Send goal...\n");
             SendGoal();
+            Console.WriteLine("Waiting for result...\n");
+            WaitForResult();
         }
 
         protected override void FeedbackHandler()
@@ -41,6 +43,11 @@ namespace RosSharp.RosBridgeClientTest
         {
             Console.WriteLine(ResultLogString());
             Stop();
+        }
+
+        protected override bool IsServerUp()
+        {
+            return (DateTime.Now - lastStatusUpdateTime).TotalSeconds <= 1;
         }
     }
 
