@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 using System;
+using System.Threading;
 
 using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.Protocols;
@@ -34,6 +35,13 @@ namespace RosSharp.RosBridgeClientTest
             WaitForResult();
         }
 
+        public override void WaitForServer()
+        {
+            while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > 5) {
+                Thread.Sleep(1);
+            }
+        }
+
         protected override void FeedbackHandler()
         {
             Console.WriteLine(FeedbackLogString());
@@ -43,11 +51,6 @@ namespace RosSharp.RosBridgeClientTest
         {
             Console.WriteLine(ResultLogString());
             Stop();
-        }
-
-        protected override bool IsServerUp()
-        {
-            return (DateTime.Now - lastStatusUpdateTime).TotalSeconds <= 1;
         }
     }
 

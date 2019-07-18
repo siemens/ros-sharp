@@ -68,29 +68,8 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
         }
 
-        public bool WaitForServer(int timeout = -1) {
-            DateTime waitStartTime = DateTime.Now;
-            while (!IsServerUp()) { 
-                Thread.Sleep((int)(timeStep * 1000));
-                if (timeout > -1 && (DateTime.Now - waitStartTime).TotalSeconds > timeout) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public bool WaitForResult(int timeout = -1) {
-            if (timeout < 0) {
-                return isResultReceived.WaitOne();
-            }
-            return isResultReceived.WaitOne(timeout * 1000);
-        }
-
-        protected abstract void FeedbackHandler();       // Implement by user to handle feedback.
-
-        protected abstract void ResultHandler();         // Implement by user to handle result.
-
-        protected abstract bool IsServerUp(); // Implement by user to check if action server is up. Required for WaitForServer()
+        // Implement by user to wait for server to be up
+        public abstract void WaitForServer();    
 
         public void SendGoal() {
             socket.Publish(goalPublicationID, action.action_goal);
@@ -100,6 +79,21 @@ namespace RosSharp.RosBridgeClient
         public void CancelGoal() {
             socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
+
+        public bool WaitForResult(int timeout = -1)
+        {
+            if (timeout < 0)
+            {
+                return isResultReceived.WaitOne();
+            }
+            return isResultReceived.WaitOne(timeout * 1000);
+        }
+
+        // Implement by user to handle feedback.
+        protected abstract void FeedbackHandler();
+
+        // Implement by user to handle result.
+        protected abstract void ResultHandler();
 
         protected void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
