@@ -58,7 +58,7 @@ namespace RosSharp.RosBridgeClient
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUIUtility.labelWidth = 100;
-                protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+                protocolType = (Protocols.Protocol)EditorGUILayout.EnumPopup("Protocol", protocolType);
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
@@ -144,7 +144,7 @@ namespace RosSharp.RosBridgeClient
 
         private void GetEditorPrefs()
         {
-            protocolType = (RosConnector.Protocols)(EditorPrefs.HasKey("UrdfPublisherProtocolNumber") ?
+            protocolType = (Protocols.Protocol)(EditorPrefs.HasKey("UrdfPublisherProtocolNumber") ?
                 EditorPrefs.GetInt("UrdfPublisherProtocolNumber") : 1);
 
             serverUrl = (EditorPrefs.HasKey("UrdfPublisherServerUrl") ?
