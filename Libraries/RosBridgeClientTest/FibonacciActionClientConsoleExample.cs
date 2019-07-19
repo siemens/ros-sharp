@@ -17,40 +17,55 @@ using System;
 using System.Threading;
 
 using RosSharp.RosBridgeClient;
-using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClientTest
 {
     public class FibonacciActionConsoleClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        public FibonacciActionConsoleClient(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
+        private Thread waitForResult;
+        private ManualResetEvent isResultReceived = new ManualResetEvent(false);
+
+        public FibonacciActionConsoleClient(FibonacciAction action, string actionName, string serverURL) : base(action, actionName, serverURL) { }
 
         public void Execute() {
-            Console.WriteLine("Waiting for server...\n");
-            WaitForServer();
-            Console.WriteLine("Send goal...\n");
+            Start();
+
+            Console.WriteLine("Waiting for action server...");
+            WaitForActionServer();
+
             SendGoal();
-            Console.WriteLine("Waiting for result...\n");
-            WaitForResult();
+
+            Console.WriteLine("Waiting for result...");
+            waitForResult = new Thread(WaitForResult);
+            waitForResult.Start();
         }
 
-        public override void WaitForServer()
+        protected override void WaitForActionServer()
         {
-            while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > 5) {
-                Thread.Sleep(1);
+            while((DateTime.Now - lastStatusUpdateTime).TotalSeconds > 3) {
+                Thread.Sleep((int)(timeStep * 1000));
+            }
+        }
+
+        protected override void WaitForResult()
+        {
+            while (!isResultReceived.WaitOne(0))
+            {
+                Thread.Sleep((int)(timeStep * 1000));
             }
         }
 
         protected override void FeedbackHandler()
         {
-            Console.WriteLine(FeedbackLogString());
+            Console.WriteLine(GetFeedbackLogString());
         }
 
         protected override void ResultHandler()
         {
-            Console.WriteLine(ResultLogString());
-            Stop();
+            Console.WriteLine(GetResultLogString());
+            isResultReceived.Set();
+            waitForResult.Join();
         }
     }
 
@@ -59,7 +74,7 @@ namespace RosSharp.RosBridgeClientTest
         public static void Main(string[] args) {
             FibonacciAction action = new FibonacciAction();
             action.action_goal.goal.order = 20;
-            FibonacciActionConsoleClient client = new FibonacciActionConsoleClient(action, "fibonacci", Protocol.WebSocketSharp, "ws://192.168.137.195:9090");
+            FibonacciActionConsoleClient client = new FibonacciActionConsoleClient(action, "fibonacci", "ws://192.168.137.195:9090");
             client.Execute();
         }
     }

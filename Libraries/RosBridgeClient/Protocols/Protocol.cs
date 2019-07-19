@@ -16,4 +16,20 @@ limitations under the License.
 namespace RosSharp.RosBridgeClient.Protocols
 {
     public enum Protocol { WebSocketSharp, WebSocketNET };
+
+    public class ProtocolInitializer
+    {
+        public static IProtocol GetProtocol(Protocol protocol, string serverURL)
+        {
+            switch (protocol)
+            {
+                case Protocol.WebSocketSharp:
+                    return new WebSocketSharpProtocol(serverURL);
+                case Protocol.WebSocketNET:
+                    return new WebSocketNetProtocol(serverURL);
+                default:
+                    return null;
+            }
+        }
+    }
 }

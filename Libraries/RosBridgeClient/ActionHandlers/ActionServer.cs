@@ -14,7 +14,6 @@ limitations under the License.
 */
 
 using System;
-using System.Threading;
 
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
@@ -33,18 +32,15 @@ namespace RosSharp.RosBridgeClient
         protected string actionName;
         protected float timeStep;
 
-        protected ManualResetEvent isRunning = new ManualResetEvent(false);
-
         protected ActionStatus actionStatus;
 
-        private readonly RosSocket socket;
+        private RosSocket socket;
 
-        private readonly string feedbackPublicationId;
-        private readonly string statusPublicationId;
-        private readonly string resultPublicationId;
+        private readonly string serverURL;
 
-        private Thread spin;
-        private Thread goalHandler;
+        private string feedbackPublicationId;
+        private string statusPublicationId;
+        private string resultPublicationId;
 
         protected TAction action;
 
@@ -55,15 +51,11 @@ namespace RosSharp.RosBridgeClient
         public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0.1f) {
             this.action = action;
             this.actionName = actionName;
-
             this.timeStep = timeStep;
 
-            RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
-            if (!connector.ConnectAndWait()) {
-                throw new Exception("Failed to connect to " + serverURL + " in " + timeout + " secs");
-            }
-            socket = connector.RosSocket;
+        }
 
+        private void AdvertiseAndSubscribe() {
             statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
             feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");
             resultPublicationId = socket.Advertise<TActionResult>(actionName + "/result");
@@ -72,50 +64,18 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
 
             UpdateAndPublishStatus(ActionStatus.PENDING);
-
-            isRunning.Set();
-            spin = new Thread(Spin);
-            spin.Start();
         }
 
-        private void Spin() {
-            while (isRunning.WaitOne(0)) {
-                PublishStatus();
-                Thread.Sleep((int)(timeStep * 1000));
-            }
-        }
 
         // When receive a new goal
         private void GoalCallback(TActionGoal actionGoal)
         {
-            if (actionStatus == ActionStatus.ACTIVE) {
-                goalHandler.Abort();
-            }
 
-            action.action_goal = actionGoal;
-            action.action_result.status.goal_id = actionGoal.goal_id;
-            action.action_feedback.status.goal_id = actionGoal.goal_id;
-
-            if (IsGoalValid())
-            {
-                UpdateAndPublishStatus(ActionStatus.ACTIVE);
-                goalHandler = new Thread(() => GoalHandler());
-                goalHandler.Start();
-            }
-            else {
-                UpdateAndPublishStatus(ActionStatus.REJECTED);
-            }
         }
 
         private void CancelCallback(GoalID goalID)
         {
-            if (actionStatus == ActionStatus.ACTIVE)
-            {
-                UpdateAndPublishStatus(ActionStatus.PREEMPTING);
-                action.action_goal.goal_id = goalID;
-                goalHandler.Abort();
-                UpdateAndPublishStatus(ActionStatus.PREEMPTED);
-            }
+
         }
 
         protected void UpdateAndPublishStatus(ActionStatus actionStatus)
@@ -168,8 +128,6 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
-            isRunning.Reset();
-            spin.Join();
             socket.Close();
         }
     }

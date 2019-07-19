@@ -14,7 +14,6 @@ limitations under the License.
 */
 
 using System;
-using System.Threading;
 
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
@@ -31,35 +30,31 @@ namespace RosSharp.RosBridgeClient
         where TFeedback : Message
     {
         protected string actionName;
-        protected int timeout;
         protected float timeStep;
 
-        private readonly RosSocket socket;
+        private RosSocket socket;
+
+        private readonly string serverURL;
 
         protected DateTime lastStatusUpdateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        protected ManualResetEvent isResultReceived = new ManualResetEvent(false);
-
-        private readonly string cancelPublicationID;
-        private readonly string goalPublicationID;
+        private string cancelPublicationID;
+        private string goalPublicationID;
 
         protected ActionStatus actionStatus;
 
         protected TAction action;
 
-        public ActionClient(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0.2f) {
+        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f) {
             this.action = action;
             this.actionName = actionName;
-            this.timeout = timeout;
             this.timeStep = timeStep;
+            this.serverURL = serverURL;
 
-            RosConnector connector = new RosConnector(serverURL, protocol, serializer, timeout);
-            if (!connector.ConnectAndWait())
-            {
-                throw new Exception("Failed to connect to " + serverURL + " in " + timeout + " secs");
-            }
-            socket = connector.RosSocket;
+            socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);
+        }
 
+        protected void Start() {
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
 
@@ -68,26 +63,21 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
         }
 
-        // Implement by user to wait for server to be up
-        public abstract void WaitForServer();    
-
-        public void SendGoal() {
+        protected void SendGoal()
+        {
             socket.Publish(goalPublicationID, action.action_goal);
-            isResultReceived.Reset();
         }
 
-        public void CancelGoal() {
+        protected void CancelGoal()
+        {
             socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
 
-        public bool WaitForResult(int timeout = -1)
-        {
-            if (timeout < 0)
-            {
-                return isResultReceived.WaitOne();
-            }
-            return isResultReceived.WaitOne(timeout * 1000);
-        }
+        // Implement by user to wait for action server to be up
+        protected abstract void WaitForActionServer();
+
+        // Implement by user to wait for result
+        protected abstract void WaitForResult();
 
         // Implement by user to handle feedback.
         protected abstract void FeedbackHandler();
@@ -95,27 +85,26 @@ namespace RosSharp.RosBridgeClient
         // Implement by user to handle result.
         protected abstract void ResultHandler();
 
-        protected void FeedbackCallback(TActionFeedback actionFeedback) {
+        protected virtual void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
             actionStatus = (ActionStatus)actionFeedback.status.status;
             FeedbackHandler();
         }
 
-        protected void ResultCallback(TActionResult actionResult) {
+        protected virtual void ResultCallback(TActionResult actionResult) {
             action.action_result = actionResult;
             actionStatus = (ActionStatus)actionResult.status.status;
             ResultHandler();
-            isResultReceived.Set();
         }
 
-        protected void StatusCallback(GoalStatusArray actionGoalStatusArray) {
+        protected virtual void StatusCallback(GoalStatusArray actionGoalStatusArray) {
             if (actionGoalStatusArray.status_list.Length > 0) {
                 actionStatus = (ActionStatus)actionGoalStatusArray.status_list[0].status;
             }
             lastStatusUpdateTime = DateTime.Now;
         }
 
-        protected string FeedbackLogString() {
+        protected string GetFeedbackLogString() {
             return
                 "Feedback @ " + DateTime.Now + "\n" +
                 action.action_feedback.ToString() + "\n" +
@@ -123,7 +112,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        protected string ResultLogString()
+        protected string GetResultLogString()
         {
             return
                 "Result @ " + DateTime.Now + "\n" +

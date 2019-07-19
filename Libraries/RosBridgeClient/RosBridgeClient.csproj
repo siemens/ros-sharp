@@ -55,9 +55,9 @@
     <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
     <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
     <Compile Include="BaseMessages\Actions\ActionResult.cs" />
-    <Compile Include="ActionHandkers\ActionClient.cs" />
-    <Compile Include="ActionHandkers\ActionServer.cs" />
-    <Compile Include="ActionHandkers\ActionStatus.cs" />
+    <Compile Include="ActionHandlers\ActionClient.cs" />
+    <Compile Include="ActionHandlers\ActionServer.cs" />
+    <Compile Include="ActionHandlers\ActionStatus.cs" />
     <Compile Include="BaseMessages\Std\msg\Duration.cs" />
     <Compile Include="BaseMessages\Std\msg\Time.cs" />
     <Compile Include="Communicators.cs" />
@@ -253,7 +253,6 @@
     <Compile Include="Protocols\MessageEventArgs.cs" />
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\Protocol.cs" />
-    <Compile Include="RosConnector.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />
