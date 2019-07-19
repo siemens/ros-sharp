@@ -16,7 +16,6 @@ limitations under the License.
 using System.Threading;
 using System.Collections.Generic;
 
-using UnityEditor;
 using UnityEngine;
 
 using RosSharp.RosBridgeClient.Protocols;
@@ -50,7 +49,9 @@ namespace RosSharp.RosBridgeClient
 
         private void OnDestroy()
         {
-            server.Stop();
+            if (server != null) {
+                server.Stop();
+            }
         }
 
         public string GetStatusString()
@@ -100,19 +101,6 @@ namespace RosSharp.RosBridgeClient
         public string GetStatusString()
         {
             return actionStatus.ToString();
-        }
-    }
-
-    [CustomEditor(typeof(FibonacciActionServerComponent))]
-    public class FibonacciActionServerEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            EditorGUILayout.TextField("Status: ", ((FibonacciActionServerComponent)target).GetStatusString());
-
-            Repaint();
         }
     }
 }

@@ -15,7 +15,6 @@ limitations under the License.
 
 using System;
 
-using UnityEditor;
 using UnityEngine;
 
 using RosSharp.RosBridgeClient.Protocols;
@@ -51,15 +50,21 @@ namespace RosSharp.RosBridgeClient
 
         private void OnDestroy()
         {
-            client.Stop();
+            if (client != null) {
+                client.Stop();
+            }
         }
 
         public void SendGoal() {
-            client.SendGoal();
+            if (client != null) {
+                client.SendGoal();
+            }
         }
 
         public void CancelGoal() {
-            client.CancelGoal();
+            if (client != null) {
+                client.CancelGoal();
+            } 
         }
 
         public string GetStatusString()
@@ -121,28 +126,6 @@ namespace RosSharp.RosBridgeClient
 
         public string GetResult() {
             return result;
-        }
-    }
-
-    [CustomEditor(typeof(FibonacciActionClientComponent))]
-    public class FibonacciActionClientEditor : Editor {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            if (GUILayout.Button("Send Goal")) {
-                ((FibonacciActionClientComponent)target).SendGoal();
-            }
-
-            if (GUILayout.Button("Cancel Goal")) {
-                ((FibonacciActionClientComponent)target).CancelGoal();
-            }
-
-            EditorGUILayout.TextField("Status: ", ((FibonacciActionClientComponent)target).GetStatusString());
-            EditorGUILayout.TextField("Feedback: ", ((FibonacciActionClientComponent)target).GetFeedback());
-            EditorGUILayout.TextField("Result: ", ((FibonacciActionClientComponent)target).GetResult());
-
-            Repaint();
         }
     }
 }
