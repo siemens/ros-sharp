@@ -37,6 +37,8 @@ namespace RosSharp.RosBridgeClientTest
 
             Console.WriteLine("Waiting for result...");
             WaitForResult();
+
+            Stop();
         }
 
         protected override void WaitForActionServer()

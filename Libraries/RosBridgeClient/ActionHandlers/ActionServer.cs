@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient
 
         protected ActionStatus actionStatus;
 
-        private RosSocket socket;
+        private readonly RosSocket socket;
 
         private readonly string serverURL;
 
@@ -44,18 +44,17 @@ namespace RosSharp.RosBridgeClient
 
         protected TAction action;
 
-        // User override for specific actions
-        protected abstract void GoalHandler();
-        protected abstract bool IsGoalValid();
-
         public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0.1f) {
             this.action = action;
             this.actionName = actionName;
             this.timeStep = timeStep;
 
+            this.serverURL = serverURL;
+
+            socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);
         }
 
-        private void AdvertiseAndSubscribe() {
+        protected void Start() {
             statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
             feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");
             resultPublicationId = socket.Advertise<TActionResult>(actionName + "/result");
@@ -66,16 +65,43 @@ namespace RosSharp.RosBridgeClient
             UpdateAndPublishStatus(ActionStatus.PENDING);
         }
 
+        // Implemented by user to wait for goal
+        protected abstract void WaitForGoal();
+
+        // Implemented by user to check if a specific goal is valid
+        protected abstract bool IsGoalValid();
+
+        // Implemented by user to respond to a goal
+        protected abstract void GoalHandler();
+
+        // Implemented by user to respond to a goal cancellation request
+        protected abstract void CancellationHandler();
 
         // When receive a new goal
         private void GoalCallback(TActionGoal actionGoal)
         {
-
+            action.action_goal = actionGoal;
+            UpdateAndPublishStatus(ActionStatus.ACTIVE);
+            if (IsGoalValid())
+            {
+                GoalHandler();
+            }
+            else
+            {
+                UpdateAndPublishStatus(ActionStatus.REJECTED);
+            }
         }
 
+        // When the goal is cancelled by the client
         private void CancelCallback(GoalID goalID)
         {
-
+            if (actionStatus == ActionStatus.ACTIVE)
+            {
+                UpdateAndPublishStatus(ActionStatus.PREEMPTING);
+                action.action_goal.goal_id = goalID;
+                CancellationHandler();
+                UpdateAndPublishStatus(ActionStatus.PREEMPTED);
+            }
         }
 
         protected void UpdateAndPublishStatus(ActionStatus actionStatus)
@@ -97,19 +123,21 @@ namespace RosSharp.RosBridgeClient
             );
         }
 
-        public void PublishFeedback()
+        protected void PublishFeedback()
         {
             action.action_feedback.status.status = (byte)actionStatus;
+            action.action_feedback.status.goal_id = action.action_goal.goal_id;
             socket.Publish(feedbackPublicationId, action.action_feedback);
         }
 
-        public void PublishResult()
+        protected void PublishResult()
         {
             action.action_result.status.status = (byte)actionStatus;
+            action.action_result.status.goal_id = action.action_goal.goal_id;
             socket.Publish(resultPublicationId, action.action_result);
         }
 
-        protected string FeedbackLogString()
+        protected string GetFeedbackLogString()
         {
             return
                 "Feedback @ " + DateTime.Now + "\n" +
@@ -118,7 +146,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        protected string ResultLogString()
+        protected string GetResultLogString()
         {
             return
                 "Result @ " + DateTime.Now + "\n" +
@@ -127,7 +155,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        public void Stop() {
+        protected void Stop() {
             socket.Close();
         }
     }

@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient
         protected string actionName;
         protected float timeStep;
 
-        private RosSocket socket;
+        private readonly RosSocket socket;
 
         private readonly string serverURL;
 
@@ -49,6 +49,7 @@ namespace RosSharp.RosBridgeClient
             this.action = action;
             this.actionName = actionName;
             this.timeStep = timeStep;
+
             this.serverURL = serverURL;
 
             socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);

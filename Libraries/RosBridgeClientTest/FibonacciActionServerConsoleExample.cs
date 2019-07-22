@@ -25,19 +25,50 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class FibonacciActionConsoleServer : ActionServer<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
+        private ManualResetEvent isWaitingForGoal = new ManualResetEvent(false);
+        private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
+
         public FibonacciActionConsoleServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
+
+        public void Execute()
+        {
+            Start();
+
+            isWaitingForGoal.Set();
+            Console.WriteLine("Waiting for goal");
+            Thread waitForGoal = new Thread(WaitForGoal);
+            waitForGoal.Start();
+
+            Console.WriteLine("Press any key to stop server...\n");
+            Console.ReadKey(true);
+            isWaitingForGoal.Reset();
+            waitForGoal.Join();
+            Stop();
+        }
+
+        protected override void WaitForGoal()
+        {
+            while (isWaitingForGoal.WaitOne(0))
+            {
+                PublishStatus();
+                Thread.Sleep((int)(timeStep * 1000));
+            }
+        }
 
         protected override bool IsGoalValid()
         {
-            if (action.action_goal.goal.order <= 0) {
+            if (action.action_goal.goal.order < 1) {
                 Console.WriteLine("Cannot generate fibonacci sequence of order less than 1");
+                return false;
             }
-            return action.action_goal.goal.order > 0;
+            return true;
         }
 
         protected override void GoalHandler()
         {
-            Console.WriteLine("Generating Fibonacci sequence of order 20 with seeds 0, 1");
+            isProcessingGoal.Set();
+
+            Console.WriteLine("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
 
             List<int> sequence = new List<int> { 0, 1 };
 
@@ -46,10 +77,14 @@ namespace RosSharp.RosBridgeClientTest
 
             for (int i = 1; i < action.action_goal.goal.order; i++)
             {
+                if (!isProcessingGoal.WaitOne(0))
+                {
+                    return;
+                }
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
-                Console.WriteLine(FeedbackLogString());
+                Console.WriteLine(GetFeedbackLogString());
 
                 Thread.Sleep((int)(timeStep * 1000));
             }
@@ -57,9 +92,20 @@ namespace RosSharp.RosBridgeClientTest
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
             PublishResult();
-            Console.WriteLine(ResultLogString());
+            Console.WriteLine(GetResultLogString());
+            Console.WriteLine("Result Published to client...");
+            isProcessingGoal.Reset();
 
+            Thread.Sleep((int)(timeStep * 1000));
+            Console.WriteLine("Ready for next goal...(status = PENDING)");
+            UpdateAndPublishStatus(ActionStatus.PENDING);
             Console.WriteLine("Press any key to stop server...\n");
+        }
+
+        protected override void CancellationHandler()
+        {
+            isProcessingGoal.Reset();
+            Console.WriteLine("Goal cancelled by client");
         }
     }
 
@@ -67,9 +113,7 @@ namespace RosSharp.RosBridgeClientTest
     {
         public static void Main(string[] args) {
             FibonacciActionConsoleServer server = new FibonacciActionConsoleServer(new FibonacciAction(), "fibonacci", Protocol.WebSocketSharp, "ws://192.168.137.195:9090");
-            Console.WriteLine("Press any key to stop server...\n");
-            Console.ReadKey(true);
-            server.Stop();
+            server.Execute();
         }
     }
 }
