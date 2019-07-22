@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -35,50 +36,62 @@ namespace RosSharp.RosBridgeClient
 
         private FibonacciActionServer server;
 
+        public string status = "";
+        public string feedback = "";
+
+        private void Awake()
+        {
+            server = new FibonacciActionServer(new FibonacciAction(), actionName, protocol, serverURL, serializer, timeout, timeStep);
+        }
+
         // Start is called before the first frame update
         private void Start()
         {
-            server = new FibonacciActionServer(new FibonacciAction(), actionName, protocol, serverURL, serializer, timeout, timeStep);
+            server.Start();
         }
 
         // Update is called once per frame
         private void Update()
         {
-
+            server.UpdateStatus();
+            status = server.GetStatusString();
+            feedback = server.GetFeedbackString();
         }
 
         private void OnDestroy()
         {
-            if (server != null) {
-                server.Stop();
-            }
-        }
-
-        public string GetStatusString()
-        {
-            if (server == null)
-            {
-                return "";
-            }
-            return server.GetStatusString();
+            server.Stop();
         }
     }
 
     public class FibonacciActionServer : ActionServer<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
+        private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
+
         public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
 
         protected override bool IsGoalValid()
         {
-            if (action.action_goal.goal.order <= 0)
+            if (action.action_goal.goal.order < 1)
             {
-                Debug.LogError("Cannot generate fibonacci sequence of order less than 1");
+                Debug.LogWarning("Cannot generate fibonacci sequence of order less than 1");
+                return false;
             }
-            return action.action_goal.goal.order > 0;
+            return true;
+        }
+
+        protected override void WaitForGoal()
+        {
+            // We don't wait for goal in this example,
+            // since Unity monobehaviour will be spinning in play mode.
         }
 
         protected override void GoalHandler()
         {
+            isProcessingGoal.Set();
+
+            Debug.Log("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
+
             List<int> sequence = new List<int> { 0, 1 };
 
             action.action_feedback.feedback.sequence = sequence.ToArray();
@@ -86,6 +99,10 @@ namespace RosSharp.RosBridgeClient
 
             for (int i = 1; i < action.action_goal.goal.order; i++)
             {
+                if (!isProcessingGoal.WaitOne(0))
+                {
+                    return;
+                }
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
@@ -96,11 +113,34 @@ namespace RosSharp.RosBridgeClient
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
             PublishResult();
+            Debug.Log("Result Published to client...");
+            isProcessingGoal.Reset();
+
+            Thread.Sleep((int)(timeStep * 1000));
+            Debug.Log("Ready for next goal...(status = PENDING)");
+            action.action_feedback = new FibonacciActionFeedback();
+            UpdateAndPublishStatus(ActionStatus.PENDING);
+        }
+
+        protected override void CancellationHandler()
+        {
+            isProcessingGoal.Reset();
+            Debug.Log("Goal cancelled by client");
+        }
+
+        public void UpdateStatus()
+        {
+            PublishStatus();
         }
 
         public string GetStatusString()
         {
             return actionStatus.ToString();
+        }
+
+        public string GetFeedbackString()
+        {
+            return String.Join(",", action.action_feedback.feedback.sequence);
         }
     }
 }

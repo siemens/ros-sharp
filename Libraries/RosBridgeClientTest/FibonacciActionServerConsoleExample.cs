@@ -98,6 +98,7 @@ namespace RosSharp.RosBridgeClientTest
 
             Thread.Sleep((int)(timeStep * 1000));
             Console.WriteLine("Ready for next goal...(status = PENDING)");
+            action.action_feedback = new FibonacciActionFeedback();
             UpdateAndPublishStatus(ActionStatus.PENDING);
             Console.WriteLine("Press any key to stop server...\n");
         }

@@ -40,12 +40,16 @@ namespace RosSharp.RosBridgeClient
         public string feedback = "";
         public string result = "";
 
-        // Start is called before the first frame update
-        private void Start()
+        private void Awake()
         {
             FibonacciAction action = new FibonacciAction();
             action.action_goal.goal.order = fibonacciOrder;
             client = new FibonacciActionClient(action, actionName, serverURL, protocol, serializer, timeout, timeStep);
+        }
+
+        // Start is called before the first frame update
+        private void Start()
+        {
             client.Start();
         }
 
@@ -75,9 +79,6 @@ namespace RosSharp.RosBridgeClient
 
     public class FibonacciActionClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        private string feedback = "";
-        private string result = "";
-
         public FibonacciActionClient(FibonacciAction action, string actionName, string serverURL, Protocol protocol, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, serverURL, protocol, serializer, timeStep) { }
 
         protected override void WaitForActionServer()
@@ -89,7 +90,7 @@ namespace RosSharp.RosBridgeClient
 
         protected override void FeedbackHandler()
         {
-            feedback = String.Join(",", action.action_feedback.feedback.sequence);
+            // Not implemented since get string directly returns stored feedback
         }
 
         protected override void WaitForResult()
@@ -100,7 +101,7 @@ namespace RosSharp.RosBridgeClient
 
         protected override void ResultHandler()
         {
-            result = String.Join(",", action.action_result.result.sequence);
+            // Not implemented since get string directly returns stored result
         }
 
         public string GetStatusString()
@@ -110,12 +111,12 @@ namespace RosSharp.RosBridgeClient
 
         public string GetFeedbackString()
         {
-            return feedback;
+            return String.Join(",", action.action_feedback.feedback.sequence);
         }
 
         public string GetResultString()
         {
-            return result;
+            return String.Join(",", action.action_result.result.sequence);
         }
 
         public void SendGoalFromUnity()
