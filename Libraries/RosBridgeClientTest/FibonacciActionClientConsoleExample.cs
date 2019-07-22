@@ -23,7 +23,6 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class FibonacciActionConsoleClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        private Thread waitForResult;
         private ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
         public FibonacciActionConsoleClient(FibonacciAction action, string actionName, string serverURL) : base(action, actionName, serverURL) { }
@@ -37,8 +36,7 @@ namespace RosSharp.RosBridgeClientTest
             SendGoal();
 
             Console.WriteLine("Waiting for result...");
-            waitForResult = new Thread(WaitForResult);
-            waitForResult.Start();
+            WaitForResult();
         }
 
         protected override void WaitForActionServer()
@@ -65,7 +63,6 @@ namespace RosSharp.RosBridgeClientTest
         {
             Console.WriteLine(GetResultLogString());
             isResultReceived.Set();
-            waitForResult.Join();
         }
     }
 
