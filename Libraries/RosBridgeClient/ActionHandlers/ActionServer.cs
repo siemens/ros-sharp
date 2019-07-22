@@ -54,7 +54,7 @@ namespace RosSharp.RosBridgeClient
             socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);
         }
 
-        protected void Start() {
+        public void Start() {
             statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
             feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");
             resultPublicationId = socket.Advertise<TActionResult>(actionName + "/result");
@@ -155,7 +155,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        protected void Stop() {
+        public void Stop() {
             socket.Close();
         }
     }

@@ -14,8 +14,10 @@ limitations under the License.
 */
 
 using System;
+using System.Threading;
 
 using UnityEngine;
+using UnityEditor;
 
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
@@ -34,74 +36,66 @@ namespace RosSharp.RosBridgeClient
 
         private FibonacciActionClient client;
 
+        public string status = "";
+        public string feedback = "";
+        public string result = "";
+
         // Start is called before the first frame update
         private void Start()
         {
             FibonacciAction action = new FibonacciAction();
             action.action_goal.goal.order = fibonacciOrder;
-            client = new FibonacciActionClient(action, actionName, protocol, serverURL, serializer, timeout, timeStep);
+            client = new FibonacciActionClient(action, actionName, serverURL, protocol, serializer, timeout, timeStep);
+            client.Start();
         }
 
         // Update is called once per frame
         private void Update()
         {
-
+            status = client.GetStatusString();
+            feedback = client.GetFeedbackString();
+            result = client.GetResultString();
         }
 
         private void OnDestroy()
         {
-            if (client != null) {
-                client.Stop();
-            }
+            client.Stop();
         }
 
-        public void SendGoal() {
-            if (client != null) {
-                client.SendGoal();
-            }
-        }
-
-        public void CancelGoal() {
-            if (client != null) {
-                client.CancelGoal();
-            } 
-        }
-
-        public string GetStatusString()
+        public void SendGoal()
         {
-            if (client == null) {
-                return "";
-            }
-            return client.GetStatusToString();
+            client.SendGoalFromUnity();
         }
 
-        public string GetFeedback() {
-            if (client == null)
-            {
-                return "";
-            }
-            return client.GetFeedback();
-        }
-
-        public string GetResult() {
-            if (client == null)
-            {
-                return "";
-            }
-            return client.GetResult();
+        public void CancelGoal()
+        {
+            client.CancelGoalFromUnity();
         }
     }
 
     public class FibonacciActionClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        public FibonacciActionClient(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
-
         private string feedback = "";
         private string result = "";
+
+        public FibonacciActionClient(FibonacciAction action, string actionName, string serverURL, Protocol protocol, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, serverURL, protocol, serializer, timeStep) { }
+
+        protected override void WaitForActionServer()
+        {
+            // We don't wait for server in this example,
+            // since Unity monobehaviour will be spinning in play mode.
+            // Please make sure that the server is indeed running
+        }
 
         protected override void FeedbackHandler()
         {
             feedback = String.Join(",", action.action_feedback.feedback.sequence);
+        }
+
+        protected override void WaitForResult()
+        {
+            // We don't wait for result in this example,
+            // since Unity monobehaviour will be spinning in play mode.
         }
 
         protected override void ResultHandler()
@@ -109,23 +103,50 @@ namespace RosSharp.RosBridgeClient
             result = String.Join(",", action.action_result.result.sequence);
         }
 
-        public override void WaitForServer()
-        {
-            // We don't wait for server in this example.
-            // Please make sure that the server is indeed running
-        }
-
-        public string GetStatusToString()
+        public string GetStatusString()
         {
             return actionStatus.ToString();
         }
 
-        public string GetFeedback() {
+        public string GetFeedbackString()
+        {
             return feedback;
         }
 
-        public string GetResult() {
+        public string GetResultString()
+        {
             return result;
+        }
+
+        public void SendGoalFromUnity()
+        {
+            SendGoal();
+        }
+
+        public void CancelGoalFromUnity()
+        {
+            CancelGoal();
+        }
+    }
+
+    [CustomEditor(typeof(FibonacciActionClientComponent))]
+    public class FibonacciActionClientEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            if (GUILayout.Button("Send Goal"))
+            {
+                ((FibonacciActionClientComponent)target).SendGoal();
+            }
+
+            if (GUILayout.Button("Cancel Goal"))
+            {
+                ((FibonacciActionClientComponent)target).CancelGoal();
+            }
+
+            Repaint();
         }
     }
 }

@@ -55,7 +55,7 @@ namespace RosSharp.RosBridgeClient
             socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);
         }
 
-        protected void Start() {
+        public void Start() {
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
 
@@ -64,12 +64,12 @@ namespace RosSharp.RosBridgeClient
             socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
         }
 
-        protected void SendGoal()
+        public void SendGoal()
         {
             socket.Publish(goalPublicationID, action.action_goal);
         }
 
-        protected void CancelGoal()
+        public void CancelGoal()
         {
             socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
@@ -86,26 +86,26 @@ namespace RosSharp.RosBridgeClient
         // Implement by user to handle result.
         protected abstract void ResultHandler();
 
-        protected virtual void FeedbackCallback(TActionFeedback actionFeedback) {
+        private void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
             actionStatus = (ActionStatus)actionFeedback.status.status;
             FeedbackHandler();
         }
 
-        protected virtual void ResultCallback(TActionResult actionResult) {
+        private void ResultCallback(TActionResult actionResult) {
             action.action_result = actionResult;
             actionStatus = (ActionStatus)actionResult.status.status;
             ResultHandler();
         }
 
-        protected virtual void StatusCallback(GoalStatusArray actionGoalStatusArray) {
+        private void StatusCallback(GoalStatusArray actionGoalStatusArray) {
             if (actionGoalStatusArray.status_list.Length > 0) {
                 actionStatus = (ActionStatus)actionGoalStatusArray.status_list[0].status;
             }
             lastStatusUpdateTime = DateTime.Now;
         }
 
-        protected string GetFeedbackLogString() {
+        public string GetFeedbackLogString() {
             return
                 "Feedback @ " + DateTime.Now + "\n" +
                 action.action_feedback.ToString() + "\n" +
@@ -113,7 +113,7 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
-        protected string GetResultLogString()
+        public string GetResultLogString()
         {
             return
                 "Result @ " + DateTime.Now + "\n" +
