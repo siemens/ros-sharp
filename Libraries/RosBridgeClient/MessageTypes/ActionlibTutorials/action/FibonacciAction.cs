@@ -11,27 +11,17 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
-    public class FibonacciAction : Message
+    public class FibonacciAction : Action<FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
         [JsonIgnore]
         public const string RosMessageName = "actionlib_tutorials/FibonacciAction";
 
-        public FibonacciActionGoal action_goal;
-        public FibonacciActionResult action_result;
-        public FibonacciActionFeedback action_feedback;
-
-        public FibonacciAction()
+        public FibonacciAction() : base()
         {
             this.action_goal = new FibonacciActionGoal();
             this.action_result = new FibonacciActionResult();
             this.action_feedback = new FibonacciActionFeedback();
         }
 
-        public FibonacciAction(FibonacciActionGoal action_goal, FibonacciActionResult action_result, FibonacciActionFeedback action_feedback)
-        {
-            this.action_goal = action_goal;
-            this.action_result = action_result;
-            this.action_feedback = action_feedback;
-        }
     }
 }

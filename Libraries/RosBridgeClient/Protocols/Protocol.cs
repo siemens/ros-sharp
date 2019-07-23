@@ -1,4 +1,4 @@
-/*
+﻿/*
 © Siemens AG, 2019
 Author: Sifan Ye (sifan.ye@siemens.com)
 
@@ -13,34 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-
-namespace RosSharp.RosBridgeClient.MessageTypes.Std
+namespace RosSharp.RosBridgeClient.Protocols
 {
-	public class Duration : Message
-	{
-		[JsonIgnore]
-        public const string RosMessageName = "std_msgs/Duration";
+    public enum Protocol { WebSocketSharp, WebSocketNET };
 
-        public uint secs;
-        public uint nsecs;
-        
-        public Duration()
+    public class ProtocolInitializer
+    {
+        public static IProtocol GetProtocol(Protocol protocol, string serverURL)
         {
-            secs = 0;
-            nsecs = 0;
+            switch (protocol)
+            {
+                case Protocol.WebSocketSharp:
+                    return new WebSocketSharpProtocol(serverURL);
+                case Protocol.WebSocketNET:
+                    return new WebSocketNetProtocol(serverURL);
+                default:
+                    return null;
+            }
         }
-
-        public Duration(uint secs, uint nsecs)
-        {
-        	this.secs = secs;
-        	this.nsecs = nsecs;
-        }
-
-        public override string ToString()
-        {
-        	return JsonConvert.SerializeObject(this);
-        }
-
-	}
+    }
 }

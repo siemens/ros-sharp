@@ -1,4 +1,4 @@
-/*
+﻿/*
 © Siemens AG, 2019
 Author: Sifan Ye (sifan.ye@siemens.com)
 
@@ -13,34 +13,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
+using RosSharp.RosBridgeClient.MessageTypes.Std;
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
-namespace RosSharp.RosBridgeClient.MessageTypes.Std
+namespace RosSharp.RosBridgeClient
 {
-	public class Duration : Message
-	{
-		[JsonIgnore]
-        public const string RosMessageName = "std_msgs/Duration";
+    public abstract class ActionResult<TResult> : Message where TResult : Message
+    {
+        public Header header;
+        public GoalStatus status;
+        public TResult result;
 
-        public uint secs;
-        public uint nsecs;
-        
-        public Duration()
-        {
-            secs = 0;
-            nsecs = 0;
+        public ActionResult() {
+            header = new Header();
+            status = new GoalStatus();
         }
 
-        public Duration(uint secs, uint nsecs)
-        {
-        	this.secs = secs;
-        	this.nsecs = nsecs;
+        public ActionResult(Header header, GoalStatus status) {
+            this.header = header;
+            this.status = status;
         }
-
-        public override string ToString()
-        {
-        	return JsonConvert.SerializeObject(this);
-        }
-
-	}
+    }
 }

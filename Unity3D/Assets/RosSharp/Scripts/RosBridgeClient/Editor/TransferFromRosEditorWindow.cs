@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class TransferFromRosEditorWindow : EditorWindow
     {
-        private static RosConnector.Protocols protocolType;
+        private static Protocols.Protocol protocolType;
         private static string address;
         private static string urdfParameter;
         private static int timeout;
@@ -58,7 +58,7 @@ namespace RosSharp.RosBridgeClient
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUIUtility.labelWidth = 100;
-                protocolType = (RosConnector.Protocols)EditorGUILayout.EnumPopup("Protocol", protocolType);
+                protocolType = (Protocols.Protocol)EditorGUILayout.EnumPopup("Protocol", protocolType);
                 EditorGUILayout.EndHorizontal();
 
                 //TODO URDF Parameter
@@ -152,7 +152,7 @@ namespace RosSharp.RosBridgeClient
         }
         private void GetEditorPrefs()
         {
-            protocolType = (RosConnector.Protocols)(EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
+            protocolType = (Protocols.Protocol)(EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
                 EditorPrefs.GetInt("UrdfImporterProtocolNumber") : 1);
 
             address = (EditorPrefs.HasKey("UrdfImporterAddress") ?

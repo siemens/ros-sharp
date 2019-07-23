@@ -157,7 +157,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         {
             string constructor = "";
 
-            constructor += TWO_TABS + "public " + className + "()\n";
+            constructor += TWO_TABS + "public " + className + "() : base()\n";
             constructor += TWO_TABS + "{\n";
 
             foreach (string identifier in symbolTable.Keys)
@@ -172,26 +172,37 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             return constructor;
         }
 
-        private string GenerateParameterizedConstructor(string className)
+        private string GenerateParameterizedConstructor(string className, string msgType)
         {
             string constructor = "";
 
-            string parameters = "";
+            string paramsIn = "";
+            string paramsOut = "";
             string assignments = "";
+
+            if (msgType.Equals("Goal"))
+            {
+                paramsIn += "Header header, GoalID goal_id, ";
+                paramsOut += "header, goal_id";
+            }
+            else if (msgType.Equals("Result") || msgType.Equals("Feedback")) {
+                paramsIn += "Header header, GoalStatus status, ";
+                paramsOut += "header, status";
+            }
 
             foreach (string identifier in symbolTable.Keys)
             {
                 string type = symbolTable[identifier];
-                parameters += type + " " + identifier + ", ";
+                paramsIn += type + " " + identifier + ", ";
                 assignments += TWO_TABS + ONE_TAB + "this." + identifier + " = " + identifier + ";\n";
             }
 
-            if (!parameters.Equals(""))
+            if (!paramsIn.Equals(""))
             {
-                parameters = parameters.Substring(0, parameters.Length - 2);
+                paramsIn = paramsIn.Substring(0, paramsIn.Length - 2);
             }
 
-            constructor += TWO_TABS + "public " + className + "(" + parameters + ")\n";
+            constructor += TWO_TABS + "public " + className + "(" + paramsIn + ") : base(" + paramsOut + ")\n";
             constructor += TWO_TABS + "{\n";
             constructor += assignments;
             constructor += TWO_TABS + "}\n";
@@ -229,42 +240,17 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write class declaration
                 writer.Write(
-                    ONE_TAB + "public class " + wrapperName + " : Message\n" +
+                    ONE_TAB + "public class " + wrapperName + " : Action" + type + "<" + inFileName + type +  ">\n" +
                     ONE_TAB + "{\n"
                     );
 
                 // Write ROS package name
                 writer.Write(
                     TWO_TABS + "[JsonIgnore]\n" +
-                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n\n"
+                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
                     );
 
-                // Write header declaration
-                writer.Write(
-                    TWO_TABS + "public Header header;\n"
-                    );
-                symbolTable.Add("header", "Header");
-
-                // Write GoalID/GoalStatus
-                if (type.Equals("Goal"))
-                {
-                    writer.Write(
-                        TWO_TABS + "public GoalID goal_id;\n"
-                        );
-                    symbolTable.Add("goal_id", "GoalID");
-                }
-                else
-                {
-                    writer.Write(
-                        TWO_TABS + "public GoalStatus status;\n"
-                        );
-                    symbolTable.Add("status", "GoalStatus");
-                }
-
-                // Write goal/result/feedback declaration
-                writer.Write(
-                    TWO_TABS + "public " + msgName + " " + MsgAutoGenUtilities.LowerFirstLetter(type) + ";\n"
-                    );
+                // Record goal/result/feedback declaration
                 symbolTable.Add(MsgAutoGenUtilities.LowerFirstLetter(type), msgName);
 
                 writer.Write("\n");
@@ -273,7 +259,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(GenerateDefaultValueConstructor(wrapperName) + "\n");
 
                 // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName));
+                writer.Write(GenerateParameterizedConstructor(wrapperName, type));
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");
@@ -308,33 +294,35 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write class declaration
+                string[] genericParams = new string[] {
+                    inFileName + "ActionGoal",
+                    inFileName + "ActionResult",
+                    inFileName + "ActionFeedback",
+                    inFileName + "Goal",
+                    inFileName + "Result",
+                    inFileName + "Feedback"
+                };
                 writer.Write(
-                    ONE_TAB + "public class " + wrapperName + " : Message\n" +
+                    ONE_TAB + "public class " + wrapperName + " : Action<" + string.Join(", ", genericParams) +  ">\n" +
                     ONE_TAB + "{\n"
                     );
 
                 // Write ROS package name
                 writer.Write(
                     TWO_TABS + "[JsonIgnore]\n" +
-                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n\n"
+                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
                     );
 
-                // Write and record variables
+                // Record variables
                 // Action Goal
-                writer.Write(TWO_TABS + "public " + wrapperName + "Goal action_goal;\n");
                 symbolTable.Add("action_goal", wrapperName + "Goal");
                 // Action Result
-                writer.Write(TWO_TABS + "public " + wrapperName + "Result action_result;\n");
                 symbolTable.Add("action_result", wrapperName + "Result");
                 //Action Feedback
-                writer.Write(TWO_TABS + "public " + wrapperName + "Feedback action_feedback;\n");
                 symbolTable.Add("action_feedback", wrapperName + "Feedback");
 
                 // Write default value constructor
                 writer.Write("\n" + GenerateDefaultValueConstructor(wrapperName) + "\n");
-
-                // Write parameterized constructor
-                writer.Write(GenerateParameterizedConstructor(wrapperName));
 
                 // Close class
                 writer.Write(ONE_TAB + "}\n");
