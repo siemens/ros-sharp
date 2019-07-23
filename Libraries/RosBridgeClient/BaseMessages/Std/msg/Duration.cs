@@ -41,5 +41,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         {
         	return JsonConvert.SerializeObject(this);
         }
+
 	}
 }
