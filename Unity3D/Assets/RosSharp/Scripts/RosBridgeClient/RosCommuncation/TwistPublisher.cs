@@ -17,11 +17,11 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistPublisher : Publisher<Messages.Geometry.Twist>
+    public class TwistPublisher : Publisher<MessageTypes.Geometry.Twist>
     {
         public Transform PublishedTransform;
 
-        private Messages.Geometry.Twist message;
+        private MessageTypes.Geometry.Twist message;
         private float previousRealTime;        
         private Vector3 previousPosition = Vector3.zero;
         private Quaternion previousRotation = Quaternion.identity;
@@ -39,9 +39,9 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new Messages.Geometry.Twist();
-            message.linear = new Messages.Geometry.Vector3();
-            message.angular = new Messages.Geometry.Vector3();
+            message = new MessageTypes.Geometry.Twist();
+            message.linear = new MessageTypes.Geometry.Vector3();
+            message.angular = new MessageTypes.Geometry.Vector3();
         }
         private void UpdateMessage()
         {
@@ -60,9 +60,9 @@ namespace RosSharp.RosBridgeClient
             Publish(message);
         }
 
-        private static Messages.Geometry.Vector3 GetGeometryVector3(Vector3 vector3)
+        private static MessageTypes.Geometry.Vector3 GetGeometryVector3(Vector3 vector3)
         {
-            Messages.Geometry.Vector3 geometryVector3 = new Messages.Geometry.Vector3();
+            MessageTypes.Geometry.Vector3 geometryVector3 = new MessageTypes.Geometry.Vector3();
             geometryVector3.x = vector3.x;
             geometryVector3.y = vector3.y;
             geometryVector3.z = vector3.z;

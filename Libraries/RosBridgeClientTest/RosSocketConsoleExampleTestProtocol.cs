@@ -15,10 +15,10 @@ limitations under the License.
 
 using System;
 using RosSharp.RosBridgeClient;
-using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
-using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
-using sensor_msgs = RosSharp.RosBridgeClient.Messages.Sensor;
+using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
+using std_srvs = RosSharp.RosBridgeClient.MessageTypes.Std;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
+using sensor_msgs = RosSharp.RosBridgeClient.MessageTypes.Sensor;
 using System.Linq;
 
 

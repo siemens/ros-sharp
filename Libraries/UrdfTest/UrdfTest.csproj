@@ -51,7 +51,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Urdf\Urdf.csproj">
       <Project>{d33101da-7196-4545-b708-c8e0c308c5fa}</Project>
-      <Name>UrdfImporter</Name>
+      <Name>Urdf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -50,7 +50,7 @@ namespace RosSharp.RosBridgeClient
                 };
         }
 
-        public void TransferUrdf(RosConnector.Protocols protocolType, string serverUrl, int timeout, string assetPath, string urdfParameter)
+        public void TransferUrdf(Protocols.Protocol protocolType, string serverUrl, int timeout, string assetPath, string urdfParameter)
         {
             this.timeout = timeout;
             this.assetPath = assetPath;

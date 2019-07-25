@@ -17,7 +17,7 @@ using System;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using RosSharp.RosBridgeClient;
-using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
+using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClientTest
 {

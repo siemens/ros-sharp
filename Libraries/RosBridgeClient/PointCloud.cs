@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 using System;
-using RosSharp.RosBridgeClient.Messages.Sensor;
+using RosSharp.RosBridgeClient.MessageTypes.Sensor;
 
 namespace RosSharp.RosBridgeClient
 {

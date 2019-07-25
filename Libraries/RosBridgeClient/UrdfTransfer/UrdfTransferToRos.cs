@@ -21,8 +21,8 @@ using System.Threading;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
-using file_server = RosSharp.RosBridgeClient.Services.FileServer;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
+using file_server = RosSharp.RosBridgeClient.MessageTypes.FileServer;
 
 namespace RosSharp.RosBridgeClient.UrdfTransfer
 {

@@ -37,7 +37,7 @@ namespace RosSharp.RosBridgeClient
             isReceived = false;
         }
 
-        public void Write(Messages.Sensor.LaserScan laserScan)
+        public void Write(MessageTypes.Sensor.LaserScan laserScan)
         {
             ranges = new float[laserScan.ranges.Length];
             directions = new Vector3[laserScan.ranges.Length];

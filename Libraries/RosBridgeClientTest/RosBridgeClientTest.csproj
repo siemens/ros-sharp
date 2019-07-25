@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosSharp.RosBridgeClientTest.UrdfTransferToRosConsoleExample</StartupObject>
+    <StartupObject>RosSharp.RosBridgeClientTest.FibonacciActionClientConsoleExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FibonacciActionClientConsoleExample.cs" />
+    <Compile Include="FibonacciActionServerConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
     <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />

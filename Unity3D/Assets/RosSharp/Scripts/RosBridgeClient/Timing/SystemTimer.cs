@@ -23,13 +23,13 @@ namespace RosSharp.RosBridgeClient
     public class SystemTimer : Timer
     {
         public static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        public override Messages.Standard.Time Now()
+        public override MessageTypes.Std.Time Now()
         {
             TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
             double msecs = timeSpan.TotalMilliseconds;
             uint sec = (uint)(msecs / 1000);
 
-            return new Messages.Standard.Time
+            return new MessageTypes.Std.Time
             {
                 secs = sec,
                 nsecs = (uint)((msecs / 1000 - sec) * 1e+9)
