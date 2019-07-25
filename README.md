@@ -7,30 +7,46 @@ Community provided a variety of other application examples for ROS# [here](https
 
 ## Recent Changes ##
 
-The biggest changes in [ROS# Version 1.5](https://github.com/siemens/ros-sharp/releases/tag/v1.5) are:
+#### Automatic Message Generation: ####
 
-*  __[ROS Action](http://wiki.ros.org/actionlib) Support:__
-Please check out the [FibonacciActionServer](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/RosBridgeClient/RosCommuncation/FibonacciActionServer.cs) and [FibonacciActionClient](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scripts/RosBridgeClient/RosCommuncation/FibonacciActionClient.cs) example and find the corresponding ROS tutorial [here](http://wiki.ros.org/actionlib_tutorials/Tutorials/SimpleActionServer%28ExecuteCallbackMethod%29).
+With ROS# you can now generate C# classes of any ROS message, service or action type.
 
-* __Message Class Generation via Unity Editor:__
-Please check out the new Unity menu item `RosBridgeClient > Generate Messages > ...`
- [This](https://github.com/siemens/ros-sharp/wiki/Dev_NewMessageTypes) wiki page gives an overview on the different options to generate new message files.
+For example, the auto-generated class of [sensor_msgs/JointState.msg](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/JointState.html) is [JointState.cs](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/MessageTypes/Sensor/msg/JointState.cs).
 
-* __BSON (De-)Serialization:__
-As alternative to JSON, you can now select to set up BSON communication with `rosbridge_server`.
-Make sure to activate `bson_only_mode` when launching `ros_bridge_server` as explained [here](https://github.com/siemens/ros-sharp/pull/198).
+Please find the new library [here](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration) and the console tool sources [here](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGenerationConsoleTool).
+Please also note the new Unity Editor menu features.
 
-Please also check out the [Wiki page](https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion) on Coordinate System Conversions between ROS and Unity.
+Check out the new [Wiki page](https://github.com/siemens/ros-sharp/wiki/Dev_NewMessageTypes) for further info.
+
+#### ActionServer and ActionClient Refactoring: ####
+
+We moved both [ActionClient](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/ActionHandlers/ActionClient.cs) and [ActionServer](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/ActionHandlers/ActionServer.cs) into the library.
+
+Please also find the new console examples for [ActionClient](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClientTest/FibonacciActionClientConsoleExample.cs), for [ActionServer](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClientTest/FibonacciActionServerConsoleExample.cs), and a Unity example scene [here](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scenes/FibonacciActionScene.unity).
+
+#### Namespace Changes: ####
+
+We had to update the namespaces as follows:
+
+| old                                            | new                                         |
+|------------------------------------------------|---------------------------------------------|
+| `RosSharp.RosBridgeClient.Messages`            |`RosSharp.RosBridgeClient.MessageTypes`      |
+|`RosSharp.RosBridgeClient.Services`             | `RosSharp.RosBridgeClient.MessageTypes`     |
+| `RosSharp.RosBridgeClient.Messages.Standard`   | `RosSharp.RosBridgeClient.MessageTypes.Std` |
+| `RosSharp.RosBridgeClient.Messages.Navigation` | `RosSharp.RosBridgeClient.MessageTypes.Nav` |
 
 ## Contents ##
 
-* [Libraries](https://github.com/siemens/ros-sharp/tree/master/Libraries):
- .NET solution for [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient), [Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf)
+* [Libraries](https://github.com/siemens/ros-sharp/tree/master/Libraries): .NET solution for
+[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient),
+[Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf) and
+[MessageGeneration](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration)
 * [ROS](https://github.com/siemens/ros-sharp/tree/master/ROS):  [ROS](http://wiki.ros.org/) packages used by ROS#.
 * [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D): [Unity](https://unity3d.com/) project containing
   * Unity-specific extensions to
    [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and
-   [Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter)
+   [Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) and
+   [MessageGeneration](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration)
   * example scenes and reference code (see [Wiki](https://github.com/siemens/ros-sharp/wiki))
 
 ## Releases ##
