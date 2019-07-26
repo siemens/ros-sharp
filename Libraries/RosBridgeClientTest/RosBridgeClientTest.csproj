@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosSharp.RosBridgeClientTest.FibonacciActionClientConsoleExample</StartupObject>
+    <StartupObject>RosSharp.RosBridgeClient.FileTransfer.FileTransferFromRos</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -59,8 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FibonacciActionClientConsoleExample.cs" />
-    <Compile Include="FibonacciActionServerConsoleExample.cs" />
+    <Compile Include="FibonacciActionExamples\FibonacciActionClientConsoleExample.cs" />
+    <Compile Include="FibonacciActionExamples\FibonacciActionServerConsoleExample.cs" />
+    <Compile Include="FileTransferConsoleTools\FileTransferFromRos.cs" />
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
     <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />
@@ -82,6 +83,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

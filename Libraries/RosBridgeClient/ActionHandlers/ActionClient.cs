@@ -123,6 +123,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
+
             socket.Close();
         }
     }
