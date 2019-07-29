@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  actionlib_msgs
   roslib
 )
 
@@ -52,24 +53,24 @@ find_package(catkin REQUIRED COMPONENTS
 #   Message2.msg
 # )
 
-## Generate services in the 'srv' folder
+# Generate services in the 'srv' folder
 add_service_files(
    FILES
    GetBinaryFile.srv
    SaveBinaryFile.srv
- )
+)
 
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+# Generate actions in the 'action' folder
+add_action_files(
+  FILES
+  FileTransferFromRos.action
+)
 
-## Generate added messages and services with any dependencies listed here
+# Generate added messages and services with any dependencies listed here
 generate_messages(
    DEPENDENCIES
    std_msgs
+   actionlib_msgs
 )
 
 ################################################

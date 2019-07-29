@@ -17,7 +17,6 @@ using System;
 using System.Threading;
 
 using UnityEngine;
-using UnityEditor;
 
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
@@ -127,27 +126,6 @@ namespace RosSharp.RosBridgeClient
         public void CancelGoalFromUnity()
         {
             CancelGoal();
-        }
-    }
-
-    [CustomEditor(typeof(FibonacciActionClientComponent))]
-    public class FibonacciActionClientEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            if (GUILayout.Button("Send Goal"))
-            {
-                ((FibonacciActionClientComponent)target).SendGoal();
-            }
-
-            if (GUILayout.Button("Cancel Goal"))
-            {
-                ((FibonacciActionClientComponent)target).CancelGoal();
-            }
-
-            Repaint();
         }
     }
 }
