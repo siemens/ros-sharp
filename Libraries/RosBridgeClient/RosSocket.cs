@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Protocols;
@@ -45,17 +46,24 @@ namespace RosSharp.RosBridgeClient
             this.protocol.Connect();
         }
 
-        public void Close()
+        public void Close(int millisecondsWait = 0)
         {
+            bool ifCleanup = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
+
             while (Publishers.Count > 0)
                 Unadvertise(Publishers.First().Key);
-
+                
             while (Subscribers.Count > 0)
                 Unsubscribe(Subscribers.First().Key);
-
+                
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
 
+            if (ifCleanup)
+            {
+                Thread.Sleep(millisecondsWait);
+            }
+            
             protocol.Close();
         }
 

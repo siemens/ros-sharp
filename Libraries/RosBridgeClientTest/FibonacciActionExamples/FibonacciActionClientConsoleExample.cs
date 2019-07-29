@@ -43,8 +43,8 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void WaitForActionServer()
         {
-            while((DateTime.Now - lastStatusUpdateTime).TotalSeconds > 3) {
-                Thread.Sleep((int)(timeStep * 1000));
+            while((DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout) {
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 
@@ -52,7 +52,7 @@ namespace RosSharp.RosBridgeClientTest
         {
             while (!isResultReceived.WaitOne(0))
             {
-                Thread.Sleep((int)(timeStep * 1000));
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 

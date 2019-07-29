@@ -61,7 +61,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         {
             while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > serverWaitTimeout)
             {
-                Thread.Sleep((int)(timeStep * 1000));
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 

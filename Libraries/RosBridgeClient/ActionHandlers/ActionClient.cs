@@ -30,7 +30,9 @@ namespace RosSharp.RosBridgeClient
         where TFeedback : Message
     {
         protected string actionName;
-        protected float timeStep;
+
+        protected int millisecondsTimeout;
+        protected int millisecondsTimestep;
 
         private readonly RosSocket socket;
 
@@ -41,14 +43,20 @@ namespace RosSharp.RosBridgeClient
         private string cancelPublicationID;
         private string goalPublicationID;
 
+        private string statusSubscriptionID;
+        private string feedbackSubscriptionID;
+        private string resultSubscriptionID;
+
         protected ActionStatus actionStatus;
 
         protected TAction action;
 
-        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f) {
+        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 5f,  float secondsTimestep = 0.2f) {
             this.action = action;
             this.actionName = actionName;
-            this.timeStep = timeStep;
+
+            this.millisecondsTimeout = (int)(secondsTimeout * 1000);
+            this.millisecondsTimestep = (int)(secondsTimestep * 1000);
 
             this.serverURL = serverURL;
 
@@ -59,9 +67,9 @@ namespace RosSharp.RosBridgeClient
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
 
-            socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, (int)(timeStep * 1000));
-            socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, (int)(timeStep * 1000));
-            socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
+            statusSubscriptionID = socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, millisecondsTimestep);
+            feedbackSubscriptionID = socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, millisecondsTimestep);
+            resultSubscriptionID = socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, millisecondsTimestep);
         }
 
         public void SendGoal()
@@ -123,8 +131,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
-
-            socket.Close();
+            socket.Close(millisecondsTimestep);
         }
     }
 }

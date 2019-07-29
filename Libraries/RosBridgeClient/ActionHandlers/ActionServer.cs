@@ -30,7 +30,9 @@ namespace RosSharp.RosBridgeClient
         where TFeedback : Message
     {
         protected string actionName;
-        protected float timeStep;
+
+        protected int millisecondsTimeout;
+        protected int millisecondsTimestep;
 
         protected ActionStatus actionStatus;
 
@@ -38,16 +40,21 @@ namespace RosSharp.RosBridgeClient
 
         private readonly string serverURL;
 
-        private string feedbackPublicationId;
-        private string statusPublicationId;
-        private string resultPublicationId;
+        private string statusPublicationID;
+        private string feedbackPublicationID;
+        private string resultPublicationID;
+
+        private string cancelSubscriptionID;
+        private string goalSubscriptionID;
 
         protected TAction action;
 
-        public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, int timeout = 10, float timeStep = 0.1f) {
+        public ActionServer(TAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 5f, float secondsTimestep = 0.1f) {
             this.action = action;
             this.actionName = actionName;
-            this.timeStep = timeStep;
+
+            this.millisecondsTimeout = (int)(secondsTimeout * 1000);
+            this.millisecondsTimestep = (int)(secondsTimestep * 1000);
 
             this.serverURL = serverURL;
 
@@ -55,12 +62,12 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Start() {
-            statusPublicationId = socket.Advertise<GoalStatusArray>(actionName + "/status");
-            feedbackPublicationId = socket.Advertise<TActionFeedback>(actionName + "/feedback");
-            resultPublicationId = socket.Advertise<TActionResult>(actionName + "/result");
+            statusPublicationID = socket.Advertise<GoalStatusArray>(actionName + "/status");
+            feedbackPublicationID = socket.Advertise<TActionFeedback>(actionName + "/feedback");
+            resultPublicationID = socket.Advertise<TActionResult>(actionName + "/result");
 
-            socket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, (int)(timeStep * 1000));
-            socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
+            cancelSubscriptionID = socket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, millisecondsTimestep);
+            goalSubscriptionID = socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, millisecondsTimestep);
 
             UpdateAndPublishStatus(ActionStatus.PENDING);
         }
@@ -112,7 +119,7 @@ namespace RosSharp.RosBridgeClient
 
         protected void PublishStatus()
         {
-            socket.Publish(statusPublicationId,
+            socket.Publish(statusPublicationID,
                 new GoalStatusArray
                 {
                     status_list = new GoalStatus[]
@@ -127,14 +134,14 @@ namespace RosSharp.RosBridgeClient
         {
             action.action_feedback.status.status = (byte)actionStatus;
             action.action_feedback.status.goal_id = action.action_goal.goal_id;
-            socket.Publish(feedbackPublicationId, action.action_feedback);
+            socket.Publish(feedbackPublicationID, action.action_feedback);
         }
 
         protected void PublishResult()
         {
             action.action_result.status.status = (byte)actionStatus;
             action.action_result.status.goal_id = action.action_goal.goal_id;
-            socket.Publish(resultPublicationId, action.action_result);
+            socket.Publish(resultPublicationID, action.action_result);
         }
 
         protected string GetFeedbackLogString()
@@ -156,7 +163,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         public void Stop() {
-            socket.Close();
+            socket.Close(millisecondsTimestep);
         }
     }
 }

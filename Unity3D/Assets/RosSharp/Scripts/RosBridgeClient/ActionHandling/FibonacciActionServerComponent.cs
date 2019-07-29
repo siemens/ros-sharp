@@ -107,7 +107,7 @@ namespace RosSharp.RosBridgeClient
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
 
-                Thread.Sleep((int)(timeStep * 1000));
+                Thread.Sleep(millisecondsTimestep);
             }
 
             UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
@@ -116,7 +116,7 @@ namespace RosSharp.RosBridgeClient
             Debug.Log("Result Published to client...");
             isProcessingGoal.Reset();
 
-            Thread.Sleep((int)(timeStep * 1000));
+            Thread.Sleep(millisecondsTimestep);
             Debug.Log("Ready for next goal...(status = PENDING)");
             action.action_feedback = new FibonacciActionFeedback();
             UpdateAndPublishStatus(ActionStatus.PENDING);
