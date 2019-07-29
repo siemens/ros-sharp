@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="FibonacciActionExamples\FibonacciActionClientConsoleExample.cs" />
     <Compile Include="FibonacciActionExamples\FibonacciActionServerConsoleExample.cs" />
-    <Compile Include="FileTransferConsoleTools\FileTransferFromRos.cs" />
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
     <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />
