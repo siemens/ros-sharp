@@ -11,10 +11,10 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
-    public class FileTransferFromRosFeedback : Message
+    public class FileTransferFeedback : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "file_server/FileTransferFromRosFeedback";
+        public const string RosMessageName = "file_server/FileTransferFeedback";
 
         //  Feedback def
         public short number;
@@ -26,7 +26,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
         public byte[] content;
         //  The content of the file in bytes
 
-        public FileTransferFromRosFeedback()
+        public FileTransferFeedback()
         {
             this.number = 0;
             this.count = 0;
@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
             this.content = new byte[0];
         }
 
-        public FileTransferFromRosFeedback(short number, short count, string path, byte[] content)
+        public FileTransferFeedback(short number, short count, string path, byte[] content)
         {
             this.number = number;
             this.count = count;

@@ -23,21 +23,21 @@ using RosSharp.RosBridgeClient.MessageTypes.FileServer;
 
 namespace RosSharp.RosBridgeClient.FileTransfer
 {
-    public class FileTransferFromRosConsoleClient : ActionClient<FileTransferFromRosAction, FileTransferFromRosActionGoal, FileTransferFromRosActionResult, FileTransferFromRosActionFeedback, FileTransferFromRosGoal, FileTransferFromRosResult, FileTransferFromRosFeedback>
+    public class FileTransferFromRosConsoleClient : ActionClient<FileTransferAction, FileTransferActionGoal, FileTransferActionResult, FileTransferActionFeedback, FileTransferGoal, FileTransferResult, FileTransferFeedback>
     {
         private readonly string outPath;
 
-        private ConcurrentQueue<FileTransferFromRosFeedback> files;
+        private ConcurrentQueue<FileTransferFeedback> files;
 
         private readonly int serverWaitTimeout;
         private ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
-        public FileTransferFromRosConsoleClient(FileTransferFromRosAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.1f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
+        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.1f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
         {
             this.outPath = outPath;
             this.serverWaitTimeout = serverWaitTimeout;
 
-            files = new ConcurrentQueue<FileTransferFromRosFeedback>();
+            files = new ConcurrentQueue<FileTransferFeedback>();
         }
 
         public void Execute()
@@ -116,7 +116,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         {
             while (!isResultReceived.WaitOne(0) || !files.IsEmpty)
             {
-                if (files.TryDequeue(out FileTransferFromRosFeedback file))
+                if (files.TryDequeue(out FileTransferFeedback file))
                 {
                     string completeOutPath = GetCompleteOutPath();
                     File.WriteAllBytes(completeOutPath, file.content);
@@ -129,7 +129,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         {
             while (!files.IsEmpty)
             {
-                if (files.TryDequeue(out FileTransferFromRosFeedback file))
+                if (files.TryDequeue(out FileTransferFeedback file))
                 {
                     string completeOutPath = GetCompleteOutPath();
                     File.WriteAllBytes(completeOutPath, file.content);

@@ -38,7 +38,7 @@ namespace RosSharp.RosBridgeClient
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
         private SerializerEnum Serializer;
 
-        public RosSocket(IProtocol protocol,SerializerEnum serializer=SerializerEnum.JSON)
+        public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.JSON)
         {
             this.protocol = protocol;
             this.Serializer = serializer;
@@ -52,10 +52,10 @@ namespace RosSharp.RosBridgeClient
 
             while (Publishers.Count > 0)
                 Unadvertise(Publishers.First().Key);
-                
+
             while (Subscribers.Count > 0)
                 Unsubscribe(Subscribers.First().Key);
-                
+
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
 
@@ -63,7 +63,7 @@ namespace RosSharp.RosBridgeClient
             {
                 Thread.Sleep(millisecondsWait);
             }
-            
+
             protocol.Close();
         }
 

@@ -11,15 +11,15 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
-    public class FileTransferFromRosResult : Message
+    public class FileTransferResult : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "file_server/FileTransferFromRosResult";
+        public const string RosMessageName = "file_server/FileTransferResult";
 
         //  Result def
         //  Intentionally Left empty
 
-        public FileTransferFromRosResult()
+        public FileTransferResult()
         {
         }
     }

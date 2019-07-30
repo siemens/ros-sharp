@@ -11,11 +11,14 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
-    public class FileTransferFromRosGoal : Message
+    public class FileTransferGoal : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "file_server/FileTransferFromRosGoal";
+        public const string RosMessageName = "file_server/FileTransferGoal";
 
+        //  Siemens AG, 2019
+        //  Author: Sifan Ye (sifan.ye@siemens.com)
+        //  File Transfer Action used in File Transfer To/From Ros
         //  Goal Def
         public byte type;
         //  Type of file sending operation
@@ -26,21 +29,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
         //  Either package_name/file_name for single file
         //      or package_name for package
         //      or path for directory
-        public string[] types;
-        //  Extension of files to be transferred (e.g. .msg, .srv, .action)
+        public string[] extensions;
+        //  Extensions of files to be transferred (e.g. .msg, .srv, .action)
 
-        public FileTransferFromRosGoal()
+        public FileTransferGoal()
         {
             this.type = 0;
             this.identifier = "";
-            this.types = new string[0];
+            this.extensions = new string[0];
         }
 
-        public FileTransferFromRosGoal(byte type, string identifier, string[] types)
+        public FileTransferGoal(byte type, string identifier, string[] extensions)
         {
             this.type = type;
             this.identifier = identifier;
-            this.types = types;
+            this.extensions = extensions;
         }
     }
 }

@@ -238,8 +238,8 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             // Check source/destination start with ROS:
             if (sourcePath.StartsWith("ROS://"))
             {
-                FileTransferFromRosAction action = new FileTransferFromRosAction();
-                FileTransferFromRosGoal goal = action.action_goal.goal;
+                FileTransferAction action = new FileTransferAction();
+                FileTransferGoal goal = action.action_goal.goal;
                 string[] resourceIdentifier = sourcePath.Substring(6).Split(':');
                 string serverURL = "ws://" + resourceIdentifier[0] + ":" + resourceIdentifier[1];
                 string identifier = resourceIdentifier[2];
@@ -249,7 +249,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 if (package) {
                     goal.type = 1;
                     goal.identifier = identifier;
-                    goal.types = extensions;
+                    goal.extensions = extensions;
                 }
 
                 // Directory files

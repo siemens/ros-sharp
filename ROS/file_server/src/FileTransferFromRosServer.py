@@ -18,7 +18,7 @@ class SendFileServer(object):
         
         rospy.init_node(self._actionName)
         
-        self._simpleActionServer = actionlib.SimpleActionServer(self._actionName, file_server.msg.SendFilesAction, execute_cb = self.execute_cb, auto_start = False)
+        self._simpleActionServer = actionlib.SimpleActionServer(self._actionName, file_server.msg.FileTransferAction, execute_cb = self.execute_cb, auto_start = False)
         self._simpleActionServer.start()
     
     def findFilesInDir(self, dir, isRecursive):
@@ -57,10 +57,10 @@ class SendFileServer(object):
         if goal.type == goal.PACKAGE :
             pkgPath = rospkg.RosPack().get_path(goal.identifier)
             rospy.loginfo("%s: Package path: %s" % (self._scriptName, pkgPath))
-            if len(goal.types) == 0:
+            if len(goal.extensions) == 0:
                 files.extend(self.findFilesInDir(pkgPath, True))
             else:
-                for type in goal.types:
+                for type in goal.extensions:
                     filesOfType = self.findFilesInDirWithExt(pkgPath, type, True)
                     rospy.loginfo("%s: found %i files of type %s in package %s" % (self._scriptName, len(filesOfType), type, goal.identifier))
                     files.extend(filesOfType)

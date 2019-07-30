@@ -14,17 +14,17 @@ using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
-    public class FileTransferFromRosActionGoal : ActionGoal<FileTransferFromRosGoal>
+    public class FileTransferActionGoal : ActionGoal<FileTransferGoal>
     {
         [JsonIgnore]
-        public const string RosMessageName = "file_server/FileTransferFromRosActionGoal";
+        public const string RosMessageName = "file_server/FileTransferActionGoal";
 
-        public FileTransferFromRosActionGoal() : base()
+        public FileTransferActionGoal() : base()
         {
-            this.goal = new FileTransferFromRosGoal();
+            this.goal = new FileTransferGoal();
         }
 
-        public FileTransferFromRosActionGoal(Header header, GoalID goal_id, FileTransferFromRosGoal goal) : base(header, goal_id)
+        public FileTransferActionGoal(Header header, GoalID goal_id, FileTransferGoal goal) : base(header, goal_id)
         {
             this.goal = goal;
         }

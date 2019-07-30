@@ -1,3 +1,7 @@
+# Siemens AG, 2019
+# Author: Sifan Ye (sifan.ye@siemens.com)
+# File Transfer Action used in File Transfer To/From Ros
+
 # Goal Def
 uint8 type             # Type of file sending operation
 uint8 SINGLE     = 0   # Send a single file
@@ -6,7 +10,7 @@ uint8 RECURSIVE  = 2   # Send all files in a directory (recursively)
 string identifier      # Either package_name/file_name for single file
                        #     or package_name for package
                        #     or path for directory
-string[] types         # Extension of files to be transferred (e.g. .msg, .srv, .action)
+string[] extensions    # Extensions of files to be transferred (e.g. .msg, .srv, .action)
 ---
 # Result def
 # Intentionally Left empty
