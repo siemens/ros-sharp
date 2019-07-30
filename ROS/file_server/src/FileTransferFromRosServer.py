@@ -52,14 +52,18 @@ class SendFileServer(object):
         
         # Find and collect files
         # Handle Single File
+        
         # Handle Package
         if goal.type == goal.PACKAGE :
             pkgPath = rospkg.RosPack().get_path(goal.identifier)
             rospy.loginfo("%s: Package path: %s" % (self._scriptName, pkgPath))
-            for type in goal.types:
-                filesOfType = self.findFilesInDirWithExt(pkgPath, type, True)
-                rospy.loginfo("%s: found %i files of type %s in package %s" % (self._scriptName, len(filesOfType), type, goal.identifier))
-                files.extend(filesOfType)
+            if len(goal.types) == 0:
+                files.extend(self.findFilesInDir(pkgPath, True))
+            else:
+                for type in goal.types:
+                    filesOfType = self.findFilesInDirWithExt(pkgPath, type, True)
+                    rospy.loginfo("%s: found %i files of type %s in package %s" % (self._scriptName, len(filesOfType), type, goal.identifier))
+                    files.extend(filesOfType)
         # Handle Recursive
         
         # Send files as feedback

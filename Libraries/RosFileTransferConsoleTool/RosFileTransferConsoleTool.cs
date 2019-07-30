@@ -14,155 +14,43 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 
-using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.FileServer;
+using RosSharp.RosBridgeClient.Protocols;
 
 namespace RosSharp.RosBridgeClient.FileTransfer
 {
-    public class FileTransferFromRosConsoleClient : ActionClient<FileTransferFromRosAction, FileTransferFromRosActionGoal, FileTransferFromRosActionResult, FileTransferFromRosActionFeedback, FileTransferFromRosGoal, FileTransferFromRosResult, FileTransferFromRosFeedback>
-    {
-        private readonly string outPath;
-
-        private ConcurrentQueue<FileTransferFromRosFeedback> files;
-
-        private readonly int serverWaitTimeout;
-        private ManualResetEvent isResultReceived = new ManualResetEvent(false);
-
-        public FileTransferFromRosConsoleClient(FileTransferFromRosAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
-        {
-            this.outPath = outPath;
-            this.serverWaitTimeout = serverWaitTimeout;
-
-            files = new ConcurrentQueue<FileTransferFromRosFeedback>();
-        }
-
-        public void Execute()
-        {
-            Start();
-
-            Console.WriteLine("Wait for server...");
-            WaitForActionServer();
-
-            SendGoal();
-
-            WriteFiles();
-
-            Console.WriteLine("No more files to receive. Flushing files queue");
-            FlushFilesQueue();
-
-            Stop();
-        }
-
-        protected override void WaitForActionServer()
-        {
-            while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > serverWaitTimeout)
-            {
-                Thread.Sleep(millisecondsTimestep);
-            }
-        }
-
-        protected override void WaitForResult()
-        {
-            // Left empty since write files will spin
-        }
-
-        protected override void FeedbackHandler()
-        {
-            files.Enqueue(action.action_feedback.feedback);
-        }
-
-        protected override void ResultHandler()
-        {
-            isResultReceived.Set();
-        }
-
-        private string GetCompleteOutPath()
-        {
-            string[] rosPathStructure = action.action_feedback.feedback.path.Split('/');
-            string extendedOutPath = outPath;
-
-            // Get output path
-            switch (action.action_goal.goal.type)
-            {
-                case 0:
-                    // Single File
-                    break;
-                case 1:
-                    // Package
-                    int indexOfPackageName = Array.IndexOf(rosPathStructure, action.action_goal.goal.identifier);
-                    for (int i = indexOfPackageName; i < rosPathStructure.Length - 1; i++)
-                    {
-                        extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[i]);
-                    }
-                    if (!Directory.Exists(extendedOutPath))
-                    {
-                        Directory.CreateDirectory(extendedOutPath);
-                    }
-                    extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[rosPathStructure.Length - 1]);
-                    break;
-                case 2:
-                    // Recursive
-                    break;
-            }
-
-            return extendedOutPath;
-        }
-
-        private void WriteFiles()
-        {
-            while (!isResultReceived.WaitOne(0) || !files.IsEmpty)
-            {
-                if (files.TryDequeue(out FileTransferFromRosFeedback file))
-                {
-                    string completeOutPath = GetCompleteOutPath();
-                    File.WriteAllBytes(completeOutPath, file.content);
-                    Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
-                }
-            }
-        }
-
-        private void FlushFilesQueue()
-        {
-            while (!files.IsEmpty)
-            {
-                if (files.TryDequeue(out FileTransferFromRosFeedback file))
-                {
-                    string completeOutPath = GetCompleteOutPath();
-                    File.WriteAllBytes(completeOutPath, file.content);
-                    Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
-                }
-            }
-        }
-    }
-
     public class RosFileTransferConsoleTool
     {
         private static readonly string usage = 
             "Usage:\n" +
-            "RosFileTransfer.exe [-h | --help] [-v | --verbose] [-r | --recursive] [-p | --package <package-name>] <source-path> <destination-path> [-ext | --extensions <array-of-extensions>]\n" +
+            "RosFileTransfer.exe [-h | --help] [-v | --verbose] [-r | --recursive] [-p | --package <package-name>] <source-path> <destination-path> [-ext | --extensions <array-of-extensions>] [--protocol <Sharp | NET>] [--serializer <JSON | BSON>]\n" +
             "    help\t\t\tPrints this message. Only valid if it is the first flag\n" +
             "    verbose\t\t\tOutputs extra information\n" +
             "    recursive\t\t\tRecursively transfers all files in given directory\n" +
             "    package\t\t\tTransfers all files of a given package\n" +
             "    extensions\t\t\tSpecifies a list of extensions to transfer\n" +
             "              \t\t\tPlease specify the array of extensions wrapped in {} and seperated by , only.\n" +
-            "              \t\t\tFor example: [msg,srv,action]\n" + 
+            "              \t\t\tFor example: [.msg,.srv,.action]\n" + 
+            "    protocol\t\t\tSpecifies the WebSocket Protocol used. Defaults to Sharp\n" +
+            "    serializer\t\t\tSpecifies the serializer used. Defaults to JSON\n" + 
             "Note:\n" +
             "- For single file transfer, we will politely ignore all extensions. Please provide extension in source path\n" +
-            "- For source/destination path, start with `ROS:` to represent a path on the machine where ROS is running.\n" +
-            "- For ROS path, please use UNIX path format";
+            "- For source/destination path, start with `ROS://` to represent a path on the machine where ROS is running.\n" +
+            "  - Then follow with IP and port of hosting machine for single file and directory files\n" +
+            "  e.g. ROS://192.168.0.1:9090:~/catkin_ws \n" + 
+            "  - Or follow with package anme for package files\n" + 
+            "  e.g. ROS://192.168.0.1:9090:std_msgs";
 
         private static readonly HashSet<string> validOptions = new HashSet<string>(){
             "-h", "--help",
             "-v", "--verbose",
             "-r", "--recursive",
             "-p", "--package",
-            "-ext", "--extensions"
+            "-ext", "--extensions",
+            "--protocol",
+            "--serializer"
         };
 
         public static void Main(string[] args)
@@ -175,7 +63,10 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
             string sourcePath = "";
             string destinationPath = "";
-            string[] extensions;
+            string[] extensions = new string[0];
+
+            Protocol protocol = Protocol.WebSocketSharp;
+            RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
 
             // Parse Arguments
             if (args.Length == 0)
@@ -280,6 +171,50 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                     continue;
                 }
 
+                if (arg.Equals("--protocol"))
+                {
+                    if (i == args.Length - 1 || !args[i+1].Equals("NET") || !args[i+1].Equals("Sharp"))
+                    {
+                        Console.WriteLine("No protocol specified. Using Sharp");
+                        continue;
+                    }
+                    else
+                    {
+                        switch (args[i + 1])
+                        {
+                            case "NET":
+                                protocol = Protocol.WebSocketNET;
+                                break;
+                            case "Sharp":
+                                protocol = Protocol.WebSocketSharp;
+                                break;
+                        }
+                        continue;
+                    }
+                }
+
+                if (arg.Equals("--serializer"))
+                {
+                    if (i == args.Length - 1 || !args[i + 1].Equals("JSON") || !args[i + 1].Equals("BSON"))
+                    {
+                        Console.WriteLine("No serializer specified. Using JSON");
+                        continue;
+                    }
+                    else
+                    {
+                        switch (args[i + 1])
+                        {
+                            case "JSON":
+                                serializer = RosSocket.SerializerEnum.JSON;
+                                break;
+                            case "BSON":
+                                serializer = RosSocket.SerializerEnum.BSON;
+                                break;
+                        }
+                        continue;
+                    }
+                }
+
                 if (sourcePath.Equals(""))
                 {
                     sourcePath = arg;
@@ -297,6 +232,32 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 {
                     Console.WriteLine("Mumble mumble");
                 }
+            }
+
+            // Do work
+            // Check source/destination start with ROS:
+            if (sourcePath.StartsWith("ROS://"))
+            {
+                FileTransferFromRosAction action = new FileTransferFromRosAction();
+                FileTransferFromRosGoal goal = action.action_goal.goal;
+                string[] resourceIdentifier = sourcePath.Substring(6).Split(':');
+                string serverURL = "ws://" + resourceIdentifier[0] + ":" + resourceIdentifier[1];
+                string identifier = resourceIdentifier[2];
+                // Single File
+
+                // Package Files
+                if (package) {
+                    goal.type = 1;
+                    goal.identifier = identifier;
+                    goal.types = extensions;
+                }
+
+                // Directory files
+
+                // Create client
+                Console.WriteLine(serverURL);
+                FileTransferFromRosConsoleClient client = new FileTransferFromRosConsoleClient(action, destinationPath, serverURL, protocol, serializer);
+                client.Execute();
             }
         }
     }

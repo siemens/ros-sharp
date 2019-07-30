@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileTransferFromRosConsoleClient.cs" />
     <Compile Include="RosFileTransferConsoleTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
