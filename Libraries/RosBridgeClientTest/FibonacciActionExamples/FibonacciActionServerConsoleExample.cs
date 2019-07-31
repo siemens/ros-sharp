@@ -79,6 +79,7 @@ namespace RosSharp.RosBridgeClientTest
             {
                 if (!isProcessingGoal.WaitOne(0))
                 {
+                    Console.WriteLine("Goal cancelled by client");
                     return;
                 }
                 sequence.Add(sequence[i] + sequence[i - 1]);

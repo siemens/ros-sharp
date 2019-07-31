@@ -51,7 +51,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
             WriteFiles();
 
-            Console.WriteLine("No more files to receive. Flushing files queue");
+            Console.WriteLine("Transfer finished. Flushing files queue");
             FlushFilesQueue();
 
             Stop();
@@ -75,9 +75,22 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             files.Enqueue(action.action_feedback.feedback);
         }
 
+        protected override void StatusHandler()
+        {
+            if (goalStatus != null) {
+                if (goalStatus.status == (byte)ActionStatus.ABORTED)
+                {
+                    Console.Error.WriteLine(goalStatus.text);
+                }
+            }
+        }
+
         protected override void ResultHandler()
         {
             isResultReceived.Set();
+            if (action.action_result.status.status == (byte)ActionStatus.ABORTED) {
+                Console.Error.WriteLine(action.action_result.status.text);
+            }
         }
 
         private string GetCompleteOutPath()
@@ -127,6 +140,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
         private void FlushFilesQueue()
         {
+            Console.WriteLine("Flushing " + files.Count + " files");
             while (!files.IsEmpty)
             {
                 if (files.TryDequeue(out FileTransferFeedback file))
@@ -136,6 +150,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                     Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
                 }
             }
+            Console.WriteLine("Flushed.");
         }
     }
 }

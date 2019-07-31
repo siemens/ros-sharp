@@ -47,7 +47,7 @@ namespace RosSharp.RosBridgeClient
         private string feedbackSubscriptionID;
         private string resultSubscriptionID;
 
-        protected ActionStatus actionStatus;
+        protected GoalStatus goalStatus;
 
         protected TAction action;
 
@@ -91,26 +91,30 @@ namespace RosSharp.RosBridgeClient
         // Implement by user to handle feedback.
         protected abstract void FeedbackHandler();
 
+        // Implement by user to handle status
+        protected abstract void StatusHandler();
+
         // Implement by user to handle result.
         protected abstract void ResultHandler();
 
         private void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
-            actionStatus = (ActionStatus)actionFeedback.status.status;
+            goalStatus = actionFeedback.status;
             FeedbackHandler();
         }
 
         private void ResultCallback(TActionResult actionResult) {
             action.action_result = actionResult;
-            actionStatus = (ActionStatus)actionResult.status.status;
+            goalStatus = actionResult.status;
             ResultHandler();
         }
 
         private void StatusCallback(GoalStatusArray actionGoalStatusArray) {
             if (actionGoalStatusArray.status_list.Length > 0) {
-                actionStatus = (ActionStatus)actionGoalStatusArray.status_list[0].status;
+                goalStatus = actionGoalStatusArray.status_list[0];
             }
             lastStatusUpdateTime = DateTime.Now;
+            StatusHandler();
         }
 
         public string GetFeedbackLogString() {

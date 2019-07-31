@@ -108,6 +108,8 @@ namespace RosSharp.RosBridgeClient
                 action.action_goal.goal_id = goalID;
                 CancellationHandler();
                 UpdateAndPublishStatus(ActionStatus.PREEMPTED);
+                PublishFeedback();
+                PublishResult();
             }
         }
 

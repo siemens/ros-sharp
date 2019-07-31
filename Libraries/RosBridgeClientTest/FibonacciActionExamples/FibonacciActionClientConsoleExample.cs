@@ -61,6 +61,11 @@ namespace RosSharp.RosBridgeClientTest
             Console.WriteLine(GetFeedbackLogString());
         }
 
+        protected override void StatusHandler()
+        {
+            // Nothing to do
+        }
+
         protected override void ResultHandler()
         {
             Console.WriteLine(GetResultLogString());
