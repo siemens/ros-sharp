@@ -38,7 +38,8 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             "Note:\n" +
             "- For single file transfer, we will politely ignore all extensions. Please provide extension in source path\n" +
             "- For source/destination path, start with `ROS://` to represent a path on the machine where ROS is running.\n" +
-            "  - Then follow with IP and port of hosting machine for single file and directory files\n" +
+            "  - Then follow with IP and port of hosting machine for single file and directory files,\n" +
+            "  - where '~' denotes the home directory of the user who started the server." +
             "  e.g. ROS://192.168.0.1:9090:~/catkin_ws \n" + 
             "  - Or follow with package anme for package files\n" + 
             "  e.g. ROS://192.168.0.1:9090:std_msgs";
@@ -244,6 +245,9 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 string serverURL = "ws://" + resourceIdentifier[0] + ":" + resourceIdentifier[1];
                 string identifier = resourceIdentifier[2];
                 // Single File
+                if (!package && !recursive) {
+
+                }
 
                 // Package Files
                 if (package) {
@@ -253,6 +257,11 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 }
 
                 // Directory files
+                if (recursive) {
+                    goal.type = 2;
+                    goal.identifier = identifier;
+                    goal.extensions = extensions;
+                }
 
                 // Create client
                 Console.WriteLine(serverURL);

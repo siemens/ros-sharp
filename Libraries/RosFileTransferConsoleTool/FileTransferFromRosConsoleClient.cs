@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         private readonly int serverWaitTimeout;
         private ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
-        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.1f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
+        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
         {
             this.outPath = outPath;
             this.serverWaitTimeout = serverWaitTimeout;
@@ -49,9 +49,10 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
             SendGoal();
 
-            WriteFiles();
+            Thread writeFiles = new Thread(WriteFiles);
+            writeFiles.Start();
 
-            Console.WriteLine("Transfer finished. Flushing files queue");
+            writeFiles.Join();
             FlushFilesQueue();
 
             Stop();
@@ -98,9 +99,9 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             }
         }
 
-        private string GetCompleteOutPath()
+        private string GetCompleteOutPath(FileTransferFeedback file)
         {
-            string[] rosPathStructure = action.action_feedback.feedback.path.Split('/');
+            string[] rosPathStructure = file.path.Split('/');
             string extendedOutPath = outPath;
 
             // Get output path
@@ -116,16 +117,24 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                     {
                         extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[i]);
                     }
-                    if (!Directory.Exists(extendedOutPath))
-                    {
-                        Directory.CreateDirectory(extendedOutPath);
-                    }
-                    extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[rosPathStructure.Length - 1]);
                     break;
                 case 2:
                     // Recursive
+                    string[] goalPathStructure = action.action_goal.goal.identifier.Split('/');
+                    string dirName = goalPathStructure[goalPathStructure.Length - 1];
+                    int indexOfDirName = Array.IndexOf(rosPathStructure, dirName);
+                    for (int i = indexOfDirName; i < rosPathStructure.Length - 1; i++) {
+                        extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[i]);
+                    }
                     break;
             }
+            // Create directory if it doesn't exist yet
+            if (!Directory.Exists(extendedOutPath))
+            {
+                Directory.CreateDirectory(extendedOutPath);
+            }
+            // Append file name
+            extendedOutPath = Path.Combine(extendedOutPath, rosPathStructure[rosPathStructure.Length - 1]);
 
             return extendedOutPath;
         }
@@ -136,10 +145,11 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             {
                 if (files.TryDequeue(out FileTransferFeedback file))
                 {
-                    string completeOutPath = GetCompleteOutPath();
+                    string completeOutPath = GetCompleteOutPath(file);
                     File.WriteAllBytes(completeOutPath, file.content);
                     Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
                 }
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 
@@ -150,10 +160,11 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             {
                 if (files.TryDequeue(out FileTransferFeedback file))
                 {
-                    string completeOutPath = GetCompleteOutPath();
+                    string completeOutPath = GetCompleteOutPath(file);
                     File.WriteAllBytes(completeOutPath, file.content);
                     Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
                 }
+                Thread.Sleep(millisecondsTimestep);
             }
             Console.WriteLine("Flushed.");
         }
