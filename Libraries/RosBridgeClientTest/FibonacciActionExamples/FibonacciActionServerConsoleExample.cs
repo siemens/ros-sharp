@@ -98,16 +98,20 @@ namespace RosSharp.RosBridgeClientTest
             isProcessingGoal.Reset();
 
             Thread.Sleep(millisecondsTimestep);
-            Console.WriteLine("Ready for next goal...(status = PENDING)");
-            action.action_feedback = new FibonacciActionFeedback();
-            UpdateAndPublishStatus(ActionStatus.PENDING);
+            Console.WriteLine("Ready for next goal...");
+            UpdateAndPublishStatus(ActionStatus.NA);
             Console.WriteLine("Press any key to stop server...\n");
         }
 
-        protected override void CancellationHandler()
+        protected override void PreemtionHandler()
         {
             isProcessingGoal.Reset();
             Console.WriteLine("Goal cancelled by client");
+        }
+
+        protected override void RecallHandler()
+        {
+            // Left blank for the example
         }
     }
 

@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient
         protected int millisecondsTimeout;
         protected int millisecondsTimestep;
 
-        protected ActionStatus actionStatus;
+        protected ActionStatus actionStatus = ActionStatus.NA;
 
         private readonly RosSocket socket;
 
@@ -69,7 +69,7 @@ namespace RosSharp.RosBridgeClient
             cancelSubscriptionID = socket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, millisecondsTimestep);
             goalSubscriptionID = socket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, millisecondsTimestep);
 
-            UpdateAndPublishStatus(ActionStatus.PENDING);
+            UpdateAndPublishStatus(ActionStatus.NA);
         }
 
         // Implemented by user to wait for goal
@@ -81,16 +81,20 @@ namespace RosSharp.RosBridgeClient
         // Implemented by user to respond to a goal
         protected abstract void GoalHandler();
 
-        // Implemented by user to respond to a goal cancellation request
-        protected abstract void CancellationHandler();
+        // Implemented by user to recall a goal
+        protected abstract void RecallHandler();
+
+        // Implemented by user to preempt a goal
+        protected abstract void PreemtionHandler();
 
         // When receive a new goal
         private void GoalCallback(TActionGoal actionGoal)
         {
             action.action_goal = actionGoal;
-            UpdateAndPublishStatus(ActionStatus.ACTIVE);
+            UpdateAndPublishStatus(ActionStatus.PENDING);
             if (IsGoalValid())
             {
+                UpdateAndPublishStatus(ActionStatus.ACTIVE);
                 GoalHandler();
             }
             else
@@ -102,14 +106,29 @@ namespace RosSharp.RosBridgeClient
         // When the goal is cancelled by the client
         private void CancelCallback(GoalID goalID)
         {
-            if (actionStatus == ActionStatus.ACTIVE)
-            {
-                UpdateAndPublishStatus(ActionStatus.PREEMPTING);
-                action.action_goal.goal_id = goalID;
-                CancellationHandler();
-                UpdateAndPublishStatus(ActionStatus.PREEMPTED);
-                PublishFeedback();
-                PublishResult();
+            switch (actionStatus) {
+                case ActionStatus.NA:
+                    // This should never be reached
+                    break;
+                case ActionStatus.PENDING:
+                    UpdateAndPublishStatus(ActionStatus.RECALLING);
+                    action.action_goal.goal_id = goalID;
+                    RecallHandler();
+                    UpdateAndPublishStatus(ActionStatus.RECALLED);
+                    PublishFeedback();
+                    PublishResult();
+                    break;
+                case ActionStatus.ACTIVE:
+                    UpdateAndPublishStatus(ActionStatus.PREEMPTING);
+                    action.action_goal.goal_id = goalID;
+                    PreemtionHandler();
+                    UpdateAndPublishStatus(ActionStatus.PREEMPTED);
+                    PublishFeedback();
+                    PublishResult();
+                    break;
+                default:
+                    // Can't cancel goal in other states
+                    break;
             }
         }
 
@@ -121,15 +140,21 @@ namespace RosSharp.RosBridgeClient
 
         protected void PublishStatus()
         {
-            socket.Publish(statusPublicationID,
-                new GoalStatusArray
-                {
-                    status_list = new GoalStatus[]
+            if (actionStatus == ActionStatus.NA)
+            {
+                socket.Publish(statusPublicationID, new GoalStatusArray());
+            }
+            else {
+                socket.Publish(statusPublicationID,
+                    new GoalStatusArray
                     {
-                        new GoalStatus { status = (byte)actionStatus }
+                        status_list = new GoalStatus[]
+                        {
+                            new GoalStatus { status = (byte)actionStatus }
+                        }
                     }
-                }
-            );
+                );
+            }
         }
 
         protected void PublishFeedback()
@@ -167,5 +192,10 @@ namespace RosSharp.RosBridgeClient
         public void Stop() {
             socket.Close(millisecondsTimestep);
         }
+    }
+
+    public class ActionServerException : Exception
+    {
+        public ActionServerException(string msg) : base(msg) { }
     }
 }

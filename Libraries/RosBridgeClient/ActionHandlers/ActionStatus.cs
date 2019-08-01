@@ -18,6 +18,7 @@ namespace RosSharp.RosBridgeClient
     // This is defined according to actionlib_msgs/GoalStatus
     public enum ActionStatus
     {
+        NA = -1,    // For internal server use. If status is NA, published status array will have length 0
         PENDING,    //  The goal has yet to be processed by the action server
         ACTIVE,     //  The goal is currently being processed by the action server
         PREEMPTED,  //  The goal received a cancel request after it started executing and has since completed its execution (Terminal State)
