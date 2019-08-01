@@ -41,6 +41,11 @@ namespace RosSharp.RosBridgeClientTest
             Stop();
         }
 
+        protected override string GoalID()
+        {
+            return GenRandomGoalID("fibonacci-sharp-console-");
+        }
+
         protected override void WaitForActionServer()
         {
             while((DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout) {

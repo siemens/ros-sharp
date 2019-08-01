@@ -57,6 +57,11 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             Stop();
         }
 
+        protected override string GoalID()
+        {
+            return GenRandomGoalID("file-transfer-from-ros-console-");
+        }
+
         protected override void WaitForActionServer()
         {
             while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > serverWaitTimeout)

@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient
         public RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
         public int timeout = 10;
         public float timeStep = 0.2f;
-        public int fibonacciOrder = 10;
+        public int fibonacciOrder = 20;
 
         private FibonacciActionClient client;
 
@@ -80,6 +80,11 @@ namespace RosSharp.RosBridgeClient
     {
         public FibonacciActionClient(FibonacciAction action, string actionName, string serverURL, Protocol protocol, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, serverURL, protocol, serializer, timeStep) { }
 
+        protected override string GoalID()
+        {
+            return GenRandomGoalID("fibonacci-unity-");
+        }
+
         protected override void WaitForActionServer()
         {
             // We don't wait for server in this example,
@@ -90,6 +95,11 @@ namespace RosSharp.RosBridgeClient
         protected override void FeedbackHandler()
         {
             // Not implemented since get string directly returns stored feedback
+        }
+
+        protected override void StatusHandler()
+        {
+            // Nothing to do here
         }
 
         protected override void WaitForResult()
@@ -105,7 +115,10 @@ namespace RosSharp.RosBridgeClient
 
         public string GetStatusString()
         {
-            return actionStatus.ToString();
+            if (goalStatus != null) {
+                return ((ActionStatus)(goalStatus.status)).ToString();
+            }
+            return "";
         }
 
         public string GetFeedbackString()

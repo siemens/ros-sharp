@@ -15,6 +15,7 @@ limitations under the License.
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -68,6 +69,8 @@ namespace RosSharp.RosBridgeClient
     {
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
 
+        private Task goalHandle;
+
         public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
 
         protected override bool IsGoalValid()
@@ -88,6 +91,12 @@ namespace RosSharp.RosBridgeClient
 
         protected override void GoalHandler()
         {
+            goalHandle = new Task(() => ExecuteFibonacciGoal());
+            goalHandle.Start();
+        }
+
+        private void ExecuteFibonacciGoal()
+        {
             isProcessingGoal.Set();
 
             Debug.Log("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
@@ -101,6 +110,10 @@ namespace RosSharp.RosBridgeClient
             {
                 if (!isProcessingGoal.WaitOne(0))
                 {
+                    action.action_result.result.sequence = sequence.ToArray();
+                    PublishResult();
+                    Debug.Log("Result Published to client...");
+                    Debug.Log("Goal preempted");
                     return;
                 }
                 sequence.Add(sequence[i] + sequence[i - 1]);
@@ -117,15 +130,21 @@ namespace RosSharp.RosBridgeClient
             isProcessingGoal.Reset();
 
             Thread.Sleep(millisecondsTimestep);
-            Debug.Log("Ready for next goal...(status = PENDING)");
+            Debug.Log("Ready for next goal...");
             action.action_feedback = new FibonacciActionFeedback();
-            UpdateAndPublishStatus(ActionStatus.PENDING);
+            UpdateAndPublishStatus(ActionStatus.NA);
         }
 
-        protected override void CancellationHandler()
+        protected override void RecallHandler()
+        {
+            // Left blank for the example
+        }
+
+        protected override void PreemptionHandler()
         {
             isProcessingGoal.Reset();
-            Debug.Log("Goal cancelled by client");
+            Debug.Log("Preempting");
+            goalHandle.Wait();
         }
 
         public void UpdateStatus()

@@ -85,7 +85,7 @@ namespace RosSharp.RosBridgeClient
         protected abstract void RecallHandler();
 
         // Implemented by user to preempt a goal
-        protected abstract void PreemtionHandler();
+        protected abstract void PreemptionHandler();
 
         // When receive a new goal
         private void GoalCallback(TActionGoal actionGoal)
@@ -121,7 +121,7 @@ namespace RosSharp.RosBridgeClient
                 case ActionStatus.ACTIVE:
                     UpdateAndPublishStatus(ActionStatus.PREEMPTING);
                     action.action_goal.goal_id = goalID;
-                    PreemtionHandler();
+                    PreemptionHandler();
                     UpdateAndPublishStatus(ActionStatus.PREEMPTED);
                     PublishFeedback();
                     PublishResult();

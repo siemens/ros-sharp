@@ -28,6 +28,8 @@ namespace RosSharp.RosBridgeClientTest
         private ManualResetEvent isWaitingForGoal = new ManualResetEvent(false);
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
 
+        private Thread goalHandle;
+
         public FibonacciActionConsoleServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
 
         public void Execute()
@@ -66,6 +68,12 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void GoalHandler()
         {
+            goalHandle = new Thread(ExecuteFibonacciGoal);
+            goalHandle.Start();
+        }
+
+        private void ExecuteFibonacciGoal()
+        {
             isProcessingGoal.Set();
 
             Console.WriteLine("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
@@ -79,7 +87,12 @@ namespace RosSharp.RosBridgeClientTest
             {
                 if (!isProcessingGoal.WaitOne(0))
                 {
-                    Console.WriteLine("Goal cancelled by client");
+                    action.action_result.result.sequence = sequence.ToArray();
+                    PublishResult();
+                    Console.WriteLine(GetResultLogString());
+                    Console.WriteLine("Result Published to client...");
+                    Console.WriteLine("Goal preempted");
+                    Console.WriteLine("Press any key to stop server...\n");
                     return;
                 }
                 sequence.Add(sequence[i] + sequence[i - 1]);
@@ -103,10 +116,11 @@ namespace RosSharp.RosBridgeClientTest
             Console.WriteLine("Press any key to stop server...\n");
         }
 
-        protected override void PreemtionHandler()
+        protected override void PreemptionHandler()
         {
             isProcessingGoal.Reset();
-            Console.WriteLine("Goal cancelled by client");
+            Console.WriteLine("Preempting goal");
+            goalHandle.Join();
         }
 
         protected override void RecallHandler()

@@ -74,6 +74,7 @@ namespace RosSharp.RosBridgeClient
 
         public void SendGoal()
         {
+            action.action_goal.goal_id.id = GoalID();
             socket.Publish(goalPublicationID, action.action_goal);
         }
 
@@ -81,6 +82,9 @@ namespace RosSharp.RosBridgeClient
         {
             socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
+
+        // Implement by user to attach GoalID
+        protected abstract string GoalID();
 
         // Implement by user to wait for action server to be up
         protected abstract void WaitForActionServer();
@@ -96,6 +100,10 @@ namespace RosSharp.RosBridgeClient
 
         // Implement by user to handle result.
         protected abstract void ResultHandler();
+
+        protected string GenRandomGoalID(string prefix) {
+            return prefix + Guid.NewGuid();
+        }
 
         private void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
