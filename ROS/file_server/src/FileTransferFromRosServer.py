@@ -15,8 +15,6 @@ class SendFileServer(object):
         self.actionName = "file_transfer_from_ros"
         self.scriptName = "File Transfer From ROS"
         
-        self.files = []
-        
         rospy.init_node(self.actionName)
         
         self.rate = rospy.Rate(rate)
@@ -45,22 +43,36 @@ class SendFileServer(object):
     def execute_cb(self, goal):
         # Find and collect files.
         # If requests resources are not found, reject goal
+        files = []
         # Handle Single File
         if goal.type == goal.SINGLE:
-            pass
+            path = goal.identifier
+            if(path.startswith("~")):
+                path = os.path.expanduser("~") + path[1:]
+            if(os.path.exists(path)):
+                if(os.path.isfile(path)):
+                    files.append(path)
+                else:
+                    rospy.logerr("%s: '%s' is not a file" % (self.scriptName, goal.identifier))
+                    self.simpleActionServer.set_aborted(text = "'%s' is not a file." % (goal.identifier))
+                    return
+            else:
+                rospy.logerr("%s: File '%s' is not found or not accessible. Goal Aborted" % (self.scriptName, goal.identifier))
+                self.simpleActionServer.set_aborted(text = "File `%s` not found or not accessible." % (goal.identifier))
+                return
         # Handle Package
         if goal.type == goal.PACKAGE:
             try:
                 pkgPath = rospkg.RosPack().get_path(goal.identifier)
                 rospy.loginfo("%s: Package '%s' is located at: %s" %(self.scriptName, goal.identifier, pkgPath))
                 if len(goal.extensions) == 0:
-                    rospy.loginfo("%s: Getting all files in the package")
-                    self.files.extend(self.findFilesInDir(pkgPath))
+                    rospy.loginfo("%s: Getting all files in the package" % (self.scriptName))
+                    files.extend(self.findFilesInDir(pkgPath))
                 else:
                     for type in goal.extensions:
                         filesWithExt = self.findFilesInDirWithExt(pkgPath, type)
                         rospy.loginfo("%s: Found %i files with extension %s in package %s" % (self.scriptName, len(filesOfType), type, goal.identifier))
-                        self.files.extend(filesOfType)
+                        files.extend(filesOfType)
             except rospkg.common.ResourceNotFound:
                 rospy.logerr("%s: Package '%s' not found. Goal aborted." % (self.scriptName, goal.identifier))
                 self.simpleActionServer.set_aborted(text = "Package '%s' not found." % (goal.identifier))
@@ -72,24 +84,24 @@ class SendFileServer(object):
                 path = os.path.expanduser("~") + path[1:]
             if(os.path.exists(path)):
                 if len(goal.extensions) == 0:
-                    self.files.extend(self.findFilesInDir(path))
+                    files.extend(self.findFilesInDir(path))
                 else:
                     for type in goal.extensions:
-                        self.files.extend(self.findFilesInDirWithExt(path, type))
+                        files.extend(self.findFilesInDirWithExt(path, type))
                 rospy.loginfo("%s: Found %i files under %s recursively" % (self.scriptName, len(self.files), goal.identifier))
             else:
                 rospy.logerr("%s: Directory %s not found. Goal aborted." % (self.scriptName, goal.identifier))
                 self.simpleActionServer.set_aborted(text = "Directory %s not found " % (goal.identifier))
                 return
         # Send files as feedback
-        for i in range(len(self.files)):
+        for i in range(len(files)):
             if self.simpleActionServer.is_preempt_requested():
                 rospy.loginfo("%s: Action preempted." % (self.scriptName))
                 self.simpleActionServer.set_preempted()
                 return
-            file = self.files[i]
+            file = files[i]
             rospy.loginfo("%s: Sending %s" % (self.scriptName, file))
-            self.feedback.count = len(self.files)
+            self.feedback.count = len(files)
             self.feedback.number = i + 1
             self.feedback.path = file
             self.feedback.content = open(file, "rb").read()
@@ -97,7 +109,6 @@ class SendFileServer(object):
             self.rate.sleep()
         rospy.loginfo("%s: Succeeded" % (self.scriptName))
         self.simpleActionServer.set_succeeded()
-        
     
 if __name__ == "__main__":
     SendFileServer(5)

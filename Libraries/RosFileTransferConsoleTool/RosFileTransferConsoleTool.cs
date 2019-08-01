@@ -246,22 +246,18 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 string identifier = resourceIdentifier[2];
                 // Single File
                 if (!package && !recursive) {
-
+                    goal.type = 0;
                 }
-
                 // Package Files
                 if (package) {
                     goal.type = 1;
-                    goal.identifier = identifier;
-                    goal.extensions = extensions;
                 }
-
                 // Directory files
                 if (recursive) {
                     goal.type = 2;
-                    goal.identifier = identifier;
-                    goal.extensions = extensions;
                 }
+                goal.identifier = identifier;
+                goal.extensions = extensions;
 
                 // Create client
                 Console.WriteLine(serverURL);

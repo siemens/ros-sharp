@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         private readonly int serverWaitTimeout;
         private ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
-        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
+        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.1f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
         {
             this.outPath = outPath;
             this.serverWaitTimeout = serverWaitTimeout;
@@ -78,7 +78,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
         protected override void FeedbackHandler()
         {
-            files.Enqueue(action.action_feedback.feedback);
+            new Thread(() => files.Enqueue(action.action_feedback.feedback)).Start();
         }
 
         protected override void StatusHandler()
@@ -102,6 +102,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         private string GetCompleteOutPath(FileTransferFeedback file)
         {
             string[] rosPathStructure = file.path.Split('/');
+            string[] goalPathStructure = action.action_goal.goal.identifier.Split('/');
             string extendedOutPath = outPath;
 
             // Get output path
@@ -109,6 +110,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             {
                 case 0:
                     // Single File
+                    // Don't need to do anything here
                     break;
                 case 1:
                     // Package
@@ -120,7 +122,6 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                     break;
                 case 2:
                     // Recursive
-                    string[] goalPathStructure = action.action_goal.goal.identifier.Split('/');
                     string dirName = goalPathStructure[goalPathStructure.Length - 1];
                     int indexOfDirName = Array.IndexOf(rosPathStructure, dirName);
                     for (int i = indexOfDirName; i < rosPathStructure.Length - 1; i++) {
