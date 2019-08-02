@@ -20,6 +20,7 @@ using System.Threading;
 using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -48,7 +49,7 @@ namespace RosSharp.RosBridgeClientTest
             Stop();
         }
 
-        protected override void WaitForGoal()
+        protected void WaitForGoal()
         {
             while (isWaitingForGoal.WaitOne(0))
             {
@@ -57,19 +58,9 @@ namespace RosSharp.RosBridgeClientTest
             }
         }
 
-        protected override bool IsGoalValid()
+        protected bool IsGoalValid()
         {
-            if (action.action_goal.goal.order < 1) {
-                Console.WriteLine("Cannot generate fibonacci sequence of order less than 1");
-                return false;
-            }
-            return true;
-        }
-
-        protected override void GoalHandler()
-        {
-            goalHandle = new Thread(ExecuteFibonacciGoal);
-            goalHandle.Start();
+            return action.action_goal.goal.order >= 1; 
         }
 
         private void ExecuteFibonacciGoal()
@@ -88,13 +79,11 @@ namespace RosSharp.RosBridgeClientTest
                 if (!isProcessingGoal.WaitOne(0))
                 {
                     action.action_result.result.sequence = sequence.ToArray();
-                    PublishResult();
-                    Console.WriteLine(GetResultLogString());
-                    Console.WriteLine("Result Published to client...");
-                    Console.WriteLine("Goal preempted");
+                    SetCanceled();
                     Console.WriteLine("Press any key to stop server...\n");
                     return;
                 }
+
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
@@ -103,29 +92,75 @@ namespace RosSharp.RosBridgeClientTest
                 Thread.Sleep(millisecondsTimestep);
             }
 
-            UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
-            PublishResult();
-            Console.WriteLine(GetResultLogString());
-            Console.WriteLine("Result Published to client...");
-            isProcessingGoal.Reset();
-
-            Thread.Sleep(millisecondsTimestep);
-            Console.WriteLine("Ready for next goal...");
-            UpdateAndPublishStatus(ActionStatus.NA);
-            Console.WriteLine("Press any key to stop server...\n");
+            SetSucceeded();
         }
 
-        protected override void PreemptionHandler()
+        protected override void OnGoalRecalling(GoalID goalID)
+        {
+            // Left blank for this example
+        }
+
+        protected override void OnGoalPreempting()
         {
             isProcessingGoal.Reset();
             Console.WriteLine("Preempting goal");
             goalHandle.Join();
         }
 
-        protected override void RecallHandler()
+        protected override void OnGoalReceived()
         {
-            // Left blank for the example
+            if (IsGoalValid())
+            {
+                SetAccepted("The goal has been accepted by RosSharp Fibonacci Action Console Server");
+            }
+            else
+            {
+                SetRejected("Cannot generate fibonacci sequence of order less than 1");
+            }
+        }
+
+        protected override void OnGoalActive()
+        {
+            goalHandle = new Thread(ExecuteFibonacciGoal);
+            goalHandle.Start();
+        }
+
+        protected override void OnGoalRejected()
+        {
+            LogWarning("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
+        }
+
+        protected override void OnGoalSucceeded()
+        {
+            Console.WriteLine(GetResultLogString());
+            Console.WriteLine("Result Published to client...");
+
+            isProcessingGoal.Reset();
+            Thread.Sleep(millisecondsTimestep);
+            Console.WriteLine("Ready for next goal...");
+            UpdateAndPublishStatus(ActionStatus.NO_GOAL);
+            Console.WriteLine("Press any key to stop server...\n");
+        }
+
+        protected override void OnGoalAborted()
+        {
+            // Left blank for this example
+        }
+
+        protected override void OnGoalCanceled()
+        {
+            PublishResult();
+        }
+
+        protected override void Log(string log)
+        {
+            Console.WriteLine("Fibonacci Action Console Server: [LOG] " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Console.WriteLine("Fibonacci Action Console Server: [WARNING] " + log);
         }
     }
 

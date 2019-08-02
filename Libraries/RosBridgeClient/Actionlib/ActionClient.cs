@@ -105,6 +105,10 @@ namespace RosSharp.RosBridgeClient
             return prefix + Guid.NewGuid();
         }
 
+        protected string GenDefaultID() {
+            return GenRandomGoalID(this.actionName + "-");
+        }
+
         private void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
             goalStatus = actionFeedback.status;
