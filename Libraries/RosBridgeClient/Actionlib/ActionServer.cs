@@ -209,10 +209,10 @@ namespace RosSharp.RosBridgeClient
             switch (actionStatus)
             {
                 case ActionStatus.RECALLING:
-                    UpdateAndPublishStatus(ActionStatus.RECALLING, text);
+                    UpdateAndPublishStatus(ActionStatus.RECALLED, text);
                     break;
                 case ActionStatus.PREEMPTING:
-                    UpdateAndPublishStatus(ActionStatus.PREEMPTING, text);
+                    UpdateAndPublishStatus(ActionStatus.PREEMPTED, text);
                     break;
                 default:
                     LogWarning("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");

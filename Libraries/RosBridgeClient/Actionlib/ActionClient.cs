@@ -111,13 +111,11 @@ namespace RosSharp.RosBridgeClient
 
         private void FeedbackCallback(TActionFeedback actionFeedback) {
             action.action_feedback = actionFeedback;
-            goalStatus = actionFeedback.status;
             FeedbackHandler();
         }
 
         private void ResultCallback(TActionResult actionResult) {
             action.action_result = actionResult;
-            goalStatus = actionResult.status;
             ResultHandler();
         }
 

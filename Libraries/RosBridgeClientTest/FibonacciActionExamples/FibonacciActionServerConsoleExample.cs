@@ -38,11 +38,11 @@ namespace RosSharp.RosBridgeClientTest
             Start();
 
             isWaitingForGoal.Set();
-            Console.WriteLine("Waiting for goal");
+            Log("Waiting for goal...");
             Thread waitForGoal = new Thread(WaitForGoal);
             waitForGoal.Start();
 
-            Console.WriteLine("Press any key to stop server...\n");
+            Log("Press any key to stop server...\n");
             Console.ReadKey(true);
             isWaitingForGoal.Reset();
             waitForGoal.Join();
@@ -67,7 +67,7 @@ namespace RosSharp.RosBridgeClientTest
         {
             isProcessingGoal.Set();
 
-            Console.WriteLine("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
+            Log("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
 
             List<int> sequence = new List<int> { 0, 1 };
 
@@ -79,15 +79,15 @@ namespace RosSharp.RosBridgeClientTest
                 if (!isProcessingGoal.WaitOne(0))
                 {
                     action.action_result.result.sequence = sequence.ToArray();
-                    SetCanceled();
-                    Console.WriteLine("Press any key to stop server...\n");
+                    PublishResult();
+                    Log("Press any key to stop server...\n");
                     return;
                 }
 
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
-                Console.WriteLine(GetFeedbackLogString());
+                Log(GetFeedbackLogString());
 
                 Thread.Sleep(millisecondsTimestep);
             }
@@ -96,17 +96,6 @@ namespace RosSharp.RosBridgeClientTest
             SetSucceeded();
         }
 
-        protected override void OnGoalRecalling(GoalID goalID)
-        {
-            // Left blank for this example
-        }
-
-        protected override void OnGoalPreempting()
-        {
-            isProcessingGoal.Reset();
-            Console.WriteLine("Preempting goal");
-            goalHandle.Join();
-        }
 
         protected override void OnGoalReceived()
         {
@@ -120,10 +109,9 @@ namespace RosSharp.RosBridgeClientTest
             }
         }
 
-        protected override void OnGoalActive()
+        protected override void OnGoalRecalling(GoalID goalID)
         {
-            goalHandle = new Thread(ExecuteFibonacciGoal);
-            goalHandle.Start();
+            // Left blank for this example
         }
 
         protected override void OnGoalRejected()
@@ -131,16 +119,29 @@ namespace RosSharp.RosBridgeClientTest
             LogWarning("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
         }
 
+        protected override void OnGoalActive()
+        {
+            goalHandle = new Thread(ExecuteFibonacciGoal);
+            goalHandle.Start();
+        }
+
+        protected override void OnGoalPreempting()
+        {
+            isProcessingGoal.Reset();
+            Log("Preempting goal");
+            goalHandle.Join();
+        }
+
         protected override void OnGoalSucceeded()
         {
-            Console.WriteLine(GetResultLogString());
-            Console.WriteLine("Result Published to client...");
+            Log(GetResultLogString());
+            Log("Result Published to client...");
 
             isProcessingGoal.Reset();
             Thread.Sleep(millisecondsTimestep);
-            Console.WriteLine("Ready for next goal...");
+            Log("Ready for next goal...");
             UpdateAndPublishStatus(ActionStatus.NO_GOAL);
-            Console.WriteLine("Press any key to stop server...\n");
+            Log("Press any key to stop server...\n");
         }
 
         protected override void OnGoalAborted()
@@ -155,12 +156,12 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void Log(string log)
         {
-            Console.WriteLine("Fibonacci Action Console Server: [LOG] " + log);
+            Console.WriteLine("Fibonacci Action Console Server @ " + DateTime.Now + " : [LOG] " + log);
         }
 
         protected override void LogWarning(string log)
         {
-            Console.WriteLine("Fibonacci Action Console Server: [WARNING] " + log);
+            Console.WriteLine("Fibonacci Action Console Server @ " + DateTime.Now + " : [WARNING] " + log);
         }
     }
 
