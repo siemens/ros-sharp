@@ -73,6 +73,14 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             }
         }
 
+        protected void CancellableWaitForActionServer(ManualResetEvent shouldForActionServer)
+        {
+            while (shouldForActionServer.WaitOne(0) && (DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout)
+            {
+                Thread.Sleep(millisecondsTimestep);
+            }
+        }
+
         protected override void WaitForResult()
         {
             // Left empty since write files will spin

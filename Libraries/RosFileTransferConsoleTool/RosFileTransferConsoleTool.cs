@@ -317,7 +317,6 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 goal.extensions = extensions;
 
                 // Create client
-                Console.WriteLine(serverURL);
                 FileTransferFromRosConsoleClient client = new FileTransferFromRosConsoleClient(action, destinationPath, serverURL, protocol, serializer, secondsTimeout, secondsTimestep, verbose);
                 client.Execute();
             }

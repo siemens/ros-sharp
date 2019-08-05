@@ -154,6 +154,11 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             }
         }
 
+        private void OnInspectorUpdate()
+        {
+            Repaint();
+        }
+
         private void Reset()
         {
             inPkgPath = "";
