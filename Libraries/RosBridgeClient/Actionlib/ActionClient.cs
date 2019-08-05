@@ -144,6 +144,10 @@ namespace RosSharp.RosBridgeClient
                 "---\n";
         }
 
+        protected virtual void Log(string log) { }
+        protected virtual void LogWarning(string log) { }
+        protected virtual void LogError(string log) { }
+
         public void Stop() {
             socket.Close(millisecondsTimestep);
         }

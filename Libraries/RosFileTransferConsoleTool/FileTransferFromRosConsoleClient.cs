@@ -29,13 +29,15 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
         private ConcurrentQueue<FileTransferFeedback> files;
 
-        private readonly int serverWaitTimeout;
         private ManualResetEvent isResultReceived = new ManualResetEvent(false);
 
-        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.1f, int serverWaitTimeout = 3) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, timeStep)
+        private readonly bool verbose;
+
+        public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 3f, float secondsTimestep = 0.1f, bool verbose = false) : base(action, "file_transfer_from_ros", serverURL, protocol, serializer, secondsTimeout, secondsTimestep)
         {
             this.outPath = outPath;
-            this.serverWaitTimeout = serverWaitTimeout;
+
+            this.verbose = verbose;
 
             files = new ConcurrentQueue<FileTransferFeedback>();
         }
@@ -44,7 +46,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         {
             Start();
 
-            Console.WriteLine("Wait for server...");
+            Log("Wait for server...");
             WaitForActionServer();
 
             SendGoal();
@@ -65,7 +67,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
         protected override void WaitForActionServer()
         {
-            while ((DateTime.Now - lastStatusUpdateTime).TotalSeconds > serverWaitTimeout)
+            while ((DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout)
             {
                 Thread.Sleep(millisecondsTimestep);
             }
@@ -86,7 +88,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             if (goalStatus != null) {
                 if (goalStatus.status == (byte)ActionStatus.ABORTED)
                 {
-                    Console.Error.WriteLine(goalStatus.text);
+                    LogError(goalStatus.text);
                 }
             }
         }
@@ -95,7 +97,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
         {
             isResultReceived.Set();
             if (action.action_result.status.status == (byte)ActionStatus.ABORTED) {
-                Console.Error.WriteLine(action.action_result.status.text);
+                LogError(action.action_result.status.text);
             }
         }
 
@@ -148,7 +150,10 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                 {
                     string completeOutPath = GetCompleteOutPath(file);
                     File.WriteAllBytes(completeOutPath, file.content);
-                    Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
+                    if (verbose)
+                    {
+                        Log("(" + file.number + "/" + file.count + ") " + completeOutPath);
+                    }
                 }
                 Thread.Sleep(millisecondsTimestep);
             }
@@ -156,18 +161,42 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
         private void FlushFilesQueue()
         {
-            Console.WriteLine("Flushing " + files.Count + " files");
+            if (verbose)
+            {
+                Log("Flushing " + files.Count + " files");
+            }
             while (!files.IsEmpty)
             {
                 if (files.TryDequeue(out FileTransferFeedback file))
                 {
                     string completeOutPath = GetCompleteOutPath(file);
                     File.WriteAllBytes(completeOutPath, file.content);
-                    Console.WriteLine("(" + file.number + "/" + file.count + ") " + completeOutPath);
+                    if (verbose)
+                    {
+                        Log("(" + file.number + "/" + file.count + ") " + completeOutPath);
+                    }
                 }
                 Thread.Sleep(millisecondsTimestep);
             }
-            Console.WriteLine("Flushed.");
+            if (verbose)
+            {
+                Log("Flushed.");
+            }
+        }
+
+        protected override void Log(string log)
+        {
+            Console.WriteLine("File Transfer Console Client @ " + DateTime.Now + " : [LOG] " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Console.WriteLine("File Transfer Console Client @ " + DateTime.Now + " : [WARNING] " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Console.Error.WriteLine("File Transfer Console Client @ " + DateTime.Now + " : [ERROR] " + log);
         }
     }
 }

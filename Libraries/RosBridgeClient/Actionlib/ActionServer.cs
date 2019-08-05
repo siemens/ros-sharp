@@ -98,12 +98,10 @@ namespace RosSharp.RosBridgeClient
                 case ActionStatus.PENDING:
                     UpdateAndPublishStatus(ActionStatus.RECALLING);
                     OnGoalRecalling(goalID);
-                    SetCanceled();
                     break;
                 case ActionStatus.ACTIVE:
                     UpdateAndPublishStatus(ActionStatus.PREEMPTING);
                     OnGoalPreempting();
-                    SetCanceled();
                     break;
                 default:
                     LogWarning("Goal cannot be canceled under current state: " + actionStatus.ToString() + ". Ignored");
@@ -181,7 +179,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         protected abstract void OnGoalAborted();
-        protected virtual void SetAborted(TResult result = null, string text = "")
+        protected virtual void SetAborted(string text = "")
         {
             switch (actionStatus)
             {
@@ -196,10 +194,6 @@ namespace RosSharp.RosBridgeClient
                 default:
                     LogWarning("Goal cannot be aborted under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
-            }
-            if (result != null)
-            {
-                action.action_result.result = result;
             }
         }
 
@@ -216,7 +210,7 @@ namespace RosSharp.RosBridgeClient
                     break;
                 default:
                     LogWarning("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");
-                    break;
+                    return;
             }
             if (result != null) {
                 action.action_result.result = result;
@@ -290,8 +284,9 @@ namespace RosSharp.RosBridgeClient
             return actionStatus;
         }
 
-        protected abstract void Log(string log);
-        protected abstract void LogWarning(string log);
+        protected virtual void Log(string log) { }
+        protected virtual void LogWarning(string log) { }
+        protected virtual void LogError(string log) { }
 
         public void Stop() {
             socket.Close(millisecondsTimestep);

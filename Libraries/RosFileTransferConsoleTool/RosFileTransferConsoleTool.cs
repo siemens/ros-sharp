@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
     {
         private static readonly string usage = 
             "Usage:\n" +
-            "RosFileTransfer.exe [-h | --help] [-v | --verbose] [-r | --recursive] [-p | --package <package-name>] <source-path> <destination-path> [-ext | --extensions <array-of-extensions>] [--protocol <Sharp | NET>] [--serializer <JSON | BSON>]\n" +
+            "RosFileTransfer.exe [-h | --help] [-v | --verbose] [-r | --recursive] [-p | --package <package-name>] <source-path> <destination-path> [-ext | --extensions <array-of-extensions>] [--protocol <Sharp | NET>] [--serializer <JSON | BSON>] [--timeout <seconds-timeout>] [--timestep <seconds-timestep>]\n" +
             "    help\t\t\tPrints this message. Only valid if it is the first flag\n" +
             "    verbose\t\t\tOutputs extra information\n" +
             "    recursive\t\t\tRecursively transfers all files in given directory\n" +
@@ -51,7 +51,9 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             "-p", "--package",
             "-ext", "--extensions",
             "--protocol",
-            "--serializer"
+            "--serializer",
+            "--timeout",
+            "--timestep"
         };
 
         public static void Main(string[] args)
@@ -68,6 +70,9 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
             Protocol protocol = Protocol.WebSocketSharp;
             RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
+
+            float secondsTimestep = 0.1f;
+            float secondsTimeout = 3f;
 
             // Parse Arguments
             if (args.Length == 0)
@@ -174,7 +179,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
                 if (arg.Equals("--protocol"))
                 {
-                    if (i == args.Length - 1 || !args[i+1].Equals("NET") || !args[i+1].Equals("Sharp"))
+                    if (i == args.Length - 1)
                     {
                         Console.WriteLine("No protocol specified. Using Sharp");
                         continue;
@@ -189,14 +194,18 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                             case "Sharp":
                                 protocol = Protocol.WebSocketSharp;
                                 break;
+                            default:
+                                Console.WriteLine("Invalid protocol " + args[i + 1] + ". Ignored");
+                                break;
                         }
+                        i++;
                         continue;
                     }
                 }
 
                 if (arg.Equals("--serializer"))
                 {
-                    if (i == args.Length - 1 || !args[i + 1].Equals("JSON") || !args[i + 1].Equals("BSON"))
+                    if (i == args.Length - 1)
                     {
                         Console.WriteLine("No serializer specified. Using JSON");
                         continue;
@@ -211,7 +220,55 @@ namespace RosSharp.RosBridgeClient.FileTransfer
                             case "BSON":
                                 serializer = RosSocket.SerializerEnum.BSON;
                                 break;
+                            default:
+                                Console.WriteLine("Invalid serializer " + args[i + 1] + ". Ignored");
+                                break;
                         }
+                        i++;
+                        continue;
+                    }
+                }
+
+                if (arg.Equals("--timeout"))
+                {
+                    if (i == args.Length - 1)
+                    {
+                        Console.WriteLine("No timeout specified. Using 3 seconds");
+                        continue;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            secondsTimeout = float.Parse(args[i + 1]);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.Error.WriteLine(args[i+1] + " is not a valid float value for timeout. Ignored");
+                        }
+                        i++;
+                        continue;
+                    }
+                }
+
+                if (arg.Equals("--timestep"))
+                {
+                    if (i == args.Length - 1)
+                    {
+                        Console.WriteLine("No timestep specified. Using 0.1 seconds");
+                        continue;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            secondsTimestep = float.Parse(args[i + 1]);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.Error.WriteLine(args[i + 1] + " is not a valid float value for timestep. Ignored");
+                        }
+                        i++;
                         continue;
                     }
                 }
@@ -261,7 +318,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
 
                 // Create client
                 Console.WriteLine(serverURL);
-                FileTransferFromRosConsoleClient client = new FileTransferFromRosConsoleClient(action, destinationPath, serverURL, protocol, serializer);
+                FileTransferFromRosConsoleClient client = new FileTransferFromRosConsoleClient(action, destinationPath, serverURL, protocol, serializer, secondsTimeout, secondsTimestep, verbose);
                 client.Execute();
             }
         }

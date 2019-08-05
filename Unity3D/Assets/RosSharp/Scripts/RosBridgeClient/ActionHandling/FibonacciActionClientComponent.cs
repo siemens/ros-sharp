@@ -140,6 +140,21 @@ namespace RosSharp.RosBridgeClient
         {
             CancelGoal();
         }
+
+        protected override void Log(string log)
+        {
+            Debug.Log("Fibonacci Action Client: " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Debug.LogWarning("Fibonacci Action Client: " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Debug.LogError("Fibonacci Action Client: " + log);
+        }
     }
 }
 

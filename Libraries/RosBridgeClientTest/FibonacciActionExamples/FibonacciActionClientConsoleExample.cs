@@ -30,12 +30,12 @@ namespace RosSharp.RosBridgeClientTest
         public void Execute() {
             Start();
 
-            Console.WriteLine("Waiting for action server...");
+            Log("Waiting for action server...");
             WaitForActionServer();
 
             SendGoal();
 
-            Console.WriteLine("Waiting for result...");
+            Log("Waiting for result...");
             WaitForResult();
 
             Stop();
@@ -63,7 +63,7 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void FeedbackHandler()
         {
-            Console.WriteLine(GetFeedbackLogString());
+            Log(GetFeedbackLogString());
         }
 
         protected override void StatusHandler()
@@ -73,8 +73,23 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void ResultHandler()
         {
-            Console.WriteLine(GetResultLogString());
+            Log(GetResultLogString());
             isResultReceived.Set();
+        }
+
+        protected override void Log(string log)
+        {
+            Console.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [LOG] " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Console.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [WARNING] " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Console.Error.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [ERROR] " + log);
         }
     }
 

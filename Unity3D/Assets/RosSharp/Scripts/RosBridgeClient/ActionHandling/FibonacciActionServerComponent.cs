@@ -93,7 +93,7 @@ namespace RosSharp.RosBridgeClient
                 if (!isProcessingGoal.WaitOne(0))
                 {
                     action.action_result.result.sequence = sequence.ToArray();
-                    PublishResult();
+                    SetCanceled();
                     return;
                 }
 
@@ -128,11 +128,11 @@ namespace RosSharp.RosBridgeClient
         {
             if (IsGoalValid())
             {
-                SetAccepted("The goal has been accepted by RosSharp Fibonacci Action Unity Server");
+                SetAccepted("Fibonacci Action Server: The goal has been accepted");
             }
             else
             {
-                SetRejected("Cannot generate fibonacci sequence of order less than 1");
+                SetRejected("Fibonacci Action Server: Cannot generate fibonacci sequence of order less than 1");
             }
         }
 
@@ -177,12 +177,17 @@ namespace RosSharp.RosBridgeClient
 
         protected override void Log(string log)
         {
-            Debug.Log("Fibonacci Action Unity Server: " + log);
+            Debug.Log("Fibonacci Action Server: " + log);
         }
 
         protected override void LogWarning(string log)
         {
-            Debug.LogWarning("Fibonacci Action Unity Server: " + log);
+            Debug.LogWarning("Fibonacci Action Server: " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Debug.LogError("Fibonacci Action Client: " + log);
         }
     }
 }
