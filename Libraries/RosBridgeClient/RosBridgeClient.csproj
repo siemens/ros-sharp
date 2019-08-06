@@ -72,13 +72,6 @@
     <Compile Include="MessageTypes\Actionlib\msg\GoalID.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatus.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatusArray.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferAction.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferActionFeedback.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferActionGoal.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferActionResult.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFeedback.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferGoal.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferResult.cs" />
     <Compile Include="MessageTypes\FileServer\srv\GetBinaryFileRequest.cs" />
     <Compile Include="MessageTypes\FileServer\srv\GetBinaryFileResponse.cs" />
     <Compile Include="MessageTypes\FileServer\srv\SaveBinaryFileRequest.cs" />
