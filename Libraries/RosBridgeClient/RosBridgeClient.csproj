@@ -261,7 +261,6 @@
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\Protocol.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
-    <Compile Include="RosFileTransfer\FileTransferFromRosClient.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
