@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Concurrent;
 using System.Threading;
 
 using UnityEngine;
@@ -32,6 +33,38 @@ namespace RosSharp.RosBridgeClient.RosFileTransfer
             isWaitingForServer.Set();
             CancellableWaitForActionServer(shouldWaitForServer);
             isWaitingForServer.Reset();
+        }
+
+        public void UnitySetGoal(FileTransferGoal goal)
+        {
+            action.action_goal.goal = goal;
+        }
+
+        public void UnitySendGoal(ManualResetEvent isSendingGoal)
+        {
+            isSendingGoal.Set();
+            SendGoal();
+            isSendingGoal.Reset();
+        }
+
+        public void UnityCancelGoal()
+        {
+            CancelGoal();
+        }
+
+        public ConcurrentQueue<FileTransferFeedback> UnityGetFiles()
+        {
+            return GetFiles();
+        }
+
+        public bool UnityIsResultReceived()
+        {
+            return IsResultReceived();
+        }
+
+        public string UnityGetCompleteOutPath(FileTransferFeedback file)
+        {
+            return GetCompleteOutPath(file);
         }
 
         protected override void Log(string log)

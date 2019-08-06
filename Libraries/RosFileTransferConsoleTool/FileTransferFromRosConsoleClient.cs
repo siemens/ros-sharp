@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 using System;
+using System.Threading;
 
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.FileServer;
@@ -23,6 +24,24 @@ namespace RosSharp.RosBridgeClient.FileTransfer
     public class FileTransferFromRosConsoleClient : FileTransferFromRosClient
     {
         public FileTransferFromRosConsoleClient(FileTransferAction action, string outPath, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 3f, float secondsTimestep = 0.1f, bool verbose = false) : base(action, outPath, serverURL, protocol, serializer, secondsTimeout, secondsTimestep, verbose) { }
+
+        public void Execute()
+        {
+            Start();
+
+            Log("Wait for server...");
+            WaitForActionServer();
+
+            SendGoal();
+
+            Thread writeFiles = new Thread(WriteFiles);
+            writeFiles.Start();
+
+            writeFiles.Join();
+            FlushFilesQueue();
+
+            Stop();
+        }
 
         protected override void Log(string log)
         {

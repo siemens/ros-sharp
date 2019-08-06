@@ -70,9 +70,7 @@ class SendFileServer(object):
                     files.extend(self.findFilesInDir(pkgPath))
                 else:
                     for type in goal.extensions:
-                        filesWithExt = self.findFilesInDirWithExt(pkgPath, type)
-                        rospy.loginfo("%s: Found %i files with extension %s in package %s" % (self.scriptName, len(filesOfType), type, goal.identifier))
-                        files.extend(filesOfType)
+                        files.extend(self.findFilesInDirWithExt(pkgPath, type))
             except rospkg.common.ResourceNotFound:
                 rospy.logerr("%s: Package '%s' not found. Goal aborted." % (self.scriptName, goal.identifier))
                 self.simpleActionServer.set_aborted(text = "Package '%s' not found." % (goal.identifier))
@@ -88,12 +86,12 @@ class SendFileServer(object):
                 else:
                     for type in goal.extensions:
                         files.extend(self.findFilesInDirWithExt(path, type))
-                rospy.loginfo("%s: Found %i files under %s recursively" % (self.scriptName, len(self.files), goal.identifier))
             else:
                 rospy.logerr("%s: Directory %s not found. Goal aborted." % (self.scriptName, goal.identifier))
                 self.simpleActionServer.set_aborted(text = "Directory %s not found " % (goal.identifier))
                 return
         # Send files as feedback
+        rospy.loginfo("%s: Sending %i files..." % (self.scriptName, len(files)))
         for i in range(len(files)):
             if self.simpleActionServer.is_preempt_requested():
                 rospy.loginfo("%s: Action preempted." % (self.scriptName))

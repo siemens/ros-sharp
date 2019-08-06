@@ -42,27 +42,9 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             files = new ConcurrentQueue<FileTransferFeedback>();
         }
 
-        public void Execute()
-        {
-            Start();
-
-            Log("Wait for server...");
-            WaitForActionServer();
-
-            SendGoal();
-
-            Thread writeFiles = new Thread(WriteFiles);
-            writeFiles.Start();
-
-            writeFiles.Join();
-            FlushFilesQueue();
-
-            Stop();
-        }
-
         protected override string GoalID()
         {
-            return GenRandomGoalID("file-transfer-from-ros-console-");
+            return GenRandomGoalID("file-transfer-from-ros-");
         }
 
         protected override void WaitForActionServer()
@@ -109,7 +91,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             }
         }
 
-        private string GetCompleteOutPath(FileTransferFeedback file)
+        protected string GetCompleteOutPath(FileTransferFeedback file)
         {
             string[] rosPathStructure = file.path.Split('/');
             string[] goalPathStructure = action.action_goal.goal.identifier.Split('/');
@@ -150,7 +132,17 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             return extendedOutPath;
         }
 
-        private void WriteFiles()
+        protected ConcurrentQueue<FileTransferFeedback> GetFiles()
+        {
+            return files;
+        }
+
+        protected bool IsResultReceived()
+        {
+            return isResultReceived.WaitOne(0);
+        }
+
+        protected void WriteFiles()
         {
             while (!isResultReceived.WaitOne(0) || !files.IsEmpty)
             {
@@ -167,7 +159,7 @@ namespace RosSharp.RosBridgeClient.FileTransfer
             }
         }
 
-        private void FlushFilesQueue()
+        protected void FlushFilesQueue()
         {
             if (verbose)
             {

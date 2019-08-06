@@ -13,9 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEditor;
@@ -28,17 +28,17 @@ namespace RosSharp.RosBridgeClient.RosFileTransfer
     public class FileTransferFromRosEditorWindow : EditorWindow
     {
         private string serverURL = "ws://192.168.137.195:9090";
-        private Protocol protocol;
-        private RosSocket.SerializerEnum serializer;
+        private Protocol protocol = Protocol.WebSocketNET;
+        private RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
 
-        private float timeout;
-        private float timestep;
+        private float timeout = 3f;
+        private float timestep = 0.1f;
 
-        private FileTransferType type;
+        private FileTransferType type = FileTransferType.PACKAGE;
 
-        private string resourceIdentifier;
+        private string resourceIdentifier = "file_server";
 
-        public string[] extensions;
+        public string[] extensions = new string[0];
         private SerializedObject serializedObject;
         private SerializedProperty serializedProperty;
 
@@ -52,6 +52,11 @@ namespace RosSharp.RosBridgeClient.RosFileTransfer
             FileTransferFromRosEditorWindow window = GetWindow<FileTransferFromRosEditorWindow>(false, "ROS File Transfer", true);
             window.minSize = new Vector2(600, 250);
             window.Show();
+        }
+
+        private void Awake()
+        {
+            
         }
 
         private void OnGUI()
@@ -108,33 +113,114 @@ namespace RosSharp.RosBridgeClient.RosFileTransfer
 
             if (GUILayout.Button("Initiate File Transfer"))
             {
-                FileTransferAction action = new FileTransferAction();
-                FileTransferGoal goal = action.action_goal.goal;
+                FileTransferGoal goal = new FileTransferGoal();
                 goal.type = (byte)type;
                 goal.identifier = resourceIdentifier;
-                goal.extensions = extensions;
+                if (extensions == null)
+                {
+                    goal.extensions = new string[0];
+                }
+                else
+                {
+                    goal.extensions = extensions;
+                }
 
-                client = new FileTransferFromRosUnityClient(action, outPath, serverURL, protocol, serializer, timeout, timestep, false);
+                client = new FileTransferFromRosUnityClient(new FileTransferAction(), outPath, serverURL, protocol, serializer, timeout, timestep, false);
                 client.Start();
+                client.UnitySetGoal(goal);
 
                 Thread.Sleep((int)(timestep * 1000));
 
+                // Wait for server
                 ManualResetEvent isWaitingForServer = new ManualResetEvent(false);
                 ManualResetEvent shouldWaitForServer = new ManualResetEvent(false);
                 isWaitingForServer.Set();
                 shouldWaitForServer.Set();
-                Task waitForServer = new Task(() => client.UnityWaitForServer(isWaitingForServer, shouldWaitForServer));
+                Thread waitForServer = new Thread(() => client.UnityWaitForServer(isWaitingForServer, shouldWaitForServer));
                 waitForServer.Start();
                 while (isWaitingForServer.WaitOne(0))
                 {
                     if (EditorUtility.DisplayCancelableProgressBar("Waiting for action server...", "This may take a while...", 1f))
                     {
                         shouldWaitForServer.Reset();
-                        waitForServer.Wait();
-                        client.Stop();
+                        waitForServer.Join();
                         EditorUtility.ClearProgressBar();
+                        return;
+                    }
+                    Thread.Sleep((int)(timestep * 1000));
+                }
+
+                // Send goal
+                ManualResetEvent isSendingGoal = new ManualResetEvent(false);
+                isSendingGoal.Set();
+                Thread sendGoal = new Thread(() => client.UnitySendGoal(isSendingGoal));
+                sendGoal.Start();
+                while (isSendingGoal.WaitOne(0))
+                {
+                    if (EditorUtility.DisplayCancelableProgressBar("Sending goal...", "Failed to come up with a witty message", 1f))
+                    {
+                        client.CancelGoal();
+                        EditorUtility.ClearProgressBar();
+                        return;
+                    }
+                    Thread.Sleep((int)(timestep * 1000));
+                }
+                sendGoal.Join();
+                EditorUtility.ClearProgressBar();
+
+                // Write Files
+                bool isInterrupted = false;
+                ConcurrentQueue<FileTransferFeedback> files = client.UnityGetFiles();
+                while (!client.UnityIsResultReceived() || !files.IsEmpty)
+                {
+                    if (files.TryDequeue(out FileTransferFeedback file))
+                    {
+                        string completeOutPath = client.UnityGetCompleteOutPath(file);
+                        File.WriteAllBytes(completeOutPath, file.content);
+                        float progress = (float)(file.number) / (float)(file.count);
+                        if (EditorUtility.DisplayCancelableProgressBar("Saving files...(" + file.number + "/" + file.count + ")", "\"What's Secure Copy Protocol Foundation?\"", progress))
+                        {
+                            client.UnityCancelGoal();
+                            isInterrupted = true;
+                            break;
+                        }
+                    }
+                    Thread.Sleep((int)(timestep * 1000));
+                }
+                EditorUtility.ClearProgressBar();
+
+                // Flush Queue
+                if (!isInterrupted)
+                {
+                    while (!files.IsEmpty)
+                    {
+                        if (files.TryDequeue(out FileTransferFeedback file))
+                        {
+                            string completeOutPath = client.UnityGetCompleteOutPath(file);
+                            File.WriteAllBytes(completeOutPath, file.content);
+                            float progress = (float)(file.number) / (float)(file.count);
+                            EditorUtility.DisplayProgressBar("Flushing queue...(" + file.number + "/" + file.count + ")", "*Insert toilet flushing noises*", progress);
+                        }
                     }
                 }
+                EditorUtility.ClearProgressBar();
+
+                // Done
+                if (isInterrupted)
+                {
+                    EditorUtility.DisplayDialog(
+                        title: "File transfer interrupted",
+                        message: "Output at: " + outPath,
+                        ok: "OK");
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog(
+                        title: "File transfer complete",
+                        message: "Output at: " + outPath,
+                        ok: "Thank you!");
+                }
+                client.Stop();
             }
         }
 
