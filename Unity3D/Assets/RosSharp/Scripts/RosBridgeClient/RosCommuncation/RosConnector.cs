@@ -26,7 +26,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class RosConnector : MonoBehaviour
     {
-        public int Timeout = 10;
+        public int SecondsTimeout = 10;
 
         public RosSocket RosSocket { get; private set; }
         public RosSocket.SerializerEnum Serializer;
@@ -45,7 +45,7 @@ namespace RosSharp.RosBridgeClient
         {
             RosSocket = ConnectToRos(protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
-            if (!IsConnected.WaitOne(Timeout * 1000))
+            if (!IsConnected.WaitOne(SecondsTimeout * 1000))
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
 
