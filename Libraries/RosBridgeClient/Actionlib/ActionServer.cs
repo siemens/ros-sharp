@@ -18,7 +18,7 @@ using System;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
     /*
      * This class is modelled after the ROS action server state machine
@@ -112,7 +112,7 @@ namespace RosSharp.RosBridgeClient
 
         // Server Triggered Actions
         protected abstract void OnGoalActive();
-        protected virtual void SetAccepted(string text = "")
+        protected void SetAccepted(string text = "")
         {
             switch (actionStatus)
             {
@@ -130,8 +130,8 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        protected abstract void OnGoalRejected();
-        protected virtual void SetRejected(string text = "")
+        protected virtual void OnGoalRejected() { }
+        protected void SetRejected(string text = "")
         {
             switch (actionStatus)
             {
@@ -149,8 +149,8 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        protected abstract void OnGoalSucceeded();
-        protected virtual void SetSucceeded(TResult result = null, string text = "")
+        protected virtual void OnGoalSucceeded() { }
+        protected void SetSucceeded(TResult result = null, string text = "")
         {
             switch (actionStatus)
             {
@@ -178,8 +178,8 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        protected abstract void OnGoalAborted();
-        protected virtual void SetAborted(string text = "")
+        protected virtual void OnGoalAborted() { }
+        protected void SetAborted(string text = "")
         {
             switch (actionStatus)
             {
@@ -197,7 +197,7 @@ namespace RosSharp.RosBridgeClient
             }
         }
 
-        protected abstract void OnGoalCanceled();
+        protected virtual void OnGoalCanceled() { }
         protected void SetCanceled(TResult result = null, string text = "")
         {
             switch (actionStatus)
@@ -262,24 +262,6 @@ namespace RosSharp.RosBridgeClient
             socket.Publish(resultPublicationID, action.action_result);
         }
 
-        protected string GetFeedbackLogString()
-        {
-            return
-                "Feedback @ " + DateTime.Now + "\n" +
-                action.action_feedback.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_feedback.status.status + "\n" +
-                "---\n";
-        }
-
-        protected string GetResultLogString()
-        {
-            return
-                "Result @ " + DateTime.Now + "\n" +
-                action.action_result.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_result.status.status + "\n" +
-                "---\n";
-        }
-
         protected ActionStatus GetStatus() {
             return actionStatus;
         }
@@ -291,10 +273,5 @@ namespace RosSharp.RosBridgeClient
         public void Stop() {
             socket.Close(millisecondsTimestep);
         }
-    }
-
-    public class ActionServerException : Exception
-    {
-        public ActionServerException(string msg) : base(msg) { }
     }
 }

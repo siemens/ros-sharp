@@ -48,7 +48,7 @@ namespace RosSharp.RosBridgeClient
 
         public void Close(int millisecondsWait = 0)
         {
-            bool ifCleanup = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
+            bool isAnyCommunicatorActive = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
 
             while (Publishers.Count > 0)
                 Unadvertise(Publishers.First().Key);
@@ -59,7 +59,9 @@ namespace RosSharp.RosBridgeClient
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
 
-            if (ifCleanup)
+            // Service consumers do not stay on. So nothing to unsubscribe/unadvertise
+
+            if (isAnyCommunicatorActive)
             {
                 Thread.Sleep(millisecondsWait);
             }

@@ -15,11 +15,11 @@ limitations under the License.
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using UnityEngine;
 
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
@@ -69,7 +69,7 @@ namespace RosSharp.RosBridgeClient
     {
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
 
-        private Task goalHandle;
+        private Thread goalHandler;
 
         public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
 
@@ -79,7 +79,7 @@ namespace RosSharp.RosBridgeClient
             return action.action_goal.goal.order >= 1;
         }
 
-        private async void ExecuteFibonacciGoal()
+        private void ExecuteFibonacciGoal()
         {
             isProcessingGoal.Set();
 
@@ -101,7 +101,7 @@ namespace RosSharp.RosBridgeClient
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
 
-                await Task.Delay(millisecondsTimestep);
+                Thread.Sleep(millisecondsTimestep);
             }
 
             action.action_result.result.sequence = sequence.ToArray();
@@ -148,20 +148,20 @@ namespace RosSharp.RosBridgeClient
 
         protected override void OnGoalActive()
         {
-            goalHandle = new Task(() => ExecuteFibonacciGoal());
-            goalHandle.Start();
+            goalHandler = new Thread(ExecuteFibonacciGoal);
+            goalHandler.Start();
         }
 
         protected override void OnGoalPreempting()
         {
             isProcessingGoal.Reset();
-            goalHandle.Wait();
+            goalHandler.Join();
         }
 
-        protected async override void OnGoalSucceeded()
+        protected override void OnGoalSucceeded()
         {
             isProcessingGoal.Reset();
-            await Task.Delay(millisecondsTimestep);
+            Thread.Sleep(millisecondsTimestep);
             UpdateAndPublishStatus(ActionStatus.NO_GOAL);
         }
 

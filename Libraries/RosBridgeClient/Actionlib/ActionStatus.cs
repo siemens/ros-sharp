@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
     // This is defined according to actionlib_msgs/GoalStatus
     public enum ActionStatus

@@ -16,7 +16,7 @@ limitations under the License.
 using System;
 using System.Threading;
 
-using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClientTest
@@ -43,17 +43,17 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override string GoalID()
         {
-            return GenRandomGoalID("fibonacci-sharp-console-");
+            return "fibonacci-sharp-console-" + Guid.NewGuid();
         }
 
-        protected override void WaitForActionServer()
+        protected void WaitForActionServer()
         {
             while((DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout) {
                 Thread.Sleep(millisecondsTimestep);
             }
         }
 
-        protected override void WaitForResult()
+        protected void WaitForResult()
         {
             while (!isResultReceived.WaitOne(0))
             {
@@ -61,19 +61,14 @@ namespace RosSharp.RosBridgeClientTest
             }
         }
 
-        protected override void FeedbackHandler()
+        protected override void OnFeedbackReceived()
         {
-            Log(GetFeedbackLogString());
+            Log(action.action_feedback.ToString());
         }
 
-        protected override void StatusHandler()
+        protected override void OnResultReceived()
         {
-            // Nothing to do
-        }
-
-        protected override void ResultHandler()
-        {
-            Log(GetResultLogString());
+            Log(action.action_result.ToString());
             isResultReceived.Set();
         }
 

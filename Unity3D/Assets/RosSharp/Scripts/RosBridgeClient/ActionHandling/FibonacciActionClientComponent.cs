@@ -14,10 +14,10 @@ limitations under the License.
 */
 
 using System;
-using System.Threading;
 
 using UnityEngine;
 
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
@@ -82,33 +82,15 @@ namespace RosSharp.RosBridgeClient
 
         protected override string GoalID()
         {
-            return GenRandomGoalID("fibonacci-unity-");
+            return "fibonacci-unity-" + Guid.NewGuid();
         }
 
-        protected override void WaitForActionServer()
-        {
-            // We don't wait for server in this example,
-            // since Unity monobehaviour will be spinning in play mode.
-            // Please make sure that the server is indeed running
-        }
-
-        protected override void FeedbackHandler()
+        protected override void OnFeedbackReceived()
         {
             // Not implemented since get string directly returns stored feedback
         }
 
-        protected override void StatusHandler()
-        {
-            // Nothing to do here
-        }
-
-        protected override void WaitForResult()
-        {
-            // We don't wait for result in this example,
-            // since Unity monobehaviour will be spinning in play mode.
-        }
-
-        protected override void ResultHandler()
+        protected override void OnResultReceived()
         {
             // Not implemented since get string directly returns stored result
         }

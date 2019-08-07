@@ -18,7 +18,7 @@ using System;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
     public abstract class ActionClient<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
         where TAction : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
@@ -86,62 +86,30 @@ namespace RosSharp.RosBridgeClient
         // Implement by user to attach GoalID
         protected abstract string GoalID();
 
-        // Implement by user to wait for action server to be up
-        protected abstract void WaitForActionServer();
-
-        // Implement by user to wait for result
-        protected abstract void WaitForResult();
-
-        // Implement by user to handle feedback.
-        protected abstract void FeedbackHandler();
-
         // Implement by user to handle status
-        protected abstract void StatusHandler();
-
-        // Implement by user to handle result.
-        protected abstract void ResultHandler();
-
-        protected string GenRandomGoalID(string prefix) {
-            return prefix + Guid.NewGuid();
-        }
-
-        protected string GenDefaultID() {
-            return GenRandomGoalID(this.actionName + "-");
-        }
-
-        private void FeedbackCallback(TActionFeedback actionFeedback) {
-            action.action_feedback = actionFeedback;
-            FeedbackHandler();
-        }
-
-        private void ResultCallback(TActionResult actionResult) {
-            action.action_result = actionResult;
-            ResultHandler();
-        }
-
-        private void StatusCallback(GoalStatusArray actionGoalStatusArray) {
-            if (actionGoalStatusArray.status_list.Length > 0) {
+        protected virtual void OnStatusUpdated() { }
+        private void StatusCallback(GoalStatusArray actionGoalStatusArray)
+        {
+            if (actionGoalStatusArray.status_list.Length > 0)
+            {
                 goalStatus = actionGoalStatusArray.status_list[0];
             }
             lastStatusUpdateTime = DateTime.Now;
-            StatusHandler();
+            OnStatusUpdated();
         }
 
-        public string GetFeedbackLogString() {
-            return
-                "Feedback @ " + DateTime.Now + "\n" +
-                action.action_feedback.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_feedback.status.status + "\n" +
-                "---\n";
+        // Implement by user to handle feedback.
+        protected abstract void OnFeedbackReceived();
+        private void FeedbackCallback(TActionFeedback actionFeedback) {
+            action.action_feedback = actionFeedback;
+            OnFeedbackReceived();
         }
 
-        public string GetResultLogString()
-        {
-            return
-                "Result @ " + DateTime.Now + "\n" +
-                action.action_result.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_result.status.status + "\n" +
-                "---\n";
+        // Implement by user to handle result.
+        protected abstract void OnResultReceived();
+        private void ResultCallback(TActionResult actionResult) {
+            action.action_result = actionResult;
+            OnResultReceived();
         }
 
         protected virtual void Log(string log) { }

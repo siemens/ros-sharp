@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
@@ -29,7 +29,7 @@ namespace RosSharp.RosBridgeClientTest
         private ManualResetEvent isWaitingForGoal = new ManualResetEvent(false);
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
 
-        private Thread goalHandle;
+        private Thread goalHandler;
 
         public FibonacciActionConsoleServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL) : base(action, actionName, protocol, serverURL) { }
 
@@ -87,7 +87,7 @@ namespace RosSharp.RosBridgeClientTest
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
-                Log(GetFeedbackLogString());
+                Log(action.action_feedback.ToString());
 
                 Thread.Sleep(millisecondsTimestep);
             }
@@ -121,20 +121,20 @@ namespace RosSharp.RosBridgeClientTest
 
         protected override void OnGoalActive()
         {
-            goalHandle = new Thread(ExecuteFibonacciGoal);
-            goalHandle.Start();
+            goalHandler = new Thread(ExecuteFibonacciGoal);
+            goalHandler.Start();
         }
 
         protected override void OnGoalPreempting()
         {
             isProcessingGoal.Reset();
             Log("Preempting goal");
-            goalHandle.Join();
+            goalHandler.Join();
         }
 
         protected override void OnGoalSucceeded()
         {
-            Log(GetResultLogString());
+            Log(action.action_result.ToString());
             Log("Result Published to client...");
 
             isProcessingGoal.Reset();
