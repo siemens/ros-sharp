@@ -18,7 +18,7 @@ using System;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
     public abstract class ActionClient<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
         where TAction : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
@@ -30,7 +30,9 @@ namespace RosSharp.RosBridgeClient
         where TFeedback : Message
     {
         protected string actionName;
-        protected float timeStep;
+
+        protected int millisecondsTimeout;
+        protected int millisecondsTimestep;
 
         private readonly RosSocket socket;
 
@@ -41,14 +43,20 @@ namespace RosSharp.RosBridgeClient
         private string cancelPublicationID;
         private string goalPublicationID;
 
-        protected ActionStatus actionStatus;
+        private string statusSubscriptionID;
+        private string feedbackSubscriptionID;
+        private string resultSubscriptionID;
+
+        protected GoalStatus goalStatus;
 
         protected TAction action;
 
-        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float timeStep = 0.2f) {
+        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 5f,  float secondsTimestep = 0.2f) {
             this.action = action;
             this.actionName = actionName;
-            this.timeStep = timeStep;
+
+            this.millisecondsTimeout = (int)(secondsTimeout * 1000);
+            this.millisecondsTimestep = (int)(secondsTimestep * 1000);
 
             this.serverURL = serverURL;
 
@@ -59,13 +67,14 @@ namespace RosSharp.RosBridgeClient
             cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
             goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
 
-            socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, (int)(timeStep * 1000));
-            socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, (int)(timeStep * 1000));
-            socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
+            statusSubscriptionID = socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, millisecondsTimestep);
+            feedbackSubscriptionID = socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, millisecondsTimestep);
+            resultSubscriptionID = socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, millisecondsTimestep);
         }
 
         public void SendGoal()
         {
+            action.action_goal.goal_id.id = GoalID();
             socket.Publish(goalPublicationID, action.action_goal);
         }
 
@@ -74,57 +83,41 @@ namespace RosSharp.RosBridgeClient
             socket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
 
-        // Implement by user to wait for action server to be up
-        protected abstract void WaitForActionServer();
+        // Implement by user to attach GoalID
+        protected abstract string GoalID();
 
-        // Implement by user to wait for result
-        protected abstract void WaitForResult();
-
-        // Implement by user to handle feedback.
-        protected abstract void FeedbackHandler();
-
-        // Implement by user to handle result.
-        protected abstract void ResultHandler();
-
-        private void FeedbackCallback(TActionFeedback actionFeedback) {
-            action.action_feedback = actionFeedback;
-            actionStatus = (ActionStatus)actionFeedback.status.status;
-            FeedbackHandler();
-        }
-
-        private void ResultCallback(TActionResult actionResult) {
-            action.action_result = actionResult;
-            actionStatus = (ActionStatus)actionResult.status.status;
-            ResultHandler();
-        }
-
-        private void StatusCallback(GoalStatusArray actionGoalStatusArray) {
-            if (actionGoalStatusArray.status_list.Length > 0) {
-                actionStatus = (ActionStatus)actionGoalStatusArray.status_list[0].status;
+        // Implement by user to handle status
+        protected virtual void OnStatusUpdated() { }
+        private void StatusCallback(GoalStatusArray actionGoalStatusArray)
+        {
+            if (actionGoalStatusArray.status_list.Length > 0)
+            {
+                goalStatus = actionGoalStatusArray.status_list[0];
             }
             lastStatusUpdateTime = DateTime.Now;
+            OnStatusUpdated();
         }
 
-        public string GetFeedbackLogString() {
-            return
-                "Feedback @ " + DateTime.Now + "\n" +
-                action.action_feedback.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_feedback.status.status + "\n" +
-                "---\n";
+        // Implement by user to handle feedback.
+        protected abstract void OnFeedbackReceived();
+        private void FeedbackCallback(TActionFeedback actionFeedback) {
+            action.action_feedback = actionFeedback;
+            OnFeedbackReceived();
         }
 
-        public string GetResultLogString()
-        {
-            return
-                "Result @ " + DateTime.Now + "\n" +
-                action.action_result.ToString() + "\n" +
-                "Server status: " + (ActionStatus)action.action_result.status.status + "\n" +
-                "---\n";
+        // Implement by user to handle result.
+        protected abstract void OnResultReceived();
+        private void ResultCallback(TActionResult actionResult) {
+            action.action_result = actionResult;
+            OnResultReceived();
         }
+
+        protected virtual void Log(string log) { }
+        protected virtual void LogWarning(string log) { }
+        protected virtual void LogError(string log) { }
 
         public void Stop() {
-
-            socket.Close();
+            socket.Close(millisecondsTimestep);
         }
     }
 }

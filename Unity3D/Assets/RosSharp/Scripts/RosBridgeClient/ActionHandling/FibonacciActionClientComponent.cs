@@ -14,10 +14,10 @@ limitations under the License.
 */
 
 using System;
-using System.Threading;
 
 using UnityEngine;
 
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient
         public RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
         public int timeout = 10;
         public float timeStep = 0.2f;
-        public int fibonacciOrder = 10;
+        public int fibonacciOrder = 20;
 
         private FibonacciActionClient client;
 
@@ -80,32 +80,27 @@ namespace RosSharp.RosBridgeClient
     {
         public FibonacciActionClient(FibonacciAction action, string actionName, string serverURL, Protocol protocol, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, serverURL, protocol, serializer, timeStep) { }
 
-        protected override void WaitForActionServer()
+        protected override string GoalID()
         {
-            // We don't wait for server in this example,
-            // since Unity monobehaviour will be spinning in play mode.
-            // Please make sure that the server is indeed running
+            return "fibonacci-unity-" + Guid.NewGuid();
         }
 
-        protected override void FeedbackHandler()
+        protected override void OnFeedbackReceived()
         {
             // Not implemented since get string directly returns stored feedback
         }
 
-        protected override void WaitForResult()
-        {
-            // We don't wait for result in this example,
-            // since Unity monobehaviour will be spinning in play mode.
-        }
-
-        protected override void ResultHandler()
+        protected override void OnResultReceived()
         {
             // Not implemented since get string directly returns stored result
         }
 
         public string GetStatusString()
         {
-            return actionStatus.ToString();
+            if (goalStatus != null) {
+                return ((ActionStatus)(goalStatus.status)).ToString();
+            }
+            return "";
         }
 
         public string GetFeedbackString()
@@ -126,6 +121,21 @@ namespace RosSharp.RosBridgeClient
         public void CancelGoalFromUnity()
         {
             CancelGoal();
+        }
+
+        protected override void Log(string log)
+        {
+            Debug.Log("Fibonacci Action Client: " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Debug.LogWarning("Fibonacci Action Client: " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Debug.LogError("Fibonacci Action Client: " + log);
         }
     }
 }

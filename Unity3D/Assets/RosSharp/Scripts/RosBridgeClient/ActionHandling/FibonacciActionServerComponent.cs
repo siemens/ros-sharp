@@ -19,9 +19,10 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
-
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -55,7 +56,7 @@ namespace RosSharp.RosBridgeClient
         {
             server.UpdateStatus();
             status = server.GetStatusString();
-            feedback = server.GetFeedbackString();
+            feedback = server.GetFeedbackSequenceString();
         }
 
         private void OnDestroy()
@@ -68,29 +69,19 @@ namespace RosSharp.RosBridgeClient
     {
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
 
+        private Thread goalHandler;
+
         public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
 
-        protected override bool IsGoalValid()
+
+        protected bool IsGoalValid()
         {
-            if (action.action_goal.goal.order < 1)
-            {
-                Debug.LogWarning("Cannot generate fibonacci sequence of order less than 1");
-                return false;
-            }
-            return true;
+            return action.action_goal.goal.order >= 1;
         }
 
-        protected override void WaitForGoal()
-        {
-            // We don't wait for goal in this example,
-            // since Unity monobehaviour will be spinning in play mode.
-        }
-
-        protected override void GoalHandler()
+        private void ExecuteFibonacciGoal()
         {
             isProcessingGoal.Set();
-
-            Debug.Log("Generating Fibonacci sequence of order " + action.action_goal.goal.order + " with seeds 0, 1");
 
             List<int> sequence = new List<int> { 0, 1 };
 
@@ -101,31 +92,20 @@ namespace RosSharp.RosBridgeClient
             {
                 if (!isProcessingGoal.WaitOne(0))
                 {
+                    action.action_result.result.sequence = sequence.ToArray();
+                    SetCanceled();
                     return;
                 }
+
                 sequence.Add(sequence[i] + sequence[i - 1]);
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
 
-                Thread.Sleep((int)(timeStep * 1000));
+                Thread.Sleep(millisecondsTimestep);
             }
 
-            UpdateAndPublishStatus(ActionStatus.SUCCEEDED);
             action.action_result.result.sequence = sequence.ToArray();
-            PublishResult();
-            Debug.Log("Result Published to client...");
-            isProcessingGoal.Reset();
-
-            Thread.Sleep((int)(timeStep * 1000));
-            Debug.Log("Ready for next goal...(status = PENDING)");
-            action.action_feedback = new FibonacciActionFeedback();
-            UpdateAndPublishStatus(ActionStatus.PENDING);
-        }
-
-        protected override void CancellationHandler()
-        {
-            isProcessingGoal.Reset();
-            Debug.Log("Goal cancelled by client");
+            SetSucceeded();
         }
 
         public void UpdateStatus()
@@ -135,12 +115,79 @@ namespace RosSharp.RosBridgeClient
 
         public string GetStatusString()
         {
-            return actionStatus.ToString();
+            return GetStatus().ToString();
         }
 
-        public string GetFeedbackString()
+        public string GetFeedbackSequenceString()
         {
             return String.Join(",", action.action_feedback.feedback.sequence);
+        }
+
+
+        protected override void OnGoalReceived()
+        {
+            if (IsGoalValid())
+            {
+                SetAccepted("Fibonacci Action Server: The goal has been accepted");
+            }
+            else
+            {
+                SetRejected("Fibonacci Action Server: Cannot generate fibonacci sequence of order less than 1");
+            }
+        }
+
+        protected override void OnGoalRecalling(GoalID goalID)
+        {
+            // Left blank for this example
+        }
+
+        protected override void OnGoalRejected()
+        {
+            LogWarning("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
+        }
+
+        protected override void OnGoalActive()
+        {
+            goalHandler = new Thread(ExecuteFibonacciGoal);
+            goalHandler.Start();
+        }
+
+        protected override void OnGoalPreempting()
+        {
+            isProcessingGoal.Reset();
+            goalHandler.Join();
+        }
+
+        protected override void OnGoalSucceeded()
+        {
+            isProcessingGoal.Reset();
+            Thread.Sleep(millisecondsTimestep);
+            UpdateAndPublishStatus(ActionStatus.NO_GOAL);
+        }
+
+        protected override void OnGoalAborted()
+        {
+            // Left blank for this example
+        }
+
+        protected override void OnGoalCanceled()
+        {
+            PublishResult();
+        }
+
+        protected override void Log(string log)
+        {
+            Debug.Log("Fibonacci Action Server: " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Debug.LogWarning("Fibonacci Action Server: " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Debug.LogError("Fibonacci Action Client: " + log);
         }
     }
 }

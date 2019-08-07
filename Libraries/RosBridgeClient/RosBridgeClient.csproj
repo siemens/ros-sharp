@@ -55,9 +55,9 @@
     <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
     <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
     <Compile Include="BaseMessages\Actions\ActionResult.cs" />
-    <Compile Include="ActionHandlers\ActionClient.cs" />
-    <Compile Include="ActionHandlers\ActionServer.cs" />
-    <Compile Include="ActionHandlers\ActionStatus.cs" />
+    <Compile Include="Actionlib\ActionClient.cs" />
+    <Compile Include="Actionlib\ActionServer.cs" />
+    <Compile Include="Actionlib\ActionStatus.cs" />
     <Compile Include="BaseMessages\Std\msg\Duration.cs" />
     <Compile Include="BaseMessages\Std\msg\Time.cs" />
     <Compile Include="Communicators.cs" />
@@ -72,13 +72,6 @@
     <Compile Include="MessageTypes\Actionlib\msg\GoalID.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatus.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\GoalStatusArray.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosAction.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosActionFeedback.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosActionGoal.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosActionResult.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosFeedback.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosGoal.cs" />
-    <Compile Include="MessageTypes\FileServer\action\FileTransferFromRosResult.cs" />
     <Compile Include="MessageTypes\FileServer\srv\GetBinaryFileRequest.cs" />
     <Compile Include="MessageTypes\FileServer\srv\GetBinaryFileResponse.cs" />
     <Compile Include="MessageTypes\FileServer\srv\SaveBinaryFileRequest.cs" />

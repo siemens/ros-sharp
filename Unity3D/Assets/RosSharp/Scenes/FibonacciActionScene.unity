@@ -230,6 +230,8 @@ MonoBehaviour:
   serializer: 0
   timeout: 10
   timeStep: 0.2
+  status: 
+  feedback: 
 --- !u!1 &794155254
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,4 +363,7 @@ MonoBehaviour:
   serializer: 0
   timeout: 10
   timeStep: 0.2
-  fibonacciOrder: 10
+  fibonacciOrder: 20
+  status: 
+  feedback: 
+  result: 

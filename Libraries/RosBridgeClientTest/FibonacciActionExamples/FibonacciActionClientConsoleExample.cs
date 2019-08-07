@@ -16,7 +16,7 @@ limitations under the License.
 using System;
 using System.Threading;
 
-using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClientTest
@@ -30,41 +30,61 @@ namespace RosSharp.RosBridgeClientTest
         public void Execute() {
             Start();
 
-            Console.WriteLine("Waiting for action server...");
+            Log("Waiting for action server...");
             WaitForActionServer();
 
             SendGoal();
 
-            Console.WriteLine("Waiting for result...");
+            Log("Waiting for result...");
             WaitForResult();
 
             Stop();
         }
 
-        protected override void WaitForActionServer()
+        protected override string GoalID()
         {
-            while((DateTime.Now - lastStatusUpdateTime).TotalSeconds > 3) {
-                Thread.Sleep((int)(timeStep * 1000));
+            return "fibonacci-sharp-console-" + Guid.NewGuid();
+        }
+
+        protected void WaitForActionServer()
+        {
+            while((DateTime.Now - lastStatusUpdateTime).TotalMilliseconds > millisecondsTimeout) {
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 
-        protected override void WaitForResult()
+        protected void WaitForResult()
         {
             while (!isResultReceived.WaitOne(0))
             {
-                Thread.Sleep((int)(timeStep * 1000));
+                Thread.Sleep(millisecondsTimestep);
             }
         }
 
-        protected override void FeedbackHandler()
+        protected override void OnFeedbackReceived()
         {
-            Console.WriteLine(GetFeedbackLogString());
+            Log(action.action_feedback.ToString());
         }
 
-        protected override void ResultHandler()
+        protected override void OnResultReceived()
         {
-            Console.WriteLine(GetResultLogString());
+            Log(action.action_result.ToString());
             isResultReceived.Set();
+        }
+
+        protected override void Log(string log)
+        {
+            Console.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [LOG] " + log);
+        }
+
+        protected override void LogWarning(string log)
+        {
+            Console.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [WARNING] " + log);
+        }
+
+        protected override void LogError(string log)
+        {
+            Console.Error.WriteLine("Fibonacci Action Client @ " + DateTime.Now + " : [ERROR] " + log);
         }
     }
 

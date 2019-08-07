@@ -23,7 +23,7 @@ using RosSharp.RosBridgeClient.MessageGeneration;
 
 namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
 {
-    class RosMsgGen
+    public class RosMsgGen
     {
         private static readonly string usage =
             "Usage:\n" +
@@ -59,8 +59,6 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
         public static void Main(string[] args)
         {
             // Arguments
-            string inputPath = "";
-
             bool verbose = false;
 
             bool service = false;
@@ -68,7 +66,9 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
 
             bool recursive = false;
             bool package = false;
+
             string rosPackageName = "";
+            string inputPath = "";
             string outputPath = defaultOutputDirectory;
 
             // Parse Arguments

@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 using System;
+
 using WebSocketSharp;
 
 namespace RosSharp.RosBridgeClient.Protocols

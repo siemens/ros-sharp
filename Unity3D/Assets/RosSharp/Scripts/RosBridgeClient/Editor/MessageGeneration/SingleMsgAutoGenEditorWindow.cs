@@ -107,7 +107,12 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                             ok: "Sorry but you can't ignore errors.");
                     }
                 }
-            }
+            }       
+        }
+
+        private void OnInspectorUpdate()
+        {
+            Repaint();
         }
     }
 }

@@ -22,8 +22,8 @@ using UnityEditor;
 
 namespace RosSharp.RosBridgeClient.MessageGeneration
 {
-    public class DirectoryMsgAutoGenEditorWindow : EditorWindow {
-
+    public class DirectoryMsgAutoGenEditorWindow : EditorWindow
+    {
         private string inPath = "";
         private string outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
 
@@ -141,6 +141,11 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     }
                 }
             }
+        }
+
+        private void OnInspectorUpdate()
+        {
+            Repaint();
         }
 
         private void Reset()

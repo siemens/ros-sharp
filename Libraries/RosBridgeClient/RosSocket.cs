@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient.Protocols;
@@ -37,7 +38,7 @@ namespace RosSharp.RosBridgeClient
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
         private SerializerEnum Serializer;
 
-        public RosSocket(IProtocol protocol,SerializerEnum serializer=SerializerEnum.JSON)
+        public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.JSON)
         {
             this.protocol = protocol;
             this.Serializer = serializer;
@@ -45,8 +46,10 @@ namespace RosSharp.RosBridgeClient
             this.protocol.Connect();
         }
 
-        public void Close()
+        public void Close(int millisecondsWait = 0)
         {
+            bool isAnyCommunicatorActive = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
+
             while (Publishers.Count > 0)
                 Unadvertise(Publishers.First().Key);
 
@@ -55,6 +58,13 @@ namespace RosSharp.RosBridgeClient
 
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
+
+            // Service consumers do not stay on. So nothing to unsubscribe/unadvertise
+
+            if (isAnyCommunicatorActive)
+            {
+                Thread.Sleep(millisecondsWait);
+            }
 
             protocol.Close();
         }
