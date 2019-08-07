@@ -13,35 +13,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Threading;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public abstract class Subscriber<T> : MonoBehaviour where T : Message
+    public abstract class Subscriber<T> : MonoBehaviour where T: Message
     {
         public string Topic;
         public float TimeStep;
 
-        private RosConnector rosConnector;
-        private readonly int Timeout = 1;
-
         protected virtual void Start()
         {
-            rosConnector = GetComponent<RosConnector>();
-            new Thread(Subscribe).Start();
-        }
-
-        private void Subscribe()
-        {
-
-            if (!rosConnector.IsConnected.WaitOne(Timeout * 1000))
-                Debug.LogWarning("Failed to subscribe: RosConnector not connected");
-
-            rosConnector.RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000)); // the rate(in ms in between messages) at which to throttle the topics
+            GetComponent<RosConnector>().RosSocket.Subscribe<T>(Topic, ReceiveMessage, (int)(TimeStep * 1000)); // the rate(in ms in between messages) at which to throttle the topics
         }
 
         protected abstract void ReceiveMessage(T message);
+
     }
 }
