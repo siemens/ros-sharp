@@ -63,6 +63,17 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     lineNum++;
                     continue;
                 }
+                else if (reader.Peek() == '\r')
+                {
+                    // CRLF new line for Windows
+                    reader.Read();
+                    if (reader.Peek() == '\n')
+                    {
+                        reader.Read();
+                        lineNum++;
+                    }
+                    continue;
+                }
                 else if (reader.Peek() == '#')
                 {
                     // A line that starts with a '#' is a comment
@@ -115,7 +126,18 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                             reader.Read();
                             lineNum++;
                         }
-                        else if(!reader.EndOfStream){
+                        else if (reader.Peek() == '\r')
+                        {
+                            // CRLF new line for Windows
+                            reader.Read();
+                            if (reader.Peek() == '\n')
+                            {
+                                reader.Read();
+                                lineNum++;
+                            }
+                        }
+                        else if (!reader.EndOfStream)
+                        {
                             throw new MessageTokenizerException(
                                 "Invalid token: " + NextTokenStr() +
                                 ". New line or EOF expected " + CurrentFileAndLine());
@@ -149,7 +171,15 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private string ReadUntilNewLineAndTrim() {
             string content = "";
             while (reader.Peek() != '\n' && !reader.EndOfStream) {
-                content += (char)reader.Read();
+                if (reader.Peek() != '\r')
+                {
+                    content += (char)reader.Read();
+                }
+                else
+                {
+                    // Discard carriage return
+                    reader.Read();
+                }
             }
             content.Trim();
             return content;
@@ -165,7 +195,15 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string token = "";
             while (reader.Peek() != ' ' && reader.Peek() != '\n' && !reader.EndOfStream)
             {
-                token += (char)reader.Read();
+                if (reader.Peek() != '\r')
+                {
+                    token += (char)reader.Read();
+                }
+                else
+                {
+                    // Discard carriage return
+                    reader.Read();
+                }
             }
             reader.Read();
             return token;
@@ -184,7 +222,15 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string comment = "";
             while (reader.Peek() != '\n' && !reader.EndOfStream)
             {
-                comment += (char)reader.Read();
+                if (reader.Peek() != '\r')
+                {
+                    comment += (char)reader.Read();
+                }
+                else
+                {
+                    // Discard carriage return
+                    reader.Read();
+                }
             }
             reader.Read();
             lineNum++;
@@ -314,9 +360,16 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             // Otherwise, consume input until seperator or EOF
             while (reader.Peek() != ' ' && reader.Peek() != '\n' && reader.Peek() != '=' && !reader.EndOfStream)
             {
+                if (reader.Peek() == '\r')
+                {
+                    reader.Read();
+                    continue;
+                }
                 if (!Char.IsLetterOrDigit((char)reader.Peek()) && reader.Peek() != '_')
                 {
-                    throw new MessageTokenizerException("Invalid character in identifier: " + (char)reader.Peek() + " " + CurrentFileAndLine());
+                    {
+                        throw new MessageTokenizerException("Invalid character in identifier: " + (char)reader.Peek() + " " + CurrentFileAndLine());
+                    }
                 }
                 tokenStr += (char)reader.Read();
             }
