@@ -319,7 +319,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string declaration = MatchByType(MessageTokenType.ConstantDeclaration);
             if (type.Equals("string"))
             {
-                return " = " + declaration + ";\n";
+                return "\"" + declaration.Trim() + "\";\n";
             }
             else {
                 string ret = "";
