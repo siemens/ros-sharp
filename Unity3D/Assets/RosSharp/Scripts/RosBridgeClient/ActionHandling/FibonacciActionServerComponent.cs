@@ -187,7 +187,7 @@ namespace RosSharp.RosBridgeClient
 
         protected override void LogError(string log)
         {
-            Debug.LogError("Fibonacci Action Client: " + log);
+            Debug.LogError("Fibonacci Action Server: " + log);
         }
     }
 }
