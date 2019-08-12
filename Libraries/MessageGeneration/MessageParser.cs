@@ -132,7 +132,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write constructors
                 writer.Write(GenerateDefaultValueConstructor());
-                if (symbolTable.Count != 0 && !symbolTable.Keys.Equals(constants)) {
+                if (symbolTable.Count != 0 && !new HashSet<string>(symbolTable.Keys).SetEquals(constants)) {
                     writer.Write("\n");
                     writer.Write(GenerateParameterizedConstructor());
                 }
