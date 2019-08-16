@@ -201,6 +201,10 @@
     <Compile Include="MessageTypes\Sensor\msg\TimeReference.cs" />
     <Compile Include="MessageTypes\Sensor\srv\SetCameraInfoRequest.cs" />
     <Compile Include="MessageTypes\Sensor\srv\SetCameraInfoResponse.cs" />
+    <Compile Include="MessageTypes\Shape\msg\Mesh.cs" />
+    <Compile Include="MessageTypes\Shape\msg\MeshTriangle.cs" />
+    <Compile Include="MessageTypes\Shape\msg\Plane.cs" />
+    <Compile Include="MessageTypes\Shape\msg\SolidPrimitive.cs" />
     <Compile Include="MessageTypes\Std\msg\Bool.cs" />
     <Compile Include="MessageTypes\Std\msg\Byte.cs" />
     <Compile Include="MessageTypes\Std\msg\ByteMultiArray.cs" />
@@ -248,6 +252,10 @@
     <Compile Include="MessageTypes\Tf2\msg\TFMessage.cs" />
     <Compile Include="MessageTypes\Tf2\srv\FrameGraphRequest.cs" />
     <Compile Include="MessageTypes\Tf2\srv\FrameGraphResponse.cs" />
+    <Compile Include="MessageTypes\Trajectory\msg\JointTrajectory.cs" />
+    <Compile Include="MessageTypes\Trajectory\msg\JointTrajectoryPoint.cs" />
+    <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectory.cs" />
+    <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectoryPoint.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
