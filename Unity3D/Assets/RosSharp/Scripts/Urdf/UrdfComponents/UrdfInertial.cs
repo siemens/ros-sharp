@@ -31,7 +31,7 @@ namespace RosSharp.Urdf
         public Quaternion InertiaTensorRotation;
 
         private const int RoundDigits = 10;
-        private const float MinInertia = 1e-8f;
+        private const float MinInertia = 1e-6f;
 
         public static void Create(GameObject linkObject, Link.Inertial inertial = null)
         {
