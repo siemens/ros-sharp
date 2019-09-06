@@ -27,5 +27,6 @@ namespace RosSharp.RosBridgeClient.Protocols
         event EventHandler OnReceive;
         event EventHandler OnConnected;
         event EventHandler OnClosed;
+        event EventHandler OnError;
     }
 }
