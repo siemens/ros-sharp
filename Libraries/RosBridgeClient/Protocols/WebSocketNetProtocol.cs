@@ -96,7 +96,7 @@ namespace RosSharp.RosBridgeClient.Protocols
                 int offset = SendChunkSize * i;
                 bool endOfMessage = (i == messageCount - 1);
                 int count = endOfMessage ? message.Length - offset : SendChunkSize;
-                await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Text, endOfMessage, cancellationToken);
+                await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Binary, endOfMessage, cancellationToken);
             }
             IsReadyToSend.Set();
         }
