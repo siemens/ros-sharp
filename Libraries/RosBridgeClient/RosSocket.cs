@@ -37,6 +37,7 @@ namespace RosSharp.RosBridgeClient
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
         private SerializerEnum Serializer;
+        private object SubscriberLock = new object();
 
         public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.JSON)
         {
@@ -99,10 +100,15 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
         {
-            string id = GetUnusedCounterID(Subscribers, topic);
-            Subscription subscription;
-            Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
-            Send(subscription);
+            string id;
+            lock (SubscriberLock)
+            {
+                id = GetUnusedCounterID(Subscribers, topic);
+                Subscription subscription;
+                Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
+                Send(subscription);
+            }
+            
             return id;
         }
 
