@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class LaserScanPublisher : Publisher<MessageTypes.Sensor.LaserScan>
+    public class LaserScanPublisher : UnityPublisher<MessageTypes.Sensor.LaserScan>
     {
         public LaserScanReader laserScanReader;
         public string FrameId = "Unity";

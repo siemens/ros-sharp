@@ -18,7 +18,7 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class GetParamServiceProvider : ServiceProvider<rosapi.GetParamRequest, rosapi.GetParamResponse>
+    public class GetParamServiceProvider : UnityServiceProvider<rosapi.GetParamRequest, rosapi.GetParamResponse>
     {
         public Dictionary<string, string> Parameters = new Dictionary<string, string>
         {

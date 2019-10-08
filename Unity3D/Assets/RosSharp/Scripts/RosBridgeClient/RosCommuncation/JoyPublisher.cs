@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JoyPublisher : Publisher<MessageTypes.Sensor.Joy>
+    public class JoyPublisher : UnityPublisher<MessageTypes.Sensor.Joy>
     {
         private JoyAxisReader[] JoyAxisReaders;
         private JoyButtonReader[] JoyButtonReaders;
