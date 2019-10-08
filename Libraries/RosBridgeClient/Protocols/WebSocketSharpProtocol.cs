@@ -24,7 +24,6 @@ namespace RosSharp.RosBridgeClient.Protocols
         public event EventHandler OnReceive;
         public event EventHandler OnConnected;
         public event EventHandler OnClosed;
-        public event EventHandler OnError;
 
         private WebSocket WebSocket;
 
