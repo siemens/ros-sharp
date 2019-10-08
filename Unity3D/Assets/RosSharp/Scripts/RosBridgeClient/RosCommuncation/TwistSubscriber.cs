@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class TwistSubscriber : Subscriber<MessageTypes.Geometry.Twist>
+    public class TwistSubscriber : UnitySubscriber<MessageTypes.Geometry.Twist>
     {
         public Transform SubscribedTransform;
 

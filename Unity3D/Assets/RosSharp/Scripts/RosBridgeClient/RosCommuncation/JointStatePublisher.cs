@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStatePublisher : Publisher<MessageTypes.Sensor.JointState>
+    public class JointStatePublisher : UnityPublisher<MessageTypes.Sensor.JointState>
     {
         public List<JointStateReader> JointStateReaders;
         public string FrameId = "Unity";

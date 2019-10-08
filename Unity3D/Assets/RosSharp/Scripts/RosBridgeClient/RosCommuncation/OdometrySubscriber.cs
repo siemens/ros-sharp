@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class OdometrySubscriber : Subscriber<MessageTypes.Nav.Odometry>
+    public class OdometrySubscriber : UnitySubscriber<MessageTypes.Nav.Odometry>
     {
         public Transform PublishedTransform;
 

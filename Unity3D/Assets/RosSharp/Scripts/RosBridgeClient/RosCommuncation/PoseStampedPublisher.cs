@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseStampedPublisher : Publisher<MessageTypes.Geometry.PoseStamped>
+    public class PoseStampedPublisher : UnityPublisher<MessageTypes.Geometry.PoseStamped>
     {
         public Transform PublishedTransform;
         public string FrameId = "Unity";

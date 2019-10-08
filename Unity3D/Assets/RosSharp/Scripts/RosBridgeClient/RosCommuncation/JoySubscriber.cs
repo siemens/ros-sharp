@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JoySubscriber : Subscriber<MessageTypes.Sensor.Joy>
+    public class JoySubscriber : UnitySubscriber<MessageTypes.Sensor.Joy>
     {
         public JoyButtonWriter[] joyButtonWriters;
         public JoyAxisWriter[] joyAxisWriters;

@@ -18,7 +18,7 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public abstract class ServiceProvider<Tin, Tout> : MonoBehaviour where Tin : Message where Tout : Message
+    public abstract class UnityServiceProvider<Tin, Tout> : MonoBehaviour where Tin : Message where Tout : Message
     {
         public string ServiceName;
 
