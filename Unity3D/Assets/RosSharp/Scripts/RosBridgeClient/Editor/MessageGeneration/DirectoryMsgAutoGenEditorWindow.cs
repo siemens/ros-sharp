@@ -13,145 +13,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.IO;
-
 using System.Collections.Generic;
-
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient.MessageGeneration
 {
-    public class DirectoryMsgAutoGenEditorWindow : EditorWindow
+    public class DirectoryMsgAutoGenEditorWindow : DirectoryAutoGenEditorWindow
     {
-        private string inPath = "";
-        private string outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
+        protected override string GenerationType
+        {
+            get { return "message"; }
+        }
+
+        protected override string FileExtension
+        {
+            get { return "msg"; }
+        }
 
         [MenuItem("RosBridgeClient/Auto Generate Messages/All Messages in directory...", false, 2)]
-        public static void OpenWindow() {
+        public static void OpenWindow()
+        {
             DirectoryMsgAutoGenEditorWindow window = GetWindow<DirectoryMsgAutoGenEditorWindow>(false, "Message Auto Generation", true);
             window.minSize = new Vector2(750, 100);
             window.maxSize = new Vector2(750, 100);
             window.Show();
         }
 
-        private void OnGUI()
+        protected override List<string> Generate(string inPath, string outPath, string rosPackageName = "")
         {
-            GUILayout.Label("Directory messages auto generation", EditorStyles.boldLabel);
-
-            EditorGUILayout.BeginHorizontal();
-            inPath = EditorGUILayout.TextField("Input Path", inPath);
-            if (GUILayout.Button("Select Folder...", GUILayout.Width(150)))
-            {
-                inPath = EditorUtility.OpenFolderPanel("Select Folder", "", "");
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            outPath = EditorGUILayout.TextField("Output Location", outPath);
-            if (GUILayout.Button("Select Folder...", GUILayout.Width(150)))
-            {
-                outPath = EditorUtility.OpenFolderPanel("Select Folder...", "", "");
-            }
-            EditorGUILayout.EndHorizontal();
-
-            if (GUILayout.Button("GENERATE!")) {
-                if (inPath.Equals(""))
-                {
-                    EditorUtility.DisplayDialog(
-                        title: "Error", 
-                        message: "Empty input path!\nPlease specify input path", 
-                        ok: "Bricks without straw");
-                }
-                else
-                {
-                    try {
-                        List<string> warnings = new List<string>();
-                        string[] files = Directory.GetFiles(inPath, "*.msg", SearchOption.AllDirectories);
-                        if (files.Length == 0)
-                        {
-                            EditorUtility.DisplayDialog(
-                                title: "No message files found!",
-                                message: "No message files found!",
-                                ok: "Bricks without straw");
-                            Reset();
-                        }
-                        else
-                        {
-                            for (int i = 0; i < files.Length; i++)
-                            {
-                                string file = files[i];
-                                string[] hierarchy = file.Split(new char[] { '/', '\\' });
-                                string rosPackageName = hierarchy[hierarchy.Length - 3];
-                                try
-                                {
-                                    EditorUtility.DisplayProgressBar(
-                                        "Working...(" + (i + 1) + "/" + files.Length + ") Checkout xkcd.com/303",
-                                        "Parsing " + file,
-                                        (float)(i + 1) / (float)files.Length);
-                                    warnings.AddRange(MessageAutoGen.GenerateSingleMessage(file, outPath, rosPackageName));
-                                }
-                                catch (MessageTokenizerException e)
-                                {
-                                    Debug.LogError(e.ToString() + e.Message);
-                                    EditorUtility.DisplayDialog(
-                                        title: "Message Tokenizer Exception",
-                                        message: e.Message,
-                                        ok: "Wait. That's illegal");
-                                }
-                                catch (MessageParserException e)
-                                {
-                                    Debug.LogError(e.ToString() + e.Message);
-                                    EditorUtility.DisplayDialog(
-                                        title: "Message Parser Exception",
-                                        message: e.Message,
-                                        ok: "Sorry but you can't ignore errors.");
-                                }
-                            }
-                            // Done
-                            EditorUtility.ClearProgressBar();
-                            if (warnings.Count > 0)
-                            {
-                                EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPath + "\nYou have " + warnings.Count + " warning(s)",
-                                    ok: "I like to live dangerously");
-                                foreach (string w in warnings)
-                                {
-                                    Debug.LogWarning(w);
-                                }
-                            }
-                            else
-                            {
-                                EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPath,
-                                    ok: "Thank you!");
-                            }
-                            Reset();
-                        }
-                    }
-                    catch (DirectoryNotFoundException e)
-                    {
-                        EditorUtility.DisplayDialog(
-                            title: "Folder not found", 
-                            message: e.Message, 
-                            ok: "Bricks without straw");
-                        Reset();
-                    }
-                }
-            }
+            return MessageAutoGen.GenerateSingleMessage(inPath, outPath, rosPackageName);
         }
 
-        private void OnInspectorUpdate()
-        {
-            Repaint();
-        }
-
-        private void Reset()
-        {
-            inPath = "";
-            outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
-        }
     }
 }
