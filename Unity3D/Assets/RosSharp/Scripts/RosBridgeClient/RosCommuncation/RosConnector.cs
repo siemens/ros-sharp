@@ -17,10 +17,8 @@ limitations under the License.
 
 using System;
 using System.Threading;
-
-using UnityEngine;
-
 using RosSharp.RosBridgeClient.Protocols;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -35,13 +33,13 @@ namespace RosSharp.RosBridgeClient
 
         public ManualResetEvent IsConnected { get; private set; }
 
-        public void Awake()
+        public virtual void Awake()
         {
             IsConnected = new ManualResetEvent(false);
             new Thread(ConnectAndWait).Start();
         }
 
-        private void ConnectAndWait()
+        protected void ConnectAndWait()
         {
             RosSocket = ConnectToRos(protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
