@@ -1,6 +1,6 @@
 ﻿/*
 © Siemens AG, 2019
-Author: Sifan Ye (sifan.ye@siemens.com)
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,53 +26,26 @@ using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class FibonacciActionServerComponent : MonoBehaviour
+    public class FibonacciActionServer : UnityActionServer<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
     {
-        public string actionName = "fibonacci";
-        public Protocol protocol = Protocol.WebSocketSharp;
-        public string serverURL = "ws://192.168.137.195:9090";
-        public RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON;
-        public int timeout = 10;
-        public float timeStep = 0.2f;
-
-        private FibonacciActionServer server;
-
         public string status = "";
         public string feedback = "";
 
-        private void Awake()
-        {
-            server = new FibonacciActionServer(new FibonacciAction(), actionName, protocol, serverURL, serializer, timeout, timeStep);
-        }
-
-        // Start is called before the first frame update
-        private void Start()
-        {
-            server.Start();
-        }
-
-        // Update is called once per frame
-        private void Update()
-        {
-            server.UpdateStatus();
-            status = server.GetStatusString();
-            feedback = server.GetFeedbackSequenceString();
-        }
-
-        private void OnDestroy()
-        {
-            server.Stop();
-        }
-    }
-
-    public class FibonacciActionServer : ActionServer<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
-    {
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
-
         private Thread goalHandler;
 
-        public FibonacciActionServer(FibonacciAction action, string actionName, Protocol protocol, string serverURL, RosSocket.SerializerEnum serializer, int timeout, float timeStep) : base(action, actionName, protocol, serverURL, serializer, timeout, timeStep) { }
+        protected override void Start()
+        {
+            base.Start();
+            action = new FibonacciAction();
+        }
 
+        private void Update()
+        {
+            UpdateStatus();
+            status = GetStatusString();
+            feedback = GetFeedbackSequenceString();
+        }
 
         protected bool IsGoalValid()
         {
@@ -101,7 +74,7 @@ namespace RosSharp.RosBridgeClient
                 action.action_feedback.feedback.sequence = sequence.ToArray();
                 PublishFeedback();
 
-                Thread.Sleep(millisecondsTimestep);
+                Thread.Sleep(500);
             }
 
             action.action_result.result.sequence = sequence.ToArray();
@@ -120,9 +93,10 @@ namespace RosSharp.RosBridgeClient
 
         public string GetFeedbackSequenceString()
         {
-            return String.Join(",", action.action_feedback.feedback.sequence);
+            if(action != null)
+                return String.Join(",", action.action_feedback.feedback.sequence);
+            return "";
         }
-
 
         protected override void OnGoalReceived()
         {
@@ -143,7 +117,7 @@ namespace RosSharp.RosBridgeClient
 
         protected override void OnGoalRejected()
         {
-            LogWarning("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
+            Debug.LogWarning("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
         }
 
         protected override void OnGoalActive()
@@ -161,7 +135,7 @@ namespace RosSharp.RosBridgeClient
         protected override void OnGoalSucceeded()
         {
             isProcessingGoal.Reset();
-            Thread.Sleep(millisecondsTimestep);
+            Thread.Sleep((int) timeStep * 1000);
             UpdateAndPublishStatus(ActionStatus.NO_GOAL);
         }
 
@@ -175,22 +149,5 @@ namespace RosSharp.RosBridgeClient
             PublishResult();
         }
 
-        protected override void Log(string log)
-        {
-            Debug.Log("Fibonacci Action Server: " + log);
-        }
-
-        protected override void LogWarning(string log)
-        {
-            Debug.LogWarning("Fibonacci Action Server: " + log);
-        }
-
-        protected override void LogError(string log)
-        {
-            Debug.LogError("Fibonacci Action Server: " + log);
-        }
     }
 }
-
-
-
