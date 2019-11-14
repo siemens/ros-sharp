@@ -55,9 +55,7 @@
     <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
     <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
     <Compile Include="BaseMessages\Actions\ActionResult.cs" />
-    <Compile Include="Actionlib\ActionClient.cs" />
-    <Compile Include="Actionlib\ActionServer.cs" />
-    <Compile Include="Actionlib\ActionStatus.cs" />
+    <Compile Include="MessageTypes\Actionlib\msg\ActionStatus.cs" />
     <Compile Include="BaseMessages\Std\msg\Duration.cs" />
     <Compile Include="BaseMessages\Std\msg\Time.cs" />
     <Compile Include="Communicators.cs" />

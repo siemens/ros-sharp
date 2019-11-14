@@ -1,6 +1,6 @@
 /*
 © Siemens AG, 2019
-Author: Sifan Ye (sifan.ye@siemens.com)
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-	[CustomEditor(typeof(FibonacciActionClientComponent))]
+	[CustomEditor(typeof(FibonacciActionClient))]
     public class FibonacciActionClientEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -27,12 +27,12 @@ namespace RosSharp.RosBridgeClient
 
             if (GUILayout.Button("Send Goal"))
             {
-                ((FibonacciActionClientComponent)target).SendGoal();
+                ((FibonacciActionClient)target).SendGoal();
             }
 
             if (GUILayout.Button("Cancel Goal"))
             {
-                ((FibonacciActionClientComponent)target).CancelGoal();
+                ((FibonacciActionClient)target).CancelGoal();
             }
 
             Repaint();
