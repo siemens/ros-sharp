@@ -1,4 +1,4 @@
-﻿/*
+/*
 © Siemens AG, 2018-2019
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
@@ -90,8 +90,8 @@ namespace RosSharp.Urdf
         {
             HingeJointLimitsManager hingeJointLimits = GetComponent<HingeJointLimitsManager>();
             return new Joint.Limit(
-                Math.Round(hingeJointLimits.LargeAngleLimitMin * Mathf.Deg2Rad, RoundDigits),
-                Math.Round(hingeJointLimits.LargeAngleLimitMax * Mathf.Deg2Rad, RoundDigits),
+                Math.Round(hingeJointLimits.LargeAngleLimitMax * -1.0f * Mathf.Deg2Rad, RoundDigits),
+                Math.Round(hingeJointLimits.LargeAngleLimitMin * -1.0f * Mathf.Deg2Rad, RoundDigits),
                 EffortLimit,
                 VelocityLimit);
         }
