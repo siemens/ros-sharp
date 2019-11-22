@@ -16,26 +16,25 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
-	[CustomEditor(typeof(FibonacciActionClient))]
+	[CustomEditor(typeof(UnityFibonacciActionClient))]
     public class FibonacciActionClientEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            DrawDefaultInspector();
 
             if (GUILayout.Button("Send Goal"))
             {
-                ((FibonacciActionClient)target).SendGoal();
+                ((UnityFibonacciActionClient)target).RegisterGoal();
+                ((UnityFibonacciActionClient)target).fibonacciActionClient.SendGoal();
             }
 
             if (GUILayout.Button("Cancel Goal"))
             {
-                ((FibonacciActionClient)target).CancelGoal();
+                ((UnityFibonacciActionClient)target).fibonacciActionClient.CancelGoal();
             }
-
-            Repaint();
         }
     }
 }

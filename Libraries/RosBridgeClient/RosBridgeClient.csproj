@@ -51,6 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actionlib\ActionClient.cs" />
+    <Compile Include="Actionlib\ActionServer.cs" />
+    <Compile Include="Actionlib\FibonacciActionClient.cs" />
+    <Compile Include="Actionlib\FibonacciActionServer.cs" />
     <Compile Include="BaseMessages\Actions\Action.cs" />
     <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
     <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
