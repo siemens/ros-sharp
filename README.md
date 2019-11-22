@@ -18,12 +18,6 @@ Please also note the new Unity Editor menu features.
 
 Check out the new [Wiki page](https://github.com/siemens/ros-sharp/wiki/Dev_NewMessageTypes) for further info.
 
-#### ActionServer and ActionClient Refactoring: ####
-
-We moved both [ActionClient](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/ActionHandlers/ActionClient.cs) and [ActionServer](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/ActionHandlers/ActionServer.cs) into the library.
-
-Please also find the new console examples for [ActionClient](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClientTest/FibonacciActionClientConsoleExample.cs), for [ActionServer](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClientTest/FibonacciActionServerConsoleExample.cs), and a Unity example scene [here](https://github.com/siemens/ros-sharp/blob/master/Unity3D/Assets/RosSharp/Scenes/FibonacciActionScene.unity).
-
 #### Namespace Changes: ####
 
 We had to update the namespaces as follows:
