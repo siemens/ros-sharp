@@ -305,7 +305,7 @@ GameObject:
   - component: {fileID: 910327901}
   - component: {fileID: 910327900}
   - component: {fileID: 910327902}
-  - component: {fileID: 910327904}
+  - component: {fileID: 910327903}
   m_Layer: 0
   m_Name: RosConnector
   m_TagString: Untagged
@@ -352,16 +352,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 910327899}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 540418aa14c61f7429f03a4510909d30, type: 3}
+  m_Script: {fileID: 11500000, guid: 0e1885e8f089b3f48a0de19e58c6d0d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   actionName: fibonacci
-  timeStep: 0
-  fibonacciOrder: 20
   status: 
   feedback: 
-  result: 
---- !u!114 &910327904
+--- !u!114 &910327903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -370,10 +367,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 910327899}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e1885e8f089b3f48a0de19e58c6d0d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 705f9408f07cb1d42a76f8cf1c3ddfaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   actionName: fibonacci
-  timeStep: 0
+  fibonacciOrder: 20
   status: 
   feedback: 
+  result: 

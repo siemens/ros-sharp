@@ -14,31 +14,23 @@ limitations under the License.
 */
 
 using System;
-using UnityEngine;
-using RosSharp.RosBridgeClient.Actionlib;
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
-    public class FibonacciActionClient : UnityActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
-    {       
-        public  int fibonacciOrder = 20;
+    public class FibonacciActionClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
+    {
+        public int fibonacciOrder;
         public string status = "";
         public string feedback = "";
         public string result = "";
 
-        protected override void Start()
+        public FibonacciActionClient(string actionName, RosSocket rosSocket)
         {
-            base.Start();
+            this.actionName = actionName;
+            this.rosSocket = rosSocket;
             action = new FibonacciAction();
-            action.action_goal.goal.order = fibonacciOrder;
-        }
-
-        private void Update()
-        {
-            status   = GetStatusString();
-            feedback = GetFeedbackString();
-            result   = GetResultString();
+            goalStatus = new MessageTypes.Actionlib.GoalStatus();
         }
 
         protected override FibonacciActionGoal GetActionGoal()
@@ -47,19 +39,25 @@ namespace RosSharp.RosBridgeClient
             return action.action_goal;
         }
 
+        protected override void OnStatusUpdated()
+        {
+            // Not implemented for this particular application
+        }
+
         protected override void OnFeedbackReceived()
         {
-            // Not implemented since get string directly returns stored feedback
+            // Not implemented for this particular application since get string directly returns stored feedback
         }
 
         protected override void OnResultReceived()
         {
-            // Not implemented since get string directly returns stored result
+            // Not implemented for this particular application since get string directly returns stored result
         }
 
         public string GetStatusString()
         {
-            if (goalStatus != null) {
+            if (goalStatus != null)
+            {
                 return ((ActionStatus)(goalStatus.status)).ToString();
             }
             return "";

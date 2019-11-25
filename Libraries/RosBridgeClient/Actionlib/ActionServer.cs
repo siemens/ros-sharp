@@ -13,31 +13,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using UnityEngine;
-using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
     /*
-     * For ROS action server state machine, please see details at
+     * ROS action server state machine is described in detail at;
      * <http://wiki.ros.org/actionlib/DetailedDescription>
      */
 
-    public abstract class UnityActionServer<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback> : MonoBehaviour
-        where TAction         : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
-        where TActionGoal     : ActionGoal<TGoal>
-        where TActionResult   : ActionResult<TResult>
+    public abstract class ActionServer<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
+        where TAction : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
+        where TActionGoal : ActionGoal<TGoal>
+        where TActionResult : ActionResult<TResult>
         where TActionFeedback : ActionFeedback<TFeedback>
-        where TGoal           : Message
-        where TResult         : Message
-        where TFeedback       : Message
+        where TGoal : Message
+        where TResult : Message
+        where TFeedback : Message
     {
         public string actionName;
         public float timeStep;      // the rate(in s in between messages) at which to throttle the topics
+        public RosSocket rosSocket;
+        public Log log;
 
-        private RosConnector rosConnector;
         private string statusPublicationID;
         private string feedbackPublicationID;
         private string resultPublicationID;
@@ -48,22 +46,30 @@ namespace RosSharp.RosBridgeClient.Actionlib
         private string actionStatusText = "";
         protected TAction action;
 
-        protected virtual void Start()
-        {
-            rosConnector = GetComponent<RosConnector>();
 
-            statusPublicationID   = rosConnector.RosSocket.Advertise<GoalStatusArray>(actionName + "/status");
-            feedbackPublicationID = rosConnector.RosSocket.Advertise<TActionFeedback>(actionName + "/feedback");
-            resultPublicationID   = rosConnector.RosSocket.Advertise<TActionResult>(actionName + "/result");
-            cancelSubscriptionID  = rosConnector.RosSocket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, (int)(timeStep * 1000));
-            goalSubscriptionID    = rosConnector.RosSocket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
+        public void Initialize()
+        {
+            statusPublicationID = rosSocket.Advertise<GoalStatusArray>(actionName + "/status");
+            feedbackPublicationID = rosSocket.Advertise<TActionFeedback>(actionName + "/feedback");
+            resultPublicationID = rosSocket.Advertise<TActionResult>(actionName + "/result");
+            cancelSubscriptionID = rosSocket.Subscribe<GoalID>(actionName + "/cancel", CancelCallback, (int)(timeStep * 1000));
+            goalSubscriptionID = rosSocket.Subscribe<TActionGoal>(actionName + "/goal", GoalCallback, (int)(timeStep * 1000));
 
             UpdateAndPublishStatus(ActionStatus.NO_GOAL);
         }
 
-        private void OnDestroy()
+        public void Terminate()
         {
-            TerminateServer();
+            rosSocket.Unadvertise(statusPublicationID);
+            rosSocket.Unadvertise(feedbackPublicationID);
+            rosSocket.Unadvertise(resultPublicationID);
+            rosSocket.Unsubscribe(cancelSubscriptionID);
+            rosSocket.Unsubscribe(goalSubscriptionID);
+        }
+
+        public ActionStatus GetStatus()
+        {
+            return actionStatus;
         }
 
         // Client Triggered Actions
@@ -92,7 +98,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalPreempting();
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot be canceled under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be canceled under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -112,7 +118,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalPreempting();
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot be set to be active under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be set to be active under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -131,7 +137,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalRejected();
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot be rejected under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be rejected under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -160,7 +166,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalSucceeded();
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot succeed under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot succeed under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -179,7 +185,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalAborted();
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot be aborted under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be aborted under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -196,7 +202,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     UpdateAndPublishStatus(ActionStatus.PREEMPTED, text);
                     break;
                 default:
-                    Debug.LogWarning("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");
                     return;
             }
             if (result != null)
@@ -206,7 +212,6 @@ namespace RosSharp.RosBridgeClient.Actionlib
             OnGoalCanceled();
         }
 
-
         protected void UpdateAndPublishStatus(ActionStatus actionStatus, string text = "")
         {
             this.actionStatus = actionStatus;
@@ -214,15 +219,15 @@ namespace RosSharp.RosBridgeClient.Actionlib
             PublishStatus();
         }
 
-        protected void PublishStatus()
+        public void PublishStatus()
         {
             if (actionStatus == ActionStatus.NO_GOAL)
             {
-                rosConnector.RosSocket.Publish(statusPublicationID, new GoalStatusArray());
+                rosSocket.Publish(statusPublicationID, new GoalStatusArray());
             }
             else
             {
-                rosConnector.RosSocket.Publish(statusPublicationID,
+                rosSocket.Publish(statusPublicationID,
                     new GoalStatusArray
                     {
                         status_list = new GoalStatus[]
@@ -241,25 +246,15 @@ namespace RosSharp.RosBridgeClient.Actionlib
         {
             action.action_feedback.status.status = (byte)actionStatus;
             action.action_feedback.status.goal_id = action.action_goal.goal_id;
-            rosConnector.RosSocket.Publish(feedbackPublicationID, action.action_feedback);
+            rosSocket.Publish(feedbackPublicationID, action.action_feedback);
         }
 
         protected void PublishResult()
         {
             action.action_feedback.status.status = (byte)actionStatus;
             action.action_result.status.goal_id = action.action_goal.goal_id;
-            rosConnector.RosSocket.Publish(resultPublicationID, action.action_result);
-        }
-
-        protected ActionStatus GetStatus()
-        {
-            return actionStatus;
-        }
-
-        public void TerminateServer()
-        {
-            if(rosConnector != null)
-                rosConnector.RosSocket.Close((int)(timeStep * 1000));
+            rosSocket.Publish(resultPublicationID, action.action_result);
         }
     }
 }
+
