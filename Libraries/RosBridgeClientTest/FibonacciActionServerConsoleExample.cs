@@ -35,7 +35,7 @@ namespace RosSharp.RosBridgeClientTest
             rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Initialize server
-            fibonacciActionServer = new FibonacciActionServer(actionName, rosSocket, new MessageLogger(new MessageLogger.LogDelegate(x => Console.WriteLine(x))));
+            fibonacciActionServer = new FibonacciActionServer(actionName, rosSocket, new Log(x => Console.WriteLine(x)));
             fibonacciActionServer.Initialize();
 
             // Run server and wait for goal

@@ -26,18 +26,18 @@ namespace RosSharp.RosBridgeClient.Actionlib
         where TResult : Message
         where TFeedback : Message
     {
-        public string actionName;
-        public float timeStep;      // the rate(in s in between messages) at which to throttle the topics
         public RosSocket rosSocket;
+        public float timeStep;      // the rate(in s in between messages) at which to throttle the topics
+
+        public string actionName;
+        public TAction action;
+        public GoalStatus goalStatus;
 
         private string cancelPublicationID;
         private string goalPublicationID;
         private string statusSubscriptionID;
         private string feedbackSubscriptionID;
         private string resultSubscriptionID;
-
-        public GoalStatus goalStatus;
-        public TAction action;
 
         public void Initialize()
         {
@@ -72,7 +72,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
         protected abstract TActionGoal GetActionGoal();
 
         // Implement by user to handle status
-        protected virtual void OnStatusUpdated() { }
+        protected abstract void OnStatusUpdated();
         private void StatusCallback(GoalStatusArray actionGoalStatusArray)
         {
             if (actionGoalStatusArray.status_list.Length > 0)

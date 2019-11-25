@@ -30,11 +30,11 @@ namespace RosSharp.RosBridgeClient.Actionlib
         private ManualResetEvent isProcessingGoal = new ManualResetEvent(false);
         private Thread goalHandler;
 
-        public FibonacciActionServer(string actionName, RosSocket rosSocket, MessageLogger logger)
+        public FibonacciActionServer(string actionName, RosSocket rosSocket, Log log)
         {
             this.actionName = actionName;
             this.rosSocket = rosSocket;
-            this.messageLogger = logger;
+            this.log = log;
             action = new FibonacciAction();
         }
 
@@ -98,7 +98,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         protected override void OnGoalRejected()
         {
-            messageLogger.Log("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
+            log("Cannot generate fibonacci sequence of order less than 1. Goal Rejected");
         }
 
         protected override void OnGoalActive()

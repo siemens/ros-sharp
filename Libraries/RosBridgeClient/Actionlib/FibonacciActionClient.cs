@@ -39,14 +39,19 @@ namespace RosSharp.RosBridgeClient.Actionlib
             return action.action_goal;
         }
 
+        protected override void OnStatusUpdated()
+        {
+            // Not implemented for this particular application
+        }
+
         protected override void OnFeedbackReceived()
         {
-            // Not implemented since get string directly returns stored feedback
+            // Not implemented for this particular application since get string directly returns stored feedback
         }
 
         protected override void OnResultReceived()
         {
-            // Not implemented since get string directly returns stored result
+            // Not implemented for this particular application since get string directly returns stored result
         }
 
         public string GetStatusString()

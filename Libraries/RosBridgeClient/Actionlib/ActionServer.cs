@@ -22,13 +22,6 @@ namespace RosSharp.RosBridgeClient.Actionlib
      * <http://wiki.ros.org/actionlib/DetailedDescription>
      */
 
-    public class MessageLogger
-    {
-        public delegate void LogDelegate(string message);
-        public readonly LogDelegate Log;
-        public MessageLogger(LogDelegate log) { Log = log; }
-    }
-
     public abstract class ActionServer<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
         where TAction : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
         where TActionGoal : ActionGoal<TGoal>
@@ -41,7 +34,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
         public string actionName;
         public float timeStep;      // the rate(in s in between messages) at which to throttle the topics
         public RosSocket rosSocket;
-        public MessageLogger messageLogger;
+        public Log log;
 
         private string statusPublicationID;
         private string feedbackPublicationID;
@@ -52,6 +45,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
         private ActionStatus actionStatus = ActionStatus.NO_GOAL;
         private string actionStatusText = "";
         protected TAction action;
+
 
         public void Initialize()
         {
@@ -104,7 +98,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalPreempting();
                     break;
                 default:
-                    messageLogger.Log("Goal cannot be canceled under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be canceled under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -124,7 +118,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalPreempting();
                     break;
                 default:
-                    messageLogger.Log("Goal cannot be set to be active under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be set to be active under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -143,7 +137,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalRejected();
                     break;
                 default:
-                    messageLogger.Log("Goal cannot be rejected under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be rejected under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -172,7 +166,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalSucceeded();
                     break;
                 default:
-                    messageLogger.Log("Goal cannot succeed under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot succeed under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -191,7 +185,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     OnGoalAborted();
                     break;
                 default:
-                    messageLogger.Log("Goal cannot be aborted under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be aborted under current state: " + actionStatus.ToString() + ". Ignored");
                     break;
             }
         }
@@ -208,7 +202,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
                     UpdateAndPublishStatus(ActionStatus.PREEMPTED, text);
                     break;
                 default:
-                    messageLogger.Log("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");
+                    log("Goal cannot be set to be canceled under current state: " + actionStatus.ToString() + ". Ignored");
                     return;
             }
             if (result != null)
