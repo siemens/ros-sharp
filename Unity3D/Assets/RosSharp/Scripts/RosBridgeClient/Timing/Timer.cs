@@ -1,7 +1,6 @@
 ﻿/*
 © Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -16,24 +15,30 @@ limitations under the License.
 // Adding Timestamp switching
 // Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
 
-using UnityEngine;
+// Removing MonoBehaviour inheritance
+// Siemens AG , 2019, Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com) 
+
+using System;
+using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class Timer: MonoBehaviour
+    public class Timer
     {
-        protected void Awake()
-        {
-            HeaderExtensions.Timer = this;
-        }
+        public static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         public virtual MessageTypes.Std.Time Now()
         {
-            MessageTypes.Std.Time stamp = new MessageTypes.Std.Time();
-            float time = Time.realtimeSinceStartup;
-            stamp.secs = (uint)time;
-            stamp.nsecs = (uint)(1e9 * (time - stamp.secs));
-            return stamp;
+            TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
+
+            double msecs = timeSpan.TotalMilliseconds;
+            uint sec = (uint)(msecs / 1000);
+
+            return new MessageTypes.Std.Time
+            {
+                secs = sec,
+                nsecs = (uint)((msecs / 1000 - sec) * 1e+9)
+            };
         }
     }
 }
