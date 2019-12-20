@@ -5,30 +5,6 @@
 [Here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases) are some showcases illustrating what can be done with ROS#.
 Community provided a variety of other application examples for ROS# [here](https://github.com/siemens/ros-sharp/issues/20). Please don't hesitate to post yours!
 
-## Recent Changes ##
-
-#### Automatic Message Generation: ####
-
-With ROS# you can now generate C# classes of any ROS message, service or action type.
-
-For example, the auto-generated class of [sensor_msgs/JointState.msg](http://docs.ros.org/melodic/api/sensor_msgs/html/msg/JointState.html) is [JointState.cs](https://github.com/siemens/ros-sharp/blob/master/Libraries/RosBridgeClient/MessageTypes/Sensor/msg/JointState.cs).
-
-Please find the new library [here](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration) and the console tool sources [here](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGenerationConsoleTool).
-Please also note the new Unity Editor menu features.
-
-Check out the new [Wiki page](https://github.com/siemens/ros-sharp/wiki/Dev_NewMessageTypes) for further info.
-
-#### Namespace Changes: ####
-
-We had to update the namespaces as follows:
-
-| old                                            | new                                         |
-|------------------------------------------------|---------------------------------------------|
-| `RosSharp.RosBridgeClient.Messages`            |`RosSharp.RosBridgeClient.MessageTypes`      |
-|`RosSharp.RosBridgeClient.Services`             | `RosSharp.RosBridgeClient.MessageTypes`     |
-| `RosSharp.RosBridgeClient.Messages.Standard`   | `RosSharp.RosBridgeClient.MessageTypes.Std` |
-| `RosSharp.RosBridgeClient.Messages.Navigation` | `RosSharp.RosBridgeClient.MessageTypes.Nav` |
-
 ## Contents ##
 
 * [Libraries](https://github.com/siemens/ros-sharp/tree/master/Libraries): .NET solution for
@@ -71,8 +47,8 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 
 * [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on a variety of other platforms community members.
 
-* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET Framework 4.6 and Visual Studio 2017.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.3 and higher.
+* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET Framework 4.6 and Visual Studio 2017 or higher.
+* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.3 or higher.
 In Versions below 2019.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
 * Please find a UWP version of ROS# [here](https://github.com/dwhit/ros-sharp).
