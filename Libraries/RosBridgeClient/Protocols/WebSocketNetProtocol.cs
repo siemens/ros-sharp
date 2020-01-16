@@ -37,6 +37,7 @@ namespace RosSharp.RosBridgeClient.Protocols
         public event EventHandler OnReceive;
         public event EventHandler OnConnected;
         public event EventHandler OnClosed;
+        public event EventHandler OnSent;
 
         public WebSocketNetProtocol(string uriString)
         {
@@ -80,6 +81,11 @@ namespace RosSharp.RosBridgeClient.Protocols
             thread.Start();
         }
 
+        public void Send(ArraySegment<byte> data)
+        {
+            throw new NotImplementedException();
+        }
+
         public async void SendAsync(byte[] message)
         {
             IsConnected.WaitOne();
@@ -97,7 +103,9 @@ namespace RosSharp.RosBridgeClient.Protocols
                 int count = endOfMessage ? message.Length - offset : SendChunkSize;
                 await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Binary, endOfMessage, cancellationToken);
             }
+
             IsReadyToSend.Set();
+            OnSent?.Invoke(this, new MessageEventArgs(message));
         }
 
         private async void StartListen()

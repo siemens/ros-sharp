@@ -7,19 +7,22 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class PoseArray : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/PoseArray";
 
         //  An array of poses with a header for global reference.
+        [DataMember]
         public Header header;
+        [DataMember]
         public Pose[] poses;
 
         public PoseArray()

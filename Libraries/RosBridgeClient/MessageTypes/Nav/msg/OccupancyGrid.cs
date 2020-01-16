@@ -7,24 +7,28 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
+    [DataContract]
     public class OccupancyGrid : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "nav_msgs/OccupancyGrid";
 
         //  This represents a 2-D grid map, in which each cell represents the probability of
         //  occupancy.
+        [DataMember]
         public Header header;
         // MetaData for the map
+        [DataMember]
         public MapMetaData info;
         //  The map data, in row-major order, starting with (0,0).  Occupancy
         //  probabilities are in the range [0,100].  Unknown is -1.
+        [DataMember]
         public sbyte[] data;
 
         public OccupancyGrid()

@@ -7,15 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
+    [DataContract]
     public class SearchParamResponse : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "rosapi/SearchParam";
 
+        [DataMember]
         public string global_name;
 
         public SearchParamResponse()

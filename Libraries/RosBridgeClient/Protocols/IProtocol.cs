@@ -23,8 +23,10 @@ namespace RosSharp.RosBridgeClient.Protocols
         void Close();
         bool IsAlive();
         void Send(byte[] data);
+        void Send(ArraySegment<byte> data);
 
         event EventHandler OnReceive;
+        event EventHandler OnSent;
         event EventHandler OnConnected;
         event EventHandler OnClosed;
     }

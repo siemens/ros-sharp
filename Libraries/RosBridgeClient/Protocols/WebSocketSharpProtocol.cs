@@ -22,6 +22,7 @@ namespace RosSharp.RosBridgeClient.Protocols
     public class WebSocketSharpProtocol: IProtocol
     {
         public event EventHandler OnReceive;
+        public event EventHandler OnSent;
         public event EventHandler OnConnected;
         public event EventHandler OnClosed;
 
@@ -54,8 +55,14 @@ namespace RosSharp.RosBridgeClient.Protocols
         public void Send(byte[] data)
         {
             WebSocket.SendAsync(data, null);
+            OnSent?.Invoke(this, new MessageEventArgs(data));
         }
         
+        public void Send(ArraySegment<byte> data)
+        {
+            throw new NotImplementedException();
+        }
+
         private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
         {
             OnReceive?.Invoke(sender, new MessageEventArgs(e.RawData));

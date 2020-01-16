@@ -7,17 +7,20 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class Accel : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/Accel";
 
         //  This expresses acceleration in free space broken into its linear and angular parts.
+        [DataMember]
         public Vector3 linear;
+        [DataMember]
         public Vector3 angular;
 
         public Accel()

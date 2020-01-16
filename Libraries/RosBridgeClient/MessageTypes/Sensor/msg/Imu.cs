@@ -7,16 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class Imu : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/Imu";
 
         //  This is a message to hold data from an IMU (Inertial Measurement Unit)
@@ -32,14 +33,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  estimate), please set element 0 of the associated covariance matrix to -1
         //  If you are interpreting this message, please check for a value of -1 in the first element of each 
         //  covariance matrix, and disregard the associated estimate.
+        [DataMember]
         public Header header;
+        [DataMember]
         public Quaternion orientation;
+        [DataMember]
         public double[] orientation_covariance;
         //  Row major about x, y, z axes
+        [DataMember]
         public Vector3 angular_velocity;
+        [DataMember]
         public double[] angular_velocity_covariance;
         //  Row major about x, y, z axes
+        [DataMember]
         public Vector3 linear_acceleration;
+        [DataMember]
         public double[] linear_acceleration_covariance;
         //  Row major x, y z 
 

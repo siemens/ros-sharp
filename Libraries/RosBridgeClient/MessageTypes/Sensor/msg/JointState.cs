@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class JointState : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/JointState";
 
         //  This is a message that holds data to describe the state of a set of torque controlled joints. 
@@ -36,10 +37,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  All arrays in this message should have the same size, or be empty.
         //  This is the only way to uniquely associate the joint name with the correct
         //  states.
+        [DataMember]
         public Header header;
+        [DataMember]
         public string[] name;
+        [DataMember]
         public double[] position;
+        [DataMember]
         public double[] velocity;
+        [DataMember]
         public double[] effort;
 
         public JointState()

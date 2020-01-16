@@ -7,25 +7,32 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class JoyFeedback : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/JoyFeedback";
 
         //  Declare of the type of feedback
+        [IgnoreDataMember]
         public const byte TYPE_LED = 0;
+        [IgnoreDataMember]
         public const byte TYPE_RUMBLE = 1;
+        [IgnoreDataMember]
         public const byte TYPE_BUZZER = 2;
+        [DataMember]
         public byte type;
         //  This will hold an id number for each type of each feedback.
         //  Example, the first led would be id=0, the second would be id=1
+        [DataMember]
         public byte id;
         //  Intensity of the feedback, from 0.0 to 1.0, inclusive.  If device is
         //  actually binary, driver should treat 0<=x<0.5 as off, 0.5<=x<=1 as on.
+        [DataMember]
         public float intensity;
 
         public JoyFeedback()

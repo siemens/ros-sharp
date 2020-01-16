@@ -49,8 +49,8 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.pose.position = GetGeometryPoint(PublishedTransform.position.Unity2Ros());
-            message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
+            GetGeometryPoint(PublishedTransform.position.Unity2Ros(), message.pose.position);
+            GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros(), message.pose.orientation);
 
             Publish(message);
         }
@@ -72,6 +72,21 @@ namespace RosSharp.RosBridgeClient
             geometryQuaternion.z = quaternion.z;
             geometryQuaternion.w = quaternion.w;
             return geometryQuaternion;
+        }
+
+        private static void GetGeometryPoint(Vector3 position, MessageTypes.Geometry.Point geometryPoint)
+        {
+            geometryPoint.x = position.x;
+            geometryPoint.y = position.y;
+            geometryPoint.z = position.z;
+        }
+
+        private static void GetGeometryQuaternion(Quaternion quaternion, MessageTypes.Geometry.Quaternion geometryQuaternion)
+        {
+            geometryQuaternion.x = quaternion.x;
+            geometryQuaternion.y = quaternion.y;
+            geometryQuaternion.z = quaternion.z;
+            geometryQuaternion.w = quaternion.w;
         }
 
     }

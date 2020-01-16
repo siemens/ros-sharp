@@ -7,24 +7,28 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
+    [DataContract]
     public class GetPlanRequest : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "nav_msgs/GetPlan";
 
         //  Get a plan from the current position to the goal Pose 
         //  The start pose for the plan
+        [DataMember]
         public PoseStamped start;
         //  The final pose of the goal position
+        [DataMember]
         public PoseStamped goal;
         //  If the goal is obstructed, how many meters the planner can 
         //  relax the constraint in x and y before failing. 
+        [DataMember]
         public float tolerance;
 
         public GetPlanRequest()

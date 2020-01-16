@@ -7,18 +7,20 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class CompressedImage : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/CompressedImage";
 
         //  This message contains a compressed image
+        [DataMember]
         public Header header;
         //  Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
@@ -26,10 +28,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  +x should point to the right in the image
         //  +y should point down in the image
         //  +z should point into to plane of the image
+        [DataMember]
         public string format;
         //  Specifies the format of the data
         //    Acceptable values:
         //      jpeg, png
+        [DataMember]
         public byte[] data;
         //  Compressed image buffer
 

@@ -51,7 +51,10 @@ namespace RosSharp.RosBridgeClient
         {
             texture2D = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
             rect = new Rect(0, 0, resolutionWidth, resolutionHeight);
-            ImageCamera.targetTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24);
+            ImageCamera.targetTexture = new RenderTexture(resolutionWidth, resolutionHeight, 24)
+            {
+                name = "ROS Image Publisher"
+            };
         }
 
         private void InitializeMessage()

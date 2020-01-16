@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class MultiEchoLaserScan : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/MultiEchoLaserScan";
 
         //  Single scan from a multi-echo planar laser range-finder
@@ -23,6 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  If you have another ranging device with different behavior (e.g. a sonar
         //  array), please find or create a different message, since applications
         //  will make fairly laser-specific assumptions about this data
+        [DataMember]
         public Header header;
         //  timestamp in the header is the acquisition time of 
         //  the first ray in the scan.
@@ -30,26 +32,35 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  in frame frame_id, angles are measured around 
         //  the positive Z axis (counterclockwise, if Z is up)
         //  with zero angle being forward along the x axis
+        [DataMember]
         public float angle_min;
         //  start angle of the scan [rad]
+        [DataMember]
         public float angle_max;
         //  end angle of the scan [rad]
+        [DataMember]
         public float angle_increment;
         //  angular distance between measurements [rad]
+        [DataMember]
         public float time_increment;
         //  time between measurements [seconds] - if your scanner
         //  is moving, this will be used in interpolating position
         //  of 3d points
+        [DataMember]
         public float scan_time;
         //  time between scans [seconds]
+        [DataMember]
         public float range_min;
         //  minimum range value [m]
+        [DataMember]
         public float range_max;
         //  maximum range value [m]
+        [DataMember]
         public LaserEcho[] ranges;
         //  range data [m] (Note: NaNs, values < range_min or > range_max should be discarded)
         //  +Inf measurements are out of range
         //  -Inf measurements are too close to determine exact distance.
+        [DataMember]
         public LaserEcho[] intensities;
         //  intensity data [device-specific units].  If your
         //  device does not provide intensities, please leave

@@ -7,20 +7,23 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
+    [DataContract]
     public class GoalStatusArray : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "actionlib_msgs/GoalStatusArray";
 
         //  Stores the statuses for goals that are currently being tracked
         //  by an action server
+        [DataMember]
         public Header header;
+        [DataMember]
         public GoalStatus[] status_list;
 
         public GoalStatusArray()

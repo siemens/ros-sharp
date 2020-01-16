@@ -7,22 +7,27 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
+    [DataContract]
     public class GridCells : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "nav_msgs/GridCells";
 
         // an array of cells in a 2D grid
+        [DataMember]
         public Header header;
+        [DataMember]
         public float cell_width;
+        [DataMember]
         public float cell_height;
+        [DataMember]
         public Point[] cells;
 
         public GridCells()

@@ -116,12 +116,13 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write class declaration
                 writer.Write(
+                    MsgAutoGenUtilities.ONE_TAB + "[DataContract]\n" +
                     MsgAutoGenUtilities.ONE_TAB + "public class " + className + " : Message\n" +
                     MsgAutoGenUtilities.ONE_TAB + "{\n"
                     );
 
                 // Write ROS package name
-                writer.Write(MsgAutoGenUtilities.TWO_TABS + "[JsonIgnore]\n");
+                writer.Write(MsgAutoGenUtilities.TWO_TABS + "[IgnoreDataMember]\n");
                 writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");
 
                 // Write body
@@ -274,15 +275,17 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 #if NETFRAMEWORK
             CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
             // Check if identifier is a C# keyword
-            if (!provider.IsValidIdentifier(identifier))
+            bool isValidIdentifier = provider.IsValidIdentifier(identifier);
+            if (!isValidIdentifier)
             {
                 Warn(
                     "'" + identifier + "' is a C# keyword. We have appended \"_\" at the front to avoid C# compile-time issues." +
                     "(" + inFilePath + ":" + lineNum + ")");
-                declaration = MsgAutoGenUtilities.TWO_TABS + "[JsonProperty(\"" + identifier + "\")]\n" + declaration; 
+                declaration = MsgAutoGenUtilities.TWO_TABS + "[DataMember(Name = \"" + identifier + "\")]\n" + declaration; 
                 identifier = "_" + identifier;
             }
 #else
+            bool isValidIdentifier = true;
             Warn(
                 "'CodeDomProvider class might not exist on your platform. We did not check whether " + identifier + "' is a C# keyword." +
                 "(" + inFilePath + ":" + lineNum + ")");
@@ -300,6 +303,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             {
                 if (canHaveConstDecl)
                 {
+                    declaration = MsgAutoGenUtilities.TWO_TABS + "[IgnoreDataMember]\n" + declaration;
                     declaration += "const " + type + " " + identifier + " = ";
                     declaration += ConstantDeclaration(type);
                     constants.Add(identifier);
@@ -313,6 +317,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 }
             }
             else {
+                if (isValidIdentifier)
+                    declaration = MsgAutoGenUtilities.TWO_TABS + "[DataMember]\n" + declaration;
                 declaration += type + " " + identifier + ";\n";
             }
             body += declaration;
@@ -510,7 +516,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         }
 
         private string GenerateImports() {
-            string importsStr = "using Newtonsoft.Json;\n\n";
+            string importsStr = "using System.Runtime.Serialization;\n\n";
             if (imports.Count > 0) {
                 foreach (string s in imports)
                 {

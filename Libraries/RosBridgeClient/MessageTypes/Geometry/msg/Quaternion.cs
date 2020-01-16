@@ -7,19 +7,24 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class Quaternion : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/Quaternion";
 
         //  This represents an orientation in free space in quaternion form.
+        [DataMember]
         public double x;
+        [DataMember]
         public double y;
+        [DataMember]
         public double z;
+        [DataMember]
         public double w;
 
         public Quaternion()

@@ -40,5 +40,16 @@ namespace RosSharp.RosBridgeClient
                 nsecs = (uint)((msecs / 1000 - sec) * 1e+9)
             };
         }
+
+        public virtual void Now(MessageTypes.Std.Time stamp)
+        {
+            TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
+
+            double msecs = timeSpan.TotalMilliseconds;
+            uint sec = (uint)(msecs / 1000);
+
+            stamp.secs = sec;
+            stamp.nsecs = (uint)((msecs / 1000 - sec) * 1e+9);
+        }
     }
 }

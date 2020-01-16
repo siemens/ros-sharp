@@ -7,30 +7,41 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class NavSatStatus : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/NavSatStatus";
 
         //  Navigation Satellite fix status for any Global Navigation Satellite System
         //  Whether to output an augmented fix is determined by both the fix
         //  type and the last time differential corrections were received.  A
         //  fix is valid when status >= STATUS_FIX.
+        [IgnoreDataMember]
         public const sbyte STATUS_NO_FIX = -1; //  unable to fix position
+        [IgnoreDataMember]
         public const sbyte STATUS_FIX = 0; //  unaugmented fix
+        [IgnoreDataMember]
         public const sbyte STATUS_SBAS_FIX = 1; //  with satellite-based augmentation
+        [IgnoreDataMember]
         public const sbyte STATUS_GBAS_FIX = 2; //  with ground-based augmentation
+        [DataMember]
         public sbyte status;
         //  Bits defining which Global Navigation Satellite System signals were
         //  used by the receiver.
+        [IgnoreDataMember]
         public const ushort SERVICE_GPS = 1;
+        [IgnoreDataMember]
         public const ushort SERVICE_GLONASS = 2;
+        [IgnoreDataMember]
         public const ushort SERVICE_COMPASS = 4; //  includes BeiDou.
+        [IgnoreDataMember]
         public const ushort SERVICE_GALILEO = 8;
+        [DataMember]
         public ushort service;
 
         public NavSatStatus()

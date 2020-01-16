@@ -7,24 +7,29 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
+    [DataContract]
     public class MultiDOFJointTrajectoryPoint : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "trajectory_msgs/MultiDOFJointTrajectoryPoint";
 
         //  Each multi-dof joint can specify a transform (up to 6 DOF)
+        [DataMember]
         public Transform[] transforms;
         //  There can be a velocity specified for the origin of the joint 
+        [DataMember]
         public Twist[] velocities;
         //  There can be an acceleration specified for the origin of the joint 
+        [DataMember]
         public Twist[] accelerations;
+        [DataMember]
         public Duration time_from_start;
 
         public MultiDOFJointTrajectoryPoint()

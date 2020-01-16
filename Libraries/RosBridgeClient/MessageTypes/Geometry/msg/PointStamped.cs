@@ -7,19 +7,22 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class PointStamped : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/PointStamped";
 
         //  This represents a Point with reference coordinate frame and timestamp
+        [DataMember]
         public Header header;
+        [DataMember]
         public Point point;
 
         public PointStamped()

@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class BatteryState : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/BatteryState";
 
         //  Constants are chosen to match the enums in the linux kernel
@@ -23,55 +24,90 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  The one difference is for style reasons the constants are
         //  all uppercase not mixed case.
         //  Power supply status constants
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_STATUS_UNKNOWN = 0;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_STATUS_CHARGING = 1;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_STATUS_DISCHARGING = 2;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_STATUS_NOT_CHARGING = 3;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_STATUS_FULL = 4;
         //  Power supply health constants
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_UNKNOWN = 0;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_GOOD = 1;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_OVERHEAT = 2;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_DEAD = 3;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_OVERVOLTAGE = 4;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_UNSPEC_FAILURE = 5;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_COLD = 6;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE = 7;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE = 8;
         //  Power supply technology (chemistry) constants
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_UNKNOWN = 0;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_NIMH = 1;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_LION = 2;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_LIPO = 3;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_LIFE = 4;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_NICD = 5;
+        [IgnoreDataMember]
         public const byte POWER_SUPPLY_TECHNOLOGY_LIMN = 6;
+        [DataMember]
         public Header header;
+        [DataMember]
         public float voltage;
         //  Voltage in Volts (Mandatory)
+        [DataMember]
         public float current;
         //  Negative when discharging (A)  (If unmeasured NaN)
+        [DataMember]
         public float charge;
         //  Current charge in Ah  (If unmeasured NaN)
+        [DataMember]
         public float capacity;
         //  Capacity in Ah (last full capacity)  (If unmeasured NaN)
+        [DataMember]
         public float design_capacity;
         //  Capacity in Ah (design capacity)  (If unmeasured NaN)
+        [DataMember]
         public float percentage;
         //  Charge percentage on 0 to 1 range  (If unmeasured NaN)
+        [DataMember]
         public byte power_supply_status;
         //  The charging status as reported. Values defined above
+        [DataMember]
         public byte power_supply_health;
         //  The battery health metric. Values defined above
+        [DataMember]
         public byte power_supply_technology;
         //  The battery chemistry. Values defined above
+        [DataMember]
         public bool present;
         //  True if the battery is present
+        [DataMember]
         public float[] cell_voltage;
         //  An array of individual cell voltages for each cell in the pack
         //  If individual voltages unknown but number of cells known set each to NaN
+        [DataMember]
         public string location;
         //  The location into which the battery is inserted. (slot number or plug)
+        [DataMember]
         public string serial_number;
         //  The best approximation of the battery serial number
 

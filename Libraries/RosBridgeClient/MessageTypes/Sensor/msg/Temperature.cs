@@ -7,23 +7,27 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class Temperature : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/Temperature";
 
         //  Single temperature reading.
+        [DataMember]
         public Header header;
         //  timestamp is the time the temperature was measured
         //  frame_id is the location of the temperature reading
+        [DataMember]
         public double temperature;
         //  Measurement of the Temperature in Degrees Celsius
+        [DataMember]
         public double variance;
         //  0 is interpreted as variance unknown
 

@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json.Linq;
+using RosSharp.RosBridgeClient.Serializers;
 using System;
 
 namespace RosSharp.RosBridgeClient
@@ -36,6 +36,8 @@ namespace RosSharp.RosBridgeClient
 
         internal abstract Communication Publish(Message message);
 
+        internal abstract void Return(Communication comm);
+
         internal Unadvertisement Unadvertise()
         {
             return new Unadvertisement(Id, Topic);
@@ -44,6 +46,13 @@ namespace RosSharp.RosBridgeClient
 
     internal class Publisher<T> : Publisher where T : Message
     {
+        private static ObjectPool<Publication<T>> pool = new ObjectPool<Publication<T>>(() => new Publication<T>("", "", null));
+
+        internal override void Return(Communication comm)
+        {
+            pool.PutObject((Publication<T>)comm);
+        }
+
         internal override string Id { get; }
         internal override string Topic { get; }
 
@@ -56,7 +65,11 @@ namespace RosSharp.RosBridgeClient
 
         internal override Communication Publish(Message message)
         {
-            return new Publication<T>(Id, Topic, (T)message);
+            Publication<T> publication = pool.GetObject();
+            publication.id = Id;
+            publication.topic = Topic;
+            publication.msg = (T)message;
+            return publication;
         }
     }
 
@@ -66,7 +79,7 @@ namespace RosSharp.RosBridgeClient
         internal abstract string Topic { get; }
         internal abstract Type TopicType { get; }
 
-        internal abstract void Receive(JToken message);
+        internal abstract void Receive(IReceivedMessage handle);
 
         internal Unsubscription Unsubscribe()
         {
@@ -90,9 +103,9 @@ namespace RosSharp.RosBridgeClient
             subscription = new Subscription(id, Topic, GetRosName<T>(), throttle_rate, queue_length, fragment_size, compression);
         }
 
-        internal override void Receive(JToken message)
+        internal override void Receive(IReceivedMessage handle)
         {
-            SubscriptionHandler.Invoke(message.ToObject<T>());
+            SubscriptionHandler.Invoke(handle.GetMessage<T>());
         }
     }
 
@@ -100,7 +113,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Service { get; }
 
-        internal abstract Communication Respond(string id, JToken args = null);
+        internal abstract Communication Respond(string id, IReceivedMessage handle);
 
         internal ServiceUnadvertisement UnadvertiseService()
         {
@@ -119,9 +132,9 @@ namespace RosSharp.RosBridgeClient
             serviceAdvertisement = new ServiceAdvertisement(service, GetRosName<Tin>());
         }
 
-        internal override Communication Respond(string id, JToken args = null)
-        { 
-            bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out Tout result);
+        internal override Communication Respond(string id, IReceivedMessage handle)
+        {
+            bool isSuccess = ServiceCallHandler.Invoke(handle.GetArgs<Tin>(), out Tout result);
             return new ServiceResponse<Tout>(id, Service, result, isSuccess);
         }
     }
@@ -130,7 +143,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Id { get; }
         internal abstract string Service { get; }
-        internal abstract void Consume(JToken result);
+        internal abstract void Consume(IReceivedMessage handle);
     }
 
     internal class ServiceConsumer<Tin, Tout> : ServiceConsumer where Tin : Message where Tout : Message
@@ -146,9 +159,9 @@ namespace RosSharp.RosBridgeClient
             ServiceResponseHandler = serviceResponseHandler;
             serviceCall = new ServiceCall<Tin>(id, service, serviceArguments);
         }
-        internal override void Consume(JToken result)
+        internal override void Consume(IReceivedMessage handle)
         {
-            ServiceResponseHandler.Invoke(result.ToObject<Tout>());
+            ServiceResponseHandler.Invoke(handle.GetValues<Tout>());
         }
     }
 }

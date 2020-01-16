@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class TransformStamped : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/TransformStamped";
 
         //  This expresses a transform from coordinate frame header.frame_id
@@ -24,9 +25,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         //  This message is mostly used by the 
         //  <a href="http://wiki.ros.org/tf">tf</a> package. 
         //  See its documentation for more information.
+        [DataMember]
         public Header header;
+        [DataMember]
         public string child_frame_id;
         //  the frame id of the child frame
+        [DataMember]
         public Transform transform;
 
         public TransformStamped()

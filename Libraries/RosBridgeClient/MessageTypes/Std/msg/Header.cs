@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
+    [DataContract]
     public class Header : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "std_msgs/Header";
 
         //  Standard metadata for higher-level stamped data types.
@@ -23,15 +24,18 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         //  in a particular coordinate frame.
         //  
         //  sequence ID: consecutively increasing ID 
+        [DataMember]
         public uint seq;
         // Two-integer timestamp that is expressed as:
         //  * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
         //  * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
         //  time-handling sugar is provided by the client library
+        [DataMember]
         public Time stamp;
         // Frame this data is associated with
         //  0: no frame
         //  1: global frame
+        [DataMember]
         public string frame_id;
 
         public Header()

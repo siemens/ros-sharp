@@ -21,8 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using RosSharp.RosBridgeClient.Serializers;
 using RosSharp.RosBridgeClient.Protocols;
 
 namespace RosSharp.RosBridgeClient
@@ -30,20 +29,36 @@ namespace RosSharp.RosBridgeClient
     public class RosSocket
     {
         public IProtocol protocol;
-        public enum SerializerEnum { JSON, BSON }
+        public enum SerializerEnum { JSON, BSON, UTF8JSON }
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
-        private SerializerEnum Serializer;
+        private ISerializer Serializer;
         private object SubscriberLock = new object();
 
         public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.JSON)
         {
             this.protocol = protocol;
-            this.Serializer = serializer;
-            this.protocol.OnReceive += (sender, e) => Receive(sender, e);
+
+            switch (serializer)
+            {
+                case SerializerEnum.JSON:
+                    this.Serializer = new JsonNetSerializer();
+                    break;
+                case SerializerEnum.BSON:
+                    this.Serializer = new BsonNetSerializer();
+                    break;
+                case SerializerEnum.UTF8JSON:
+                    this.Serializer = new Utf8JsonSerializer();
+                    break;
+                default:
+                    throw new ArgumentException("Serializer exception");
+            }
+
+            this.protocol.OnReceive += Receive;
+            this.protocol.OnSent += OnSent; 
             this.protocol.Connect();
         }
 
@@ -83,9 +98,12 @@ namespace RosSharp.RosBridgeClient
             return id;
         }
 
-        public void Publish(string id, Message message)
+        public void Publish<T>(string id, T message) where T : Message
         {
-            Send(Publishers[id].Publish(message));
+            Publisher pub = Publishers[id];
+            Communication comm = pub.Publish(message);
+            Send((Publication<T>)comm);
+            pub.Return(comm);
         }
 
         public void Unadvertise(string id)
@@ -148,7 +166,7 @@ namespace RosSharp.RosBridgeClient
             string id = GetUnusedCounterID(ServiceConsumers, service);
             Communication serviceCall;
             ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out serviceCall, serviceArguments));
-            Send(serviceCall);
+            Send((ServiceCall<Tin>) serviceCall);
             return id;
         }
 
@@ -157,38 +175,52 @@ namespace RosSharp.RosBridgeClient
         private void Send<T>(T communication) where T : Communication
         {
 #if DEBUG
-            Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(communication, Formatting.Indented) + "\n");
+            Console.WriteLine("Sending:\n" + Serializer.GetJsonString(Serializer.Serialize(communication)) + "\n");
 #endif
-            protocol.Send(Serialize<T>(communication));
+            if (protocol is WebSocketNetChannelsProtocol)
+            {
+                // Get the deserialized bytes that are stored in some internal buffer and copy to our own
+                ArraySegment<byte> buf = Serializer.SerializeUnsafe(communication);
+                byte[] msg = System.Buffers.ArrayPool<byte>.Shared.Rent(buf.Count);
+                Buffer.BlockCopy(buf.Array, buf.Offset, msg, 0, buf.Count);
+                protocol.Send(new ArraySegment<byte>(msg, 0, buf.Count));
+            }
+            else
+                protocol.Send(Serializer.Serialize<T>(communication));
+
             return;
+        }
+
+        private void OnSent(object caller, EventArgs e)
+        {
+            if (protocol is WebSocketNetChannelsProtocol)
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(((MessageEventArgs)e).RawData);
+            }
         }
 
         private void Receive(object sender, EventArgs e)
         {
-            JObject jObject = Deserialize<JObject>(((MessageEventArgs)e).RawData);
-#if DEBUG            
-            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(jObject, Formatting.Indented) + "\n");
+            IReceivedMessage commHandle = Serializer.DeserializeReceived(((MessageEventArgs)e).RawData);
+#if DEBUG
+            Console.WriteLine("Received:\n" + Serializer.GetJsonString(((MessageEventArgs)e).RawData) + "\n");
 #endif
-            switch (jObject.GetValue("op").ToString())
+            switch (commHandle.Op)
             {
                 case "publish":
                     {
-                        string topic = jObject.GetValue("topic").ToString();
-                        foreach (Subscriber subscriber in SubscribersOf(topic))
-                            subscriber.Receive(jObject.GetValue("msg"));
+                        foreach (Subscriber subscriber in SubscribersOf(commHandle.Topic))
+                            subscriber.Receive(commHandle);
                         return;
                     }
                 case "service_response":
                     {
-                        string id = jObject.GetValue("id").ToString();
-                        ServiceConsumers[id].Consume(jObject.GetValue("values"));
+                        ServiceConsumers[commHandle.Id].Consume(commHandle);
                         return;
                     }
                 case "call_service":
                     {
-                        string id = jObject.GetValue("id").ToString();
-                        string service = jObject.GetValue("service").ToString();
-                        Send(ServiceProviders[service].Respond(id, jObject.GetValue("args")));
+                        Send(ServiceProviders[commHandle.Service].Respond(commHandle.Id, commHandle));
                         return;
                     }
             }
@@ -196,40 +228,6 @@ namespace RosSharp.RosBridgeClient
         private List<Subscriber> SubscribersOf(string topic)
         {
             return Subscribers.Where(pair => pair.Key.StartsWith(topic + ":")).Select(pair => pair.Value).ToList();
-        }
-
-        private byte[] Serialize<T>(T obj)
-        {
-            switch (Serializer)
-            {
-                case SerializerEnum.JSON:
-                    string json = JsonConvert.SerializeObject(obj);
-                    return Encoding.ASCII.GetBytes(json);
-                case SerializerEnum.BSON:
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    Newtonsoft.Json.Bson.BsonDataWriter writer = new Newtonsoft.Json.Bson.BsonDataWriter(ms);
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(writer, obj);
-                    return ms.ToArray();
-                default:
-                    throw new ArgumentException("Invalid Serializer");
-            }
-        }
-
-        private T Deserialize<T>(byte[] buffer)
-        {
-            switch (Serializer)
-            {
-                case SerializerEnum.JSON:
-                    string ascii = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
-                    return JsonConvert.DeserializeObject<T>(ascii);
-                case SerializerEnum.BSON:
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer);
-                    Newtonsoft.Json.Bson.BsonDataReader reader = new Newtonsoft.Json.Bson.BsonDataReader(ms);
-                    return new JsonSerializer().Deserialize<T>(reader);
-                default:
-                    throw new ArgumentException("Invalid Serializer");
-            }
         }
 
         private static string GetUnusedCounterID<T>(Dictionary<string, T> dictionary, string name)

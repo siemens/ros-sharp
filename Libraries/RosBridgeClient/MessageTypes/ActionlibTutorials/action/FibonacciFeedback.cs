@@ -7,16 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
+    [DataContract]
     public class FibonacciFeedback : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "actionlib_tutorials/FibonacciFeedback";
 
-        //  feedback
+        // feedback
+        [DataMember]
         public int[] sequence;
 
         public FibonacciFeedback()

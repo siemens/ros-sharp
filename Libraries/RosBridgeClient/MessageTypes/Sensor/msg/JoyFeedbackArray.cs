@@ -7,16 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class JoyFeedbackArray : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/JoyFeedbackArray";
 
         //  This message publishes values for multiple feedback at once. 
+        [DataMember]
         public JoyFeedback[] array;
 
         public JoyFeedbackArray()

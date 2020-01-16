@@ -7,33 +7,44 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
+    [DataContract]
     public class SolidPrimitive : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "shape_msgs/SolidPrimitive";
 
         //  Define box, sphere, cylinder, cone 
         //  All shapes are defined to have their bounding boxes centered around 0,0,0.
+        [IgnoreDataMember]
         public const byte BOX = 1;
+        [IgnoreDataMember]
         public const byte SPHERE = 2;
+        [IgnoreDataMember]
         public const byte CYLINDER = 3;
+        [IgnoreDataMember]
         public const byte CONE = 4;
         //  The type of the shape
+        [DataMember]
         public byte type;
         //  The dimensions of the shape
+        [DataMember]
         public double[] dimensions;
         //  The meaning of the shape dimensions: each constant defines the index in the 'dimensions' array
         //  For the BOX type, the X, Y, and Z dimensions are the length of the corresponding
         //  sides of the box.
+        [IgnoreDataMember]
         public const byte BOX_X = 0;
+        [IgnoreDataMember]
         public const byte BOX_Y = 1;
+        [IgnoreDataMember]
         public const byte BOX_Z = 2;
         //  For the SPHERE type, only one component is used, and it gives the radius of
         //  the sphere.
+        [IgnoreDataMember]
         public const byte SPHERE_RADIUS = 0;
         //  For the CYLINDER and CONE types, the center line is oriented along
         //  the Z axis.  Therefore the CYLINDER_HEIGHT (CONE_HEIGHT) component
@@ -42,9 +53,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
         //  radius of the base of the cylinder (cone).  Cone and cylinder
         //  primitives are defined to be circular. The tip of the cone is
         //  pointing up, along +Z axis.
+        [IgnoreDataMember]
         public const byte CYLINDER_HEIGHT = 0;
+        [IgnoreDataMember]
         public const byte CYLINDER_RADIUS = 1;
+        [IgnoreDataMember]
         public const byte CONE_HEIGHT = 0;
+        [IgnoreDataMember]
         public const byte CONE_RADIUS = 1;
 
         public SolidPrimitive()

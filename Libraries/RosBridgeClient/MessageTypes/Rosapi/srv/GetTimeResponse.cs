@@ -7,17 +7,19 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
+    [DataContract]
     public class GetTimeResponse : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "rosapi/GetTime";
 
+        [DataMember]
         public Time time;
 
         public GetTimeResponse()

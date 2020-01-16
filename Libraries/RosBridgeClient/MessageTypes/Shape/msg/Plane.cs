@@ -7,13 +7,14 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
+    [DataContract]
     public class Plane : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "shape_msgs/Plane";
 
         //  Representation of a plane, using the plane equation ax + by + cz + d = 0
@@ -21,6 +22,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
         //  b := coef[1]
         //  c := coef[2]
         //  d := coef[3]
+        [DataMember]
         public double[] coef;
 
         public Plane()

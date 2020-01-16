@@ -7,15 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
+    [DataContract]
     public class Float64 : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "std_msgs/Float64";
 
+        [DataMember]
         public double data;
 
         public Float64()

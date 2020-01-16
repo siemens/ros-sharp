@@ -15,15 +15,23 @@ limitations under the License.
 
 using System;
 using NUnit.Framework;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RosSharp.RosBridgeClient;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
+using sensor_msgs = RosSharp.RosBridgeClient.MessageTypes.Sensor;
+using System.Diagnostics;
+using RosSharp.RosBridgeClient.Serializers;
 
 namespace RosSharp.RosBridgeClientTest
 {
-    [TestFixture]
-    public class RosCommunicationTests
+
+    [TestFixture(typeof(JsonNetSerializer))]
+    [TestFixture(typeof(BsonNetSerializer))]
+    [TestFixture(typeof(Utf8JsonSerializer))]
+    public class RosCommunicationTests<T> where T : ISerializer, new()
     {
+        T serializer = new T();
+
         [SetUp]
         public void Setup()
         {
@@ -39,33 +47,59 @@ namespace RosSharp.RosBridgeClientTest
         [Test, Category("Offline")]
         public void PublicationTest()
         {
-            Communication comm = new Publication<std_msgs.Time>("myid", "mytopic", new std_msgs.Time());
-            string json = JsonConvert.SerializeObject(comm);
-            Assert.AreEqual("{\"topic\":\"mytopic\",\"msg\":{\"secs\":0,\"nsecs\":0},\"op\":\"publish\",\"id\":\"myid\"}",
-                           json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            Publication<std_msgs.Time> comm = new Publication<std_msgs.Time>("myid", "mytopic", new std_msgs.Time());
+            byte[] bytes = serializer.Serialize(comm);
+            Console.WriteLine("JSON:\n" + serializer.GetJsonString(bytes) + "\n");
+            JObject actual = JObject.Parse(serializer.GetJsonString(bytes));
+            JObject expected = JObject.Parse("{\"topic\":\"mytopic\",\"msg\":{\"secs\":0,\"nsecs\":0},\"op\":\"publish\",\"id\":\"myid\"}");
+            Assert.IsTrue(JToken.DeepEquals(expected, actual));
         }
 
         [Test, Category("Offline")]
         public void SubscriptionTest()
         {
-            Communication comm = new Subscription("myid", "mytopic", "mytype");
-            string json = JsonConvert.SerializeObject(comm);
-            Assert.AreEqual("{\"topic\":\"mytopic\",\"type\":\"mytype\",\"throttle_rate\":0,\"queue_length\":1," +
-                            "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"subscribe\",\"id\":\"myid\"}",
-                            json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            Subscription comm = new Subscription("myid", "mytopic", "mytype");
+            byte[] bytes = serializer.Serialize(comm);
+            Console.WriteLine("JSON:\n" + serializer.GetJsonString(bytes) + "\n");
+            JObject actual = JObject.Parse(serializer.GetJsonString(bytes));
+            JObject expected = JObject.Parse("{\"topic\":\"mytopic\",\"type\":\"mytype\",\"throttle_rate\":0,\"queue_length\":1," +
+                "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"subscribe\",\"id\":\"myid\"}");
+            Assert.IsTrue(JToken.DeepEquals(expected, actual));
         }
 
         [Test, Category("Offline")]
         public void ServiceCallTest()
         {
-            Communication comm = new ServiceCall<std_msgs.Time>("myid", "myservice", new std_msgs.Time());
-            string json = JsonConvert.SerializeObject(comm);
-            Assert.AreEqual("{\"service\":\"myservice\",\"args\":{\"secs\":0,\"nsecs\":0}," +
-                            "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"call_service\",\"id\":\"myid\"}",
-                            json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            ServiceCall<std_msgs.Time> comm = new ServiceCall<std_msgs.Time>("myid", "myservice", new std_msgs.Time());
+            byte[] bytes = serializer.Serialize(comm);
+            string s = serializer.GetJsonString(bytes);
+            Console.WriteLine("JSON:\n" + s + "\n");
+            JObject actual = JObject.Parse(s);
+            JObject expected = JObject.Parse("{\"service\":\"myservice\",\"args\":{\"secs\":0,\"nsecs\":0}," +
+                          "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"call_service\",\"id\":\"myid\"}");
+            Assert.IsTrue(JToken.DeepEquals(expected, actual));
+        }
+
+        [Test, Category("Offline")]
+        public void ReceivedMessageTest()
+        {
+            std_msgs.Time time = new std_msgs.Time();
+            Publication<std_msgs.Time> comm = new Publication<std_msgs.Time>("myid", "mytopic", time);
+            byte[] bytes = serializer.Serialize(comm);
+            Console.WriteLine("JSON:\n" + serializer.GetJsonString(bytes) + "\n");
+            JObject actual = JObject.Parse(serializer.GetJsonString(bytes));
+            JObject expected = JObject.Parse("{\"topic\":\"mytopic\",\"msg\":{\"secs\":0,\"nsecs\":0},\"op\":\"publish\",\"id\":\"myid\"}");
+            Assert.IsTrue(JToken.DeepEquals(expected, actual));
+            IReceivedMessage received = serializer.DeserializeReceived(bytes);
+            Assert.IsTrue(received.Op == "publish");
+            Assert.IsTrue(received.Id == "myid");
+            Assert.IsTrue(received.Topic == "mytopic");
+            Assert.IsTrue(received.Service == null);
+            Assert.IsNull(received.GetValues<std_msgs.Time>());
+            Assert.IsNull(received.GetArgs<std_msgs.Time>());
+            std_msgs.Time receivedMsg = received.GetMessage<std_msgs.Time>();
+            Assert.IsTrue(receivedMsg.secs == time.secs);
+            Assert.IsTrue(receivedMsg.nsecs == time.nsecs);
         }
     }
 }

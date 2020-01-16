@@ -7,20 +7,30 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
+    [DataContract]
     public class TypeDef : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "rosapi/TypeDef";
 
+        [DataMember]
         public string type;
+        [DataMember]
         public string[] fieldnames;
+        [DataMember]
         public string[] fieldtypes;
+        [DataMember]
         public int[] fieldarraylen;
+        [DataMember]
         public string[] examples;
+        [DataMember]
+        public string[] constnames;
+        [DataMember]
+        public string[] constvalues;
 
         public TypeDef()
         {
@@ -29,15 +39,19 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
             this.fieldtypes = new string[0];
             this.fieldarraylen = new int[0];
             this.examples = new string[0];
+            this.constnames = new string[0];
+            this.constvalues = new string[0];
         }
 
-        public TypeDef(string type, string[] fieldnames, string[] fieldtypes, int[] fieldarraylen, string[] examples)
+        public TypeDef(string type, string[] fieldnames, string[] fieldtypes, int[] fieldarraylen, string[] examples, string[] constnames, string[] constvalues)
         {
             this.type = type;
             this.fieldnames = fieldnames;
             this.fieldtypes = fieldtypes;
             this.fieldarraylen = fieldarraylen;
             this.examples = examples;
+            this.constnames = constnames;
+            this.constvalues = constvalues;
         }
     }
 }

@@ -7,16 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class Polygon : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/Polygon";
 
         // A specification of a polygon where the first and last points are assumed to be connected
+        [DataMember]
         public Point32[] points;
 
         public Polygon()

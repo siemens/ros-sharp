@@ -7,16 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class MultiDOFJointState : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/MultiDOFJointState";
 
         //  Representation of state for joints with multiple degrees of freedom, 
@@ -38,10 +39,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  All arrays in this message should have the same size, or be empty.
         //  This is the only way to uniquely associate the joint name with the correct
         //  states.
+        [DataMember]
         public Header header;
+        [DataMember]
         public string[] joint_names;
+        [DataMember]
         public Transform[] transforms;
+        [DataMember]
         public Twist[] twist;
+        [DataMember]
         public Wrench[] wrench;
 
         public MultiDOFJointState()

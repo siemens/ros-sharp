@@ -7,17 +7,20 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class Transform : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/Transform";
 
         //  This represents the transform between two coordinate frames in free space.
+        [DataMember]
         public Vector3 translation;
+        [DataMember]
         public Quaternion rotation;
 
         public Transform()

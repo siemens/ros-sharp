@@ -7,30 +7,39 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
+    [DataContract]
     public class Inertia : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "geometry_msgs/Inertia";
 
         //  Mass [kg]
+        [DataMember]
         public double m;
         //  Center of mass [m]
+        [DataMember]
         public Vector3 com;
         //  Inertia Tensor [kg-m^2]
         //      | ixx ixy ixz |
         //  I = | ixy iyy iyz |
         //      | ixz iyz izz |
+        [DataMember]
         public double ixx;
+        [DataMember]
         public double ixy;
+        [DataMember]
         public double ixz;
+        [DataMember]
         public double iyy;
+        [DataMember]
         public double iyz;
+        [DataMember]
         public double izz;
 
         public Inertia()

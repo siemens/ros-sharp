@@ -7,31 +7,44 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class PointField : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/PointField";
 
         //  This message holds the description of one point entry in the
         //  PointCloud2 message format.
+        [IgnoreDataMember]
         public const byte INT8 = 1;
+        [IgnoreDataMember]
         public const byte UINT8 = 2;
+        [IgnoreDataMember]
         public const byte INT16 = 3;
+        [IgnoreDataMember]
         public const byte UINT16 = 4;
+        [IgnoreDataMember]
         public const byte INT32 = 5;
+        [IgnoreDataMember]
         public const byte UINT32 = 6;
+        [IgnoreDataMember]
         public const byte FLOAT32 = 7;
+        [IgnoreDataMember]
         public const byte FLOAT64 = 8;
+        [DataMember]
         public string name;
         //  Name of field
+        [DataMember]
         public uint offset;
         //  Offset from start of point struct
+        [DataMember]
         public byte datatype;
         //  Datatype enumeration, see above
+        [DataMember]
         public uint count;
         //  How many elements in the field
 

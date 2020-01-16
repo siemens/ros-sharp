@@ -16,13 +16,17 @@ limitations under the License.
 using System.Threading;
 using NUnit.Framework;
 using RosSharp.RosBridgeClient;
+using RosSharp.RosBridgeClient.Serializers;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using std_srvs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClientTest
 {
-    [TestFixture]
+    [TestFixture(RosSocket.SerializerEnum.JSON)]
+    //[TestFixture(RosSocket.SerializerEnum.BSON)]
+    //[TestFixture(RosSocket.SerializerEnum.UTF8JSON)]
+    [SingleThreaded]
     public class RosSocketTests
     {
         // on ROS system:
@@ -40,10 +44,18 @@ namespace RosSharp.RosBridgeClientTest
         private ManualResetEvent OnServiceReceived = new ManualResetEvent(false);
         private ManualResetEvent OnServiceProvided = new ManualResetEvent(false);
 
+        private RosSocket.SerializerEnum serializer;
+
+        public RosSocketTests(RosSocket.SerializerEnum serializer)
+        {
+            this.serializer = serializer;
+        }
+
         [SetUp]
         public void Setup()
         {
-            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(Uri));
+            RosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(Uri), serializer);
+            while (!RosSocket.protocol.IsAlive()) ;
         }
 
         [TearDown]

@@ -7,13 +7,14 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class RegionOfInterest : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/RegionOfInterest";
 
         //  This message is used to specify a region of interest within an image.
@@ -22,20 +23,25 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  taken, the height and width fields should either match the height and
         //  width fields for the associated image; or height = width = 0
         //  indicates that the full resolution image was captured.
+        [DataMember]
         public uint x_offset;
         //  Leftmost pixel of the ROI
         //  (0 if the ROI includes the left edge of the image)
+        [DataMember]
         public uint y_offset;
         //  Topmost pixel of the ROI
         //  (0 if the ROI includes the top edge of the image)
+        [DataMember]
         public uint height;
         //  Height of ROI
+        [DataMember]
         public uint width;
         //  Width of ROI
         //  True if a distinct rectified ROI should be calculated from the "raw"
         //  ROI in this message. Typically this should be False if the full image
         //  is captured (ROI not used), and True if a subwindow is captured (ROI
         //  used).
+        [DataMember]
         public bool do_rectify;
 
         public RegionOfInterest()

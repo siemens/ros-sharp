@@ -41,13 +41,32 @@
       <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Channels, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Channels.4.7.0\lib\netstandard1.3\System.Threading.Channels.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Utf8Json, Version=1.3.7.0, Culture=neutral, PublicKeyToken=8a73d3ba7e392e27, processorArchitecture=MSIL">
+      <HintPath>..\packages\Utf8Json.1.3.7\lib\net45\Utf8Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -259,21 +278,40 @@
     <Compile Include="MessageTypes\Trajectory\msg\JointTrajectoryPoint.cs" />
     <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectory.cs" />
     <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectoryPoint.cs" />
+    <Compile Include="ObjectPool.cs" />
+    <Compile Include="Serializers\IReceivedMessage.cs" />
+    <Compile Include="Serializers\JsonNet\MemoryPool.cs" />
+    <Compile Include="Serializers\Utf8Json\ByteArrayToBase64Formatter.cs" />
+    <Compile Include="Serializers\JsonNet\JsonNetReceivedMessage.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\Protocol.cs" />
+    <Compile Include="Protocols\WebSocketNetProtocol.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />
-    <Compile Include="Protocols\WebSocketNetProtocol.cs" />
+    <Compile Include="Protocols\WebSocketNetChannelsProtocol.cs" />
+    <Compile Include="Serializers\Utf8Json\RosSharpInternalResolver.cs" />
+    <Compile Include="Serializers\Utf8Json\RosSharpResolverGen.cs" />
+    <Compile Include="Serializers\Utf8Json\Utf8JsonReceivedMessage.cs" />
+    <Compile Include="Serializers\Utf8Json\Utf8JsonSerializer .cs" />
+    <Compile Include="Serializers\JsonNet\BsonSerializer.cs" />
+    <Compile Include="Serializers\JsonNet\JsonNetSerializer.cs" />
+    <Compile Include="Serializers\ISerializer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransfer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransferFromRos.cs" />
     <Compile Include="UrdfTransfer\UrdfTransferToRos.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

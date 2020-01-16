@@ -19,9 +19,5 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class Message
     {
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 }

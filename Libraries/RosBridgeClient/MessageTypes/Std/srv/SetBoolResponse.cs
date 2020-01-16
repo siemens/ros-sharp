@@ -7,17 +7,20 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
+    [DataContract]
     public class SetBoolResponse : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "std_srvs/SetBool";
 
+        [DataMember]
         public bool success;
         //  indicate successful run of triggered service
+        [DataMember]
         public string message;
         //  informational, e.g. for error messages
 

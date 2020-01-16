@@ -7,20 +7,23 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
+    [DataContract]
     public class MultiArrayLayout : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "std_msgs/MultiArrayLayout";
 
         //  The multiarray declares a generic multi-dimensional array of a
         //  particular data type.  Dimensions are ordered from outer most
         //  to inner most.
+        [DataMember]
         public MultiArrayDimension[] dim;
         //  Array of dimension properties
+        [DataMember]
         public uint data_offset;
         //  padding elements at front of data
         //  Accessors should ALWAYS be written in terms of dimension stride

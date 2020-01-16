@@ -7,23 +7,33 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
+    [DataContract]
     public class TF2Error : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "tf2_msgs/TF2Error";
 
+        [IgnoreDataMember]
         public const byte NO_ERROR = 0;
+        [IgnoreDataMember]
         public const byte LOOKUP_ERROR = 1;
+        [IgnoreDataMember]
         public const byte CONNECTIVITY_ERROR = 2;
+        [IgnoreDataMember]
         public const byte EXTRAPOLATION_ERROR = 3;
+        [IgnoreDataMember]
         public const byte INVALID_ARGUMENT_ERROR = 4;
+        [IgnoreDataMember]
         public const byte TIMEOUT_ERROR = 5;
+        [IgnoreDataMember]
         public const byte TRANSFORM_ERROR = 6;
+        [DataMember]
         public byte error;
+        [DataMember]
         public string error_string;
 
         public TF2Error()

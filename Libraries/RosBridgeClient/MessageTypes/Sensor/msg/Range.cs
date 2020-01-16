@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class Range : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/Range";
 
         //  Single range reading from an active ranger that emits energy and reports
@@ -26,16 +27,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  sensor will have min_range===max_range===distance of detection.
         //  These sensors follow REP 117 and will output -Inf if the object is detected
         //  and +Inf if the object is outside of the detection range.
+        [DataMember]
         public Header header;
         //  timestamp in the header is the time the ranger
         //  returned the distance reading
         //  Radiation type enums
         //  If you want a value added to this list, send an email to the ros-users list
+        [IgnoreDataMember]
         public const byte ULTRASOUND = 0;
+        [IgnoreDataMember]
         public const byte INFRARED = 1;
+        [DataMember]
         public byte radiation_type;
         //  the type of radiation used by the sensor
         //  (sound, IR, etc) [enum]
+        [DataMember]
         public float field_of_view;
         //  the size of the arc that the distance reading is
         //  valid for [rad]
@@ -43,11 +49,14 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  been anywhere within -field_of_view/2 and
         //  field_of_view/2 at the measured range. 
         //  0 angle corresponds to the x-axis of the sensor.
+        [DataMember]
         public float min_range;
         //  minimum range value [m]
+        [DataMember]
         public float max_range;
         //  maximum range value [m]
         //  Fixed distance rangers require min_range==max_range
+        [DataMember]
         public float range;
         //  range data [m]
         //  (Note: values < range_min or > range_max

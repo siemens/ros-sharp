@@ -7,15 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
+    [DataContract]
     public class GetBinaryFileResponse : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "file_server/GetBinaryFile";
 
+        [DataMember]
         public byte[] value;
 
         public GetBinaryFileResponse()

@@ -7,22 +7,26 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class Joy : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/Joy";
 
         //  Reports the state of a joysticks axes and buttons.
+        [DataMember]
         public Header header;
         //  timestamp in the header is the time the data is received from the joystick
+        [DataMember]
         public float[] axes;
         //  the axes measurements from a joystick
+        [DataMember]
         public int[] buttons;
         //  the buttons measurements from a joystick 
 

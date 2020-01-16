@@ -7,15 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class CameraInfo : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/CameraInfo";
 
         //  This message defines meta information for a camera. It should be in a
@@ -45,6 +46,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //                      Image acquisition info                          #
         // ######################################################################
         //  Time of image acquisition, camera coordinate frame ID
+        [DataMember]
         public Header header;
         //  Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
@@ -67,14 +69,18 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         // ######################################################################
         //  The image dimensions with which the camera was calibrated. Normally
         //  this will be the full camera resolution in pixels.
+        [DataMember]
         public uint height;
+        [DataMember]
         public uint width;
         //  The distortion model used. Supported models are listed in
         //  sensor_msgs/distortion_models.h. For most cameras, "plumb_bob" - a
         //  simple model of radial and tangential distortion - is sufficient.
+        [DataMember]
         public string distortion_model;
         //  The distortion parameters, size depending on the distortion model.
         //  For "plumb_bob", the 5 parameters are: (k1, k2, t1, t2, k3).
+        [DataMember]
         public double[] D;
         //  Intrinsic camera matrix for the raw (distorted) images.
         //      [fx  0 cx]
@@ -83,12 +89,14 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  Projects 3D points in the camera coordinate frame to 2D pixel
         //  coordinates using the focal lengths (fx, fy) and principal point
         //  (cx, cy).
+        [DataMember]
         public double[] K;
         //  3x3 row-major matrix
         //  Rectification matrix (stereo cameras only)
         //  A rotation matrix aligning the camera coordinate system to the ideal
         //  stereo image plane so that epipolar lines in both stereo images are
         //  parallel.
+        [DataMember]
         public double[] R;
         //  3x3 row-major matrix
         //  Projection/camera matrix
@@ -115,6 +123,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //          x = u / w
         //          y = v / w
         //   This holds for both images of a stereo pair.
+        [DataMember]
         public double[] P;
         //  3x4 row-major matrix
         // ######################################################################
@@ -130,7 +139,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //   (width / binning_x) x (height / binning_y).
         //  The default values binning_x = binning_y = 0 is considered the same
         //   as binning_x = binning_y = 1 (no subsampling).
+        [DataMember]
         public uint binning_x;
+        [DataMember]
         public uint binning_y;
         //  Region of interest (subwindow of full camera resolution), given in
         //   full resolution (unbinned) image coordinates. A particular ROI
@@ -138,6 +149,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //   regardless of binning settings.
         //  The default setting of roi (all values 0) is considered the same as
         //   full resolution (roi.width = width, roi.height = height).
+        [DataMember]
         public RegionOfInterest roi;
 
         public CameraInfo()

@@ -22,7 +22,7 @@ namespace RosSharp.RosBridgeClient
         public static void Update(this MessageTypes.Std.Header header)
         {
             header.seq++;
-            header.stamp = timer.Now();
+            timer.Now(header.stamp);
         }
     }
 }

@@ -7,20 +7,22 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
+    [DataContract]
     public class Image : Message
     {
-        [JsonIgnore]
+        [IgnoreDataMember]
         public const string RosMessageName = "sensor_msgs/Image";
 
         //  This message contains an uncompressed image
         //  (0, 0) is at top-left corner of image
         // 
+        [DataMember]
         public Header header;
         //  Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
@@ -31,20 +33,26 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  If the frame_id here and the frame_id of the CameraInfo
         //  message associated with the image conflict
         //  the behavior is undefined
+        [DataMember]
         public uint height;
         //  image height, that is, number of rows
+        [DataMember]
         public uint width;
         //  image width, that is, number of columns
         //  The legal values for encoding are in file src/image_encodings.cpp
         //  If you want to standardize a new string format, join
         //  ros-users@lists.sourceforge.net and send an email proposing a new encoding.
+        [DataMember]
         public string encoding;
         //  Encoding of pixels -- channel meaning, ordering, size
         //  taken from the list of strings in include/sensor_msgs/image_encodings.h
+        [DataMember]
         public byte is_bigendian;
         //  is this data bigendian?
+        [DataMember]
         public uint step;
         //  Full row length in bytes
+        [DataMember]
         public byte[] data;
         //  actual matrix data, size is (step * rows)
 

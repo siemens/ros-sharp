@@ -37,6 +37,7 @@ using System.Runtime.InteropServices;
 
 // Make internal classes visible to unit test assembly
 [assembly: InternalsVisibleTo("RosBridgeClientTest")]
+[assembly: InternalsVisibleTo("Utf8Json")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("27cd898a-8840-4cdd-a475-4a672fd2ef50")]
