@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// New channels based WebsocketNET protocol
+// University of Kent, 2019, Odysseas Doumas (od79@kent.ac.uk)
+
 namespace RosSharp.RosBridgeClient.Protocols
 {
     public enum Protocol { WebSocketSharp, WebSocketNET, WebSocketNETChannels };

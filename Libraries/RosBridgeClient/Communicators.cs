@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Added UTF8Json (de-)seriliazation option
+// University of Kent, 2019, Odysseas Doumas (od79@kent.ac.uk)
+
 using RosSharp.RosBridgeClient.Serializers;
 using System;
 

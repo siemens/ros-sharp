@@ -16,6 +16,9 @@ limitations under the License.
 // Adding BSON (de-)seriliazation option
 // Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
 
+// Added UTF8Json (de-)seriliazation option, new protocol
+// University of Kent, 2019, Odysseas Doumas (od79@kent.ac.uk)
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
