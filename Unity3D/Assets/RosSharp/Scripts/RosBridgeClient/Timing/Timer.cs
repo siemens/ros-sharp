@@ -18,6 +18,9 @@ limitations under the License.
 // Removing MonoBehaviour inheritance
 // Siemens AG , 2019, Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com) 
 
+// Added allocation free alternatives
+// UoK , 2019, Odysseas Doumas (od79@kent.ac.uk / odydoum@gmail.com) 
+
 using System;
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
@@ -29,16 +32,21 @@ namespace RosSharp.RosBridgeClient
 
         public virtual MessageTypes.Std.Time Now()
         {
+            Now(out uint secs, out uint nsecs);
+            return new MessageTypes.Std.Time(secs, nsecs);
+        }
+
+        public virtual void Now(MessageTypes.Std.Time stamp)
+        {
+            Now(out stamp.secs, out stamp.nsecs);
+        }
+
+        private static void Now(out uint secs, out uint nsecs)
+        {
             TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
-
-            double msecs = timeSpan.TotalMilliseconds;
-            uint sec = (uint)(msecs / 1000);
-
-            return new MessageTypes.Std.Time
-            {
-                secs = sec,
-                nsecs = (uint)((msecs / 1000 - sec) * 1e+9)
-            };
+            double msecs = (uint)timeSpan.TotalMilliseconds;
+            secs = (uint)(msecs / 1000);
+            nsecs = (uint)((msecs / 1000 - secs) * 1e+9);
         }
     }
 }
