@@ -44,7 +44,7 @@ namespace RosSharp.RosBridgeClient
         private static void Now(out uint secs, out uint nsecs)
         {
             TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
-            double msecs = (uint)timeSpan.TotalMilliseconds;
+            double msecs = timeSpan.TotalMilliseconds;
             secs = (uint)(msecs / 1000);
             nsecs = (uint)((msecs / 1000 - secs) * 1e+9);
         }
