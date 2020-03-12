@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using Newtonsoft.Json.Linq;
 using System;
-using System.Text.Json;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -66,7 +66,7 @@ namespace RosSharp.RosBridgeClient
         internal abstract string Topic { get; }
         internal abstract Type TopicType { get; }
 
-        internal abstract void Receive(JsonElement jsonElement);
+        internal abstract void Receive(JToken message);
 
         internal Unsubscription Unsubscribe()
         {
@@ -90,10 +90,9 @@ namespace RosSharp.RosBridgeClient
             subscription = new Subscription(id, Topic, GetRosName<T>(), throttle_rate, queue_length, fragment_size, compression);
         }
 
-        internal override void Receive(JsonElement jsonElement)
+        internal override void Receive(JToken message)
         {
-            T msg = JsonSerializer.Deserialize<T>(jsonElement.ToString());
-            SubscriptionHandler.Invoke(msg);
+            SubscriptionHandler.Invoke(message.ToObject<T>());
         }
     }
 
@@ -101,7 +100,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Service { get; }
 
-        internal abstract Communication Respond(string id, JsonElement jsonElementArgs);
+        internal abstract Communication Respond(string id, JToken args = null);
 
         internal ServiceUnadvertisement UnadvertiseService()
         {
@@ -120,10 +119,9 @@ namespace RosSharp.RosBridgeClient
             serviceAdvertisement = new ServiceAdvertisement(service, GetRosName<Tin>());
         }
 
-        internal override Communication Respond(string id, JsonElement jsonElementArgs)
-        {
-            Tin args = JsonSerializer.Deserialize<Tin>(jsonElementArgs.ToString());
-            bool isSuccess = ServiceCallHandler.Invoke(args, out Tout result);
+        internal override Communication Respond(string id, JToken args = null)
+        { 
+            bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out Tout result);
             return new ServiceResponse<Tout>(id, Service, result, isSuccess);
         }
     }
@@ -132,7 +130,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Id { get; }
         internal abstract string Service { get; }
-        internal abstract void Consume(JsonElement jsonElementResult);
+        internal abstract void Consume(JToken result);
     }
 
     internal class ServiceConsumer<Tin, Tout> : ServiceConsumer where Tin : Message where Tout : Message
@@ -148,10 +146,9 @@ namespace RosSharp.RosBridgeClient
             ServiceResponseHandler = serviceResponseHandler;
             serviceCall = new ServiceCall<Tin>(id, service, serviceArguments);
         }
-        internal override void Consume(JsonElement jsonElementResult)
+        internal override void Consume(JToken result)
         {
-            Tout result_msg = JsonSerializer.Deserialize<Tout>(jsonElementResult.ToString());
-            ServiceResponseHandler.Invoke(result_msg);
+            ServiceResponseHandler.Invoke(result.ToObject<Tout>());
         }
     }
 }

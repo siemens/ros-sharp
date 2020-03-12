@@ -18,8 +18,8 @@ namespace RosSharp.RosBridgeClient
 {
     internal abstract class Communication
     {
-        public string op { get; set; } // required
-        public string id { get; set; } // optional
+        public string op; // required
+        public string id; // optional
 
         internal Communication(string id = null)
         {
@@ -29,8 +29,8 @@ namespace RosSharp.RosBridgeClient
 
     internal class Advertisement : Communication
     {
-        public string topic { get; set; } // required
-        public string type  { get; set; } // required
+        public string topic; // required
+        public string type; // required
 
         internal Advertisement(string id, string topic, string type) : base(id)
         {
@@ -42,7 +42,7 @@ namespace RosSharp.RosBridgeClient
 
     internal class Unadvertisement : Communication
     {
-        public string topic { get; set; } // required
+        public string topic; // required
 
         internal Unadvertisement(string id, string topic) : base(id)
         {
@@ -53,8 +53,8 @@ namespace RosSharp.RosBridgeClient
 
     internal class Publication<T> : Communication where T: Message
     {
-        public string topic { get; set; } // required
-        public T msg { get; set; } // required
+        public string topic; // required
+        public T msg; // required
 
         internal Publication(string id, string topic, T msg) : base(id)
         {
@@ -66,12 +66,12 @@ namespace RosSharp.RosBridgeClient
 
     internal class Subscription : Communication
     {
-        public string topic { get; set; } // required
-        public string type { get; set; } // optional
-        public int throttle_rate { get; set; } // optional
-        public int queue_length { get; set; } // optional
-        public int fragment_size { get; set; } // optional
-        public string compression { get; set; } // optional
+        public string topic; // required
+        public string type; // optional
+        public int throttle_rate; // optional
+        public int queue_length; // optional
+        public int fragment_size; // optional
+        public string compression; // optional
 
         internal Subscription(string id, string topic, string type, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
@@ -87,7 +87,7 @@ namespace RosSharp.RosBridgeClient
 
     internal class Unsubscription : Communication
     {
-        public string topic { get; set; } // required
+        public string topic; // required
 
         internal Unsubscription(string id, string topic) : base(id)
         {
@@ -98,10 +98,10 @@ namespace RosSharp.RosBridgeClient
 
     internal class ServiceCall<T> : Communication where T : Message
     {
-        public string service { get; set; } // required
-        public T args { get; set; } // optional
-        public int fragment_size { get; set; } // optional
-        public string compression { get; set; } // optional
+        public string service; // required
+        public T args; // optional
+        public int fragment_size; // optional
+        public string compression; // optional
 
         public ServiceCall(string id, string service, T args, int fragment_size = int.MaxValue, string compression = "none") : base(id)
         {
@@ -115,9 +115,9 @@ namespace RosSharp.RosBridgeClient
 
     internal class ServiceResponse<T> : Communication where T : Message
     {
-        public string service { get; set; } // required
-        public T values { get; set; } // optional
-        public bool result { get; set; } // required
+        public string service; // required
+        public T values; // optional
+        public bool result; // required
 
         internal ServiceResponse(string id, string service, T values, bool Result) : base(id)
         {
@@ -129,8 +129,8 @@ namespace RosSharp.RosBridgeClient
     }
     internal class ServiceAdvertisement : Communication
     {
-        public string type { get; set; } // required
-        public string service { get; set; } // required
+        public string type; // required
+        public string service; // required
 
         internal ServiceAdvertisement(string service, string type) 
         {
@@ -141,7 +141,7 @@ namespace RosSharp.RosBridgeClient
     }
     internal class ServiceUnadvertisement : Communication
     {
-        public string service { get; set; } // required
+        public string service; // required
 
         internal ServiceUnadvertisement(string Service)
         {
