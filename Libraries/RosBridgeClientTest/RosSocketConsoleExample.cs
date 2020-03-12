@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsole
     {
-        static readonly string uri = "ws://192.168.56.103:9090";
+        static readonly string uri = "ws://192.168.56.102:9090";
 
         public static void Main(string[] args)
         {
@@ -43,20 +43,19 @@ namespace RosSharp.RosBridgeClientTest
             // Publication:
             std_msgs.String message = new std_msgs.String
             {
-                data = "publication test message data"
+                data = "publication test masdasdessage data"
             };
 
             string publication_id = rosSocket.Advertise<std_msgs.String>("publication_test");
             rosSocket.Publish(publication_id, message);
 
-
             // Subscription:
             string subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
-             subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
+            subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
 
             // Service Call:
             rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
-          
+
             // Service Response:
             string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
 
