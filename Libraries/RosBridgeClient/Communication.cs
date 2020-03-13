@@ -51,7 +51,7 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    internal class Publication<T> : Communication where T: Message
+    internal class Publication<T> : Communication where T : Message
     {
         public string topic { get; set; } // required
         public T msg { get; set; } // required
@@ -97,7 +97,7 @@ namespace RosSharp.RosBridgeClient
     }
 
     internal class ServiceCall<T> : Communication where T : Message
-    {
+    { 
         public string service { get; set; } // required
         public T args { get; set; } // optional
         public int fragment_size { get; set; } // optional
