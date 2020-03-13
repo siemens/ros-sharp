@@ -7,19 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-using RosSharp.RosBridgeClient.MessageTypes.Std;
+ using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class JointTrajectory : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "trajectory_msgs/JointTrajectory";
 
-        public Header header;
-        public string[] joint_names;
-        public JointTrajectoryPoint[] points;
+        public Header header { get; set; }
+        public string[] joint_names { get; set; }
+        public JointTrajectoryPoint[] points { get; set; }
 
         public JointTrajectory()
         {

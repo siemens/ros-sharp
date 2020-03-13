@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -16,20 +14,19 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class PointCloud : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/PointCloud";
 
         //  This message holds a collection of 3d points, plus optional additional
         //  information about each point.
         //  Time of sensor data acquisition, coordinate frame ID.
-        public Header header;
+        public Header header { get; set; }
         //  Array of 3d points. Each Point32 should be interpreted as a 3d point
         //  in the frame given in the header.
-        public Point32[] points;
+        public Point32[] points { get; set; }
         //  Each channel should have the same number of elements as points array,
         //  and the data in each channel should correspond 1:1 with each point.
         //  Channel names in common practice are listed in ChannelFloat32.msg.
-        public ChannelFloat32[] channels;
+        public ChannelFloat32[] channels { get; set; }
 
         public PointCloud()
         {

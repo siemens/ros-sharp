@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -16,14 +14,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GridCells : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/GridCells";
 
         // an array of cells in a 2D grid
-        public Header header;
-        public float cell_width;
-        public float cell_height;
-        public Point[] cells;
+        public Header header { get; set; }
+        public float cell_width { get; set; }
+        public float cell_height { get; set; }
+        public Point[] cells { get; set; }
 
         public GridCells()
         {

@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class WrenchStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/WrenchStamped";
 
         //  A wrench with reference coordinate frame and timestamp
-        public Header header;
-        public Wrench wrench;
+        public Header header { get; set; }
+        public Wrench wrench { get; set; }
 
         public WrenchStamped()
         {

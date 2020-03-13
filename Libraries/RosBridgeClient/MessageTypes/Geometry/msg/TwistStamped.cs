@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class TwistStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/TwistStamped";
 
         //  A twist with reference coordinate frame and timestamp
-        public Header header;
-        public Twist twist;
+        public Header header { get; set; }
+        public Twist twist { get; set; }
 
         public TwistStamped()
         {

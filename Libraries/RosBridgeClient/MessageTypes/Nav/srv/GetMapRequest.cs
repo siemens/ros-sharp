@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetMapRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/GetMap";
 
         //  Get the map as a nav_msgs/OccupancyGrid

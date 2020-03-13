@@ -7,19 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Point : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Point";
 
         //  This contains the position of a point in free space
-        public double x;
-        public double y;
-        public double z;
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
 
         public Point()
         {

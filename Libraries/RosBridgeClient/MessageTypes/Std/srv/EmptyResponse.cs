@@ -7,15 +7,11 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class EmptyResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_srvs/Empty";
-
 
         public EmptyResponse()
         {

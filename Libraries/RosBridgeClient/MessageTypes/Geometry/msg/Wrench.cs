@@ -7,19 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Wrench : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Wrench";
 
         //  This represents force in free space, separated into
         //  its linear and angular parts.
-        public Vector3 force;
-        public Vector3 torque;
+        public Vector3 force { get; set; }
+        public Vector3 torque { get; set; }
 
         public Wrench()
         {

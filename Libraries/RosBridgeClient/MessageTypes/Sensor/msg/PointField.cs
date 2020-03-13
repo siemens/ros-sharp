@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class PointField : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/PointField";
 
         //  This message holds the description of one point entry in the
@@ -26,13 +23,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const byte UINT32 = 6;
         public const byte FLOAT32 = 7;
         public const byte FLOAT64 = 8;
-        public string name;
+        public string name { get; set; }
         //  Name of field
-        public uint offset;
+        public uint offset { get; set; }
         //  Offset from start of point struct
-        public byte datatype;
+        public byte datatype { get; set; }
         //  Datatype enumeration, see above
-        public uint count;
+        public uint count { get; set; }
         //  How many elements in the field
 
         public PointField()

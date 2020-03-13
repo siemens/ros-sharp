@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class QuaternionStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/QuaternionStamped";
 
         //  This represents an orientation with reference coordinate frame and timestamp.
-        public Header header;
-        public Quaternion quaternion;
+        public Header header { get; set; }
+        public Quaternion quaternion { get; set; }
 
         public QuaternionStamped()
         {

@@ -7,22 +7,19 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class Mesh : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "shape_msgs/Mesh";
 
         //  Definition of a mesh
         //  list of triangles; the index values refer to positions in vertices[]
-        public MeshTriangle[] triangles;
+        public MeshTriangle[] triangles { get; set; }
         //  the actual vertices that make up the mesh
-        public Point[] vertices;
+        public Point[] vertices { get; set; }
 
         public Mesh()
         {

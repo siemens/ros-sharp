@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class FrameGraphResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "tf2_msgs/FrameGraph";
 
-        public string frame_yaml;
+        public string frame_yaml { get; set; }
 
         public FrameGraphResponse()
         {

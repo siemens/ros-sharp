@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class TypeDef : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/TypeDef";
 
-        public string type;
-        public string[] fieldnames;
-        public string[] fieldtypes;
-        public int[] fieldarraylen;
-        public string[] examples;
+        public string type { get; set; }
+        public string[] fieldnames { get; set; }
+        public string[] fieldtypes { get; set; }
+        public int[] fieldarraylen { get; set; }
+        public string[] examples { get; set; }
 
         public TypeDef()
         {

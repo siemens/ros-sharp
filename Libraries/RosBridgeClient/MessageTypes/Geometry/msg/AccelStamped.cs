@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class AccelStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/AccelStamped";
 
         //  An accel with reference coordinate frame and timestamp
-        public Header header;
-        public Accel accel;
+        public Header header { get; set; }
+        public Accel accel { get; set; }
 
         public AccelStamped()
         {

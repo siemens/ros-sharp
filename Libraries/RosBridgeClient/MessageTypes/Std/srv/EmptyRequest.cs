@@ -13,9 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class EmptyRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_srvs/Empty";
-
 
         public EmptyRequest()
         {

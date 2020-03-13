@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class SetMapResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/SetMap";
 
-        public bool success;
+        public bool success { get; set; }
 
         public SetMapResponse()
         {

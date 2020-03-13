@@ -20,9 +20,9 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class ActionGoal<TGoal> : Message where TGoal : Message
     {
-        public Header header;
-        public GoalID goal_id;
-        public TGoal goal;
+        public Header header { get; set; }
+        public GoalID goal_id { get; set; }
+        public TGoal goal { get; set; }
 
         public ActionGoal() {
             header = new Header();

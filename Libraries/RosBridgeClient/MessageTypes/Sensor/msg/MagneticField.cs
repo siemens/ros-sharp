@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -16,7 +14,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class MagneticField : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/MagneticField";
 
         //  Measurement of the Magnetic Field vector at a specific location.
@@ -26,17 +23,17 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  A covariance matrix of all zeros will be interpreted as "covariance unknown",
         //  and to use the data a covariance will have to be assumed or gotten from some
         //  other source
-        public Header header;
+        public Header header { get; set; }
         //  timestamp is the time the
         //  field was measured
         //  frame_id is the location and orientation
         //  of the field measurement
-        public Vector3 magnetic_field;
+        public Vector3 magnetic_field { get; set; }
         //  x, y, and z components of the
         //  field vector in Tesla
         //  If your sensor does not output 3 axes,
         //  put NaNs in the components not reported.
-        public double[] magnetic_field_covariance;
+        public double[] magnetic_field_covariance { get; set; }
         //  Row major about x, y, z axes
         //  0 is interpreted as variance unknown
 

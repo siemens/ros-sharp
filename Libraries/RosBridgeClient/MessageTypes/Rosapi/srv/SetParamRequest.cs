@@ -7,17 +7,14 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class SetParamRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/SetParam";
 
-        public string name;
-        public string value;
+        public string name { get; set; }
+        public string value { get; set; }
 
         public SetParamRequest()
         {

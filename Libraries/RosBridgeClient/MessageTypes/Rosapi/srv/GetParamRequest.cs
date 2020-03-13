@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using System.Text.Json.Serialization;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class GetParamRequest : Message
@@ -17,7 +15,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 
         public string name { get; set; }
 
-        [JsonPropertyName("default")]
         public string @default { get; set; }
 
         public GetParamRequest()

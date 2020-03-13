@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class BatteryState : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/BatteryState";
 
         //  Constants are chosen to match the enums in the linux kernel
@@ -46,33 +43,33 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const byte POWER_SUPPLY_TECHNOLOGY_LIFE = 4;
         public const byte POWER_SUPPLY_TECHNOLOGY_NICD = 5;
         public const byte POWER_SUPPLY_TECHNOLOGY_LIMN = 6;
-        public Header header;
-        public float voltage;
+        public Header header { get; set; }
+        public float voltage { get; set; }
         //  Voltage in Volts (Mandatory)
-        public float current;
+        public float current { get; set; }
         //  Negative when discharging (A)  (If unmeasured NaN)
-        public float charge;
+        public float charge { get; set; }
         //  Current charge in Ah  (If unmeasured NaN)
-        public float capacity;
+        public float capacity { get; set; }
         //  Capacity in Ah (last full capacity)  (If unmeasured NaN)
-        public float design_capacity;
+        public float design_capacity { get; set; }
         //  Capacity in Ah (design capacity)  (If unmeasured NaN)
-        public float percentage;
+        public float percentage { get; set; }
         //  Charge percentage on 0 to 1 range  (If unmeasured NaN)
-        public byte power_supply_status;
+        public byte power_supply_status { get; set; }
         //  The charging status as reported. Values defined above
-        public byte power_supply_health;
+        public byte power_supply_health { get; set; }
         //  The battery health metric. Values defined above
-        public byte power_supply_technology;
+        public byte power_supply_technology { get; set; }
         //  The battery chemistry. Values defined above
-        public bool present;
+        public bool present { get; set; }
         //  True if the battery is present
-        public float[] cell_voltage;
+        public float[] cell_voltage { get; set; }
         //  An array of individual cell voltages for each cell in the pack
         //  If individual voltages unknown but number of cells known set each to NaN
-        public string location;
+        public string location { get; set; }
         //  The location into which the battery is inserted. (slot number or plug)
-        public string serial_number;
+        public string serial_number { get; set; }
         //  The best approximation of the battery serial number
 
         public BatteryState()

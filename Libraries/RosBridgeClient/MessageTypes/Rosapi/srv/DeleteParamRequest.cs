@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class DeleteParamRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/DeleteParam";
 
-        public string name;
+        public string name { get; set; }
 
         public DeleteParamRequest()
         {

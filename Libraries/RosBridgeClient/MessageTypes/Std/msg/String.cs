@@ -7,14 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-//using Newtonsoft.Json;
-using System.Text.Json.Serialization;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class String : Message
     {
-        //[JsonIgnore]
         public const string RosMessageName = "std_msgs/String";
 
         public string data { get; set; }

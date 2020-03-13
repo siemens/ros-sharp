@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -16,21 +14,20 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class MapMetaData : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/MapMetaData";
 
         //  This hold basic information about the characterists of the OccupancyGrid
         //  The time at which the map was loaded
-        public Time map_load_time;
+        public Time map_load_time { get; set; }
         //  The map resolution [m/cell]
-        public float resolution;
+        public float resolution { get; set; }
         //  Map width [cells]
-        public uint width;
+        public uint width { get; set; }
         //  Map height [cells]
-        public uint height;
+        public uint height { get; set; }
         //  The origin of the map [m, m, rad].  This is the real-world pose of the
         //  cell (0,0) in the map.
-        public Pose origin;
+        public Pose origin { get; set; }
 
         public MapMetaData()
         {

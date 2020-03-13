@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Vector3 : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Vector3";
 
         //  This represents a vector in free space. 
@@ -22,9 +19,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         //  generic rigid transformation to a Vector3, tf2 will only apply the
         //  rotation). If you want your data to be translatable too, use the
         //  geometry_msgs/Point message instead.
-        public double x;
-        public double y;
-        public double z;
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
 
         public Vector3()
         {
