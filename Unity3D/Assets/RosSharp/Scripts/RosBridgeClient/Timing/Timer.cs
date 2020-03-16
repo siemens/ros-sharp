@@ -38,7 +38,9 @@ namespace RosSharp.RosBridgeClient
 
         public virtual void Now(MessageTypes.Std.Time stamp)
         {
-            Now(out stamp.secs, out stamp.nsecs);
+            uint secs; uint nsecs;
+            Now(out secs, out nsecs);
+            stamp.secs = secs; stamp.nsecs = nsecs;
         }
 
         private static void Now(out uint secs, out uint nsecs)
