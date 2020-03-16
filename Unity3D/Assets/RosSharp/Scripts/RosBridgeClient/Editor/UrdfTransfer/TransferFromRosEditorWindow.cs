@@ -25,6 +25,7 @@ namespace RosSharp.RosBridgeClient
     public class TransferFromRosEditorWindow : EditorWindow
     {
         private static Protocols.Protocol protocolType;
+        private static RosSocket.SerializerEnum serializerType;
         private static string address;
         private static string urdfParameter;
         private static int timeout;
@@ -61,6 +62,11 @@ namespace RosSharp.RosBridgeClient
                 protocolType = (Protocols.Protocol)EditorGUILayout.EnumPopup("Protocol", protocolType);
                 EditorGUILayout.EndHorizontal();
 
+                EditorGUILayout.BeginHorizontal();
+                EditorGUIUtility.labelWidth = 100;
+                serializerType = (RosSocket.SerializerEnum)EditorGUILayout.EnumPopup("Serializer", serializerType);
+                EditorGUILayout.EndHorizontal();
+
                 //TODO URDF Parameter
                 EditorGUILayout.BeginHorizontal();
                 urdfParameter = EditorGUILayout.TextField("URDF Parameter", urdfParameter);
@@ -91,7 +97,7 @@ namespace RosSharp.RosBridgeClient
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath, urdfParameter));
+                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(protocolType, address, timeout, assetPath, urdfParameter, serializerType));
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
