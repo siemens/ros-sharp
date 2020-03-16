@@ -90,7 +90,6 @@
     <Compile Include="BaseMessages\Actions\ActionFeedback.cs" />
     <Compile Include="BaseMessages\Actions\ActionGoal.cs" />
     <Compile Include="BaseMessages\Actions\ActionResult.cs" />
-    <Compile Include="ISerializer.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MessageTypes\Actionlib\msg\ActionStatus.cs" />
     <Compile Include="BaseMessages\Std\msg\Duration.cs" />
@@ -300,6 +299,9 @@
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
+    <Compile Include="Serializers\ISerializer.cs" />
+    <Compile Include="Serializers\MicrosoftSerializer.cs" />
+    <Compile Include="Serializers\NewtonsoftSerializer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransfer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransferFromRos.cs" />
     <Compile Include="UrdfTransfer\UrdfTransferToRos.cs" />
