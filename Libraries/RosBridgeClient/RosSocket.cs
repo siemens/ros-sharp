@@ -48,12 +48,12 @@ namespace RosSharp.RosBridgeClient
                     }
                 case SerializerEnum.Newtonsoft_JSON:
                     {
-                        Serializer = new NewtonsoftSerializer(useJSON:true);
+                        Serializer = new NewtonsoftJsonSerializer();
                         break;
                     }
                 case SerializerEnum.Newtonsoft_BSON:
                     {
-                        Serializer = new NewtonsoftSerializer(useJSON:false);
+                        Serializer = new NewtonsoftBsonSerializer();
                         break;
                     }
             }
