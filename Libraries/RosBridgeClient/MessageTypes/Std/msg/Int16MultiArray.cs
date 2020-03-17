@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Int16MultiArray : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/Int16MultiArray";
 
         //  Please look at the MultiArrayLayout message definition for
         //  documentation on all multiarrays.
-        public MultiArrayLayout layout;
+        public MultiArrayLayout layout { get; set; }
         //  specification of data layout
-        public short[] data;
+        public short[] data { get; set; }
         //  array of data
 
         public Int16MultiArray()

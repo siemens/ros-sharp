@@ -7,18 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class LaserEcho : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/LaserEcho";
 
         //  This message is a submessage of MultiEchoLaserScan and is not intended
         //  to be used separately.
-        public float[] echoes;
+        public float[] echoes { get; set; }
         //  Multiple values of ranges or intensities.
         //  Each array represents data from the same angle increment.
 

@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class SetBoolRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_srvs/SetBool";
 
-        public bool data;
+        public bool data { get; set; }
         //  e.g. for hardware enabling / disabling
 
         public SetBoolRequest()

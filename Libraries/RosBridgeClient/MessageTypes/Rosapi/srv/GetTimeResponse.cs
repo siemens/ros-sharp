@@ -7,18 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class GetTimeResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/GetTime";
 
-        public Time time;
+        public Time time { get; set; }
 
         public GetTimeResponse()
         {

@@ -7,17 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciResult : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "actionlib_tutorials/FibonacciResult";
 
         //  result definition
-        public int[] sequence;
+        public int[] sequence { get; set; }
 
         public FibonacciResult()
         {

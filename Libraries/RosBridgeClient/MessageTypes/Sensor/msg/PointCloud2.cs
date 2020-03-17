@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class PointCloud2 : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/PointCloud2";
 
         //  This message holds a collection of N-dimensional points, which may
@@ -27,22 +24,22 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  camera depth sensors such as stereo or time-of-flight.
         //  Time of sensor data acquisition, and the coordinate frame ID (for 3d
         //  points).
-        public Header header;
+        public Header header { get; set; }
         //  2D structure of the point cloud. If the cloud is unordered, height is
         //  1 and width is the length of the point cloud.
-        public uint height;
-        public uint width;
+        public uint height { get; set; }
+        public uint width { get; set; }
         //  Describes the channels and their layout in the binary data blob.
-        public PointField[] fields;
-        public bool is_bigendian;
+        public PointField[] fields { get; set; }
+        public bool is_bigendian { get; set; }
         //  Is this data bigendian?
-        public uint point_step;
+        public uint point_step { get; set; }
         //  Length of a point in bytes
-        public uint row_step;
+        public uint row_step { get; set; }
         //  Length of a row in bytes
-        public byte[] data;
+        public byte[] data { get; set; }
         //  Actual point data, size is (row_step*height)
-        public bool is_dense;
+        public bool is_dense { get; set; }
         //  True if there are no invalid points
 
         public PointCloud2()

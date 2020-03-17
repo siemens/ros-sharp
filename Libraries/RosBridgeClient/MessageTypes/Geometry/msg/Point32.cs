@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Point32 : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Point32";
 
         //  This contains the position of a point in free space(with 32 bits of precision).
@@ -23,9 +20,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         // 
         //  This message is designed to take up less space when sending
         //  lots of points at once, as in the case of a PointCloud.  
-        public float x;
-        public float y;
-        public float z;
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
 
         public Point32()
         {

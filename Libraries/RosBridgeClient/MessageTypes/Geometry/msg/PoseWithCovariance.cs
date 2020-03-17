@@ -7,22 +7,19 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PoseWithCovariance : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/PoseWithCovariance";
 
         //  This represents a pose in free space with uncertainty.
-        public Pose pose;
+        public Pose pose { get; set; }
         //  Row-major representation of the 6x6 covariance matrix
         //  The orientation parameters use a fixed-axis representation.
         //  In order, the parameters are:
         //  (x, y, z, rotation about X axis, rotation about Y axis, rotation about Z axis)
-        public double[] covariance;
+        public double[] covariance { get; set; }
 
         public PoseWithCovariance()
         {

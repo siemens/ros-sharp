@@ -7,19 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class ColorRGBA : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/ColorRGBA";
 
-        public float r;
-        public float g;
-        public float b;
-        public float a;
+        public float r { get; set; }
+        public float g { get; set; }
+        public float b { get; set; }
+        public float a { get; set; }
 
         public ColorRGBA()
         {

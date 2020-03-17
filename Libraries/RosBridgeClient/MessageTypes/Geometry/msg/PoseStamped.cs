@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PoseStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/PoseStamped";
 
         //  A Pose with reference coordinate frame and timestamp
-        public Header header;
-        public Pose pose;
+        public Header header { get; set; }
+        public Pose pose { get; set; }
 
         public PoseStamped()
         {

@@ -7,17 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalStatus : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "actionlib_msgs/GoalStatus";
 
-        public GoalID goal_id;
-        public byte status;
+        public GoalID goal_id { get; set; }
+        public byte status { get; set; }
+
         public const byte PENDING = 0; //  The goal has yet to be processed by the action server
         public const byte ACTIVE = 1; //  The goal is currently being processed by the action server
         public const byte PREEMPTED = 2; //  The goal received a cancel request after it started executing
@@ -36,7 +34,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
         public const byte LOST = 9; //  An action client can determine that a goal is LOST. This should not be
         //     sent over the wire by an action server
         // Allow for the user to associate a string with GoalStatus for debugging
-        public string text;
+        public string text { get; set; }
 
         public GoalStatus()
         {

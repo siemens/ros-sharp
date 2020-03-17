@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Int64 : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/Int64";
 
-        public long data;
+        public long data { get; set; }
 
         public Int64()
         {

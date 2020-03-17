@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class TopicsForTypeResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/TopicsForType";
 
-        public string[] topics;
+        public string[] topics { get; set; }
 
         public TopicsForTypeResponse()
         {

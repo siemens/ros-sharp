@@ -13,16 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Time : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/Time";
-        public uint secs;
-        public uint nsecs;
+        public uint secs { get; set; }
+        public uint nsecs { get; set; }
 
         public Time()
         {
@@ -34,11 +31,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         {
             this.secs = secs;
             this.nsecs = nsecs;
-        }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
         }
 
     }

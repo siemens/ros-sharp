@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PolygonStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/PolygonStamped";
 
         //  This represents a Polygon with reference coordinate frame and timestamp
-        public Header header;
-        public Polygon polygon;
+        public Header header { get; set; }
+        public Polygon polygon { get; set; }
 
         public PolygonStamped()
         {

@@ -7,21 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
-using RosSharp.RosBridgeClient.MessageTypes.Nav;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class SetMapRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/SetMap";
 
         //  Set a new map together with an initial pose
-        public OccupancyGrid map;
-        public PoseWithCovarianceStamped initial_pose;
+        public OccupancyGrid map { get; set; }
+        public PoseWithCovarianceStamped initial_pose { get; set; }
 
         public SetMapRequest()
         {

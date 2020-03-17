@@ -20,9 +20,9 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class ActionResult<TResult> : Message where TResult : Message
     {
-        public Header header;
-        public GoalStatus status;
-        public TResult result;
+        public Header header { get; set; }
+        public GoalStatus status { get; set; }
+        public TResult result { get; set; }
 
         public ActionResult() {
             header = new Header();

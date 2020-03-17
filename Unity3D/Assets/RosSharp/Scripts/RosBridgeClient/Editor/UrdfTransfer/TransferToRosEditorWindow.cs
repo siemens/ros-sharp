@@ -24,6 +24,7 @@ namespace RosSharp.RosBridgeClient
     public class TransferToRosEditorWindow : EditorWindow
     {
         private static Protocols.Protocol protocolType;
+        private static RosSocket.SerializerEnum serializerType;
         private static string serverUrl = "ws://192.168.56.102:9090";
         private static string urdfPath;
         private static int timeout;
@@ -62,6 +63,11 @@ namespace RosSharp.RosBridgeClient
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
+                EditorGUIUtility.labelWidth = 100;
+                serializerType = (RosSocket.SerializerEnum)EditorGUILayout.EnumPopup("Serializer", serializerType);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
                 urdfPath = EditorGUILayout.TextField("URDF to export", urdfPath);
                 if (GUILayout.Button("Select", new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 }))
                 {
@@ -96,7 +102,7 @@ namespace RosSharp.RosBridgeClient
             if (GUILayout.Button("Publish Robot Description"))
             { 
                 SetEditorPrefs();
-                transferHandler.Transfer(protocolType, serverUrl, timeout, urdfPath, rosPackage);
+                transferHandler.Transfer(protocolType, serverUrl, timeout, urdfPath, rosPackage, serializerType);
             }
             EditorGUILayout.EndHorizontal();
 

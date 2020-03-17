@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class NavSatStatus : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/NavSatStatus";
 
         //  Navigation Satellite fix status for any Global Navigation Satellite System
@@ -24,14 +21,14 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const sbyte STATUS_FIX = 0; //  unaugmented fix
         public const sbyte STATUS_SBAS_FIX = 1; //  with satellite-based augmentation
         public const sbyte STATUS_GBAS_FIX = 2; //  with ground-based augmentation
-        public sbyte status;
+        public sbyte status { get; set; }
         //  Bits defining which Global Navigation Satellite System signals were
         //  used by the receiver.
         public const ushort SERVICE_GPS = 1;
         public const ushort SERVICE_GLONASS = 2;
         public const ushort SERVICE_COMPASS = 4; //  includes BeiDou.
         public const ushort SERVICE_GALILEO = 8;
-        public ushort service;
+        public ushort service { get; set; }
 
         public NavSatStatus()
         {

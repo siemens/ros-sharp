@@ -7,18 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Pose : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Pose";
 
         //  A representation of pose in free space, composed of position and orientation. 
-        public Point position;
-        public Quaternion orientation;
+        public Point position { get; set; }
+        public Quaternion orientation { get; set; }
 
         public Pose()
         {

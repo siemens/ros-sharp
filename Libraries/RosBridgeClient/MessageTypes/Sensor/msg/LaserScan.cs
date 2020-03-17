@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class LaserScan : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/LaserScan";
 
         //  Single scan from a planar laser range-finder
@@ -23,32 +20,32 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  If you have another ranging device with different behavior (e.g. a sonar
         //  array), please find or create a different message, since applications
         //  will make fairly laser-specific assumptions about this data
-        public Header header;
+        public Header header { get; set; }
         //  timestamp in the header is the acquisition time of 
         //  the first ray in the scan.
         // 
         //  in frame frame_id, angles are measured around 
         //  the positive Z axis (counterclockwise, if Z is up)
         //  with zero angle being forward along the x axis
-        public float angle_min;
+        public float angle_min { get; set; }
         //  start angle of the scan [rad]
-        public float angle_max;
+        public float angle_max { get; set; }
         //  end angle of the scan [rad]
-        public float angle_increment;
+        public float angle_increment { get; set; }
         //  angular distance between measurements [rad]
-        public float time_increment;
+        public float time_increment { get; set; }
         //  time between measurements [seconds] - if your scanner
         //  is moving, this will be used in interpolating position
         //  of 3d points
-        public float scan_time;
+        public float scan_time { get; set; }
         //  time between scans [seconds]
-        public float range_min;
+        public float range_min { get; set; }
         //  minimum range value [m]
-        public float range_max;
+        public float range_max { get; set; }
         //  maximum range value [m]
-        public float[] ranges;
+        public float[] ranges { get; set; }
         //  range data [m] (Note: values < range_min or > range_max should be discarded)
-        public float[] intensities;
+        public float[] intensities { get; set; }
         //  intensity data [device-specific units].  If your
         //  device does not provide intensities, please leave
         //  the array empty.

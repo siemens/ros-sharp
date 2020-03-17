@@ -7,18 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class TFMessage : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "tf2_msgs/TFMessage";
 
-        public TransformStamped[] transforms;
+        public TransformStamped[] transforms { get; set; }
 
         public TFMessage()
         {

@@ -33,7 +33,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         public const string ONE_TAB = "    ";
         public const string TWO_TABS = "        ";
-
+        public const string PROPERTY_EXTENSION = " { get; set; }";
+        
         public static readonly Dictionary<string, string> builtInTypesMapping = new Dictionary<string, string>
         {
             {"bool", "bool"},

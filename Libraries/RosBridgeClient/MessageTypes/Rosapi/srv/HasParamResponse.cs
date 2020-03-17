@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class HasParamResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/HasParam";
 
-        public bool exists;
+        public bool exists { get; set; }
 
         public HasParamResponse()
         {

@@ -218,7 +218,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string outPath = Path.Combine(this.outPath, wrapperName + ".cs");
 
             string imports =
-                "using Newtonsoft.Json;\n\n" +
                 "using RosSharp.RosBridgeClient.MessageTypes.Std;\n" +
                 "using RosSharp.RosBridgeClient.MessageTypes.Actionlib;\n\n";
 
@@ -246,7 +245,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write ROS package name
                 writer.Write(
-                    TWO_TABS + "[JsonIgnore]\n" +
                     TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
                     );
 
@@ -274,8 +272,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             string outPath = Path.Combine(this.outPath, wrapperName + ".cs");
 
-            string imports =
-                "using Newtonsoft.Json;\n\n";
+            string imports = "\n\n";
 
             symbolTable = new Dictionary<string, string>();
 
@@ -309,7 +306,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write ROS package name
                 writer.Write(
-                    TWO_TABS + "[JsonIgnore]\n" +
                     TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
                     );
 

@@ -7,24 +7,21 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class TimeReference : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/TimeReference";
 
         //  Measurement from an external time source not actively synchronized with the system clock.
-        public Header header;
+        public Header header { get; set; }
         //  stamp is system time for which measurement was valid
         //  frame_id is not used 
-        public Time time_ref;
+        public Time time_ref { get; set; }
         //  corresponding time from this external source
-        public string source;
+        public string source { get; set; }
         //  (optional) name of time source
 
         public TimeReference()

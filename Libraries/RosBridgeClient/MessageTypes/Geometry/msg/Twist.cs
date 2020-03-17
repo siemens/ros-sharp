@@ -7,18 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Twist : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/Twist";
 
         //  This expresses velocity in free space broken into its linear and angular parts.
-        public Vector3 linear;
-        public Vector3 angular;
+        public Vector3 linear { get; set; }
+        public Vector3 angular { get; set; }
 
         public Twist()
         {

@@ -7,18 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
-using RosSharp.RosBridgeClient.MessageTypes.Nav;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetPlanResponse : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/GetPlan";
 
-        public Path plan;
+        public Path plan { get; set; }
 
         public GetPlanResponse()
         {

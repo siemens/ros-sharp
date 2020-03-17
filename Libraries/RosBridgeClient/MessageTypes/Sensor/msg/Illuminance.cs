@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Illuminance : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/Illuminance";
 
         //  Single photometric illuminance measurement.  Light should be assumed to be
@@ -30,12 +27,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  Luminous intensity (candela/light source output)
         //  Luminance (nits/light output per area)
         //  Irradiance (watt/area), etc.
-        public Header header;
+        public Header header { get; set; }
         //  timestamp is the time the illuminance was measured
         //  frame_id is the location and direction of the reading
-        public double illuminance;
+        public double illuminance { get; set; }
         //  Measurement of the Photometric Illuminance in Lux.
-        public double variance;
+        public double variance { get; set; }
         //  0 is interpreted as variance unknown
 
         public Illuminance()

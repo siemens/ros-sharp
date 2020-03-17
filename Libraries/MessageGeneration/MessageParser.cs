@@ -121,7 +121,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                writer.Write(MsgAutoGenUtilities.TWO_TABS + "[JsonIgnore]\n");
                 writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");
 
                 // Write body
@@ -313,7 +312,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 }
             }
             else {
-                declaration += type + " " + identifier + ";\n";
+                declaration += type + " " + identifier + MsgAutoGenUtilities.PROPERTY_EXTENSION + "\n";
             }
             body += declaration;
         }
@@ -510,7 +509,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         }
 
         private string GenerateImports() {
-            string importsStr = "using Newtonsoft.Json;\n\n";
+            string importsStr = "\n\n";
             if (imports.Count > 0) {
                 foreach (string s in imports)
                 {
