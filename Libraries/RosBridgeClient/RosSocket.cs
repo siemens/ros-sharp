@@ -198,7 +198,7 @@ namespace RosSharp.RosBridgeClient
                     }
                 case "call_service":
                     {
-                        string id = jsonElement.GetProperty("op");
+                        string id = jsonElement.GetProperty("id");
                         string service = jsonElement.GetProperty("service");
                         string args = jsonElement.GetProperty("args");
                         Send(ServiceProviders[service].Respond(id, args, Serializer));
