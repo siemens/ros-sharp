@@ -6,7 +6,7 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 ## Notes On This Fork ##
 
-This fork has implemented changes to the repo to enable building to UWP devices, like the Microsoft HoloLens. Like the main ROS# branch, use 2019.x or later.
+This fork has some changes to allow a broader range of XML-Tags to be imported in the URDF files, like the Microsoft HoloLens. Like the main ROS# branch, use 2019.x or later.
 
 #### Installation ### 
 
