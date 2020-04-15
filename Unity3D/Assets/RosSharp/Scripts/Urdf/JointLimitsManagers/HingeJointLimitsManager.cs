@@ -1,4 +1,4 @@
-﻿/*
+/*
 © Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
@@ -158,8 +158,8 @@ namespace RosSharp
 
         public void InitializeLimits(Urdf.Joint.Limit limit, HingeJoint joint)
         {
-            LargeAngleLimitMin = (float)limit.lower * Mathf.Rad2Deg;
-            LargeAngleLimitMax = (float)limit.upper * Mathf.Rad2Deg;
+            LargeAngleLimitMin = (float)limit.upper * -1.0f * Mathf.Rad2Deg;
+            LargeAngleLimitMax = (float)limit.lower * -1.0f * Mathf.Rad2Deg;
 
             _hingeJoint = joint;
 
