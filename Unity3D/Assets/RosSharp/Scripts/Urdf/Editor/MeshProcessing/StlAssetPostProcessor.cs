@@ -32,6 +32,13 @@ namespace RosSharp
 
         private static void createStlPrefab(string stlFile)
         {
+            string prefabPath = getPrefabAssetPath(stlFile);
+            if(!string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID(prefabPath)))
+            {
+                AssetDatabase.DeleteAsset(prefabPath);
+            }
+
+
             GameObject gameObject = CreateStlParent(stlFile);
             if (gameObject == null)
                 return;
@@ -51,6 +58,12 @@ namespace RosSharp
             for (int i = 0; i < meshes.Length; i++)
             {
                 string meshAssetPath = getMeshAssetPath(stlFile, i);
+                if(!string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID(meshAssetPath)))
+                {
+                    AssetDatabase.DeleteAsset(meshAssetPath);
+                }
+
+
                 AssetDatabase.CreateAsset(meshes[i], meshAssetPath);
                 GameObject gameObject = CreateStlGameObject(meshAssetPath, material);
                 gameObject.transform.SetParent(parent.transform, false);
