@@ -18,15 +18,14 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class PoseStamped : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/PoseStamped";
+    { 
         public Standard.Header header;
         public Pose pose;
         public PoseStamped()
         {
             header = new Standard.Header();
             pose = new Pose();
+            RosMessageName = "geometry_msgs/PoseStamped";
         }
     }
 }

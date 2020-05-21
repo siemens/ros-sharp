@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class Vector3 : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Vector3";
+    { 
         public float x;
         public float y;
         public float z;
@@ -28,7 +26,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
         {
             x = 0f;
             y = 0f;
-            z = 0f;
+            z = 0f; RosMessageName = "geometry_msgs/Vector3";
         }
     }
 }

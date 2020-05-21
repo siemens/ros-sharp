@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class TransformStamped : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/TransformStamped";
+    { 
         public string child_frame_id;
         public Standard.Header header;
         public Transform transform;
@@ -28,7 +26,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
         {
             header = new Standard.Header();
             child_frame_id = "";
-            transform = new Transform();
+            transform = new Transform(); RosMessageName = "geometry_msgs/TransformStamped";
         }
     }
 }

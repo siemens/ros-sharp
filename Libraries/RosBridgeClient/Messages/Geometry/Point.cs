@@ -19,8 +19,6 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class Point : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Point";
         public float x;
         public float y;
         public float z;
@@ -29,6 +27,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
             x = 0;
             y = 0;
             z = 0;
+            RosMessageName = "geometry_msgs/Point";
         }
     }
 }

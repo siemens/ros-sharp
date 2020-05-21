@@ -19,20 +19,21 @@ namespace RosSharp.RosBridgeClient.Services.Standard
 {
     public class TriggerRequest : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "std_srvs/Trigger";
+        public TriggerRequest()
+        {
+            RosMessageName = "std_srvs/Trigger";
+        }
     }
 
     public class TriggerResponse : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "std_srvs/Trigger";
         public bool success;
         public string message;
         public TriggerResponse(bool success, string message)
         {
             this.success = success;
             this.message = message;
+            RosMessageName = "std_srvs/Trigger";
         }
     }
 }

@@ -19,20 +19,21 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
 {
     public class NodesRequest : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "ros_api/Nodes";
 
 
         public NodesRequest()
         {
-            
+            RosMessageName = "ros_api/Nodes";
+
         }
     }
 
     public class NodesResponse : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "ros_api/Nodes";
         public string[] nodes;
+        public NodesResponse()
+        {
+            RosMessageName = "ros_api/Nodes";
+        }
     }
 }

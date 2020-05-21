@@ -19,13 +19,11 @@ namespace RosSharp.RosBridgeClient.Messages.TF2
 {
     public class TFMessage : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "tf2_msgs/TFMessage";
         public Geometry.TransformStamped[] transforms;
 
         public TFMessage()
         {
-            transforms = new Geometry.TransformStamped[0];
+            transforms = new Geometry.TransformStamped[0]; RosMessageName = "tf2_msgs/TFMessage";
         }
     }
 }

@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class PointField : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/PointField";
+    { 
         public const byte INT8 = 1;
         public const byte UINT8 = 2;
         public const byte INT16 = 3;
@@ -38,7 +36,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
             datatype = 0;
             name = "";
             offset = 0;
-            count = 0;
+            count = 0; RosMessageName = "sensor_msgs/PointField";
         }
     }
 }

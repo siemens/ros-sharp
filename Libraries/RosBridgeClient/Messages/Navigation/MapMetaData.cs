@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
     public class MapMetaData : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "nav_msgs/MapMetaData";
+    { 
         public Standard.Time map_load_time;
         public float resolution;
         public uint width;
@@ -33,7 +31,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
             resolution = 0;
             width = 0;
             height = 0;
-            origin = new Geometry.Pose();
+            origin = new Geometry.Pose(); RosMessageName = "nav_msgs/MapMetaData";
         }
     }
 }

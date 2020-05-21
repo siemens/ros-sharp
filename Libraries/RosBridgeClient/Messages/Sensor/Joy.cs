@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class Joy : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/Joy";
+    { 
         public Standard.Header header;
         public float[] axes;
         public int[] buttons;
@@ -29,7 +27,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
         {
             header = new Standard.Header();
             axes = new float[0];
-            buttons = new int[0];
+            buttons = new int[0]; RosMessageName = "sensor_msgs/Joy";
         }
     }
 }

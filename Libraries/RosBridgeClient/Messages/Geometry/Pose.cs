@@ -18,15 +18,14 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class Pose : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Pose";
+    { 
         public Point position;
         public Quaternion orientation;
         public Pose()
         {
             position = new Point();
             orientation = new Quaternion();
+            RosMessageName = "geometry_msgs/Pose";
         }
     }
 

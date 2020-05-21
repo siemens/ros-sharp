@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
     public class OccupancyGrid : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "nav_msgs/OccupancyGrid";
+    { 
         public Standard.Header header;
         public MapMetaData info;
         public sbyte[] data;
@@ -28,7 +26,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
         {
             header = new Standard.Header();
             info = new MapMetaData();
-            data = null;
+            data = null; RosMessageName = "nav_msgs/OccupancyGrid";
         }
     }
 }

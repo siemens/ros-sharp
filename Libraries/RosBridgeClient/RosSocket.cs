@@ -61,7 +61,7 @@ namespace RosSharp.RosBridgeClient
 
         #region Publishers
 
-        public string Advertise<T>(string topic) where T : Message
+        public string Advertise<T>(string topic) where T : Message, new()
         {
             string id = topic;
             if (Publishers.ContainsKey(id))
@@ -87,7 +87,7 @@ namespace RosSharp.RosBridgeClient
 
         #region Subscribers
 
-        public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
+        public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message, new()
         {
             string id = GetUnusedCounterID(Subscribers, topic);
             Subscription subscription;
@@ -105,7 +105,7 @@ namespace RosSharp.RosBridgeClient
 
         #region ServiceProviders
 
-        public string AdvertiseService<Tin, Tout>(string service, ServiceCallHandler<Tin, Tout> serviceCallHandler) where Tin : Message where Tout : Message
+        public string AdvertiseService<Tin, Tout>(string service, ServiceCallHandler<Tin, Tout> serviceCallHandler) where Tin : Message, new() where Tout : Message
         {
             string id = service;
             if (ServiceProviders.ContainsKey(id))

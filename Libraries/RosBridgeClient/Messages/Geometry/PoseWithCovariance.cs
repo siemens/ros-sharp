@@ -19,14 +19,13 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class PoseWithCovariance : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/PoseWithCovariance";
         public Pose pose;
         public float[] covariance;
         public PoseWithCovariance()
         {
             pose = new Pose();
             covariance = new float[36];
+            RosMessageName = "geometry_msgs/PoseWithCovariance";
         }
     }
 }

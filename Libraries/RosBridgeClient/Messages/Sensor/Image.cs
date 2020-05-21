@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class Image : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/Image";
+    { 
         public Standard.Header header;
         public uint height;
         public uint width;
@@ -36,7 +34,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
             encoding = "undefined";
             is_bigendian = 0;
             step = 0;
-            data = new byte[0];
+            data = new byte[0]; RosMessageName = "sensor_msgs/Image";
         }
     }
 }

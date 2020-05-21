@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class PointCloud2 : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/PointCloud2";
+    { 
         public Standard.Header header;
         public uint height;
         public uint width;
@@ -41,7 +39,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
             point_step = 0;
             row_step = 0;
             is_dense = false;
-            data = new byte[0];
+            data = new byte[0]; RosMessageName = "sensor_msgs/PointCloud2";
         }
     }
 }

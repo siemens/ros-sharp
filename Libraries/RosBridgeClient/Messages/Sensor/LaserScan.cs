@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class LaserScan : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/LaserScan";
+    { 
         public Standard.Header header;
         public float angle_min;
         public float angle_max;
@@ -42,6 +40,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
             range_max = 0;
             ranges = new float[0];
             intensities = new float[0];
+        RosMessageName = "sensor_msgs/LaserScan";
         }
     }
 }

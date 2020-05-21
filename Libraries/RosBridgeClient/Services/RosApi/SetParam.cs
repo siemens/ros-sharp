@@ -19,8 +19,6 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
 {
     public class SetParamRequest : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "rosapi/SetParam";
         public string name;
 
         [JsonProperty("value")]
@@ -30,12 +28,15 @@ namespace RosSharp.RosBridgeClient.Services.RosApi
         {
             this.name = name;
             this.value = value;
+            RosMessageName = "rosapi/SetParam";
         }
     }
 
     public class SetParamResponse : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "rosapi/SetParam";
+        public SetParamResponse()
+        {
+RosMessageName = "rosapi/SetParam";
+        }
     }
 }

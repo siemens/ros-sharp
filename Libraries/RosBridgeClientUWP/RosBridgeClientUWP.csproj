@@ -247,6 +247,9 @@
     <Compile Include="..\RosBridgeClient\RosSocket.cs">
       <Link>RosSocket.cs</Link>
     </Compile>
+    <Compile Include="..\RosBridgeClient\Output.cs">
+      <Link>Output.cs</Link>
+    </Compile>
     <Compile Include="..\RosBridgeClient\Services\FileServer\GetBinaryFile.cs">
       <Link>Services\FileServer\GetBinaryFile.cs</Link>
     </Compile>

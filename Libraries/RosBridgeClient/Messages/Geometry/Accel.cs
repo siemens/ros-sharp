@@ -19,14 +19,13 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
         public class Accel : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Accel";
         public Vector3 linear;
         public Vector3 angular;
         public Accel()
         {
             linear = new Vector3();
             angular = new Vector3();
+            RosMessageName = "geometry_msgs/Accel";
         }
     }
 }

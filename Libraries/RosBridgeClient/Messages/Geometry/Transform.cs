@@ -18,15 +18,13 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class Transform : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Transform";
+    { 
         public Vector3 translation;
         public Quaternion rotation;
         public Transform()
         {
             translation = new Vector3();
-            rotation = new Quaternion();
+            rotation = new Quaternion(); RosMessageName = "geometry_msgs/Transform";
         }
     }
 }

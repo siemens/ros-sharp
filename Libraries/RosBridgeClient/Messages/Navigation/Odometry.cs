@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Navigation
 {
    public class Odometry : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "nav_msgs/Odometry";
+    { 
         public Standard.Header header;
         public string child_frame_id;
         public Geometry.PoseWithCovariance pose;
@@ -30,7 +28,7 @@ namespace RosSharp.RosBridgeClient.Messages.Navigation
             header = new Standard.Header();
             child_frame_id = "";
             pose = new Geometry.PoseWithCovariance();
-            twist = new Geometry.TwistWithCovariance();
+            twist = new Geometry.TwistWithCovariance(); RosMessageName = "nav_msgs/Odometry";
         }
     }
 }

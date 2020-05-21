@@ -19,14 +19,13 @@ namespace RosSharp.RosBridgeClient.Messages.Standard
 {
     public class Time : Message
     {
-        [JsonIgnore]
-        public const string RosMessageName = "std_msgs/Time";
         public uint secs;
         public uint nsecs;
         public Time()
         {
             secs = 0;
             nsecs = 0;
+        RosMessageName = "std_msgs/Time";
         }
     }
 }

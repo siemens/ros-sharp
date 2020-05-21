@@ -15,7 +15,6 @@ limitations under the License.
 
 using Newtonsoft.Json.Linq;
 using System;
-using System.Reflection;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -25,13 +24,11 @@ namespace RosSharp.RosBridgeClient
 
     internal abstract class Communicator
     {
-        public static string GetRosName<T>() where T : Message
+        public static string GetRosName<T>() where T : Message, new()
         {
-#if !WINDOWS_UWP
-            return (string)typeof(T).GetField("RosMessageName").GetRawConstantValue();
-#else
-            return (string)typeof(T).GetTypeInfo().GetDeclaredField("RosMessageName").GetValue(null);
-#endif
+            string name = new T().RosMessageName;
+            Output.Log(name);
+            return name;
         }
     }
     internal abstract class Publisher : Communicator
@@ -47,7 +44,7 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    internal class Publisher<T> : Publisher where T : Message
+    internal class Publisher<T> : Publisher where T : Message, new()
     {
         internal override string Id { get; }
         internal override string Topic { get; }
@@ -79,7 +76,7 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    internal class Subscriber<T> : Subscriber where T : Message
+    internal class Subscriber<T> : Subscriber where T : Message, new()
     {
         internal override string Id { get; }
         internal override string Topic { get; }
@@ -113,7 +110,7 @@ namespace RosSharp.RosBridgeClient
         }
     }
 
-    internal class ServiceProvider<Tin, Tout> : ServiceProvider where Tin : Message where Tout : Message
+    internal class ServiceProvider<Tin, Tout> : ServiceProvider where Tin : Message, new() where Tout : Message
     {
         internal override string Service { get; }
         internal ServiceCallHandler<Tin, Tout> ServiceCallHandler;
@@ -125,7 +122,7 @@ namespace RosSharp.RosBridgeClient
         }
 
         internal override Communication Respond(string id, JToken args = null)
-        { 
+        {
             bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out Tout result);
             return new ServiceResponse<Tout>(id, Service, result, isSuccess);
         }

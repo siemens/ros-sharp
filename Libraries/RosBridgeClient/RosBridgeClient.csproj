@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RosBridgeClient</RootNamespace>
     <AssemblyName>RosBridgeClient</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -89,6 +89,7 @@
     <Compile Include="Communicators.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Messages\TF2\TFMessage.cs" />
+    <Compile Include="Output.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />

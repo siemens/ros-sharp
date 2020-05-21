@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Sensor
 {
     public class JointState : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/JointState";
+    { 
         public Standard.Header header;
         public string[] name;
         public double[] position;
@@ -33,7 +31,7 @@ namespace RosSharp.RosBridgeClient.Messages.Sensor
             name = new string[0];
             position = new double[0];
             velocity = new double[0];
-            effort = new double[0];
+            effort = new double[0]; RosMessageName = "sensor_msgs/JointState";
         }
     }
 }

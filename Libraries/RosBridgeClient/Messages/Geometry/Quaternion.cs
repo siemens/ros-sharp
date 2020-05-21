@@ -17,10 +17,8 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
-    public class Quaternion : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/Quaternion";
+    public class Quaternion : Message {
+
         public float x;
         public float y;
         public float z;
@@ -31,6 +29,7 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
             y = 0;
             z = 0;
             w = 0;
+            RosMessageName = "geometry_msgs/Quaternion";
         }
     }
 }

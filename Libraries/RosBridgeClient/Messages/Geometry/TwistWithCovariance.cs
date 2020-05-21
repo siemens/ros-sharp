@@ -18,15 +18,13 @@ using Newtonsoft.Json;
 namespace RosSharp.RosBridgeClient.Messages.Geometry
 {
     public class TwistWithCovariance : Message
-    {
-        [JsonIgnore]
-        public const string RosMessageName = "geometry_msgs/TwistWithCovariance";
+    { 
         public Twist twist;
         public float[] covariance;
         public TwistWithCovariance()
         {
             twist = new Twist();
-            covariance = new float[36];
+            covariance = new float[36]; RosMessageName = "geometry_msgs/TwistWithCovariance";
         }
     }
 }
