@@ -159,7 +159,7 @@ namespace RosSharp.RosBridgeClient
         private void GetEditorPrefs()
         {
             protocolType = (Protocols.Protocol)(EditorPrefs.HasKey("UrdfImporterProtocolNumber") ?
-                EditorPrefs.GetInt("UrdfImporterProtocolNumber") : 1);
+                EditorPrefs.GetInt("UrdfImporterProtocolNumber") : 0);
 
             address = (EditorPrefs.HasKey("UrdfImporterAddress") ?
                 EditorPrefs.GetString("UrdfImporterAddress") :
