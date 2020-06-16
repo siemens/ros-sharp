@@ -23,7 +23,8 @@ namespace RosSharp.RosBridgeClient.Messages.TF2
 
         public TFMessage()
         {
-            transforms = new Geometry.TransformStamped[0]; RosMessageName = "tf2_msgs/TFMessage";
+            transforms = new Geometry.TransformStamped[0]; 
+            RosMessageName = "tf2_msgs/TFMessage";
         }
     }
 }
