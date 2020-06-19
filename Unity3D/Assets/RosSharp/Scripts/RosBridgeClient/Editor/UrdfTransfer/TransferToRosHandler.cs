@@ -41,7 +41,7 @@ namespace RosSharp.RosBridgeClient
             };
         }
 
-        public void Transfer(Protocols.Protocol protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage)
+        public void Transfer(Protocols.Protocol protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage, RosSocket.SerializerEnum serializer)
         {
             if (Path.GetExtension(urdfPath)?.ToLowerInvariant() != ".urdf")
             {
@@ -49,13 +49,13 @@ namespace RosSharp.RosBridgeClient
                 return;
             }
                         
-            Thread transferToRos = new Thread(() => TransferAsync(protocolType, serverUrl, timeout, urdfPath, rosPackage));
+            Thread transferToRos = new Thread(() => TransferAsync(protocolType, serverUrl, timeout, urdfPath, rosPackage, serializer));
             transferToRos.Start();
         }
 
-        private void TransferAsync(Protocols.Protocol protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage)
+        private void TransferAsync(Protocols.Protocol protocolType, string serverUrl, int timeout, string urdfPath, string rosPackage, RosSocket.SerializerEnum serializer)
         {
-            RosSocket = RosConnector.ConnectToRos(protocolType, serverUrl, OnConnected, OnClose);
+            RosSocket = RosConnector.ConnectToRos(protocolType, serverUrl, OnConnected, OnClose, serializer);
 
             if (!StatusEvents["connected"].WaitOne(timeout * 1000))
             {

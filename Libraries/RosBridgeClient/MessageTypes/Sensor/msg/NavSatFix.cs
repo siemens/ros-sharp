@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class NavSatFix : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/NavSatFix";
 
         //  Navigation Satellite fix for any Global Navigation Satellite System
@@ -29,22 +26,22 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //         receiver, usually the location of the antenna.  This is a
         //         Euclidean frame relative to the vehicle, not a reference
         //         ellipsoid.
-        public Header header;
+        public Header header { get; set; }
         //  satellite fix status information
-        public NavSatStatus status;
+        public NavSatStatus status { get; set; }
         //  Latitude [degrees]. Positive is north of equator; negative is south.
-        public double latitude;
+        public double latitude { get; set; }
         //  Longitude [degrees]. Positive is east of prime meridian; negative is west.
-        public double longitude;
+        public double longitude { get; set; }
         //  Altitude [m]. Positive is above the WGS 84 ellipsoid
         //  (quiet NaN if no altitude is available).
-        public double altitude;
+        public double altitude { get; set; }
         //  Position covariance [m^2] defined relative to a tangential plane
         //  through the reported position. The components are East, North, and
         //  Up (ENU), in row-major order.
         // 
         //  Beware: this coordinate system exhibits singularities at the poles.
-        public double[] position_covariance;
+        public double[] position_covariance { get; set; }
         //  If the covariance of the fix is known, fill it in completely. If the
         //  GPS receiver provides the variance of each measurement, put them
         //  along the diagonal. If only Dilution of Precision is available,
@@ -53,7 +50,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const byte COVARIANCE_TYPE_APPROXIMATED = 1;
         public const byte COVARIANCE_TYPE_DIAGONAL_KNOWN = 2;
         public const byte COVARIANCE_TYPE_KNOWN = 3;
-        public byte position_covariance_type;
+        public byte position_covariance_type { get; set; }
 
         public NavSatFix()
         {

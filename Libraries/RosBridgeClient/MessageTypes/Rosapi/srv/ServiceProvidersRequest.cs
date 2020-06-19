@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class ServiceProvidersRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "rosapi/ServiceProviders";
 
-        public string service;
+        public string service { get; set; }
 
         public ServiceProvidersRequest()
         {

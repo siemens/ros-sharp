@@ -7,25 +7,22 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class JointTrajectoryPoint : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "trajectory_msgs/JointTrajectoryPoint";
 
         //  Each trajectory point specifies either positions[, velocities[, accelerations]]
         //  or positions[, effort] for the trajectory to be executed.
         //  All specified values are in the same order as the joint names in JointTrajectory.msg
-        public double[] positions;
-        public double[] velocities;
-        public double[] accelerations;
-        public double[] effort;
-        public Duration time_from_start;
+        public double[] positions { get; set; }
+        public double[] velocities { get; set; }
+        public double[] accelerations { get; set; }
+        public double[] effort { get; set; }
+        public Duration time_from_start { get; set; }
 
         public JointTrajectoryPoint()
         {

@@ -7,21 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Image : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/Image";
 
         //  This message contains an uncompressed image
         //  (0, 0) is at top-left corner of image
         // 
-        public Header header;
+        public Header header { get; set; }
         //  Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
         //  origin of frame should be optical center of camera
@@ -31,21 +28,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  If the frame_id here and the frame_id of the CameraInfo
         //  message associated with the image conflict
         //  the behavior is undefined
-        public uint height;
+        public uint height { get; set; }
         //  image height, that is, number of rows
-        public uint width;
+        public uint width { get; set; }
         //  image width, that is, number of columns
         //  The legal values for encoding are in file src/image_encodings.cpp
         //  If you want to standardize a new string format, join
         //  ros-users@lists.sourceforge.net and send an email proposing a new encoding.
-        public string encoding;
+        public string encoding { get; set; }
         //  Encoding of pixels -- channel meaning, ordering, size
         //  taken from the list of strings in include/sensor_msgs/image_encodings.h
-        public byte is_bigendian;
+        public byte is_bigendian { get; set; }
         //  is this data bigendian?
-        public uint step;
+        public uint step { get; set; }
         //  Full row length in bytes
-        public byte[] data;
+        public byte[] data { get; set; }
         //  actual matrix data, size is (step * rows)
 
         public Image()

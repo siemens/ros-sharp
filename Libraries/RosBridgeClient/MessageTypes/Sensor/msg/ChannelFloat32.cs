@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class ChannelFloat32 : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/ChannelFloat32";
 
         //  This message is used by the PointCloud message to hold optional data
@@ -33,10 +30,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //    "distance"
         //  The channel name should give semantics of the channel (e.g.
         //  "intensity" instead of "value").
-        public string name;
+        public string name { get; set; }
         //  The values array should be 1-1 with the elements of the associated
         //  PointCloud.
-        public float[] values;
+        public float[] values { get; set; }
 
         public ChannelFloat32()
         {

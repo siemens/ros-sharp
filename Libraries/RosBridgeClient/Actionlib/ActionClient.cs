@@ -1,6 +1,6 @@
 ﻿/*
 © Siemens AG, 2019
-Author: Sifan Ye (sifan.ye@siemens.com)
+Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
-using RosSharp.RosBridgeClient.Protocols;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.Actionlib
@@ -29,95 +26,76 @@ namespace RosSharp.RosBridgeClient.Actionlib
         where TResult : Message
         where TFeedback : Message
     {
-        protected string actionName;
+        public RosSocket rosSocket;
+        public float timeStep;      // the rate(in s in between messages) at which to throttle the topics
 
-        protected int millisecondsTimeout;
-        protected int millisecondsTimestep;
-
-        private readonly RosSocket socket;
-
-        private readonly string serverURL;
-
-        protected DateTime lastStatusUpdateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public string actionName;
+        public TAction action;
+        public GoalStatus goalStatus;
 
         private string cancelPublicationID;
         private string goalPublicationID;
-
         private string statusSubscriptionID;
         private string feedbackSubscriptionID;
         private string resultSubscriptionID;
 
-        protected GoalStatus goalStatus;
-
-        protected TAction action;
-
-        public ActionClient(TAction action, string actionName, string serverURL, Protocol protocol = Protocol.WebSocketSharp, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON, float secondsTimeout = 5f,  float secondsTimestep = 0.2f) {
-            this.action = action;
-            this.actionName = actionName;
-
-            this.millisecondsTimeout = (int)(secondsTimeout * 1000);
-            this.millisecondsTimestep = (int)(secondsTimestep * 1000);
-
-            this.serverURL = serverURL;
-
-            socket = new RosSocket(ProtocolInitializer.GetProtocol(protocol, serverURL), serializer);
+        public void Initialize()
+        {
+            cancelPublicationID = rosSocket.Advertise<GoalID>(actionName + "/cancel");
+            goalPublicationID = rosSocket.Advertise<TActionGoal>(actionName + "/goal");
+            statusSubscriptionID = rosSocket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, (int)(timeStep * 1000));
+            feedbackSubscriptionID = rosSocket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, (int)(timeStep * 1000));
+            resultSubscriptionID = rosSocket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, (int)(timeStep * 1000));
         }
 
-        public void Start() {
-            cancelPublicationID = socket.Advertise<GoalID>(actionName + "/cancel");
-            goalPublicationID = socket.Advertise<TActionGoal>(actionName + "/goal");
-
-            statusSubscriptionID = socket.Subscribe<GoalStatusArray>(actionName + "/status", StatusCallback, millisecondsTimestep);
-            feedbackSubscriptionID = socket.Subscribe<TActionFeedback>(actionName + "/feedback", FeedbackCallback, millisecondsTimestep);
-            resultSubscriptionID = socket.Subscribe<TActionResult>(actionName + "/result", ResultCallback, millisecondsTimestep);
+        public void Terminate()
+        {
+            rosSocket.Unadvertise(cancelPublicationID);
+            rosSocket.Unadvertise(goalPublicationID);
+            rosSocket.Unsubscribe(statusSubscriptionID);
+            rosSocket.Unsubscribe(feedbackSubscriptionID);
+            rosSocket.Unsubscribe(resultSubscriptionID);
         }
 
         public void SendGoal()
         {
-            action.action_goal.goal_id.id = GoalID();
-            socket.Publish(goalPublicationID, action.action_goal);
+            action.action_goal = GetActionGoal();
+            rosSocket.Publish(goalPublicationID, action.action_goal);
         }
 
         public void CancelGoal()
         {
-            socket.Publish(cancelPublicationID, action.action_goal.goal_id);
+            rosSocket.Publish(cancelPublicationID, action.action_goal.goal_id);
         }
 
         // Implement by user to attach GoalID
-        protected abstract string GoalID();
+        protected abstract TActionGoal GetActionGoal();
 
         // Implement by user to handle status
-        protected virtual void OnStatusUpdated() { }
+        protected abstract void OnStatusUpdated();
         private void StatusCallback(GoalStatusArray actionGoalStatusArray)
         {
             if (actionGoalStatusArray.status_list.Length > 0)
             {
-                goalStatus = actionGoalStatusArray.status_list[0];
+                goalStatus = actionGoalStatusArray.status_list[actionGoalStatusArray.status_list.Length - 1];
             }
-            lastStatusUpdateTime = DateTime.Now;
             OnStatusUpdated();
         }
 
         // Implement by user to handle feedback.
         protected abstract void OnFeedbackReceived();
-        private void FeedbackCallback(TActionFeedback actionFeedback) {
+        private void FeedbackCallback(TActionFeedback actionFeedback)
+        {
             action.action_feedback = actionFeedback;
             OnFeedbackReceived();
         }
 
         // Implement by user to handle result.
         protected abstract void OnResultReceived();
-        private void ResultCallback(TActionResult actionResult) {
+        private void ResultCallback(TActionResult actionResult)
+        {
             action.action_result = actionResult;
             OnResultReceived();
-        }
-
-        protected virtual void Log(string log) { }
-        protected virtual void LogWarning(string log) { }
-        protected virtual void LogError(string log) { }
-
-        public void Stop() {
-            socket.Close(millisecondsTimestep);
         }
     }
 }

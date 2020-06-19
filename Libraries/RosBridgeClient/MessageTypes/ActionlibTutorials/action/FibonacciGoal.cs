@@ -7,17 +7,14 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciGoal : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "actionlib_tutorials/FibonacciGoal";
 
         //  goal definition
-        public int order;
+        public int order { get; set; }
 
         public FibonacciGoal()
         {

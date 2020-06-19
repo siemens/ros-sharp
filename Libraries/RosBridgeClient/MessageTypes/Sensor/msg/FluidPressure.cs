@@ -7,27 +7,24 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class FluidPressure : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/FluidPressure";
 
         //  Single pressure reading.  This message is appropriate for measuring the
         //  pressure inside of a fluid (air, water, etc).  This also includes
         //  atmospheric or barometric pressure.
         //  This message is not appropriate for force/pressure contact sensors.
-        public Header header;
+        public Header header { get; set; }
         //  timestamp of the measurement
         //  frame_id is the location of the pressure sensor
-        public double fluid_pressure;
+        public double fluid_pressure { get; set; }
         //  Absolute pressure reading in Pascals.
-        public double variance;
+        public double variance { get; set; }
         //  0 is interpreted as variance unknown
 
         public FluidPressure()

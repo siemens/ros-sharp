@@ -51,8 +51,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         private List<string> warnings = new List<string>();
 
-        private CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
-
         public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "") {
             this.tokens = tokens;
 
@@ -123,7 +121,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                writer.Write(MsgAutoGenUtilities.TWO_TABS + "[JsonIgnore]\n");
                 writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");
 
                 // Write body
@@ -272,6 +269,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     "' at " + inFilePath + ":" + lineNum +
                     ". '" + identifier + "' is a ROS message built-in type.");
             }
+
+#if NETFRAMEWORK
+            CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
             // Check if identifier is a C# keyword
             if (!provider.IsValidIdentifier(identifier))
             {
@@ -281,6 +281,11 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 declaration = MsgAutoGenUtilities.TWO_TABS + "[JsonProperty(\"" + identifier + "\")]\n" + declaration; 
                 identifier = "_" + identifier;
             }
+#else
+            Warn(
+                "'CodeDomProvider class might not exist on your platform. We did not check whether " + identifier + "' is a C# keyword." +
+                "(" + inFilePath + ":" + lineNum + ")");
+#endif
 
             symbolTable.Add(identifier, type);
 
@@ -307,7 +312,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 }
             }
             else {
-                declaration += type + " " + identifier + ";\n";
+                declaration += type + " " + identifier + MsgAutoGenUtilities.PROPERTY_EXTENSION + "\n";
             }
             body += declaration;
         }
@@ -504,7 +509,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         }
 
         private string GenerateImports() {
-            string importsStr = "using Newtonsoft.Json;\n\n";
+            string importsStr = "\n\n";
             if (imports.Count > 0) {
                 foreach (string s in imports)
                 {

@@ -7,8 +7,6 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -16,12 +14,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class Path : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "nav_msgs/Path";
 
         // An array of poses that represents a Path for a robot to follow
-        public Header header;
-        public PoseStamped[] poses;
+        public Header header { get; set; }
+        public PoseStamped[] poses { get; set; }
 
         public Path()
         {

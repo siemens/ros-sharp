@@ -20,9 +20,9 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class ActionFeedback<TFeedback> : Message where TFeedback : Message
     {
-        public Header header;
-        public GoalStatus status;
-        public TFeedback feedback;
+        public Header header { get; set; }
+        public GoalStatus status { get; set; }
+        public TFeedback feedback { get; set; }
 
         public ActionFeedback()
         {

@@ -13,22 +13,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.IO;
-
 using System.Collections.Generic;
-
-using System.Linq;
-
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient.MessageGeneration
 {
-    public class PackageSrvAutoGenEditorWindow : EditorWindow
+    public class PackageSrvAutoGenEditorWindow : PackageAutoGenEditorWindow
     {
-        private string inPkgPath = "";
-        private string rosPackageName = "";
-        private string outPkgPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
+        protected override string GenerationType
+        {
+            get { return "service"; }
+        }
+
+        protected override string FileExtension
+        {
+            get { return "srv"; }
+        }
 
         [MenuItem("RosBridgeClient/Auto Generate Services/Package Services...", false, 11)]
         private static void OpenWindow()
@@ -39,131 +40,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             window.Show();
         }
 
-        private void OnGUI()
+        protected override List<string> Generate(string inPath, string outPath, string rosPackageName = "")
         {
-            GUILayout.Label("Package services auto generation", EditorStyles.boldLabel);
-
-            EditorGUILayout.BeginHorizontal();
-            inPkgPath = EditorGUILayout.TextField("Input Package Path", inPkgPath);
-            if (GUILayout.Button("Browse Package...", GUILayout.Width(150)))
-            {
-                inPkgPath = EditorUtility.OpenFolderPanel("Select Package...", "", "");
-                if (!inPkgPath.Equals(""))
-                {
-                    rosPackageName = inPkgPath.Split('/').Last();
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            rosPackageName = EditorGUILayout.TextField("ROS Package Name:", rosPackageName);
-
-            EditorGUILayout.BeginHorizontal();
-            outPkgPath = EditorGUILayout.TextField("Output Location", outPkgPath);
-            if (GUILayout.Button("Select Folder...", GUILayout.Width(150)))
-            {
-                outPkgPath = EditorUtility.OpenFolderPanel("Select Folder...", "", "");
-            }
-            EditorGUILayout.EndHorizontal();
-
-            if (GUILayout.Button("GENERATE!"))
-            {
-                if (inPkgPath.Equals(""))
-                {
-                    EditorUtility.DisplayDialog(
-                        title: "Error",
-                        message: "Empty input package path!\nPlease specify input package",
-                        ok: "Bricks without straw");
-                }
-                else
-                {
-                    try
-                    {
-                        string[] files = Directory.GetFiles(Path.Combine(inPkgPath, "srv"), "*.srv");
-                        if (files.Length == 0)
-                        {
-                            EditorUtility.DisplayDialog(
-                                title: "No service files found!",
-                                message: "No service files found!",
-                                ok: "Bricks without straw");
-                            Reset();
-                        }
-                        else
-                        {
-                            // Keep a list of warnings
-                            List<string> warnings = new List<string>();
-                            for (int i = 0; i < files.Length; i++)
-                            {
-                                string file = files[i];
-                                EditorUtility.DisplayProgressBar(
-                                    "Working...(" + (i + 1) + "/" + files.Length + ")",
-                                    "Parsing " + file,
-                                    (float)(i + 1) / (float)files.Length);
-                                try
-                                {
-                                    warnings.AddRange(ServiceAutoGen.GenerateSingleService(file, outPkgPath, rosPackageName));
-                                }
-                                catch (MessageTokenizerException e)
-                                {
-                                    Debug.LogError(e.ToString() + e.Message);
-                                    EditorUtility.DisplayDialog(
-                                        title: "Message Tokenizer Exception",
-                                        message: e.Message,
-                                        ok: "Wait. That's illegal");
-                                }
-                                catch (MessageParserException e)
-                                {
-                                    Debug.LogError(e.ToString() + e.Message);
-                                    EditorUtility.DisplayDialog(
-                                        title: "Message Parser Exception",
-                                        message: e.Message,
-                                        ok: "Sorry but you can't ignore errors.");
-                                }
-                            }
-                            // Done
-                            EditorUtility.ClearProgressBar();
-                            if (warnings.Count > 0)
-                            {
-                                EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPkgPath + "\nYou have " + warnings.Count + " warning(s)",
-                                    ok: "I like to live dangerously");
-                                foreach (string w in warnings)
-                                {
-                                    Debug.LogWarning(w);
-                                }
-                            }
-                            else
-                            {
-                                EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPkgPath,
-                                    ok: "Thank you!");
-                            }
-                            Reset();
-                        }
-                    }
-                    catch (DirectoryNotFoundException e)
-                    {
-                        EditorUtility.DisplayDialog(
-                            title: "Message Folder not found",
-                            message: e.Message,
-                            ok: "Bricks without straw");
-                        Reset();
-                    }
-                }
-            }
-        }
-
-        private void OnInspectorUpdate()
-        {
-            Repaint();
-        }
-
-        private void Reset()
-        {
-            inPkgPath = "";
-            rosPackageName = "";
-            outPkgPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
+            return ServiceAutoGen.GenerateSingleService(inPath, outPath, rosPackageName);
         }
     }
 }

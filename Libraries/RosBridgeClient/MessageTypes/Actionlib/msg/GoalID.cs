@@ -7,25 +7,22 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalID : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "actionlib_msgs/GoalID";
 
         //  The stamp should store the time at which this goal was requested.
         //  It is used by an action server when it tries to preempt all
         //  goals that were requested before a certain time
-        public Time stamp;
+        public Time stamp { get; set; }
         //  The id provides a way to associate feedback and
         //  result message with specific goal requests. The id
         //  specified must be unique.
-        public string id;
+        public string id { get; set; }
 
         public GoalID()
         {

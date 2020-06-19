@@ -31,7 +31,7 @@ namespace RosSharp.Urdf
         public Quaternion InertiaTensorRotation;
 
         private const int RoundDigits = 10;
-        private const float MinInertia = 1e-8f;
+        private const float MinInertia = 1e-6f;
 
         public static void Create(GameObject linkObject, Link.Inertial inertial = null)
         {
@@ -142,34 +142,34 @@ namespace RosSharp.Urdf
             float qw, qx, qy, qz;
             if (tr > 0)
             {
-                float s = Mathf.Sqrt((tr + 1.0f) * 2f); // S=4*qw 
+                float s = Mathf.Sqrt(tr + 1.0f) * 2f; // S=4*qw 
                 qw = 0.25f * s;
-                qx = (eigenvector2[1] - eigenvector1[2]) / s;
-                qy = (eigenvector0[2] - eigenvector2[0]) / s;
-                qz = (eigenvector1[0] - eigenvector0[1]) / s;
+                qx = (eigenvector1[2] - eigenvector2[1]) / s;
+                qy = (eigenvector2[0] - eigenvector0[2]) / s;
+                qz = (eigenvector0[1] - eigenvector1[0]) / s;
             }
             else if ((eigenvector0[0] > eigenvector1[1]) & (eigenvector0[0] > eigenvector2[2]))
             {
                 float s = Mathf.Sqrt(1.0f + eigenvector0[0] - eigenvector1[1] - eigenvector2[2]) * 2; // S=4*qx 
-                qw = (eigenvector2[1] - eigenvector1[2]) / s;
+                qw = (eigenvector1[2] - eigenvector2[1]) / s;
                 qx = 0.25f * s;
-                qy = (eigenvector0[1] + eigenvector1[0]) / s;
-                qz = (eigenvector0[2] + eigenvector2[0]) / s;
+                qy = (eigenvector1[0] + eigenvector0[1]) / s;
+                qz = (eigenvector2[0] + eigenvector0[2]) / s;
             }
             else if (eigenvector1[1] > eigenvector2[2])
             {
                 float s = Mathf.Sqrt(1.0f + eigenvector1[1] - eigenvector0[0] - eigenvector2[2]) * 2; // S=4*qy
-                qw = (eigenvector0[2] - eigenvector2[0]) / s;
-                qx = (eigenvector0[1] + eigenvector1[0]) / s;
+                qw = (eigenvector2[0] - eigenvector0[2]) / s;
+                qx = (eigenvector1[0] + eigenvector0[1]) / s;
                 qy = 0.25f * s;
-                qz = (eigenvector1[2] + eigenvector2[1]) / s;
+                qz = (eigenvector2[1] + eigenvector1[2]) / s;
             }
             else
             {
                 float s = Mathf.Sqrt(1.0f + eigenvector2[2] - eigenvector0[0] - eigenvector1[1]) * 2; // S=4*qz
-                qw = (eigenvector1[0] - eigenvector0[1]) / s;
-                qx = (eigenvector0[2] + eigenvector2[0]) / s;
-                qy = (eigenvector1[2] + eigenvector2[1]) / s;
+                qw = (eigenvector0[1] - eigenvector1[0]) / s;
+                qx = (eigenvector2[0] + eigenvector0[2]) / s;
+                qy = (eigenvector2[1] + eigenvector1[2]) / s;
                 qz = 0.25f * s;
             }
             return new Quaternion(qx, qy, qz, qw);

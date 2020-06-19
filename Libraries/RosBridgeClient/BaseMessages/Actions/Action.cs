@@ -23,9 +23,9 @@ namespace RosSharp.RosBridgeClient
         where TResult : Message
         where TFeedback : Message
     {
-        public TActionGoal action_goal;
-        public TActionResult action_result;
-        public TActionFeedback action_feedback;
+        public TActionGoal action_goal { get; set; }
+        public TActionResult action_result { get; set; }
+        public TActionFeedback action_feedback { get; set; }
 
         public Action() { }
 

@@ -7,28 +7,25 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class RelativeHumidity : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/RelativeHumidity";
 
         //  Single reading from a relative humidity sensor.  Defines the ratio of partial
         //  pressure of water vapor to the saturated vapor pressure at a temperature.
-        public Header header;
+        public Header header { get; set; }
         //  timestamp of the measurement
         //  frame_id is the location of the humidity sensor
-        public double relative_humidity;
+        public double relative_humidity { get; set; }
         //  Expression of the relative humidity
         //  from 0.0 to 1.0.
         //  0.0 is no partial pressure of water vapor
         //  1.0 represents partial pressure of saturation
-        public double variance;
+        public double variance { get; set; }
         //  0 is interpreted as variance unknown
 
         public RelativeHumidity()

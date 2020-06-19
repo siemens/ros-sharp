@@ -7,13 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class SolidPrimitive : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "shape_msgs/SolidPrimitive";
 
         //  Define box, sphere, cylinder, cone 
@@ -23,9 +20,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
         public const byte CYLINDER = 3;
         public const byte CONE = 4;
         //  The type of the shape
-        public byte type;
+        public byte type { get; set; }
         //  The dimensions of the shape
-        public double[] dimensions;
+        public double[] dimensions { get; set; }
         //  The meaning of the shape dimensions: each constant defines the index in the 'dimensions' array
         //  For the BOX type, the X, Y, and Z dimensions are the length of the corresponding
         //  sides of the box.

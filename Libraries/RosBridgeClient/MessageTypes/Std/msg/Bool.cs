@@ -7,16 +7,13 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Bool : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/Bool";
 
-        public bool data;
+        public bool data { get; set; }
 
         public Bool()
         {

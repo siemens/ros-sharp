@@ -7,15 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class CameraInfo : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/CameraInfo";
 
         //  This message defines meta information for a camera. It should be in a
@@ -45,7 +42,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //                      Image acquisition info                          #
         // ######################################################################
         //  Time of image acquisition, camera coordinate frame ID
-        public Header header;
+        public Header header { get; set; }
         //  Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
         //  origin of frame should be optical center of camera
@@ -67,15 +64,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         // ######################################################################
         //  The image dimensions with which the camera was calibrated. Normally
         //  this will be the full camera resolution in pixels.
-        public uint height;
-        public uint width;
+        public uint height { get; set; }
+        public uint width { get; set; }
         //  The distortion model used. Supported models are listed in
         //  sensor_msgs/distortion_models.h. For most cameras, "plumb_bob" - a
         //  simple model of radial and tangential distortion - is sufficient.
-        public string distortion_model;
+        public string distortion_model { get; set; }
         //  The distortion parameters, size depending on the distortion model.
         //  For "plumb_bob", the 5 parameters are: (k1, k2, t1, t2, k3).
-        public double[] D;
+        public double[] D { get; set; }
         //  Intrinsic camera matrix for the raw (distorted) images.
         //      [fx  0 cx]
         //  K = [ 0 fy cy]
@@ -83,13 +80,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  Projects 3D points in the camera coordinate frame to 2D pixel
         //  coordinates using the focal lengths (fx, fy) and principal point
         //  (cx, cy).
-        public double[] K;
+        public double[] K { get; set; }
         //  3x3 row-major matrix
         //  Rectification matrix (stereo cameras only)
         //  A rotation matrix aligning the camera coordinate system to the ideal
         //  stereo image plane so that epipolar lines in both stereo images are
         //  parallel.
-        public double[] R;
+        public double[] R { get; set; }
         //  3x3 row-major matrix
         //  Projection/camera matrix
         //      [fx'  0  cx' Tx]
@@ -115,7 +112,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //          x = u / w
         //          y = v / w
         //   This holds for both images of a stereo pair.
-        public double[] P;
+        public double[] P { get; set; }
         //  3x4 row-major matrix
         // ######################################################################
         //                       Operational Parameters                         #
@@ -130,15 +127,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //   (width / binning_x) x (height / binning_y).
         //  The default values binning_x = binning_y = 0 is considered the same
         //   as binning_x = binning_y = 1 (no subsampling).
-        public uint binning_x;
-        public uint binning_y;
+        public uint binning_x { get; set; }
+        public uint binning_y { get; set; }
         //  Region of interest (subwindow of full camera resolution), given in
         //   full resolution (unbinned) image coordinates. A particular ROI
         //   always denotes the same window of pixels on the camera sensor,
         //   regardless of binning settings.
         //  The default setting of roi (all values 0) is considered the same as
         //   full resolution (roi.width = width, roi.height = height).
-        public RegionOfInterest roi;
+        public RegionOfInterest roi { get; set; }
 
         public CameraInfo()
         {

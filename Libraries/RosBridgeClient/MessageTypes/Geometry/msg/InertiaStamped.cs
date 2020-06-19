@@ -7,19 +7,16 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class InertiaStamped : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "geometry_msgs/InertiaStamped";
 
-        public Header header;
-        public Inertia inertia;
+        public Header header { get; set; }
+        public Inertia inertia { get; set; }
 
         public InertiaStamped()
         {

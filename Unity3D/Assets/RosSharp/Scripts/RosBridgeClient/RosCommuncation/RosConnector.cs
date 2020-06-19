@@ -17,10 +17,8 @@ limitations under the License.
 
 using System;
 using System.Threading;
-
-using UnityEngine;
-
 using RosSharp.RosBridgeClient.Protocols;
+using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -35,13 +33,13 @@ namespace RosSharp.RosBridgeClient
 
         public ManualResetEvent IsConnected { get; private set; }
 
-        public void Awake()
+        public virtual void Awake()
         {
             IsConnected = new ManualResetEvent(false);
             new Thread(ConnectAndWait).Start();
         }
 
-        private void ConnectAndWait()
+        protected void ConnectAndWait()
         {
             RosSocket = ConnectToRos(protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
@@ -49,7 +47,7 @@ namespace RosSharp.RosBridgeClient
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
 
-        public static RosSocket ConnectToRos(Protocol protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.JSON)
+        public static RosSocket ConnectToRos(Protocol protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.Microsoft)
         {
             IProtocol protocol = ProtocolInitializer.GetProtocol(protocolType, serverUrl);
             protocol.OnConnected += onConnected;

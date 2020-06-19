@@ -7,20 +7,17 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class MultiArrayDimension : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "std_msgs/MultiArrayDimension";
 
-        public string label;
+        public string label { get; set; }
         //  label of given dimension
-        public uint size;
+        public uint size { get; set; }
         //  size of given dimension (in type units)
-        public uint stride;
+        public uint stride { get; set; }
         //  stride of given dimension
 
         public MultiArrayDimension()

@@ -15,6 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Added vector(1x3) * (3x3)Matrix and vector(3x1) * vector(1x3)
+// UoK , 2019, Odysseas Doumas (od79@kent.ac.uk / odydoum@gmail.com) 
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -132,6 +135,24 @@ namespace RosSharp
             Vector3 row1 = new Vector3(A[1][0], A[1][1], A[1][2]);
             Vector3 row2 = new Vector3(A[2][0], A[2][1], A[2][2]);
             return new Vector3(Vector3.Dot(row0, B), Vector3.Dot(row1, B), Vector3.Dot(row2, B));
+        }
+
+        public static Matrix3x3 operator *(Vector3 A, Matrix3x3 B)
+        {
+            Matrix3x3 result = new Matrix3x3();
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                        result[i][j] += A[i] * B[i][j];
+            return result;
+        }
+
+        public static Matrix3x3 VectorMult(Vector3 A, Vector3 B)
+        {
+            Matrix3x3 result = new Matrix3x3();
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                        result[i][j] += A[j] * B[i];
+            return result;
         }
 
         public float Determinant()
