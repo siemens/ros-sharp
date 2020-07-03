@@ -47,7 +47,7 @@ namespace RosSharp.RosBridgeClient
             Vector3 linearVelocity = PublishedTransform.InverseTransformDirection(
                 (PublishedTransform.position - previousPosition) / Time.deltaTime
             );
-            Vector3 angularVelocity = (PublishedTransform.rotation.eulerAngles - previousRotation.eulerAngles) / Time.deltaTime;
+            Vector3 angularVelocity = (PublishedTransform.rotation.eulerAngles - previousRotation.eulerAngles) * Mathf.Deg2Rad / Time.deltaTime;
 
             message.linear = GetGeometryVector3(linearVelocity.Unity2Ros()); ;
             message.angular = GetGeometryVector3(-angularVelocity.Unity2Ros());
