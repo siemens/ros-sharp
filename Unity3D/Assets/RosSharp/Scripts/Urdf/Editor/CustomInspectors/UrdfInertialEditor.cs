@@ -65,10 +65,10 @@ namespace RosSharp.Urdf.Editor
                     break;
 
                 default:
-                    EditorGUILayout.LabelField(new GUIContent("Mass"), new GUIContent(rigidbody.mass.ToString()));
-                    EditorGUILayout.LabelField(new GUIContent("Center of Mass"), new GUIContent(rigidbody.centerOfMass.ToString()));
-                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor"), new GUIContent(rigidbody.inertiaTensor.ToString()));
-                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor Rotation"), new GUIContent(rigidbody.inertiaTensorRotation.eulerAngles.ToString()));
+                    EditorGUILayout.LabelField(new GUIContent("Mass"), new GUIContent(rigidbody.mass.ToString("F4")));
+                    EditorGUILayout.LabelField(new GUIContent("Center of Mass"), new GUIContent(rigidbody.centerOfMass.ToString("F4")));
+                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor"), new GUIContent(rigidbody.inertiaTensor.ToString("F4")));
+                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor Rotation"), new GUIContent(rigidbody.inertiaTensorRotation.eulerAngles.ToString("F4")));
                     break;
             }
             serializedObject.ApplyModifiedProperties();
