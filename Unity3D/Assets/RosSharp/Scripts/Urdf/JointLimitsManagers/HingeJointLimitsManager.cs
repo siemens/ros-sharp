@@ -26,16 +26,16 @@ namespace RosSharp
 
         public float Tolerance = 5;
 
-        public float AngleActual { get; private set; }
+        public float AngleActual; // { get; private set; }
         private float anglePrevious;
 
-        public int RotationNumberActual { get; private set; }
+        public int RotationNumberActual; // { get; private set; }
 
-        public int RotationNumberMin { get; private set; }
-        public int RotationNumberMax { get; private set; }
+        public int RotationNumberMin; // { get; private set; }
+        public int RotationNumberMax; // { get; private set; }
 
-        public float AngleLimitMin { get; private set; }
-        public float AngleLimitMax { get; private set; }
+        public float AngleLimitMin; // { get; private set; }
+        public float AngleLimitMax; // { get; private set; }
 
         private HingeJoint _hingeJoint;
 

@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 using UnityEditor;
+using UnityEngine;
 
 namespace RosSharp.Urdf.Editor
 {
@@ -23,36 +24,59 @@ namespace RosSharp.Urdf.Editor
     {
         private const float toleranceThreshold = 10;
 
-        private HingeJointLimitsManager hingeJointLimitsManager;
+        SerializedProperty pLargeAngleLimitMin;
+        SerializedProperty pLargeAngleLimitMax;
+        SerializedProperty pTolerance;
+        SerializedProperty pAngleActual;
+        SerializedProperty pRotationNumberActual;
+        SerializedProperty pRotationNumberMin;
+        SerializedProperty pRotationNumberMax;
+        SerializedProperty pAngleLimitMin;
+        SerializedProperty pAngleLimitMax;
+
+        protected virtual void OnEnable()
+        {
+            pLargeAngleLimitMin = serializedObject.FindProperty("LargeAngleLimitMin");
+            pLargeAngleLimitMax = serializedObject.FindProperty("LargeAngleLimitMax");
+            pTolerance = serializedObject.FindProperty("Tolerance");
+            pAngleActual = serializedObject.FindProperty("AngleActual");
+            pRotationNumberActual = serializedObject.FindProperty("RotationNumberActual");
+            pRotationNumberMin = serializedObject.FindProperty("RotationNumberMin");
+            pRotationNumberMax = serializedObject.FindProperty("RotationNumberMax");
+            pAngleLimitMin = serializedObject.FindProperty("AngleLimitMin");
+            pAngleLimitMax = serializedObject.FindProperty("AngleLimitMax");
+        }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            serializedObject.Update();
 
-            hingeJointLimitsManager = (HingeJointLimitsManager)target;
-            //if (EditorGUILayout.Foldout(true, "Angles"))
+            pLargeAngleLimitMin.floatValue = EditorGUILayout.FloatField("Large Angle Limit Min: ", pLargeAngleLimitMin.floatValue);
+            pLargeAngleLimitMax.floatValue = EditorGUILayout.FloatField("Large Angle Limit Max: ", pLargeAngleLimitMax.floatValue);
+            pTolerance.floatValue = EditorGUILayout.FloatField("Tolerance: ", pTolerance.floatValue);
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Actual Angle:", hingeJointLimitsManager.AngleActual.ToString());
-            EditorGUILayout.LabelField("Actual Rotation No.:", hingeJointLimitsManager.RotationNumberActual.ToString());
+            EditorGUILayout.LabelField(new GUIContent("Actual Angle:"), new GUIContent(pAngleActual.floatValue.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Actual Rotation No.:"), new GUIContent(pRotationNumberActual.intValue.ToString()));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Min Angle:", hingeJointLimitsManager.AngleLimitMin.ToString());
-            EditorGUILayout.LabelField("Min. No. of Rotations:", hingeJointLimitsManager.RotationNumberMin.ToString());
+            EditorGUILayout.LabelField(new GUIContent("Min Angle:"), new GUIContent(pAngleLimitMin.floatValue.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Min. No. of Rotations:"), new GUIContent(pRotationNumberMin.intValue.ToString()));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Max Angle:", hingeJointLimitsManager.AngleLimitMax.ToString());
-            EditorGUILayout.LabelField("Max. No. of Rotations:", hingeJointLimitsManager.RotationNumberMax.ToString());
+            EditorGUILayout.LabelField(new GUIContent("Max Angle:"), new GUIContent(pAngleLimitMax.floatValue.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Max. No. of Rotations:"), new GUIContent(pRotationNumberMax.intValue.ToString()));
             EditorGUILayout.EndHorizontal();
 
-            if (180 - hingeJointLimitsManager.AngleLimitMin < toleranceThreshold)
+            if (180 - pAngleLimitMin.floatValue < toleranceThreshold)
                 EditorGUILayout.HelpBox("Min. Angle is close to +180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
-            if (180 - hingeJointLimitsManager.AngleLimitMax < toleranceThreshold)
+            if (180 - pAngleLimitMax.floatValue < toleranceThreshold)
                 EditorGUILayout.HelpBox("Max. Angle is close to -180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
