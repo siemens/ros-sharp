@@ -26,10 +26,13 @@ namespace RosSharp.Urdf.Editor
         private UrdfLink urdfLink;
         private UrdfJoint.JointTypes jointType = UrdfJoint.JointTypes.Fixed;
 
+        protected virtual void OnEnable()
+        {
+            urdfLink = (UrdfLink)serializedObject.targetObject;
+        }
+
         public override void OnInspectorGUI()
         {
-            urdfLink = (UrdfLink) target;
-
             GUILayout.Space(5);
             urdfLink.IsBaseLink = EditorGUILayout.Toggle("Is Base Link", urdfLink.IsBaseLink);
             GUILayout.Space(5);
