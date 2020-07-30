@@ -54,23 +54,16 @@ namespace RosSharp.Urdf.Editor
 
             EditorGUILayout.PropertyField(pRigidbodyDataSource, new GUIContent("Rigidbody Data Source"));
 
-            switch ((UrdfInertial.RigidbodyDataSource) pRigidbodyDataSource.enumValueIndex)
-            { 
-                case UrdfInertial.RigidbodyDataSource.Manual:
-                    pMass.floatValue =  EditorGUILayout.FloatField("Mass",rigidbody.mass);                    
-                    pCenterOfMass.vector3Value = EditorGUILayout.Vector3Field("Center of Mass", rigidbody.centerOfMass);
-                    pInertiaTensor.vector3Value = EditorGUILayout.Vector3Field("Inertia Tensor", rigidbody.inertiaTensor);
-                    Vector3 angles = EditorGUILayout.Vector3Field("Inertia Tensor Rotation", rigidbody.inertiaTensorRotation.eulerAngles);
-                    pInertiaTensorRotation.quaternionValue = Quaternion.Euler(angles);
-                    break;
+            bool isEnabled = (UrdfInertial.RigidbodyDataSource)pRigidbodyDataSource.enumValueIndex != UrdfInertial.RigidbodyDataSource.Manual;
 
-                default:
-                    EditorGUILayout.LabelField(new GUIContent("Mass"), new GUIContent(rigidbody.mass.ToString("F4")));
-                    EditorGUILayout.LabelField(new GUIContent("Center of Mass"), new GUIContent(rigidbody.centerOfMass.ToString("F4")));
-                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor"), new GUIContent(rigidbody.inertiaTensor.ToString("F4")));
-                    EditorGUILayout.LabelField(new GUIContent("Inertia Tensor Rotation"), new GUIContent(rigidbody.inertiaTensorRotation.eulerAngles.ToString("F4")));
-                    break;
-            }
+            EditorGUI.BeginDisabledGroup(isEnabled);
+            pMass.floatValue = EditorGUILayout.FloatField("Mass", rigidbody.mass);
+            pCenterOfMass.vector3Value = EditorGUILayout.Vector3Field("Center of Mass", rigidbody.centerOfMass);
+            pInertiaTensor.vector3Value = EditorGUILayout.Vector3Field("Inertia Tensor", rigidbody.inertiaTensor);
+            Vector3 angles = EditorGUILayout.Vector3Field("Inertia Tensor Rotation", rigidbody.inertiaTensorRotation.eulerAngles);
+            pInertiaTensorRotation.quaternionValue = Quaternion.Euler(angles);
+            EditorGUI.EndDisabledGroup();
+
             serializedObject.ApplyModifiedProperties();
         }
 
