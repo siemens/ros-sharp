@@ -20,12 +20,10 @@ namespace RosSharp.Urdf
 {
     public class UrdfJointPrismatic : UrdfJoint
     {
-        public override JointTypes JointType => JointTypes.Prismatic;
-
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointPrismatic urdfJoint = linkObject.AddComponent<UrdfJointPrismatic>();
-
+            urdfJoint._jointType = JointTypes.Prismatic;
             urdfJoint.UnityJoint = linkObject.AddComponent<ConfigurableJoint>();
             urdfJoint.UnityJoint.autoConfigureConnectedAnchor = true;
 

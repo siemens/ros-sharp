@@ -23,62 +23,102 @@ namespace RosSharp.Urdf
     [RequireComponent(typeof(Rigidbody))]
     public class UrdfInertial : MonoBehaviour
     {
+        [SerializeField] private Rigidbody _rigidbody;
         public bool DisplayInertiaGizmo;
 
-        public bool UseUrdfData;
+        public enum RigidbodyDataSource { Urdf, Unity, Manual};
+        public RigidbodyDataSource rigidbodyDataSource;
+
+        public float Mass;
         public Vector3 CenterOfMass;
         public Vector3 InertiaTensor;
         public Quaternion InertiaTensorRotation;
 
+        public float UrdfMass;
+        public Vector3 UrdfCenterOfMass;
+        public Vector3 UrdfInertiaTensor;
+        public Quaternion UrdfInertiaTensorRotation;
+
         private const int RoundDigits = 10;
         private const float MinInertia = 1e-6f;
+
+        private bool isCreated;
 
         public static void Create(GameObject linkObject, Link.Inertial inertial = null)
         {
             UrdfInertial urdfInertial = linkObject.AddComponent<UrdfInertial>();
-            Rigidbody _rigidbody = urdfInertial.GetComponent<Rigidbody>();
+            urdfInertial.UrdfMass = (float)inertial.mass;
 
-            if (inertial != null)
-            {
-                _rigidbody.mass = (float)inertial.mass;
+            if (inertial.origin != null)
+                urdfInertial.UrdfCenterOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
 
-                if (inertial.origin != null)
-                    _rigidbody.centerOfMass = UrdfOrigin.GetPositionFromUrdf(inertial.origin);
+            urdfInertial.ImportInertiaData(inertial.inertia);
+            urdfInertial.Initialize();
+            urdfInertial.isCreated = true;
+        }
 
-                urdfInertial.ImportInertiaData(inertial.inertia);
+        private void Initialize()
+        {
+            rigidbodyDataSource = RigidbodyDataSource.Urdf;
+  
+            Mass = UrdfMass;
+            CenterOfMass = UrdfCenterOfMass;
+            InertiaTensor = UrdfInertiaTensor;
+            InertiaTensorRotation =  UrdfInertiaTensorRotation;
 
-                urdfInertial.UseUrdfData = true;
-            }
+            DisplayInertiaGizmo = false;
 
-            urdfInertial.DisplayInertiaGizmo = false;
-
-            //Save original rigidbody data from URDF
-            urdfInertial.CenterOfMass = _rigidbody.centerOfMass;
-            urdfInertial.InertiaTensor = _rigidbody.inertiaTensor;
-            urdfInertial.InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
+            UpdateRigidBodyData();
         }
 
         #region Runtime
-
-        private void Start()
+        private void Reset()
         {
-            UpdateRigidBodyData();
+            if(isCreated)
+                Initialize();
+        }
+
+         private void OnValidate()
+        {
+            if (isCreated)
+                UpdateRigidBodyData();
         }
 
         public void UpdateRigidBodyData()
         {
-            Rigidbody _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<Rigidbody>();
 
-            if (UseUrdfData)
+            switch (rigidbodyDataSource)
             {
-                _rigidbody.centerOfMass = CenterOfMass;
-                _rigidbody.inertiaTensor = InertiaTensor;
-                _rigidbody.inertiaTensorRotation = InertiaTensorRotation;
-            }
-            else
-            {
-                _rigidbody.ResetCenterOfMass();
-                _rigidbody.ResetInertiaTensor();
+                case RigidbodyDataSource.Urdf:
+                    {
+                        _rigidbody.mass = UrdfMass;
+                        _rigidbody.centerOfMass = UrdfCenterOfMass;
+                        _rigidbody.inertiaTensor = UrdfInertiaTensor;
+                        _rigidbody.inertiaTensorRotation = UrdfInertiaTensorRotation;
+                        return;
+                    }
+                case RigidbodyDataSource.Unity:
+                    {
+                        _rigidbody.mass = Mass;
+                        bool isKinematic = _rigidbody.isKinematic;
+                        _rigidbody.isKinematic = false;
+                        _rigidbody.ResetCenterOfMass();
+                        _rigidbody.ResetInertiaTensor();
+                        _rigidbody.isKinematic = isKinematic;
+                        CenterOfMass = _rigidbody.centerOfMass;
+                        InertiaTensor = _rigidbody.inertiaTensor;
+                        InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
+                        return;
+                    }
+                case RigidbodyDataSource.Manual:
+                    {
+                        _rigidbody.mass = Mass;
+                        _rigidbody.centerOfMass = CenterOfMass;
+                        _rigidbody.inertiaTensor = InertiaTensor;
+                        _rigidbody.inertiaTensorRotation = InertiaTensorRotation;
+                        return;
+                    }
             }
         }
 
@@ -106,10 +146,10 @@ namespace RosSharp.Urdf
             Matrix3x3 rotationMatrix = ToMatrix3x3(inertia);
             rotationMatrix.DiagonalizeRealSymmetric(out eigenvalues, out eigenvectors);
 
-            Rigidbody _rigidbody = GetComponent<Rigidbody>();
-
-            _rigidbody.inertiaTensor = ToUnityInertiaTensor(FixMinInertia(eigenvalues));
-            _rigidbody.inertiaTensorRotation = ToQuaternion(eigenvectors[0], eigenvectors[1], eigenvectors[2]).Ros2Unity();
+            UrdfInertiaTensor = ToUnityInertiaTensor(FixMinInertia(eigenvalues));
+            Debug.Log(UrdfInertiaTensor);
+            UrdfInertiaTensorRotation = ToQuaternion(eigenvectors[0], eigenvectors[1], eigenvectors[2]).Ros2Unity();
+            Debug.Log(UrdfInertiaTensorRotation);
         }
 
         private static Vector3 ToUnityInertiaTensor(Vector3 vector3)
@@ -180,12 +220,7 @@ namespace RosSharp.Urdf
         #region Export
         public Link.Inertial ExportInertialData()
         {
-            Rigidbody _rigidbody = GetComponent<Rigidbody>();
-
-            if (_rigidbody == null)
-                return null;
-
-            UpdateRigidBodyData();
+            // should we read the data from this clas instead of _rigidbody?
             Origin inertialOrigin = new Origin(_rigidbody.centerOfMass.Unity2Ros().ToRoundedDoubleArray(), new double[] { 0, 0, 0 });
             Link.Inertial.Inertia inertia = ExportInertiaData(_rigidbody);
 

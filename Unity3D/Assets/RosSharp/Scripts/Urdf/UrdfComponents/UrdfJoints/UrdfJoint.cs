@@ -34,7 +34,8 @@ namespace RosSharp.Urdf
         protected UnityEngine.Joint UnityJoint;
         public string JointName;
 
-        public abstract JointTypes JointType { get; }
+        public JointTypes JointType { get { return _jointType; } protected set { value = _jointType; } }
+        [SerializeField] protected JointTypes _jointType;
         public bool IsRevoluteOrContinuous => JointType == JointTypes.Revolute || JointType == JointTypes.Revolute;
         public double EffortLimit = 1e3;
         public double VelocityLimit = 1e3;

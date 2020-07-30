@@ -19,13 +19,11 @@ using UnityEngine;
 namespace RosSharp.Urdf
 {
     public class UrdfJointRevolute : UrdfJoint
-    {
-        public override JointTypes JointType => JointTypes.Revolute;
-        
+    {                
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointRevolute urdfJoint = linkObject.AddComponent<UrdfJointRevolute>();
-
+            urdfJoint._jointType = JointTypes.Revolute;
             urdfJoint.UnityJoint = linkObject.AddComponent<HingeJoint>();
             urdfJoint.UnityJoint.autoConfigureConnectedAnchor = true;
             ((HingeJoint)urdfJoint.UnityJoint).useLimits = true;

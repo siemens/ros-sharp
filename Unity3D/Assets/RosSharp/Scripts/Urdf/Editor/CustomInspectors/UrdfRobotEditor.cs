@@ -26,12 +26,15 @@ namespace RosSharp.Urdf.Editor
         private UrdfRobot urdfRobot;
         private static GUIStyle buttonStyle;
 
+        protected virtual void OnEnable()
+        {
+            urdfRobot = (UrdfRobot)serializedObject.targetObject;
+        }
+
         public override void OnInspectorGUI()
         {
             if (buttonStyle == null)
                 buttonStyle = new GUIStyle(EditorStyles.miniButtonRight) { fixedWidth = 75 };
-
-            urdfRobot = (UrdfRobot) target;
 
             GUILayout.Space(5);
             GUILayout.Label("All Rigidbodies", EditorStyles.boldLabel);
