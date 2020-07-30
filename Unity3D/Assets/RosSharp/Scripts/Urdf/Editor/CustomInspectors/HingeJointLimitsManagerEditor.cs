@@ -27,24 +27,14 @@ namespace RosSharp.Urdf.Editor
         SerializedProperty pLargeAngleLimitMin;
         SerializedProperty pLargeAngleLimitMax;
         SerializedProperty pTolerance;
-        SerializedProperty pAngleActual;
-        SerializedProperty pRotationNumberActual;
-        SerializedProperty pRotationNumberMin;
-        SerializedProperty pRotationNumberMax;
-        SerializedProperty pAngleLimitMin;
-        SerializedProperty pAngleLimitMax;
+        HingeJointLimitsManager obj;
 
         protected virtual void OnEnable()
         {
+            obj = (HingeJointLimitsManager)serializedObject.targetObject;
             pLargeAngleLimitMin = serializedObject.FindProperty("LargeAngleLimitMin");
             pLargeAngleLimitMax = serializedObject.FindProperty("LargeAngleLimitMax");
             pTolerance = serializedObject.FindProperty("Tolerance");
-            pAngleActual = serializedObject.FindProperty("AngleActual");
-            pRotationNumberActual = serializedObject.FindProperty("RotationNumberActual");
-            pRotationNumberMin = serializedObject.FindProperty("RotationNumberMin");
-            pRotationNumberMax = serializedObject.FindProperty("RotationNumberMax");
-            pAngleLimitMin = serializedObject.FindProperty("AngleLimitMin");
-            pAngleLimitMax = serializedObject.FindProperty("AngleLimitMax");
         }
 
         public override void OnInspectorGUI()
@@ -56,24 +46,24 @@ namespace RosSharp.Urdf.Editor
             pTolerance.floatValue = EditorGUILayout.FloatField("Tolerance: ", pTolerance.floatValue);
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(new GUIContent("Actual Angle:"), new GUIContent(pAngleActual.floatValue.ToString("F2")));
-            EditorGUILayout.LabelField(new GUIContent("Actual Rotation No.:"), new GUIContent(pRotationNumberActual.intValue.ToString()));
+            EditorGUILayout.LabelField(new GUIContent("Actual Angle:"), new GUIContent(obj.AngleActual.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Actual Rotation No.:"), new GUIContent(obj.RotationNumberActual.ToString()));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(new GUIContent("Min Angle:"), new GUIContent(pAngleLimitMin.floatValue.ToString("F2")));
-            EditorGUILayout.LabelField(new GUIContent("Min. No. of Rotations:"), new GUIContent(pRotationNumberMin.intValue.ToString()));
+            EditorGUILayout.LabelField(new GUIContent("Min Angle:"), new GUIContent(obj.AngleLimitMin.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Min. No. of Rotations:"), new GUIContent(obj.RotationNumberMin.ToString()));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(new GUIContent("Max Angle:"), new GUIContent(pAngleLimitMax.floatValue.ToString("F2")));
-            EditorGUILayout.LabelField(new GUIContent("Max. No. of Rotations:"), new GUIContent(pRotationNumberMax.intValue.ToString()));
+            EditorGUILayout.LabelField(new GUIContent("Max Angle:"), new GUIContent(obj.AngleLimitMax.ToString("F2")));
+            EditorGUILayout.LabelField(new GUIContent("Max. No. of Rotations:"), new GUIContent(obj.RotationNumberMax.ToString()));
             EditorGUILayout.EndHorizontal();
 
-            if (180 - pAngleLimitMin.floatValue < toleranceThreshold)
+            if (180 - obj.AngleLimitMin < toleranceThreshold)
                 EditorGUILayout.HelpBox("Min. Angle is close to +180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
-            if (180 - pAngleLimitMax.floatValue < toleranceThreshold)
+            if (180 - obj.AngleLimitMax < toleranceThreshold)
                 EditorGUILayout.HelpBox("Max. Angle is close to -180° where this fix will not work properly. Please increase tolerance.", MessageType.Warning);
 
             serializedObject.ApplyModifiedProperties();
