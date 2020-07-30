@@ -23,13 +23,11 @@ namespace RosSharp.Urdf.Editor
     [CustomEditor(typeof(UrdfCollision))]
     class UrdfCollisionEditor : UnityEditor.Editor
     {
-        SerializedProperty pGeometryType;
-        private Transform transform;
+        UrdfCollision obj;
 
         protected virtual void OnEnable()
         {
-            pGeometryType = serializedObject.FindProperty("GeometryType");
-            transform = ((UrdfCollision)target).transform;
+            obj = (UrdfCollision)serializedObject.targetObject;
         }
 
         public override void OnInspectorGUI()
@@ -40,7 +38,7 @@ namespace RosSharp.Urdf.Editor
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Geometry Type");
-            EditorGUILayout.LabelField(((GeometryTypes) pGeometryType.enumValueIndex).ToString());
+            EditorGUILayout.LabelField(obj.GeometryType.ToString());
             EditorGUILayout.EndHorizontal();
 
             DisplayWarnings();
@@ -50,12 +48,12 @@ namespace RosSharp.Urdf.Editor
 
         private void DisplayWarnings()
         {
-            if (!transform.HasExactlyOneChild())
+            if (!obj.transform.HasExactlyOneChild())
             {
                 GUILayout.Space(5);
                 EditorGUILayout.HelpBox("Visual element must have one and only one child Geometry element.", MessageType.Error);
             }
-            else if (UrdfGeometry.IsTransformed(transform.GetChild(0), (GeometryTypes)pGeometryType.enumValueIndex))
+            else if (UrdfGeometry.IsTransformed(obj.transform.GetChild(0), obj.GeometryType))
             {
                 GUILayout.BeginVertical("HelpBox");
                 EditorGUILayout.HelpBox("Changes to the transform of the child Geometry element cannot be exported to URDF. " +
@@ -64,8 +62,8 @@ namespace RosSharp.Urdf.Editor
                 if (GUILayout.Button("Fix transformations"))
                 {
                     //Only transfer rotation if geometry is not a mesh
-                    bool transferRotation = (GeometryTypes)pGeometryType.enumValueIndex != GeometryTypes.Mesh;
-                    transform.MoveChildTransformToParent(transferRotation);
+                    bool transferRotation = obj.GeometryType != GeometryTypes.Mesh;
+                    obj.transform.MoveChildTransformToParent(transferRotation);
                 }
                 GUILayout.EndVertical();
             }
