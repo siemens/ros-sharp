@@ -51,7 +51,7 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 * The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.3 or higher.
 In Versions below 2019.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
-* Please find a UWP version of ROS# [here](https://github.com/dwhit/ros-sharp).
+* Please find a UWP version of ROS# [here](https://github.com/EricVoll/ros-sharp/tree/ReflectionFix).
 * Please find a .NET Standard 2.0 version of UrdfImporter [here](https://github.com/blommers/UdrfImporter).
 
 ## Further Info ##
@@ -62,6 +62,6 @@ In Versions below 2019.3, make sure to set the scripting runtime version to `.NE
 
 ---
 
-© Siemens AG, 2017-2019
+© Siemens AG, 2017-2020
 
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
