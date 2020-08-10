@@ -20,9 +20,9 @@ namespace RosSharp.RosBridgeClient
 {
 
     public abstract class ActionServer<Tgoal, Tfeedback, Tresult> : MonoBehaviour
-                                                                    where Tgoal : Message
-                                                                    where Tfeedback : Message
-                                                                    where Tresult : Message
+                                                                    where Tgoal : Message, new()
+                                                                    where Tfeedback : Message, new()
+                                                                    where Tresult : Message, new()
     {
         public string ActionName;
         public float TimeStep;
