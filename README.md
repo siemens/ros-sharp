@@ -8,17 +8,13 @@ Find some examples what you can do with ROS# [here](https://github.com/siemens/r
 
 This fork has some changes to allow ROS# to be used in UWP projects, such as the Microsoft HoloLens. Like the main ROS# branch, use 2019.x or later.
 
-#### Installation ### 
-
-To use ROS# with the HoloLens, simply clone this fork and stay on the master branch. Then open the Unity project and import the [Microsoft Mixed Reality Toolkit](https://github.com/Microsoft/MixedRealityToolkit-Unity). Follow the Mixed Reality Toolkit configuration instructions, and you will be good to go. I used version 2.3 of MRTK for my last project, but all versions should work.
-
 ## How to get started ##
 
-There are two options to get started.
+Step 1: Clone this project
 
-Option 1: Open the [Demo Project](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity) and copy its content. It is setup in a way, that it is buildable for UWP applications.
+Step 2, Option 1: Open the [Demo Project](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity) and copy its content. It is setup in a way, that it is buildable for UWP applications.
 
-Option 2: Follow these instructions:
+Step 2, Option 2: Follow these instructions:
  - Create a new Unity Project or use an existing one
  - Copy the [RosSharp folder](https://github.com/EricVoll/ros-sharp/tree/master/Unity3D/Assets) into the Assets Folder of your project
  - Configure the RosSharpClientUWP.dll to be used for the WSA platform and disable it for all other platforms
