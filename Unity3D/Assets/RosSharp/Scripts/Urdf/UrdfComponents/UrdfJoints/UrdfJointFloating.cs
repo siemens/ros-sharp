@@ -19,11 +19,10 @@ namespace RosSharp.Urdf
 {
     public class UrdfJointFloating : UrdfJoint
     {
-        public override JointTypes JointType => JointTypes.Floating;
-
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointFloating urdfJoint = linkObject.AddComponent<UrdfJointFloating>();
+            urdfJoint._jointType = JointTypes.Floating;
             urdfJoint.UnityJoint = linkObject.AddComponent<ConfigurableJoint>();
 
             return urdfJoint;

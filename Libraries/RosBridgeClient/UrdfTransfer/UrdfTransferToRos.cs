@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2018
+© Siemens AG, 2018-2019
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ using System.Threading;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
-using file_server = RosSharp.RosBridgeClient.Services.FileServer;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
+using file_server = RosSharp.RosBridgeClient.MessageTypes.FileServer;
 
 namespace RosSharp.RosBridgeClient.UrdfTransfer
 {
@@ -73,7 +73,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
             //Send URDF file to ROS package
             string urdfPackagePath = "package://" + rosPackage + "/" + Path.GetFileName(urdfFilePath);
-            string urdfFileContents = @"<?xml version='1.0' encoding='utf-8'?>\n" + urdfXDoc.ToString();
+            string urdfFileContents = "<?xml version='1.0' encoding='utf-8'?>\n" + urdfXDoc.ToString();
             byte[] urdfBytes = System.Text.Encoding.UTF8.GetBytes(urdfFileContents);
             
             SendFileToRos(urdfPackagePath, urdfBytes);

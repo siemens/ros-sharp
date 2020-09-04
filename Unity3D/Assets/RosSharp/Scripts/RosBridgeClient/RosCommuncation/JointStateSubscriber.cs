@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,12 @@ using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStateSubscriber : Subscriber<Messages.Sensor.JointState>
+    public class JointStateSubscriber : UnitySubscriber<MessageTypes.Sensor.JointState>
     {
         public List<string> JointNames;
         public List<JointStateWriter> JointStateWriters;
 
-        protected override void ReceiveMessage(Messages.Sensor.JointState message)
+        protected override void ReceiveMessage(MessageTypes.Sensor.JointState message)
         {
             int index;
             for (int i = 0; i < message.name.Length; i++)

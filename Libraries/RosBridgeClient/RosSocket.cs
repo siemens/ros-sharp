@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Threading;
 using RosSharp.RosBridgeClient.Protocols;
 
 namespace RosSharp.RosBridgeClient
@@ -29,24 +27,44 @@ namespace RosSharp.RosBridgeClient
     public class RosSocket
     {
         public IProtocol protocol;
-        public enum SerializerEnum { JSON, BSON }
+        public enum SerializerEnum { Microsoft, Newtonsoft_JSON, Newtonsoft_BSON}
 
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
-        private SerializerEnum Serializer;
+        private ISerializer Serializer;
+        private object SubscriberLock = new object();
 
-        public RosSocket(IProtocol protocol,SerializerEnum serializer=SerializerEnum.JSON)
+        public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.Microsoft)
         {
             this.protocol = protocol;
-            this.Serializer = serializer;
+            switch (serializer)
+            {
+                case SerializerEnum.Microsoft:
+                    {
+                        Serializer = new MicrosoftSerializer();
+                        break;
+                    }
+                case SerializerEnum.Newtonsoft_JSON:
+                    {
+                        Serializer = new NewtonsoftJsonSerializer();
+                        break;
+                    }
+                case SerializerEnum.Newtonsoft_BSON:
+                    {
+                        Serializer = new NewtonsoftBsonSerializer();
+                        break;
+                    }
+            }
             this.protocol.OnReceive += (sender, e) => Receive(sender, e);
             this.protocol.Connect();
         }
 
-        public void Close()
+        public void Close(int millisecondsWait = 0)
         {
+            bool isAnyCommunicatorActive = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
+
             while (Publishers.Count > 0)
                 Unadvertise(Publishers.First().Key);
 
@@ -55,6 +73,13 @@ namespace RosSharp.RosBridgeClient
 
             while (ServiceProviders.Count > 0)
                 UnadvertiseService(ServiceProviders.First().Key);
+
+            // Service consumers do not stay on. So nothing to unsubscribe/unadvertise
+
+            if (isAnyCommunicatorActive)
+            {
+                Thread.Sleep(millisecondsWait);
+            }
 
             protocol.Close();
         }
@@ -89,10 +114,15 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message, new()
         {
-            string id = GetUnusedCounterID(Subscribers, topic);
-            Subscription subscription;
-            Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
-            Send(subscription);
+            string id;
+            lock (SubscriberLock)
+            {
+                id = GetUnusedCounterID(Subscribers, topic);
+                Subscription subscription;
+                Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
+                Send(subscription);
+            }
+            
             return id;
         }
 
@@ -140,80 +170,46 @@ namespace RosSharp.RosBridgeClient
 
         private void Send<T>(T communication) where T : Communication
         {
-#if DEBUG
-            Console.WriteLine("Sending:\n" + JsonConvert.SerializeObject(communication, Formatting.Indented) + "\n");
-#endif
-            protocol.Send(Serialize<T>(communication));
+            protocol.Send(Serializer.Serialize<T>(communication));
             return;
         }
 
         private void Receive(object sender, EventArgs e)
         {
-            JObject jObject = Deserialize<JObject>(((MessageEventArgs)e).RawData);
-#if DEBUG            
-            Console.WriteLine("Received:\n" + JsonConvert.SerializeObject(jObject, Formatting.Indented) + "\n");
-#endif
-            switch (jObject.GetValue("op").ToString())
+            byte[] buffer = ((MessageEventArgs)e).RawData;
+            DeserializedObject jsonElement = Serializer.Deserialize(buffer);
+
+            switch (jsonElement.GetProperty("op"))            
             {
                 case "publish":
                     {
-                        string topic = jObject.GetValue("topic").ToString();
+                        string topic = jsonElement.GetProperty("topic");
+                        string msg = jsonElement.GetProperty("msg");
                         foreach (Subscriber subscriber in SubscribersOf(topic))
-                            subscriber.Receive(jObject.GetValue("msg"));
+                            subscriber.Receive(msg, Serializer);
                         return;
                     }
                 case "service_response":
                     {
-                        string id = jObject.GetValue("id").ToString();
-                        ServiceConsumers[id].Consume(jObject.GetValue("values"));
+                        string id = jsonElement.GetProperty("id");
+                        string values = jsonElement.GetProperty("values");
+                        ServiceConsumers[id].Consume(values, Serializer);
                         return;
                     }
                 case "call_service":
                     {
-                        string id = jObject.GetValue("id").ToString();
-                        string service = jObject.GetValue("service").ToString();
-                        Send(ServiceProviders[service].Respond(id, jObject.GetValue("args")));
+                        string id = jsonElement.GetProperty("id");
+                        string service = jsonElement.GetProperty("service");
+                        string args = jsonElement.GetProperty("args");
+                        Send(ServiceProviders[service].Respond(id, args, Serializer));
                         return;
                     }
             }
         }
+
         private List<Subscriber> SubscribersOf(string topic)
         {
             return Subscribers.Where(pair => pair.Key.StartsWith(topic + ":")).Select(pair => pair.Value).ToList();
-        }
-
-        private byte[] Serialize<T>(T obj)
-        {
-            switch (Serializer)
-            {
-                case SerializerEnum.JSON:
-                    string json = JsonConvert.SerializeObject(obj);
-                    return Encoding.ASCII.GetBytes(json);
-                case SerializerEnum.BSON:
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    Newtonsoft.Json.Bson.BsonDataWriter writer = new Newtonsoft.Json.Bson.BsonDataWriter(ms);
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(writer, obj);
-                    return ms.ToArray();
-                default:
-                    throw new ArgumentException("Invalid Serializer");
-            }
-        }
-
-        private T Deserialize<T>(byte[] buffer)
-        {
-            switch (Serializer)
-            {
-                case SerializerEnum.JSON:
-                    string ascii = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
-                    return JsonConvert.DeserializeObject<T>(ascii);
-                case SerializerEnum.BSON:
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer);
-                    Newtonsoft.Json.Bson.BsonDataReader reader = new Newtonsoft.Json.Bson.BsonDataReader(ms);
-                    return new JsonSerializer().Deserialize<T>(reader);
-                default:
-                    throw new ArgumentException("Invalid Serializer");
-            }
         }
 
         private static string GetUnusedCounterID<T>(Dictionary<string, T> dictionary, string name)

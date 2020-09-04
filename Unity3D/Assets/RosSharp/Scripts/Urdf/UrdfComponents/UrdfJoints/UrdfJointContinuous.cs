@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2018
+© Siemens AG, 2018-2019
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +19,10 @@ namespace RosSharp.Urdf
 {
     public class UrdfJointContinuous : UrdfJoint
     {
-        public override JointTypes JointType => JointTypes.Continuous;
-
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointContinuous urdfJoint = linkObject.AddComponent<UrdfJointContinuous>();
-
+            urdfJoint._jointType = JointTypes.Continuous;
             urdfJoint.UnityJoint = linkObject.AddComponent<HingeJoint>();
             urdfJoint.UnityJoint.autoConfigureConnectedAnchor = true;
 
