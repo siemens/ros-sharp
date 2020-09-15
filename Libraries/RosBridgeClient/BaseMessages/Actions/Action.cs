@@ -16,12 +16,12 @@ limitations under the License.
 namespace RosSharp.RosBridgeClient
 {
     public abstract class Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback> : Message
-        where TActionGoal: ActionGoal<TGoal>
-        where TActionResult: ActionResult<TResult>
-        where TActionFeedback : ActionFeedback<TFeedback>
-        where TGoal : Message
-        where TResult : Message
-        where TFeedback : Message
+        where TActionGoal: ActionGoal<TGoal>, new()
+        where TActionResult: ActionResult<TResult>, new()
+        where TActionFeedback : ActionFeedback<TFeedback>, new()
+        where TGoal : Message, new()
+        where TResult : Message, new()
+        where TFeedback : Message, new()
     {
         public TActionGoal action_goal { get; set; }
         public TActionResult action_result { get; set; }
