@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class GetObjectInformationRequest : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/GetObjectInformation";
+        public override string RosMessageName => "object_recognition_msgs/GetObjectInformation";
 
         //  Retrieve extra data from the DB for a given object
         //  The type of the object to retrieve info from

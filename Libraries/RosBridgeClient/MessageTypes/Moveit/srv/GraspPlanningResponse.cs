@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GraspPlanningResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/GraspPlanning";
+        public override string RosMessageName => "moveit_msgs/GraspPlanning";
 
         //  the list of planned grasps
         public Grasp[] grasps { get; set; }

@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class Table : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/Table";
+        public override string RosMessageName => "object_recognition_msgs/Table";
 
         //  Informs that a planar table has been detected at a given location
         public Header header { get; set; }

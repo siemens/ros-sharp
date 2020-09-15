@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GripperTranslation : Message
     {
-        public const string RosMessageName = "moveit_msgs/GripperTranslation";
+        public override string RosMessageName => "moveit_msgs/GripperTranslation";
 
         //  defines a translation for the gripper, used in pickup or place tasks
         //  for example for lifting an object off a table or approaching the table for placing

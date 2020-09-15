@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class CartesianTrajectoryPoint : Message
     {
-        public const string RosMessageName = "moveit_msgs/CartesianTrajectoryPoint";
+        public string RosMessageName { get { return "moveit_msgs/CartesianTrajectoryPoint"; } }
 
         //  The definition of a cartesian point in a trajectory. Defines the cartesian state of the point and it's time,
         //  following the pattern of the JointTrajectory message

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PoseArray : Message
     {
-        public const string RosMessageName = "geometry_msgs/PoseArray";
+        public override string RosMessageName => "geometry_msgs/PoseArray";
 
         //  An array of poses with a header for global reference.
         public Header header { get; set; }

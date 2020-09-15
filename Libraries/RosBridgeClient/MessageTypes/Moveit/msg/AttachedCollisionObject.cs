@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class AttachedCollisionObject : Message
     {
-        public const string RosMessageName = "moveit_msgs/AttachedCollisionObject";
+        public override string RosMessageName => "moveit_msgs/AttachedCollisionObject";
 
         //  The CollisionObject will be attached with a fixed joint to this link
         public string link_name { get; set; }

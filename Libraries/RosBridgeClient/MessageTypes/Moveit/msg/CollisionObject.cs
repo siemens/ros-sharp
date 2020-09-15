@@ -18,7 +18,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class CollisionObject : Message
     {
-        public const string RosMessageName = "moveit_msgs/CollisionObject";
+        public override string RosMessageName => "moveit_msgs/CollisionObject";
 
         //  A header, used for interpreting the poses
         public Header header { get; set; }

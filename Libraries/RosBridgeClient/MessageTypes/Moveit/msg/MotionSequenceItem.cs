@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MotionSequenceItem : Message
     {
-        public const string RosMessageName = "moveit_msgs/MotionSequenceItem";
+        public override string RosMessageName => "moveit_msgs/MotionSequenceItem";
 
         //  The plan request for this item.
         //  It is the planning request for this segment of the sequence, as if it were a solitary motion.

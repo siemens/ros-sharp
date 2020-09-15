@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class TimeReference : Message
     {
-        public const string RosMessageName = "sensor_msgs/TimeReference";
+        public override string RosMessageName => "sensor_msgs/TimeReference";
 
         //  Measurement from an external time source not actively synchronized with the system clock.
         public Header header { get; set; }

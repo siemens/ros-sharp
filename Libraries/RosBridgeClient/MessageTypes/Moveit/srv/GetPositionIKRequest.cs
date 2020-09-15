@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetPositionIKRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetPositionIK";
+        public override string RosMessageName => "moveit_msgs/GetPositionIK";
 
         //  A service call to carry out an inverse kinematics computation
         //  The inverse kinematics request

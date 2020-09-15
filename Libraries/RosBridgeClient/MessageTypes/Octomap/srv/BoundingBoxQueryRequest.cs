@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
 {
     public class BoundingBoxQueryRequest : Message
     {
-        public const string RosMessageName = "octomap_msgs/BoundingBoxQuery";
+        public override string RosMessageName => "octomap_msgs/BoundingBoxQuery";
 
         //  Clear a region specified by a global axis-aligned bounding box in stored OctoMap
         //  minimum corner point of axis-aligned bounding box in global frame

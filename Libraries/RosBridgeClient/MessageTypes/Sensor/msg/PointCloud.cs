@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class PointCloud : Message
     {
-        public const string RosMessageName = "sensor_msgs/PointCloud";
+        public override string RosMessageName => "sensor_msgs/PointCloud";
 
         //  This message holds a collection of 3d points, plus optional additional
         //  information about each point.

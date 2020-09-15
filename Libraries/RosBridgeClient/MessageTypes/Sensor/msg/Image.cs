@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Image : Message
     {
-        public const string RosMessageName = "sensor_msgs/Image";
+        public override string RosMessageName => "sensor_msgs/Image";
 
         //  This message contains an uncompressed image
         //  (0, 0) is at top-left corner of image

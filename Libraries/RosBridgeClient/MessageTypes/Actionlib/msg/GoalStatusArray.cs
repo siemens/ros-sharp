@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalStatusArray : Message
     {
-        public const string RosMessageName = "actionlib_msgs/GoalStatusArray";
+        public override string RosMessageName => "actionlib_msgs/GoalStatusArray";
 
         //  Stores the statuses for goals that are currently being tracked
         //  by an action server

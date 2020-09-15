@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class ServiceHostResponse : Message
     {
-        public const string RosMessageName = "rosapi/ServiceHost";
+        public override string RosMessageName => "rosapi/ServiceHost";
 
         public string host { get; set; }
 

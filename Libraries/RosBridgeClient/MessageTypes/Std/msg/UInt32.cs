@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class UInt32 : Message
     {
-        public const string RosMessageName = "std_msgs/UInt32";
+        public override string RosMessageName => "std_msgs/UInt32";
 
         public uint data { get; set; }
 

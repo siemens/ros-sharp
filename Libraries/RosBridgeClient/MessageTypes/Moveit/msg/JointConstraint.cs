@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class JointConstraint : Message
     {
-        public const string RosMessageName = "moveit_msgs/JointConstraint";
+        public override string RosMessageName => "moveit_msgs/JointConstraint";
 
         //  Constrain the position of a joint to be within a certain bound
         public string joint_name { get; set; }

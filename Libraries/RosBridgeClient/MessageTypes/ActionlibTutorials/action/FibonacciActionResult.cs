@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciActionResult : ActionResult<FibonacciResult>
     {
-        public const string RosMessageName = "actionlib_tutorials/FibonacciActionResult";
+        public override string RosMessageName => "actionlib_tutorials/FibonacciActionResult";
 
         public FibonacciActionResult() : base()
         {

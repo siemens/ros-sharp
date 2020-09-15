@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Accel : Message
     {
-        public const string RosMessageName = "geometry_msgs/Accel";
+        public override string RosMessageName => "geometry_msgs/Accel";
 
         //  This expresses acceleration in free space broken into its linear and angular parts.
         public Vector3 linear { get; set; }

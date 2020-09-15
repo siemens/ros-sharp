@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class CartesianTrajectory : Message
     {
-        public const string RosMessageName = "moveit_msgs/CartesianTrajectory";
+        public override string RosMessageName => "moveit_msgs/CartesianTrajectory";
 
         //  This message describes the trajectory of a tracked frame in task-space
         public Header header { get; set; }

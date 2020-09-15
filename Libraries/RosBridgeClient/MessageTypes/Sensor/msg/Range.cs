@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Range : Message
     {
-        public const string RosMessageName = "sensor_msgs/Range";
+        public override string RosMessageName => "sensor_msgs/Range";
 
         //  Single range reading from an active ranger that emits energy and reports
         //  one range reading that is valid along an arc at the distance measured. 

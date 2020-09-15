@@ -12,7 +12,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciResult : Message
     {
-        public const string RosMessageName = "actionlib_tutorials/FibonacciResult";
+        public override string RosMessageName => "actionlib_tutorials/FibonacciResult";
 
         //  result definition
         public int[] sequence { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetStateValidityRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetStateValidity";
+        public override string RosMessageName => "moveit_msgs/GetStateValidity";
 
         public RobotState robot_state { get; set; }
         public string group_name { get; set; }

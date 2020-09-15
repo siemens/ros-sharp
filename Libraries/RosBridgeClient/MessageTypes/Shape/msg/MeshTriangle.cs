@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class MeshTriangle : Message
     {
-        public const string RosMessageName = "shape_msgs/MeshTriangle";
+        public override string RosMessageName => "shape_msgs/MeshTriangle";
 
         //  Definition of a triangle's vertices
         public uint[] vertex_indices { get; set; }

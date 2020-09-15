@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class CostSource : Message
     {
-        public const string RosMessageName = "moveit_msgs/CostSource";
+        public override string RosMessageName => "moveit_msgs/CostSource";
 
         //  The density of the cost source
         public double cost_density { get; set; }

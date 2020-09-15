@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetMotionPlanResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetMotionPlan";
+        public override string RosMessageName => "moveit_msgs/GetMotionPlan";
 
         public MotionPlanResponse motion_plan_response { get; set; }
 

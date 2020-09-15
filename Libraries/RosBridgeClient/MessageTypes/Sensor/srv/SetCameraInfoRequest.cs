@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
     public class SetCameraInfoRequest : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/SetCameraInfo";
+        public override string RosMessageName => "sensor_msgs/SetCameraInfo";
 
         //  This service requests that a camera stores the given CameraInfo 
         //  as that camera's calibration information.

@@ -12,7 +12,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class ServicesForTypeResponse : Message
     {
-        public const string RosMessageName = "rosapi/ServicesForType";
+        public override string RosMessageName => "rosapi/ServicesForType";
 
         public string[] services { get; set; }
 

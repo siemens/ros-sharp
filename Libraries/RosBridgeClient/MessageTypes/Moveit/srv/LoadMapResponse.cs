@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class LoadMapResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/LoadMap";
+        public override string RosMessageName => "moveit_msgs/LoadMap";
 
         public bool success { get; set; }
 

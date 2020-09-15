@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteKnownTrajectoryResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteKnownTrajectory";
+        public override string RosMessageName => "moveit_msgs/ExecuteKnownTrajectory";
 
         //  Error code - encodes the overall reason for failure
         public MoveItErrorCodes error_code { get; set; }

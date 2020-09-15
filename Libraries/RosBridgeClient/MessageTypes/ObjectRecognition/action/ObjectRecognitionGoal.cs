@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectRecognitionGoal : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectRecognitionGoal";
+        public override string RosMessageName => "object_recognition_msgs/ObjectRecognitionGoal";
 
         //  Optional ROI to use for the object detection
         public bool use_roi { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PickupGoal : Message
     {
-        public const string RosMessageName = "moveit_msgs/PickupGoal";
+        public override string RosMessageName => "moveit_msgs/PickupGoal";
 
         //  An action for picking up an object
         //  The name of the object to pick up (as known in the planning scene)

@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class MultiArrayLayout : Message
     {
-        public const string RosMessageName = "std_msgs/MultiArrayLayout";
+        public override string RosMessageName => "std_msgs/MultiArrayLayout";
 
         //  The multiarray declares a generic multi-dimensional array of a
         //  particular data type.  Dimensions are ordered from outer most

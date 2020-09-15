@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class AccelWithCovarianceStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/AccelWithCovarianceStamped";
+        public override string RosMessageName => "geometry_msgs/AccelWithCovarianceStamped";
 
         //  This represents an estimated accel with reference coordinate frame and timestamp.
         public Header header { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class FluidPressure : Message
     {
-        public const string RosMessageName = "sensor_msgs/FluidPressure";
+        public override string RosMessageName => "sensor_msgs/FluidPressure";
 
         //  Single pressure reading.  This message is appropriate for measuring the
         //  pressure inside of a fluid (air, water, etc).  This also includes

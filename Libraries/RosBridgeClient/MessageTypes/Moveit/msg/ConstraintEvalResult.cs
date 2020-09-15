@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ConstraintEvalResult : Message
     {
-        public const string RosMessageName = "moveit_msgs/ConstraintEvalResult";
+        public override string RosMessageName => "moveit_msgs/ConstraintEvalResult";
 
         //  This message contains result from constraint evaluation
         //  result specifies the result of constraint evaluation 

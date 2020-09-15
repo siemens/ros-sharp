@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveItErrorCodes : Message
     {
-        public const string RosMessageName = "moveit_msgs/MoveItErrorCodes";
+        public override string RosMessageName => "moveit_msgs/MoveItErrorCodes";
 
         public int val { get; set; }
         //  overall behavior

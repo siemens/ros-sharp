@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class SetBoolRequest : Message
     {
-        public const string RosMessageName = "std_srvs/SetBool";
+        public override string RosMessageName => "std_srvs/SetBool";
 
         public bool data { get; set; }
         //  e.g. for hardware enabling / disabling

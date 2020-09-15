@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
     public class SaveBinaryFileRequest : Message
     {
-        public const string RosMessageName = "file_server/SaveBinaryFile";
+        public override string RosMessageName => "file_server/SaveBinaryFile";
 
         public string name { get; set; }
         public byte[] value { get; set; }

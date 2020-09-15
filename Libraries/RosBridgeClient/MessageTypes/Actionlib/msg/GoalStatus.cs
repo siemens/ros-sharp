@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalStatus : Message
     {
-        public const string RosMessageName = "actionlib_msgs/GoalStatus";
+        public override string RosMessageName => "actionlib_msgs/GoalStatus";
 
         public GoalID goal_id { get; set; }
         public byte status { get; set; }

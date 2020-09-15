@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Quaternion : Message
     {
-        public const string RosMessageName = "geometry_msgs/Quaternion";
+        public override string RosMessageName => "geometry_msgs/Quaternion";
 
         //  This represents an orientation in free space in quaternion form.
         public double x { get; set; }

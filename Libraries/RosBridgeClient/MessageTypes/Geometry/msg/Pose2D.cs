@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Pose2D : Message
     {
-        public const string RosMessageName = "geometry_msgs/Pose2D";
+        public override string RosMessageName => "geometry_msgs/Pose2D";
 
         //  Deprecated
         //  Please use the full 3D pose.

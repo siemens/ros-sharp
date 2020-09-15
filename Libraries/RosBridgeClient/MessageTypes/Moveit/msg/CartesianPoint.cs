@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class CartesianPoint : Message
     {
-        public const string RosMessageName = "moveit_msgs/CartesianPoint";
+        public override string RosMessageName => "moveit_msgs/CartesianPoint";
 
         //  This message defines a point in a cartesian trajectory
         public Pose pose { get; set; }

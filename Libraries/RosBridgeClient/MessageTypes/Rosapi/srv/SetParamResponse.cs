@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class SetParamResponse : Message
     {
-        public const string RosMessageName = "rosapi/SetParam";
+        public override string RosMessageName => "rosapi/SetParam";
         
         public SetParamResponse()
         {

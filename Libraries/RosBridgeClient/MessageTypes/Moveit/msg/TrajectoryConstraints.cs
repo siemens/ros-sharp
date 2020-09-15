@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class TrajectoryConstraints : Message
     {
-        public const string RosMessageName = "moveit_msgs/TrajectoryConstraints";
+        public override string RosMessageName => "moveit_msgs/TrajectoryConstraints";
 
         //  The array of constraints to consider along the trajectory
         public Constraints[] constraints { get; set; }

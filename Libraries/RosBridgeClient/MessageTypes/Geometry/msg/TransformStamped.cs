@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class TransformStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/TransformStamped";
+        public override string RosMessageName => "geometry_msgs/TransformStamped";
 
         //  This expresses a transform from coordinate frame header.frame_id
         //  to the coordinate frame child_frame_id

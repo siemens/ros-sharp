@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
 {
     public class GetOctomapResponse : Message
     {
-        public const string RosMessageName = "octomap_msgs/GetOctomap";
+        public override string RosMessageName => "octomap_msgs/GetOctomap";
 
         public Octomap map { get; set; }
 

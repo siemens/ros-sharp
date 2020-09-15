@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlannerInterfaceDescription : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlannerInterfaceDescription";
+        public override string RosMessageName => "moveit_msgs/PlannerInterfaceDescription";
 
         //  The name of the planner interface
         public string name { get; set; }

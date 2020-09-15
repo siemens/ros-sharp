@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MotionPlanDetailedResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/MotionPlanDetailedResponse";
+        public override string RosMessageName => "moveit_msgs/MotionPlanDetailedResponse";
 
         //  The representation of a solution to a planning problem, including intermediate data
         //  The starting state considered for the robot solution path

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceResult : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlaceResult";
+        public override string RosMessageName => "moveit_msgs/PlaceResult";
 
         //  The result of the place attempt
         public MoveItErrorCodes error_code { get; set; }

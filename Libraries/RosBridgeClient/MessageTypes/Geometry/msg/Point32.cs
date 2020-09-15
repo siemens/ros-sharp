@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Point32 : Message
     {
-        public const string RosMessageName = "geometry_msgs/Point32";
+        public override string RosMessageName => "geometry_msgs/Point32";
 
         //  This contains the position of a point in free space(with 32 bits of precision).
         //  It is recommeded to use Point wherever possible instead of Point32.  

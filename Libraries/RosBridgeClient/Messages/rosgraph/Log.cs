@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.Messages.rosgraph
     public class Log : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "rosgraph_msgs/Log";
+        public override string RosMessageName => "rosgraph_msgs/Log";
         public uint level;
         public string name;
         public string msg;

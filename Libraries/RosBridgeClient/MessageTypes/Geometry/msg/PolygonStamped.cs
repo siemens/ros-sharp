@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PolygonStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/PolygonStamped";
+        public override string RosMessageName => "geometry_msgs/PolygonStamped";
 
         //  This represents a Polygon with reference coordinate frame and timestamp
         public Header header { get; set; }

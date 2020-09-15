@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetPositionIKResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetPositionIK";
+        public override string RosMessageName => "moveit_msgs/GetPositionIK";
 
         //  The returned solution 
         //  (in the same order as the list of joints specified in the IKRequest message)

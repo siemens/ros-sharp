@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class OrientationConstraint : Message
     {
-        public const string RosMessageName = "moveit_msgs/OrientationConstraint";
+        public override string RosMessageName => "moveit_msgs/OrientationConstraint";
 
         //  This message contains the definition of an orientation constraint.
         public Header header { get; set; }

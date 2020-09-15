@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class TFMessage : Message
     {
-        public const string RosMessageName = "tf2_msgs/TFMessage";
+        public override string RosMessageName => "tf2_msgs/TFMessage";
 
         public TransformStamped[] transforms { get; set; }
 

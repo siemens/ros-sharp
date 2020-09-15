@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class AllowedCollisionEntry : Message
     {
-        public const string RosMessageName = "moveit_msgs/AllowedCollisionEntry";
+        public override string RosMessageName => "moveit_msgs/AllowedCollisionEntry";
 
         //  whether or not collision checking is enabled
         public bool[] enabled { get; set; }

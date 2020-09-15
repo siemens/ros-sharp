@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Pose : Message
     {
-        public const string RosMessageName = "geometry_msgs/Pose";
+        public override string RosMessageName => "geometry_msgs/Pose";
 
         //  A representation of pose in free space, composed of position and orientation. 
         public Point position { get; set; }

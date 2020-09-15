@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class MultiDOFJointTrajectoryPoint : Message
     {
-        public const string RosMessageName = "trajectory_msgs/MultiDOFJointTrajectoryPoint";
+        public override string RosMessageName => "trajectory_msgs/MultiDOFJointTrajectoryPoint";
 
         //  Each multi-dof joint can specify a transform (up to 6 DOF)
         public Transform[] transforms { get; set; }

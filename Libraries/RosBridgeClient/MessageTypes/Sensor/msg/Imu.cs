@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Imu : Message
     {
-        public const string RosMessageName = "sensor_msgs/Imu";
+        public override string RosMessageName => "sensor_msgs/Imu";
 
         //  This is a message to hold data from an IMU (Inertial Measurement Unit)
         // 

@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Time : Message
     {
-        public const string RosMessageName = "std_msgs/Time";
+        public override string RosMessageName => "std_msgs/Time";
         public uint secs { get; set; }
         public uint nsecs { get; set; }
 

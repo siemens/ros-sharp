@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveGroupResult : Message
     {
-        public const string RosMessageName = "moveit_msgs/MoveGroupResult";
+        public override string RosMessageName => "moveit_msgs/MoveGroupResult";
 
         //  An error code reflecting what went wrong
         public MoveItErrorCodes error_code { get; set; }

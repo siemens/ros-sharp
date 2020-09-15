@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class JoyFeedbackArray : Message
     {
-        public const string RosMessageName = "sensor_msgs/JoyFeedbackArray";
+        public override string RosMessageName => "sensor_msgs/JoyFeedbackArray";
 
         //  This message publishes values for multiple feedback at once. 
         public JoyFeedback[] array { get; set; }

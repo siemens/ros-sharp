@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceFeedback : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlaceFeedback";
+        public override string RosMessageName => "moveit_msgs/PlaceFeedback";
 
         //  The internal state that the place action currently is in
         public string state { get; set; }

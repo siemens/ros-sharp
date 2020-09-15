@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class BatteryState : Message
     {
-        public const string RosMessageName = "sensor_msgs/BatteryState";
+        public override string RosMessageName => "sensor_msgs/BatteryState";
 
         //  Constants are chosen to match the enums in the linux kernel
         //  defined in include/linux/power_supply.h as of version 3.7

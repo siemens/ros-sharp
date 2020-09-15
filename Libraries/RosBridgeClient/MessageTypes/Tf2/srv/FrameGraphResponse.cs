@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class FrameGraphResponse : Message
     {
-        public const string RosMessageName = "tf2_msgs/FrameGraph";
+        public override string RosMessageName => "tf2_msgs/FrameGraph";
 
         public string frame_yaml { get; set; }
 

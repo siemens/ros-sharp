@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class PublishersResponse : Message
     {
-        public const string RosMessageName = "rosapi/Publishers";
+        public override string RosMessageName => "rosapi/Publishers";
 
         public string[] publishers { get; set; }
 

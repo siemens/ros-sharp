@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
 {
     public class BoundingBoxQueryResponse : Message
     {
-        public const string RosMessageName = "octomap_msgs/BoundingBoxQuery";
+        public override string RosMessageName => "octomap_msgs/BoundingBoxQuery";
 
 
         public BoundingBoxQueryResponse()

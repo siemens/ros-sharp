@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetPlanningSceneRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetPlanningScene";
+        public override string RosMessageName => "moveit_msgs/GetPlanningScene";
 
         //  Get parts of the planning scene that are of interest
         //  All scene components are returned if none are specified

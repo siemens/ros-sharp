@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteTrajectoryFeedback : Message
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteTrajectoryFeedback";
+        public override string RosMessageName => "moveit_msgs/ExecuteTrajectoryFeedback";
 
         //  The internal state that the move group action currently is in
         public string state { get; set; }

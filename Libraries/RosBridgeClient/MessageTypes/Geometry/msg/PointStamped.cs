@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PointStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/PointStamped";
+        public override string RosMessageName => "geometry_msgs/PointStamped";
 
         //  This represents a Point with reference coordinate frame and timestamp
         public Header header { get; set; }

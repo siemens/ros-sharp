@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetPlanResponse : Message
     {
-        public const string RosMessageName = "nav_msgs/GetPlan";
+        public override string RosMessageName => "nav_msgs/GetPlan";
 
         public Path plan { get; set; }
 

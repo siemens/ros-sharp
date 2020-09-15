@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class DeleteParamRequest : Message
     {
-        public const string RosMessageName = "rosapi/DeleteParam";
+        public override string RosMessageName => "rosapi/DeleteParam";
 
         public string name { get; set; }
 

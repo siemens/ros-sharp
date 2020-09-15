@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveGroupSequenceGoal : Message
     {
-        public const string RosMessageName = "moveit_msgs/MoveGroupSequenceGoal";
+        public override string RosMessageName => "moveit_msgs/MoveGroupSequenceGoal";
 
         //  A list of motion commands - one for each section of the sequence
         public MotionSequenceRequest request { get; set; }

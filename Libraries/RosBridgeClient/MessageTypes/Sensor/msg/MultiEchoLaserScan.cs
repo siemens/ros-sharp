@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class MultiEchoLaserScan : Message
     {
-        public const string RosMessageName = "sensor_msgs/MultiEchoLaserScan";
+        public override string RosMessageName => "sensor_msgs/MultiEchoLaserScan";
 
         //  Single scan from a multi-echo planar laser range-finder
         // 

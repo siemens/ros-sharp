@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveGroupSequenceActionGoal : ActionGoal<MoveGroupSequenceGoal>
     {
-        public const string RosMessageName = "moveit_msgs/MoveGroupSequenceActionGoal";
+        public override string RosMessageName => "moveit_msgs/MoveGroupSequenceActionGoal";
 
         public MoveGroupSequenceActionGoal() : base()
         {

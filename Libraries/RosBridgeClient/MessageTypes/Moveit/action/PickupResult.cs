@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PickupResult : Message
     {
-        public const string RosMessageName = "moveit_msgs/PickupResult";
+        public override string RosMessageName => "moveit_msgs/PickupResult";
 
         //  The overall result of the pickup attempt
         public MoveItErrorCodes error_code { get; set; }

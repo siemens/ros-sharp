@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Transform : Message
     {
-        public const string RosMessageName = "geometry_msgs/Transform";
+        public override string RosMessageName => "geometry_msgs/Transform";
 
         //  This represents the transform between two coordinate frames in free space.
         public Vector3 translation { get; set; }

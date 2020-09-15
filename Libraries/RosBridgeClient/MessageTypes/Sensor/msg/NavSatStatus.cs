@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class NavSatStatus : Message
     {
-        public const string RosMessageName = "sensor_msgs/NavSatStatus";
+        public override string RosMessageName => "sensor_msgs/NavSatStatus";
 
         //  Navigation Satellite fix status for any Global Navigation Satellite System
         //  Whether to output an augmented fix is determined by both the fix

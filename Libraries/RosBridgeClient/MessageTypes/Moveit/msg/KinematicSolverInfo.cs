@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class KinematicSolverInfo : Message
     {
-        public const string RosMessageName = "moveit_msgs/KinematicSolverInfo";
+        public override string RosMessageName => "moveit_msgs/KinematicSolverInfo";
 
         //  A list of joints in the kinematic tree
         public string[] joint_names { get; set; }

@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class WorkspaceParameters : Message
     {
-        public const string RosMessageName = "moveit_msgs/WorkspaceParameters";
+        public override string RosMessageName => "moveit_msgs/WorkspaceParameters";
 
         //  This message contains a set of parameters useful in
         //  setting up the volume (a box) in which the robot is allowed to move.

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlanningOptions : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlanningOptions";
+        public override string RosMessageName => "moveit_msgs/PlanningOptions";
 
         //  The diff to consider for the planning scene (optional)
         public PlanningScene planning_scene_diff { get; set; }

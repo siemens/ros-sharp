@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class OccupancyGrid : Message
     {
-        public const string RosMessageName = "nav_msgs/OccupancyGrid";
+        public override string RosMessageName => "nav_msgs/OccupancyGrid";
 
         //  This represents a 2-D grid map, in which each cell represents the probability of
         //  occupancy.

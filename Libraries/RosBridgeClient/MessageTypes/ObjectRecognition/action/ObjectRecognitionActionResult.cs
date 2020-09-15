@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectRecognitionActionResult : ActionResult<ObjectRecognitionResult>
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectRecognitionActionResult";
+        public override string RosMessageName => "object_recognition_msgs/ObjectRecognitionActionResult";
 
         public ObjectRecognitionActionResult() : base()
         {

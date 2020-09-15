@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class Odometry : Message
     {
-        public const string RosMessageName = "nav_msgs/Odometry";
+        public override string RosMessageName => "nav_msgs/Odometry";
 
         //  This represents an estimate of a position and velocity in free space.  
         //  The pose in this message should be specified in the coordinate frame given by header.frame_id.

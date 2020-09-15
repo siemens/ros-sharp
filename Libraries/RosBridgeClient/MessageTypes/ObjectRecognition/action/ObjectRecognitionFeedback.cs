@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectRecognitionFeedback : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectRecognitionFeedback";
+        public override string RosMessageName => "object_recognition_msgs/ObjectRecognitionFeedback";
 
         // no feedback
 

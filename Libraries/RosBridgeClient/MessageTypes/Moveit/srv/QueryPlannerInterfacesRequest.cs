@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class QueryPlannerInterfacesRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/QueryPlannerInterfaces";
+        public override string RosMessageName => "moveit_msgs/QueryPlannerInterfaces";
 
 
         public QueryPlannerInterfacesRequest()

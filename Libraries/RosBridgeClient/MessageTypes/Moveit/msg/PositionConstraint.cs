@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PositionConstraint : Message
     {
-        public const string RosMessageName = "moveit_msgs/PositionConstraint";
+        public override string RosMessageName => "moveit_msgs/PositionConstraint";
 
         //  This message contains the definition of a position constraint.
         public Header header { get; set; }

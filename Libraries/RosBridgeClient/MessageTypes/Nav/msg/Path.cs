@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class Path : Message
     {
-        public const string RosMessageName = "nav_msgs/Path";
+        public override string RosMessageName => "nav_msgs/Path";
 
         // An array of poses that represents a Path for a robot to follow
         public Header header { get; set; }

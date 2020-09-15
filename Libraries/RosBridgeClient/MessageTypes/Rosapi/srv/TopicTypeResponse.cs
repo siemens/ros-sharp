@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class TopicTypeResponse : Message
     {
-        public const string RosMessageName = "rosapi/TopicType";
+        public override string RosMessageName => "rosapi/TopicType";
 
         public string type { get; set; }
 

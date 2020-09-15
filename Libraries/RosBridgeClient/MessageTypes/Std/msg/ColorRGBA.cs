@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class ColorRGBA : Message
     {
-        public const string RosMessageName = "std_msgs/ColorRGBA";
+        public override string RosMessageName => "std_msgs/ColorRGBA";
 
         public float r { get; set; }
         public float g { get; set; }

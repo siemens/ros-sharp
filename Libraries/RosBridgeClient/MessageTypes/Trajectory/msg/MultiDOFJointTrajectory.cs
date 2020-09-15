@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class MultiDOFJointTrajectory : Message
     {
-        public const string RosMessageName = "trajectory_msgs/MultiDOFJointTrajectory";
+        public override string RosMessageName => "trajectory_msgs/MultiDOFJointTrajectory";
 
         //  The header is used to specify the coordinate frame and the reference time for the trajectory durations
         public Header header { get; set; }

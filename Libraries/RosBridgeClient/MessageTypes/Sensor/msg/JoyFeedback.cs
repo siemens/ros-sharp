@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class JoyFeedback : Message
     {
-        public const string RosMessageName = "sensor_msgs/JoyFeedback";
+        public override string RosMessageName => "sensor_msgs/JoyFeedback";
 
         //  Declare of the type of feedback
         public const byte TYPE_LED = 0;

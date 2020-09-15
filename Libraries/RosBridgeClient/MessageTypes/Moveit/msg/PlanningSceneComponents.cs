@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlanningSceneComponents : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlanningSceneComponents";
+        public override string RosMessageName => "moveit_msgs/PlanningSceneComponents";
 
         //  This message defines the components that make up the PlanningScene message.
         //  The values can be used as a bitfield to specify which parts of the PlanningScene message

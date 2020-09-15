@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GraspPlanningRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/GraspPlanning";
+        public override string RosMessageName => "moveit_msgs/GraspPlanning";
 
         //  Requests that grasp planning be performed for the target object
         //  returns a list of candidate grasps to be tested and executed

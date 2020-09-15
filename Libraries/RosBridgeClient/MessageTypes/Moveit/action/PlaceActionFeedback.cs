@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceActionFeedback : ActionFeedback<PlaceFeedback>
     {
-        public const string RosMessageName = "moveit_msgs/PlaceActionFeedback";
+        public override string RosMessageName => "moveit_msgs/PlaceActionFeedback";
 
         public PlaceActionFeedback() : base()
         {

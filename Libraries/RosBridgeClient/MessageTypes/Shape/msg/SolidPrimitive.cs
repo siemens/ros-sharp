@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class SolidPrimitive : Message
     {
-        public const string RosMessageName = "shape_msgs/SolidPrimitive";
+        public override string RosMessageName => "shape_msgs/SolidPrimitive";
 
         //  Define box, sphere, cylinder, cone 
         //  All shapes are defined to have their bounding boxes centered around 0,0,0.

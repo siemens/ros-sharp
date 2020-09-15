@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class InertiaStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/InertiaStamped";
+        public override string RosMessageName => "geometry_msgs/InertiaStamped";
 
         public Header header { get; set; }
         public Inertia inertia { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Temperature : Message
     {
-        public const string RosMessageName = "sensor_msgs/Temperature";
+        public override string RosMessageName => "sensor_msgs/Temperature";
 
         //  Single temperature reading.
         public Header header { get; set; }

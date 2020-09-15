@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class Constraints : Message
     {
-        public const string RosMessageName = "moveit_msgs/Constraints";
+        public override string RosMessageName => "moveit_msgs/Constraints";
 
         //  This message contains a list of motion planning constraints.
         //  All constraints must be satisfied for a goal to be considered valid

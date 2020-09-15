@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class TwistWithCovariance : Message
     {
-        public const string RosMessageName = "geometry_msgs/TwistWithCovariance";
+        public override string RosMessageName => "geometry_msgs/TwistWithCovariance";
 
         //  This expresses velocity in free space with uncertainty.
         public Twist twist { get; set; }

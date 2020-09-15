@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Point : Message
     {
-        public const string RosMessageName = "geometry_msgs/Point";
+        public override string RosMessageName => "geometry_msgs/Point";
 
         //  This contains the position of a point in free space
         public double x { get; set; }

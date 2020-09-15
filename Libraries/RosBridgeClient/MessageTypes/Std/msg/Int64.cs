@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Int64 : Message
     {
-        public const string RosMessageName = "std_msgs/Int64";
+        public override string RosMessageName => "std_msgs/Int64";
 
         public long data { get; set; }
 

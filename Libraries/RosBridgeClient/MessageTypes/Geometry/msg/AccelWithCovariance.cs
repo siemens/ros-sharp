@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class AccelWithCovariance : Message
     {
-        public const string RosMessageName = "geometry_msgs/AccelWithCovariance";
+        public override string RosMessageName => "geometry_msgs/AccelWithCovariance";
 
         //  This expresses acceleration in free space with uncertainty.
         public Accel accel { get; set; }

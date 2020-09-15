@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Int8 : Message
     {
-        public const string RosMessageName = "std_msgs/Int8";
+        public override string RosMessageName => "std_msgs/Int8";
 
         public sbyte data { get; set; }
 

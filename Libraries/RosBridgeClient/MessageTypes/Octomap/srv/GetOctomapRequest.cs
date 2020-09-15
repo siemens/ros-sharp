@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
 {
     public class GetOctomapRequest : Message
     {
-        public const string RosMessageName = "octomap_msgs/GetOctomap";
+        public override string RosMessageName => "octomap_msgs/GetOctomap";
 
         //  Get the map as a octomap
 

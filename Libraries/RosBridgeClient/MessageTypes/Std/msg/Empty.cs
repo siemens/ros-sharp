@@ -12,7 +12,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Empty : Message
     {
-        public const string RosMessageName = "std_msgs/Empty";
+        public override string RosMessageName => "std_msgs/Empty";
 
         public Empty()
         {

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class RelativeHumidity : Message
     {
-        public const string RosMessageName = "sensor_msgs/RelativeHumidity";
+        public override string RosMessageName => "sensor_msgs/RelativeHumidity";
 
         //  Single reading from a relative humidity sensor.  Defines the ratio of partial
         //  pressure of water vapor to the saturated vapor pressure at a temperature.

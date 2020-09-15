@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class BoundingVolume : Message
     {
-        public const string RosMessageName = "moveit_msgs/BoundingVolume";
+        public override string RosMessageName => "moveit_msgs/BoundingVolume";
 
         //  Define a volume in 3D
         //  A set of solid geometric primitives that make up the volume to define (as a union)

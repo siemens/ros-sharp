@@ -19,7 +19,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class RecognizedObject : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/RecognizedObject";
+        public override string RosMessageName => "object_recognition_msgs/RecognizedObject";
 
         // #################################################### HEADER ###########################################################
         //  The header frame corresponds to the pose frame, NOT the point_cloud frame.

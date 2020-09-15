@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Vector3Stamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/Vector3Stamped";
+        public override string RosMessageName => "geometry_msgs/Vector3Stamped";
 
         //  This represents a Vector3 with reference coordinate frame and timestamp
         public Header header { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MotionSequenceRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/MotionSequenceRequest";
+        public override string RosMessageName => "moveit_msgs/MotionSequenceRequest";
 
         //  List of motion planning request with a blend_radius for each.
         //  In the response of the planner all of these will be executable as one sequence.

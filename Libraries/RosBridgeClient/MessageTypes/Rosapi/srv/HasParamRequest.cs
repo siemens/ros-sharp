@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class HasParamRequest : Message
     {
-        public const string RosMessageName = "rosapi/HasParam";
+        public override string RosMessageName => "rosapi/HasParam";
 
         public string name { get; set; }
 

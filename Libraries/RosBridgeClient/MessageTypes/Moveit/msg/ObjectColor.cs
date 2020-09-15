@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ObjectColor : Message
     {
-        public const string RosMessageName = "moveit_msgs/ObjectColor";
+        public override string RosMessageName => "moveit_msgs/ObjectColor";
 
         //  The object id for which we specify color
         public string id { get; set; }

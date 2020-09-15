@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class OrientedBoundingBox : Message
     {
-        public const string RosMessageName = "moveit_msgs/OrientedBoundingBox";
+        public override string RosMessageName => "moveit_msgs/OrientedBoundingBox";
 
         //  the pose of the box
         public Pose pose { get; set; }

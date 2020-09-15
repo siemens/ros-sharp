@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class Plane : Message
     {
-        public const string RosMessageName = "shape_msgs/Plane";
+        public override string RosMessageName => "shape_msgs/Plane";
 
         //  Representation of a plane, using the plane equation ax + by + cz + d = 0
         //  a := coef[0]

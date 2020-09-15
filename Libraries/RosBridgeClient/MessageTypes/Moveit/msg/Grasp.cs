@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class Grasp : Message
     {
-        public const string RosMessageName = "moveit_msgs/Grasp";
+        public override string RosMessageName => "moveit_msgs/Grasp";
 
         //  This message contains a description of a grasp that would be used
         //  with a particular end-effector to grasp an object, including how to

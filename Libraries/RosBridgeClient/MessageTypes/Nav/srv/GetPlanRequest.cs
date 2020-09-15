@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetPlanRequest : Message
     {
-        public const string RosMessageName = "nav_msgs/GetPlan";
+        public override string RosMessageName => "nav_msgs/GetPlan";
 
         //  Get a plan from the current position to the goal Pose 
         //  The start pose for the plan

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class GetTimeResponse : Message
     {
-        public const string RosMessageName = "rosapi/GetTime";
+        public override string RosMessageName => "rosapi/GetTime";
 
         public Time time { get; set; }
 

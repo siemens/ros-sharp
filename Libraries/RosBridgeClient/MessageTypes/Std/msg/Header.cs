@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Header : Message
     {
-        public const string RosMessageName = "std_msgs/Header";
+        public override string RosMessageName => "std_msgs/Header";
 
         //  Standard metadata for higher-level stamped data types.
         //  This is generally used to communicate timestamped data 

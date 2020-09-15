@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class GetActionServersRequest : Message
     {
-        public const string RosMessageName = "rosapi/GetActionServers";
+        public override string RosMessageName => "rosapi/GetActionServers";
 
         public GetActionServersRequest()
         {

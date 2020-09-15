@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class ByteMultiArray : Message
     {
-        public const string RosMessageName = "std_msgs/ByteMultiArray";
+        public override string RosMessageName => "std_msgs/ByteMultiArray";
 
         //  Please look at the MultiArrayLayout message definition for
         //  documentation on all multiarrays.

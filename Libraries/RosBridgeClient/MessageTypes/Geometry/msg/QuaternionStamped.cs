@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class QuaternionStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/QuaternionStamped";
+        public override string RosMessageName => "geometry_msgs/QuaternionStamped";
 
         //  This represents an orientation with reference coordinate frame and timestamp.
         public Header header { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Illuminance : Message
     {
-        public const string RosMessageName = "sensor_msgs/Illuminance";
+        public override string RosMessageName => "sensor_msgs/Illuminance";
 
         //  Single photometric illuminance measurement.  Light should be assumed to be
         //  measured along the sensor's x-axis (the area of detection is the y-z plane).

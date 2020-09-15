@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetMapResponse : Message
     {
-        public const string RosMessageName = "nav_msgs/GetMap";
+        public override string RosMessageName => "nav_msgs/GetMap";
 
         public OccupancyGrid map { get; set; }
 

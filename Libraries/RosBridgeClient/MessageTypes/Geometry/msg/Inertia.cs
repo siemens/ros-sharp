@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Inertia : Message
     {
-        public const string RosMessageName = "geometry_msgs/Inertia";
+        public override string RosMessageName => "geometry_msgs/Inertia";
 
         //  Mass [kg]
         public double m { get; set; }

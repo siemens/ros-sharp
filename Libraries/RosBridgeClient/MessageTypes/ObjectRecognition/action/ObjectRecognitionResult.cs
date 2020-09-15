@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectRecognitionResult : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectRecognitionResult";
+        public override string RosMessageName => "object_recognition_msgs/ObjectRecognitionResult";
 
         //  Send the found objects, see the msg files for docs
         public RecognizedObjectArray recognized_objects { get; set; }

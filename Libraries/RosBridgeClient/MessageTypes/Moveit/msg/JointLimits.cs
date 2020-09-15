@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class JointLimits : Message
     {
-        public const string RosMessageName = "moveit_msgs/JointLimits";
+        public override string RosMessageName => "moveit_msgs/JointLimits";
 
         //  This message contains information about limits of a particular joint (or control dimension)
         public string joint_name { get; set; }

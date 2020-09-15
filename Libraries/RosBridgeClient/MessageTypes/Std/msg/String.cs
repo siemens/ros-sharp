@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class String : Message
     {
-        public const string RosMessageName = "std_msgs/String";
+        public override string RosMessageName => "std_msgs/String";
 
         public string data { get; set; }
 

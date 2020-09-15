@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GridCells : Message
     {
-        public const string RosMessageName = "nav_msgs/GridCells";
+        public override string RosMessageName => "nav_msgs/GridCells";
 
         // an array of cells in a 2D grid
         public Header header { get; set; }

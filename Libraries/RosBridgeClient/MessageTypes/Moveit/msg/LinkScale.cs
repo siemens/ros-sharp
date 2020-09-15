@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class LinkScale : Message
     {
-        public const string RosMessageName = "moveit_msgs/LinkScale";
+        public override string RosMessageName => "moveit_msgs/LinkScale";
 
         // name for the link
         public string link_name { get; set; }

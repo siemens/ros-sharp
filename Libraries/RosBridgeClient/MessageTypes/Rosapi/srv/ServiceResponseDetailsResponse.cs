@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class ServiceResponseDetailsResponse : Message
     {
-        public const string RosMessageName = "rosapi/ServiceResponseDetails";
+        public override string RosMessageName => "rosapi/ServiceResponseDetails";
 
         public TypeDef[] typedefs { get; set; }
 

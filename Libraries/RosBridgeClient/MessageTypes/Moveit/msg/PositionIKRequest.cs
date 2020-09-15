@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PositionIKRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/PositionIKRequest";
+        public override string RosMessageName => "moveit_msgs/PositionIKRequest";
 
         //  A Position IK request message
         //  The name of the group which will be used to compute IK

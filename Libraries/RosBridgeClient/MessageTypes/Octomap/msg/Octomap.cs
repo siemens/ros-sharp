@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
 {
     public class Octomap : Message
     {
-        public const string RosMessageName = "octomap_msgs/Octomap";
+        public override string RosMessageName => "octomap_msgs/Octomap";
 
         //  A 3D map in binary format, as Octree
         public Header header { get; set; }

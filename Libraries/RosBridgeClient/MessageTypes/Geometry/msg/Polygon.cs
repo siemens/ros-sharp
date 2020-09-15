@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Polygon : Message
     {
-        public const string RosMessageName = "geometry_msgs/Polygon";
+        public override string RosMessageName => "geometry_msgs/Polygon";
 
         // A specification of a polygon where the first and last points are assumed to be connected
         public Point32[] points { get; set; }

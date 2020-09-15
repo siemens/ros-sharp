@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteTrajectoryActionGoal : ActionGoal<ExecuteTrajectoryGoal>
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteTrajectoryActionGoal";
+        public override string RosMessageName => "moveit_msgs/ExecuteTrajectoryActionGoal";
 
         public ExecuteTrajectoryActionGoal() : base()
         {

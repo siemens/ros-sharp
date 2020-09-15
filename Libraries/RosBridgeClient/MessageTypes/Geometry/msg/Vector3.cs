@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Vector3 : Message
     {
-        public const string RosMessageName = "geometry_msgs/Vector3";
+        public override string RosMessageName => "geometry_msgs/Vector3";
 
         //  This represents a vector in free space. 
         //  It is only meant to represent a direction. Therefore, it does not

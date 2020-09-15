@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class TwistStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/TwistStamped";
+        public override string RosMessageName => "geometry_msgs/TwistStamped";
 
         //  A twist with reference coordinate frame and timestamp
         public Header header { get; set; }

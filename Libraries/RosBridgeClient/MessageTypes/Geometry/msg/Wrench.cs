@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Wrench : Message
     {
-        public const string RosMessageName = "geometry_msgs/Wrench";
+        public override string RosMessageName => "geometry_msgs/Wrench";
 
         //  This represents force in free space, separated into
         //  its linear and angular parts.

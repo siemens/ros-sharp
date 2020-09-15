@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class SetPlannerParamsRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/SetPlannerParams";
+        public override string RosMessageName => "moveit_msgs/SetPlannerParams";
 
         //  Name of planning config
         public string planner_config { get; set; }

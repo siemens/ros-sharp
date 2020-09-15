@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ChangeControlDimensionsRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/ChangeControlDimensions";
+        public override string RosMessageName => "moveit_msgs/ChangeControlDimensions";
 
         //  For use with moveit_jog_arm Cartesian planner
         // 

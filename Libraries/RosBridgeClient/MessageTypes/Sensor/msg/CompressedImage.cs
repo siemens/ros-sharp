@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class CompressedImage : Message
     {
-        public const string RosMessageName = "sensor_msgs/CompressedImage";
+        public override string RosMessageName => "sensor_msgs/CompressedImage";
 
         //  This message contains a compressed image
         public Header header { get; set; }

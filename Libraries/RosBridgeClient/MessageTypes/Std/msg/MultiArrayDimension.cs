@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class MultiArrayDimension : Message
     {
-        public const string RosMessageName = "std_msgs/MultiArrayDimension";
+        public override string RosMessageName => "std_msgs/MultiArrayDimension";
 
         public string label { get; set; }
         //  label of given dimension

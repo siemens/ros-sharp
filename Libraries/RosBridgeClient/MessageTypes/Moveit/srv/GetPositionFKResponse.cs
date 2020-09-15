@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetPositionFKResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetPositionFK";
+        public override string RosMessageName => "moveit_msgs/GetPositionFK";
 
         //  The resultant vector of PoseStamped messages that contains the (stamped) poses of the requested links
         public PoseStamped[] pose_stamped { get; set; }

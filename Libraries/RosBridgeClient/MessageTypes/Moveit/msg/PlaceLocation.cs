@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceLocation : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlaceLocation";
+        public override string RosMessageName => "moveit_msgs/PlaceLocation";
 
         //  A name for this grasp
         public string id { get; set; }

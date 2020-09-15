@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class RecognizedObjectArray : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/RecognizedObjectArray";
+        public override string RosMessageName => "object_recognition_msgs/RecognizedObjectArray";
 
         // #################################################### HEADER ###########################################################
         public Header header { get; set; }

@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class RobotState : Message
     {
-        public const string RosMessageName = "moveit_msgs/RobotState";
+        public override string RosMessageName => "moveit_msgs/RobotState";
 
         //  This message contains information about the robot state, i.e. the positions of its joints and links
         public JointState joint_state { get; set; }

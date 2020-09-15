@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class MapMetaData : Message
     {
-        public const string RosMessageName = "nav_msgs/MapMetaData";
+        public override string RosMessageName => "nav_msgs/MapMetaData";
 
         //  This hold basic information about the characterists of the OccupancyGrid
         //  The time at which the map was loaded

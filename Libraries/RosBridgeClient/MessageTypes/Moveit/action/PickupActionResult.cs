@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PickupActionResult : ActionResult<PickupResult>
     {
-        public const string RosMessageName = "moveit_msgs/PickupActionResult";
+        public override string RosMessageName => "moveit_msgs/PickupActionResult";
 
         public PickupActionResult() : base()
         {

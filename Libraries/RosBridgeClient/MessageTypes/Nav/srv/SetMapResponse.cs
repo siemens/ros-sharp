@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class SetMapResponse : Message
     {
-        public const string RosMessageName = "nav_msgs/SetMap";
+        public override string RosMessageName => "nav_msgs/SetMap";
 
         public bool success { get; set; }
 

@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlanningScene : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlanningScene";
+        public override string RosMessageName => "moveit_msgs/PlanningScene";
 
         //  name of planning scene
         public string name { get; set; }

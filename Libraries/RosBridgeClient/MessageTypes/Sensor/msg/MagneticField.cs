@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class MagneticField : Message
     {
-        public const string RosMessageName = "sensor_msgs/MagneticField";
+        public override string RosMessageName => "sensor_msgs/MagneticField";
 
         //  Measurement of the Magnetic Field vector at a specific location.
         //  If the covariance of the measurement is known, it should be filled in

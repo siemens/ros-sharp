@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Twist : Message
     {
-        public const string RosMessageName = "geometry_msgs/Twist";
+        public override string RosMessageName => "geometry_msgs/Twist";
 
         //  This expresses velocity in free space broken into its linear and angular parts.
         public Vector3 linear { get; set; }

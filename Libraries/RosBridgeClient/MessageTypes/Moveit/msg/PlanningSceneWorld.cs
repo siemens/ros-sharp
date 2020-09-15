@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlanningSceneWorld : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlanningSceneWorld";
+        public override string RosMessageName => "moveit_msgs/PlanningSceneWorld";
 
         //  collision objects
         public CollisionObject[] collision_objects { get; set; }

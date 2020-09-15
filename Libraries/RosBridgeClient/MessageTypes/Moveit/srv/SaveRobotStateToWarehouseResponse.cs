@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class SaveRobotStateToWarehouseResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/SaveRobotStateToWarehouse";
+        public override string RosMessageName => "moveit_msgs/SaveRobotStateToWarehouse";
 
         public bool success { get; set; }
 

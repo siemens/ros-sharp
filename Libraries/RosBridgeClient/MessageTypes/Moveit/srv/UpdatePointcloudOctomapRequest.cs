@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class UpdatePointcloudOctomapRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/UpdatePointcloudOctomap";
+        public override string RosMessageName => "moveit_msgs/UpdatePointcloudOctomap";
 
         public PointCloud2 cloud { get; set; }
 

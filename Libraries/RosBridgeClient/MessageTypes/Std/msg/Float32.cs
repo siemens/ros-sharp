@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Float32 : Message
     { 
-        public const string RosMessageName = "std_msgs/Float32";
+        public override string RosMessageName => "std_msgs/Float32";
 
         public float data { get; set; }
 

@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class PointField : Message
     {
-        public const string RosMessageName = "sensor_msgs/PointField";
+        public override string RosMessageName => "sensor_msgs/PointField";
 
         //  This message holds the description of one point entry in the
         //  PointCloud2 message format.

@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class RegionOfInterest : Message
     {
-        public const string RosMessageName = "sensor_msgs/RegionOfInterest";
+        public override string RosMessageName => "sensor_msgs/RegionOfInterest";
 
         //  This message is used to specify a region of interest within an image.
         // 

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class LaserScan : Message
     {
-        public const string RosMessageName = "sensor_msgs/LaserScan";
+        public override string RosMessageName => "sensor_msgs/LaserScan";
 
         //  Single scan from a planar laser range-finder
         // 

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PickupFeedback : Message
     {
-        public const string RosMessageName = "moveit_msgs/PickupFeedback";
+        public override string RosMessageName => "moveit_msgs/PickupFeedback";
 
         //  The internal state that the pickup action currently is in
         public string state { get; set; }

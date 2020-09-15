@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class TriggerResponse : Message
     {
-        public const string RosMessageName = "std_srvs/Trigger";
+        public override string RosMessageName => "std_srvs/Trigger";
 
         public bool success { get; set; }
         //  indicate successful run of triggered service

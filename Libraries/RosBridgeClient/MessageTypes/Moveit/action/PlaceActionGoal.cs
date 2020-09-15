@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceActionGoal : ActionGoal<PlaceGoal>
     {
-        public const string RosMessageName = "moveit_msgs/PlaceActionGoal";
+        public override string RosMessageName => "moveit_msgs/PlaceActionGoal";
 
         public PlaceActionGoal() : base()
         {

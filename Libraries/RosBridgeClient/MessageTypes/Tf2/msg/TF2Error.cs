@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class TF2Error : Message
     {
-        public const string RosMessageName = "tf2_msgs/TF2Error";
+        public override string RosMessageName => "tf2_msgs/TF2Error";
 
         public const byte NO_ERROR = 0;
         public const byte LOOKUP_ERROR = 1;

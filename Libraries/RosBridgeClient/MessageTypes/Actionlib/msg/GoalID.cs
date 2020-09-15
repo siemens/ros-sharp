@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalID : Message
     {
-        public const string RosMessageName = "actionlib_msgs/GoalID";
+        public override string RosMessageName => "actionlib_msgs/GoalID";
 
         //  The stamp should store the time at which this goal was requested.
         //  It is used by an action server when it tries to preempt all

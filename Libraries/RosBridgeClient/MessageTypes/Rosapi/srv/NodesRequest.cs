@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class NodesRequest : Message
     {
-        public const string RosMessageName = "rosapi/Nodes";
+        public override string RosMessageName => "rosapi/Nodes";
 
         public NodesRequest()
         {

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class JointTrajectoryPoint : Message
     {
-        public const string RosMessageName = "trajectory_msgs/JointTrajectoryPoint";
+        public override string RosMessageName => "trajectory_msgs/JointTrajectoryPoint";
 
         //  Each trajectory point specifies either positions[, velocities[, accelerations]]
         //  or positions[, effort] for the trajectory to be executed.

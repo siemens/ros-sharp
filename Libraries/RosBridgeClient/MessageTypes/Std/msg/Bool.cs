@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Bool : Message
     {
-        public const string RosMessageName = "std_msgs/Bool";
+        public override string RosMessageName => "std_msgs/Bool";
 
         public bool data { get; set; }
 

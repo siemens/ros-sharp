@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PoseWithCovariance : Message
     {
-        public const string RosMessageName = "geometry_msgs/PoseWithCovariance";
+        public override string RosMessageName => "geometry_msgs/PoseWithCovariance";
 
         //  This represents a pose in free space with uncertainty.
         public Pose pose { get; set; }

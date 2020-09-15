@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class WrenchStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/WrenchStamped";
+        public override string RosMessageName => "geometry_msgs/WrenchStamped";
 
         //  A wrench with reference coordinate frame and timestamp
         public Header header { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class PoseWithCovarianceStamped : Message
     {
-        public const string RosMessageName = "geometry_msgs/PoseWithCovarianceStamped";
+        public override string RosMessageName => "geometry_msgs/PoseWithCovarianceStamped";
 
         //  This expresses an estimated pose with a reference coordinate frame and timestamp
         public Header header { get; set; }

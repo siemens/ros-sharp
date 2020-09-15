@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PlaceGoal : Message
     {
-        public const string RosMessageName = "moveit_msgs/PlaceGoal";
+        public override string RosMessageName => "moveit_msgs/PlaceGoal";
 
         //  An action for placing an object
         //  which group to be used to plan for grasping

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class DeleteRobotStateFromWarehouseResponse : Message
     {
-        public const string RosMessageName = "moveit_msgs/DeleteRobotStateFromWarehouse";
+        public override string RosMessageName => "moveit_msgs/DeleteRobotStateFromWarehouse";
 
 
         public DeleteRobotStateFromWarehouseResponse()

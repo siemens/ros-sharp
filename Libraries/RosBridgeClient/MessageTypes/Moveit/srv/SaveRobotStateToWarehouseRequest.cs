@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class SaveRobotStateToWarehouseRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/SaveRobotStateToWarehouse";
+        public override string RosMessageName => "moveit_msgs/SaveRobotStateToWarehouse";
 
         public string name { get; set; }
         public string robot { get; set; }

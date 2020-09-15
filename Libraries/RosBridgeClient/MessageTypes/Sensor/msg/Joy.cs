@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class Joy : Message
     {
-        public const string RosMessageName = "sensor_msgs/Joy";
+        public override string RosMessageName => "sensor_msgs/Joy";
 
         //  Reports the state of a joysticks axes and buttons.
         public Header header { get; set; }

@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class SetMapRequest : Message
     {
-        public const string RosMessageName = "nav_msgs/SetMap";
+        public override string RosMessageName => "nav_msgs/SetMap";
 
         //  Set a new map together with an initial pose
         public OccupancyGrid map { get; set; }

@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GetCartesianPathRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/GetCartesianPath";
+        public override string RosMessageName => "moveit_msgs/GetCartesianPath";
 
         //  Define the frame for the specified waypoints
         public Header header { get; set; }

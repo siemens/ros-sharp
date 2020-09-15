@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class DisplayTrajectory : Message
     {
-        public const string RosMessageName = "moveit_msgs/DisplayTrajectory";
+        public override string RosMessageName => "moveit_msgs/DisplayTrajectory";
 
         //  The model id for which this path has been generated
         public string model_id { get; set; }

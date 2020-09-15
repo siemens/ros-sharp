@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class UInt64 : Message
     {
-        public const string RosMessageName = "std_msgs/UInt64";
+        public override string RosMessageName => "std_msgs/UInt64";
 
         public ulong data { get; set; }
 

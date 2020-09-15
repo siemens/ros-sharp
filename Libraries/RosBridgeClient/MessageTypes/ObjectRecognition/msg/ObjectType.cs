@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectType : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectType";
+        public override string RosMessageName => "object_recognition_msgs/ObjectType";
 
         // ################################################# OBJECT ID #########################################################
         //  Contains information about the type of a found object. Those two sets of parameters together uniquely define an

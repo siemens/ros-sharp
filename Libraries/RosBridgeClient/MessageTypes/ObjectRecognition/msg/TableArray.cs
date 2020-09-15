@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class TableArray : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/TableArray";
+        public override string RosMessageName => "object_recognition_msgs/TableArray";
 
         public Header header { get; set; }
         //  Just an array of tables

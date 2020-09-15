@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteKnownTrajectoryRequest : Message
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteKnownTrajectory";
+        public override string RosMessageName => "moveit_msgs/ExecuteKnownTrajectory";
 
         //  This service is deprecated and will go away at some point. For new development use the ExecuteTrajectory action.
         //  Effective since: Indigo 0.7.4, Jade and Kinetic 0.8.3

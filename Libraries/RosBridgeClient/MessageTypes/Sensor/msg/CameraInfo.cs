@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class CameraInfo : Message
     {
-        public const string RosMessageName = "sensor_msgs/CameraInfo";
+        public override string RosMessageName => "sensor_msgs/CameraInfo";
 
         //  This message defines meta information for a camera. It should be in a
         //  camera namespace on topic "camera_info" and accompanied by up to five

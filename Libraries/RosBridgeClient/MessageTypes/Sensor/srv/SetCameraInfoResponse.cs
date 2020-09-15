@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
     public class SetCameraInfoResponse : Message
     {
         [JsonIgnore]
-        public const string RosMessageName = "sensor_msgs/SetCameraInfo";
+        public override string RosMessageName => "sensor_msgs/SetCameraInfo";
 
         public bool success;
         //  True if the call succeeded

@@ -11,7 +11,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class UInt8MultiArray : Message
     {
-        public const string RosMessageName = "std_msgs/UInt8MultiArray";
+        public override string RosMessageName => "std_msgs/UInt8MultiArray";
 
         //  Please look at the MultiArrayLayout message definition for
         //  documentation on all multiarrays.

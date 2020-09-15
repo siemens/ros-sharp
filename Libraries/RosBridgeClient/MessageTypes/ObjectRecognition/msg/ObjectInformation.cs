@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectInformation : Message
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectInformation";
+        public override string RosMessageName => "object_recognition_msgs/ObjectInformation";
 
         // ############################################# VISUALIZATION INFO ######################################################
         // ################## THIS INFO SHOULD BE OBTAINED INDEPENDENTLY FROM THE CORE, LIKE IN AN RVIZ PLUGIN ###################

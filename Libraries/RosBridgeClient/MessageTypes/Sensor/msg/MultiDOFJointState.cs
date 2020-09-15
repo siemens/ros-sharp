@@ -14,7 +14,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class MultiDOFJointState : Message
     {
-        public const string RosMessageName = "sensor_msgs/MultiDOFJointState";
+        public override string RosMessageName => "sensor_msgs/MultiDOFJointState";
 
         //  Representation of state for joints with multiple degrees of freedom, 
         //  following the structure of JointState.

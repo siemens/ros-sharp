@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class Mesh : Message
     {
-        public const string RosMessageName = "shape_msgs/Mesh";
+        public override string RosMessageName => "shape_msgs/Mesh";
 
         //  Definition of a mesh
         //  list of triangles; the index values refer to positions in vertices[]

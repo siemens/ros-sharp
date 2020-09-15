@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GenericTrajectory : Message
     {
-        public const string RosMessageName = "moveit_msgs/GenericTrajectory";
+        public override string RosMessageName => "moveit_msgs/GenericTrajectory";
 
         //  A generic trajectory message that may either encode a joint- or cartesian-space trajectory, or both
         //  Trajectories encoded in this message are considered semantically equivalent

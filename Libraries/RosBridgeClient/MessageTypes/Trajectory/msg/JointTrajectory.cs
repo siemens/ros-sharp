@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
     public class JointTrajectory : Message
     {
-        public const string RosMessageName = "trajectory_msgs/JointTrajectory";
+        public override string RosMessageName => "trajectory_msgs/JointTrajectory";
 
         public Header header { get; set; }
         public string[] joint_names { get; set; }
