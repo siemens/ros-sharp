@@ -25,7 +25,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         {
             secs = 0;
             nsecs = 0;
-        RosMessageName = "std_msgs/Time";
         }
 
         public Time(uint secs, uint nsecs)
