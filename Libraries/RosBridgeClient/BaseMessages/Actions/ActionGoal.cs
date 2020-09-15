@@ -18,7 +18,7 @@ using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
 {
-    public abstract class ActionGoal<TGoal> : Message where TGoal : Message
+    public abstract class ActionGoal<TGoal> : Message where TGoal : Message, new()
     {
         public Header header { get; set; }
         public GoalID goal_id { get; set; }

@@ -26,7 +26,6 @@ namespace RosSharp.RosBridgeClient
         public static string GetRosName<T>() where T : Message, new()
         {
             string name = new T().RosMessageName;
-            Output.Log(name);
             return name;
         }
     }

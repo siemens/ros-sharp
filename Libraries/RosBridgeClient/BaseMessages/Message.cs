@@ -17,5 +17,7 @@ using Newtonsoft.Json;
 
 namespace RosSharp.RosBridgeClient
 {
-    public abstract class Message { }
+    public abstract class Message {
+        public virtual string RosMessageName { get { return ""; } } //Overridable const
+    }
 }
