@@ -124,13 +124,22 @@
     <EmbeddedResource Include="Properties\RosBridgeClientUWP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\RosBridgeClient\**\*.cs">
-        <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
+    <Compile Include="..\RosBridgeClient\**\*.cs" Exclude="..\RosBridgeClient\obj\**\*.cs">
+      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
     </Compile>
-</ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json.Bson">
+      <Version>1.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Thread">
+      <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
