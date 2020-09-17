@@ -124,6 +124,11 @@
     <EmbeddedResource Include="Properties\RosBridgeClientUWP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\RosBridgeClient\**\*.cs">
+        <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Compile>
+</ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
