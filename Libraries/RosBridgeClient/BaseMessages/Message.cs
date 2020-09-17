@@ -1,4 +1,4 @@
-﻿/*
+/*
 © Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
@@ -19,5 +19,6 @@ namespace RosSharp.RosBridgeClient
 {
     public abstract class Message {
         public virtual string RosMessageName { get { return ""; } } //Overridable const
+        public bool ShouldSerializeRosMessageName() => false;
     }
 }

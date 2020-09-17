@@ -20,10 +20,15 @@ namespace RosSharp.RosBridgeClient
 {
     class MicrosoftSerializer : ISerializer
     {
+        JsonSerializerOptions options = new JsonSerializerOptions()
+        {
+            IgnoreReadOnlyProperties = true
+        };
+
         public byte[] Serialize<T>(T obj)
         {
-            string json = JsonSerializer.Serialize(obj, obj.GetType());
-            return Encoding.ASCII.GetBytes(json);            
+            string json = JsonSerializer.Serialize(obj, obj.GetType(), options);
+            return Encoding.ASCII.GetBytes(json);
         }
 
         public DeserializedObject Deserialize(byte[] buffer)
