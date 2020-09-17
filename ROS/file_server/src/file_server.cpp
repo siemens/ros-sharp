@@ -44,7 +44,7 @@ bool get_file(
 	// stop if file does not exist:
 	if(!inputfile.is_open())
 	{
-		ROS_INFO("file \"%s\" not found.\n", req.name.c_str());
+		ROS_INFO("file requested \"%s\" not found.\n", directory.c_str());
 		return true;
 	}
 
