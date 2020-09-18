@@ -442,6 +442,7 @@
     <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectoryPoint.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\EmptyProtocolBase.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\Protocol.cs" />
