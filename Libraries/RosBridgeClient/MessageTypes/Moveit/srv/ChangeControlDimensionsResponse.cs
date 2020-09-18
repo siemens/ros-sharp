@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ChangeControlDimensionsResponse : Message
     {
-        public string RosMessageName { get { return "moveit_msgs/ChangeControlDimensions"; } }
+        public override string RosMessageName { get { return "moveit_msgs/ChangeControlDimensions"; } }
 
         public bool success { get; set; }
 
