@@ -70,18 +70,10 @@ namespace RosSharp.RosBridgeClient
 
 namespace RosSharp.RosBridgeClient
 {
-
     class FeatureNotAvailableOnPlaformException : Exception
     {
-        public FeatureNotAvailableOnPlaformException() : this("This feature is not available on the current platform")
-        {
-
-        }
-
-        public FeatureNotAvailableOnPlaformException(string msg) : base(msg)
-        {
-
-        }
+        public FeatureNotAvailableOnPlaformException() : this("This feature is not available on the current platform") { }
+        public FeatureNotAvailableOnPlaformException(string msg) : base(msg) { }
     }
 
     class MicrosoftSerializer : ISerializer

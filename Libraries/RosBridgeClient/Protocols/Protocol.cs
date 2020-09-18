@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public enum Protocol { WebSocketSharp, WebSocketNET };
+    public enum Protocol { WebSocketSharp, WebSocketNET, WebSocketUWP };
 
     public class ProtocolInitializer
     {
@@ -27,6 +27,12 @@ namespace RosSharp.RosBridgeClient.Protocols
                     return new WebSocketSharpProtocol(serverURL);
                 case Protocol.WebSocketNET:
                     return new WebSocketNetProtocol(serverURL);
+                case Protocol.WebSocketUWP:
+#if WINDOWS_UWP
+                    return new WebSocketUWPProtocol(serverURL);
+#else
+                    throw new System.Exception($"{nameof(Protocol)}{nameof(Protocol.WebSocketUWP)} is not supported on the current platform.");
+#endif
                 default:
                     return null;
             }
