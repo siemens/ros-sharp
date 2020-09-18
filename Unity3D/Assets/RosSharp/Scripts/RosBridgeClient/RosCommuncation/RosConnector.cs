@@ -60,19 +60,19 @@ namespace RosSharp.RosBridgeClient
             return new RosSocket(protocol, serializer);
         }
 
-        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)
+        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocol protocol, string rosBridgeServerUrl)
         {
 
 #if WINDOWS_UWP
-                return new RosBridgeClient.Protocols.WebSocketUWPProtocol(rosBridgeServerUrl);
+            return new RosBridgeClient.Protocols.WebSocketUWPProtocol(rosBridgeServerUrl);
 #else
             switch (protocol)
             {
-                case Protocols.WebSocketNET:
+                case Protocol.WebSocketNET:
                     return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
-                case Protocols.WebSocketSharp:
+                case Protocol.WebSocketSharp:
                     return new RosBridgeClient.Protocols.WebSocketSharpProtocol(rosBridgeServerUrl);
-                case Protocols.WebSocketUWP:
+                case Protocol.WebSocketUWP:
                     Debug.Log("WebSocketUWP only works when deployed to HoloLens, defaulting to WebSocketNetProtocol");
                     return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
                 default:
