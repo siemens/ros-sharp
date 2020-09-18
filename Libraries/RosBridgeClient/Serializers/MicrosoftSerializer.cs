@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient
 {
     class MicrosoftSerializer : ISerializer
     {
-        JsonSerializerOptions options = new JsonSerializerOptions()
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions()
         {
             IgnoreReadOnlyProperties = true
         };
@@ -70,27 +70,21 @@ namespace RosSharp.RosBridgeClient
 
 namespace RosSharp.RosBridgeClient
 {
-    class FeatureNotAvailableOnPlaformException : Exception
-    {
-        public FeatureNotAvailableOnPlaformException() : this("This feature is not available on the current platform") { }
-        public FeatureNotAvailableOnPlaformException(string msg) : base(msg) { }
-    }
-
     class MicrosoftSerializer : ISerializer
     {
         public byte[] Serialize<T>(T obj)
         {
-            throw new FeatureNotAvailableOnPlaformException();
+            throw new Exception("This feature is not available on the current platform");
         }
 
         public DeserializedObject Deserialize(byte[] buffer)
         {
-            throw new FeatureNotAvailableOnPlaformException();
+            throw new Exception("This feature is not available on the current platform");
         }
 
         public T Deserialize<T>(string json)
         {
-            throw new FeatureNotAvailableOnPlaformException();
+            throw new Exception("This feature is not available on the current platform");
         }
 
     }
