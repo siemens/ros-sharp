@@ -179,12 +179,14 @@ namespace RosSharp.RosBridgeClient
             byte[] buffer = ((MessageEventArgs)e).RawData;
             DeserializedObject jsonElement = Serializer.Deserialize(buffer);
 
+
             switch (jsonElement.GetProperty("op"))            
             {
                 case "publish":
                     {
                         string topic = jsonElement.GetProperty("topic");
                         string msg = jsonElement.GetProperty("msg");
+                        RosSharp.RosBridgeClient.Output.Log("Received: " + msg);
                         foreach (Subscriber subscriber in SubscribersOf(topic))
                             subscriber.Receive(msg, Serializer);
                         return;

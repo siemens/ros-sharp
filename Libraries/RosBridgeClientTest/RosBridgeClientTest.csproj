@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosSharp.RosBridgeClientTest.UrdfTransferFromRosConsoleExample</StartupObject>
+    <StartupObject>RosBridgeClientTest.RosCommTest</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="FibonacciActionClientConsoleExample.cs" />
     <Compile Include="FibonacciActionServerConsoleExample.cs" />
+    <Compile Include="RosCommTest.cs" />
     <Compile Include="RosSocketConsoleExampleTestProtocol.cs" />
     <Compile Include="UrdfTransferFromRosConsoleExample.cs" />
     <Compile Include="RosSocketConsoleExample.cs" />
