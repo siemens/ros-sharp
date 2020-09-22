@@ -80,6 +80,9 @@
     <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="Windows.Foundation.UniversalApiContract">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\References\10.0.17763.0\Windows.Foundation.UniversalApiContract\7.0.0.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actionlib\ActionClient.cs" />
@@ -447,6 +450,7 @@
     <Compile Include="Protocols\IProtocol.cs" />
     <Compile Include="Protocols\Protocol.cs" />
     <Compile Include="Protocols\WebSocketSharpProtocol.cs" />
+    <Compile Include="Protocols\WebSocketUWPProtocol.cs" />
     <Compile Include="Reporting\Output.cs" />
     <Compile Include="RosSocket.cs" />
     <Compile Include="Communication.cs" />

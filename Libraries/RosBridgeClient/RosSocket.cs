@@ -59,6 +59,16 @@ namespace RosSharp.RosBridgeClient
             }
             this.protocol.OnReceive += (sender, e) => Receive(sender, e);
             this.protocol.Connect();
+            Output.Log($"Using {serializer} as a serialzer");
+        }
+
+        public byte[] TestJson(object obj)
+        {
+            Output.Log("Attempting to deserialize: ");
+#if WINDOWS_UWP
+            Output.Log("I am UWP");
+#endif
+            return Serializer.Serialize(obj);
         }
 
         public void Close(int millisecondsWait = 0)
@@ -114,12 +124,17 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message, new()
         {
+            Output.Log("Entered Subscribe Method from RosSocket");
+
             string id;
             lock (SubscriberLock)
             {
                 id = GetUnusedCounterID(Subscribers, topic);
+                Output.Log($"Subscriber ID distributed: {id}");
                 Subscription subscription;
                 Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
+                Output.Log($"sending: {subscription.compression}, {subscription.fragment_size}, {subscription.id}, {subscription.op}, {subscription.topic}");
+                Output.Log($"Added Subscriber locally");
                 Send(subscription);
             }
             
@@ -170,7 +185,11 @@ namespace RosSharp.RosBridgeClient
 
         private void Send<T>(T communication) where T : Communication
         {
-            protocol.Send(Serializer.Serialize<T>(communication));
+            Output.Log("Serializing item");
+            byte[] data = Serializer.Serialize<T>(communication);
+            Output.Log(System.Text.Encoding.UTF8.GetString(data));
+            Output.Log($"Sent {communication.op}, {communication.id}");
+            protocol.Send(data);
             return;
         }
 
