@@ -641,7 +641,7 @@ PrefabInstance:
     - target: {fileID: 7834562778878916581, guid: 0915935de0a77fc419c95d73d30120ce,
         type: 3}
       propertyPath: RosBridgeServerUrl
-      value: ws://localhost:9090
+      value: ws://192.168.1.121:9090
       objectReference: {fileID: 0}
     - target: {fileID: 8072130238423635120, guid: 0915935de0a77fc419c95d73d30120ce,
         type: 3}
