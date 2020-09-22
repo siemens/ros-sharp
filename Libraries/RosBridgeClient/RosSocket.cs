@@ -118,7 +118,7 @@ namespace RosSharp.RosBridgeClient
             lock (SubscriberLock)
             {
                 id = GetUnusedCounterID(Subscribers, topic);
-                Subscription subscription;
+                Subscription subscription = null;
                 Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
                 Output.Log($"sending sub: {subscription.compression}, {subscription.fragment_size}, {subscription.id}, {subscription.op}, {subscription.topic}");
                 Send(subscription);
