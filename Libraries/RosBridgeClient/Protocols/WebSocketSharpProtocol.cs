@@ -12,15 +12,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-#if !WINDOWS_UWP
-
 using System;
-using WebSocketSharp;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
-    public class WebSocketSharpProtocol: IProtocol
+
+#if !WINDOWS_UWP
+
+    using WebSocketSharp;
+
+    public class WebSocketSharpProtocol : IProtocol
     {
         public event EventHandler OnReceive;
         public event EventHandler OnConnected;
@@ -36,10 +37,10 @@ namespace RosSharp.RosBridgeClient.Protocols
             WebSocket.OnClose += Closed;
             WebSocket.OnOpen += Connected;
         }
-                
+
         public void Connect()
         {
-            WebSocket.ConnectAsync();            
+            WebSocket.ConnectAsync();
         }
 
         public void Close()
@@ -56,7 +57,7 @@ namespace RosSharp.RosBridgeClient.Protocols
         {
             WebSocket.SendAsync(data, null);
         }
-        
+
         private void Receive(object sender, WebSocketSharp.MessageEventArgs e)
         {
             OnReceive?.Invoke(sender, new MessageEventArgs(e.RawData));
@@ -72,7 +73,17 @@ namespace RosSharp.RosBridgeClient.Protocols
             OnConnected?.Invoke(sender, e);
         }
     }
-}
-
-
 #endif
+
+#if WINDOWS_UWP
+    //WebsocketSharp does not support UWP
+    public class WebSocketSharpProtocol: RosSharp.RosBridgeClient.Protocols.EmptyProtocolBase
+    {
+        public WebSocketSharpProtocol(string dummy)
+        {
+
+        }
+    }
+#endif
+
+}

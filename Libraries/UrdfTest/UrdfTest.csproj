@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>UrdfTest</RootNamespace>
     <AssemblyName>UrdfTest</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,7 +52,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Urdf\Urdf.csproj">
       <Project>{d33101da-7196-4545-b708-c8e0c308c5fa}</Project>
-      <Name>UrdfImporter</Name>
+      <Name>Urdf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

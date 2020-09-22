@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class LaserScanSubscriber : Subscriber<Messages.Sensor.LaserScan>
+    public class LaserScanSubscriber : UnitySubscriber<MessageTypes.Sensor.LaserScan>
     {
         public LaserScanWriter laserScanWriter;
 
@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient
             base.Start();
         }
 
-        protected override void ReceiveMessage(Messages.Sensor.LaserScan laserScan)
+        protected override void ReceiveMessage(MessageTypes.Sensor.LaserScan laserScan)
         {
             laserScanWriter.Write(laserScan);
         }

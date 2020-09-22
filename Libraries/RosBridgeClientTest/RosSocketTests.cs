@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,9 @@ limitations under the License.
 using System.Threading;
 using NUnit.Framework;
 using RosSharp.RosBridgeClient;
-using std_msgs = RosSharp.RosBridgeClient.Messages.Standard;
-using std_srvs = RosSharp.RosBridgeClient.Services.Standard;
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
+using std_srvs = RosSharp.RosBridgeClient.MessageTypes.Std;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClientTest
         // launch after starting:
         // rosservice call /service_response_test
 
-        private static readonly string Uri = "ws://192.168.56.101:9090";
+        private static readonly string Uri = "ws://192.168.137.195:9090";
         private static RosSocket RosSocket;
         private ManualResetEvent OnMessageReceived = new ManualResetEvent(false);
         private ManualResetEvent OnServiceReceived = new ManualResetEvent(false);

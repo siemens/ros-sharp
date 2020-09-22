@@ -20,12 +20,10 @@ namespace RosSharp.Urdf
 {
     public class UrdfJointPlanar : UrdfJoint
     {
-        public override JointTypes JointType => JointTypes.Planar;
-
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointPlanar urdfJoint = linkObject.AddComponent<UrdfJointPlanar>();
-
+            urdfJoint._jointType = JointTypes.Planar;
             urdfJoint.UnityJoint = linkObject.AddComponent<ConfigurableJoint>();
             urdfJoint.UnityJoint.autoConfigureConnectedAnchor = true;
 

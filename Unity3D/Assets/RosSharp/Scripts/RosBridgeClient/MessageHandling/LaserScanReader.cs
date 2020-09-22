@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2018
+© Siemens AG, 2018-2019
 Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,14 @@ namespace RosSharp.RosBridgeClient
 
         public int samples = 360;
         public int update_rate = 1800;
-        public float angle_min = 0;          
+        public float angle_min = 0;
         public float angle_max = 6.28f;
         public float angle_increment = 0.0174533f;
         public float time_increment = 0;
         public float scan_time = 0;
         public float range_min = 0.12f;
         public float range_max = 3.5f;
-        public float[] ranges ;
+        public float[] ranges;
         public float[] intensities;
 
         public void Start()
@@ -51,8 +51,8 @@ namespace RosSharp.RosBridgeClient
 
             laserScanVisualizers = GetComponents<LaserScanVisualizer>();
             if (laserScanVisualizers != null)
-                foreach(LaserScanVisualizer laserScanVisualizer in laserScanVisualizers)
-                    laserScanVisualizer.SetSensorData(transform.position, directions, ranges, range_min, range_max);
+                foreach (LaserScanVisualizer laserScanVisualizer in laserScanVisualizers)
+                    laserScanVisualizer.SetSensorData(gameObject.transform, directions, ranges, range_min, range_max);
 
             return ranges;
         }
@@ -65,8 +65,9 @@ namespace RosSharp.RosBridgeClient
 
             for (int i = 0; i < samples; i++)
             {
-                rays[i] = new Ray(transform.position, new Vector3(Mathf.Cos(angle_min + angle_increment * i), 0, Mathf.Sin(angle_min + angle_increment * i)));
-                directions[i] = rays[i].direction;
+                rays[i] = new Ray(transform.position, Quaternion.Euler(new Vector3(0, angle_min - angle_increment * i * 180 / Mathf.PI, 0)) * transform.forward);
+                directions[i] = Quaternion.Euler(-transform.rotation.eulerAngles) * rays[i].direction;
+
                 raycastHits[i] = new RaycastHit();
                 if (Physics.Raycast(rays[i], out raycastHits[i], range_max))
                     if (raycastHits[i].distance >= range_min && raycastHits[i].distance <= range_max)

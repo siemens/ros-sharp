@@ -14,13 +14,14 @@ limitations under the License.
 */
 
 // this class (System.Net.WebSockets) requires .NET 4.5+ to compile and Windows 8+ to work
-
-#if !WINDOWS_UWP
+// edit: seems to have been fixed https://github.com/dotnet/runtime/issues/28000
 
 using System;
 using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace RosSharp.RosBridgeClient.Protocols
 {
@@ -36,12 +37,28 @@ namespace RosSharp.RosBridgeClient.Protocols
         private const int ReceiveChunkSize = 1024;
         private const int SendChunkSize = 1024;
 
+        private ChannelReader<ArraySegment<byte>> reader;
+        private ChannelWriter<ArraySegment<byte>> writer;
+
+        private Task listener;
+        private Task sender;
+
         public event EventHandler OnReceive;
         public event EventHandler OnConnected;
         public event EventHandler OnClosed;
 
-        public WebSocketNetProtocol(string uriString)
+        public WebSocketNetProtocol(string uriString, int queueSize = 1000)
         {
+            Channel<ArraySegment<byte>> channel = Channel.CreateUnbounded<ArraySegment<byte>>(new UnboundedChannelOptions()
+            {
+                AllowSynchronousContinuations = false,
+                SingleReader = true,
+                SingleWriter = false,
+            });
+
+            reader = channel.Reader;
+            writer = channel.Writer;
+
             clientWebSocket = new ClientWebSocket();
             uri = new Uri(uriString);
             cancellationToken = cancellationTokenSource.Token;
@@ -49,8 +66,7 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public void Connect()
         {
-            Thread thread = new Thread(() => ConnectAsync());
-            thread.Start();
+            Task.Run(() => ConnectAsync());
         }
 
         public async void ConnectAsync()
@@ -58,16 +74,15 @@ namespace RosSharp.RosBridgeClient.Protocols
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
             OnConnected?.Invoke(null, EventArgs.Empty);
-            StartListen();
+            listener = Task.Run(StartListen);
+            sender = Task.Run(StartSend);
         }
 
-        public async void Close()
+        public void Close()
         {
             if (IsAlive())
             {
-                await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                IsConnected.Reset();
-                OnClosed?.Invoke(null, EventArgs.Empty);
+                writer.Complete();
             }
         }
 
@@ -78,31 +93,44 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public void Send(byte[] message)
         {
-            Thread thread = new Thread(() => SendAsync(message));
-            thread.Start();
+            Send(new ArraySegment<byte>(message));
         }
 
-        public async void SendAsync(byte[] message)
+        public void Send(ArraySegment<byte> msg)
         {
-            IsConnected.WaitOne();
-
-            if (clientWebSocket.State != WebSocketState.Open)
-                throw new WebSocketException(WebSocketError.InvalidState, "Error Sending Message. WebSocket State is: " + clientWebSocket.State);
-
-            int messageCount = (int)Math.Ceiling((double)message.Length / SendChunkSize);
-
-            IsReadyToSend.WaitOne();
-            for (int i = 0; i < messageCount; i++)
+            if (!writer.TryWrite(msg))
             {
-                int offset = SendChunkSize * i;
-                bool endOfMessage = (i == messageCount - 1);
-                int count = endOfMessage ? message.Length - offset : SendChunkSize;
-                await clientWebSocket.SendAsync(new ArraySegment<byte>(message, offset, count), WebSocketMessageType.Text, endOfMessage, cancellationToken);
+                throw new Exception();
             }
-            IsReadyToSend.Set();
         }
 
-        private async void StartListen()
+        private async Task StartSend()
+        {
+            while (await reader.WaitToReadAsync())
+            {
+                if (reader.TryRead(out ArraySegment<byte> message))
+                {
+                    if (clientWebSocket.State != WebSocketState.Open)
+                        throw new WebSocketException(WebSocketError.InvalidState, "Error Sending Message. WebSocket State is: " + clientWebSocket.State);
+
+                    int messageCount = (int)Math.Ceiling((double)message.Count / SendChunkSize);
+
+                    for (int i = 0; i < messageCount; i++)
+                    {
+                        int offset = SendChunkSize * i;
+                        bool endOfMessage = (i == messageCount - 1);
+                        int count = endOfMessage ? message.Count - offset : SendChunkSize;
+                        await clientWebSocket.SendAsync(new ArraySegment<byte>(message.Array, offset, count), WebSocketMessageType.Binary, endOfMessage, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            // close the socket (listener will therminate after that)
+            clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait();
+            IsConnected.Reset();
+            OnClosed?.Invoke(null, EventArgs.Empty);
+        }
+
+        private async Task StartListen()
         {
             byte[] buffer = new byte[ReceiveChunkSize];
 
@@ -126,5 +154,3 @@ namespace RosSharp.RosBridgeClient.Protocols
         }
     }
 }
-
-#endif

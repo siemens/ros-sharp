@@ -1,5 +1,5 @@
-﻿/*
-© Siemens AG, 2017
+/*
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,24 +17,29 @@ limitations under the License.
 
 using System;
 using System.Threading;
+using RosSharp.RosBridgeClient.Protocols;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
     public class RosConnector : MonoBehaviour
     {
-        public int Timeout = 10;
+        public int SecondsTimeout = 10;
 
         public RosSocket RosSocket { get; private set; }
-        public enum Protocols { WebSocketSharp, WebSocketNET, WebSocketUWP };
-        public RosBridgeClient.RosSocket.SerializerEnum Serializer;
-        public Protocols Protocol;
-        public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
+        public RosSocket.SerializerEnum Serializer;
+        public Protocol protocol;
+        public string RosBridgeServerUrl = "ws://localhost:9090";
 
-        private ManualResetEvent isConnected = new ManualResetEvent(false);
+        public ManualResetEvent IsConnected { get; private set; }
 
-        public void Awake()
+        public virtual void Awake()
         {
+#if WINDOWS_UWP
+            // overwrite selection
+            protocol = Protocol.WebSocketUWP;
+#endif
+            IsConnected = new ManualResetEvent(false);
 #if WINDOWS_UWP
             ConnectAndWait();
 #else
@@ -42,36 +47,37 @@ namespace RosSharp.RosBridgeClient
 #endif
         }
 
-        private void ConnectAndWait()
+        protected void ConnectAndWait()
         {
-            RosSocket = ConnectToRos(Protocol, RosBridgeServerUrl, OnConnected, OnClosed,Serializer);
+            RosSocket = ConnectToRos(protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
-            if (!isConnected.WaitOne(Timeout * 1000))
+            if (!IsConnected.WaitOne(SecondsTimeout * 1000))
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);
         }
-        
-        public static RosSocket ConnectToRos(Protocols protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null,RosSocket.SerializerEnum serializer=RosSocket.SerializerEnum.JSON)
+
+        public static RosSocket ConnectToRos(Protocol protocolType, string serverUrl, EventHandler onConnected = null, EventHandler onClosed = null, RosSocket.SerializerEnum serializer = RosSocket.SerializerEnum.Microsoft)
         {
-            RosBridgeClient.Protocols.IProtocol protocol = GetProtocol(protocolType, serverUrl);
+            IProtocol protocol = ProtocolInitializer.GetProtocol(protocolType, serverUrl);
             protocol.OnConnected += onConnected;
             protocol.OnClosed += onClosed;
 
-            return new RosSocket(protocol,serializer);
+            return new RosSocket(protocol, serializer);
         }
 
-        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocols protocol, string rosBridgeServerUrl)
+        private static RosBridgeClient.Protocols.IProtocol GetProtocol(Protocol protocol, string rosBridgeServerUrl)
         {
 
 #if WINDOWS_UWP
-                return new RosBridgeClient.Protocols.WebSocketUWPProtocol(rosBridgeServerUrl);
+            Debug.Log("Defaulted to UWP Protocol");
+            return new RosBridgeClient.Protocols.WebSocketUWPProtocol(rosBridgeServerUrl);
 #else
             switch (protocol)
             {
-                case Protocols.WebSocketNET:
+                case Protocol.WebSocketNET:
                     return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
-                case Protocols.WebSocketSharp:
+                case Protocol.WebSocketSharp:
                     return new RosBridgeClient.Protocols.WebSocketSharpProtocol(rosBridgeServerUrl);
-                case Protocols.WebSocketUWP:
+                case Protocol.WebSocketUWP:
                     Debug.Log("WebSocketUWP only works when deployed to HoloLens, defaulting to WebSocketNetProtocol");
                     return new RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeServerUrl);
                 default:
@@ -87,13 +93,13 @@ namespace RosSharp.RosBridgeClient
 
         private void OnConnected(object sender, EventArgs e)
         {
-            isConnected.Set();
+            IsConnected.Set();
             Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
         }
 
         private void OnClosed(object sender, EventArgs e)
         {
-            isConnected.Reset();
+            IsConnected.Reset();
             Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
         }
     }

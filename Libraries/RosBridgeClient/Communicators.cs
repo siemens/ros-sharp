@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json.Linq;
 using System;
 
 namespace RosSharp.RosBridgeClient
@@ -27,7 +26,6 @@ namespace RosSharp.RosBridgeClient
         public static string GetRosName<T>() where T : Message, new()
         {
             string name = new T().RosMessageName;
-            Output.Log(name);
             return name;
         }
     }
@@ -68,7 +66,7 @@ namespace RosSharp.RosBridgeClient
         internal abstract string Topic { get; }
         internal abstract Type TopicType { get; }
 
-        internal abstract void Receive(JToken message);
+        internal abstract void Receive(string message, ISerializer serializer);
 
         internal Unsubscription Unsubscribe()
         {
@@ -92,9 +90,9 @@ namespace RosSharp.RosBridgeClient
             subscription = new Subscription(id, Topic, GetRosName<T>(), throttle_rate, queue_length, fragment_size, compression);
         }
 
-        internal override void Receive(JToken message)
+        internal override void Receive(string message, ISerializer serializer)
         {
-            SubscriptionHandler.Invoke(message.ToObject<T>());
+            SubscriptionHandler.Invoke(serializer.Deserialize<T>(message));
         }
     }
 
@@ -102,7 +100,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Service { get; }
 
-        internal abstract Communication Respond(string id, JToken args = null);
+        internal abstract Communication Respond(string id, string message, ISerializer serializer);
 
         internal ServiceUnadvertisement UnadvertiseService()
         {
@@ -121,9 +119,9 @@ namespace RosSharp.RosBridgeClient
             serviceAdvertisement = new ServiceAdvertisement(service, GetRosName<Tin>());
         }
 
-        internal override Communication Respond(string id, JToken args = null)
+        internal override Communication Respond(string id, string message, ISerializer serializer)
         {
-            bool isSuccess = ServiceCallHandler.Invoke(args.ToObject<Tin>(), out Tout result);
+            bool isSuccess = ServiceCallHandler.Invoke(serializer.Deserialize<Tin>(message), out Tout result);
             return new ServiceResponse<Tout>(id, Service, result, isSuccess);
         }
     }
@@ -132,7 +130,7 @@ namespace RosSharp.RosBridgeClient
     {
         internal abstract string Id { get; }
         internal abstract string Service { get; }
-        internal abstract void Consume(JToken result);
+        internal abstract void Consume(string message, ISerializer serializer);
     }
 
     internal class ServiceConsumer<Tin, Tout> : ServiceConsumer where Tin : Message where Tout : Message
@@ -148,9 +146,9 @@ namespace RosSharp.RosBridgeClient
             ServiceResponseHandler = serviceResponseHandler;
             serviceCall = new ServiceCall<Tin>(id, service, serviceArguments);
         }
-        internal override void Consume(JToken result)
-        {
-            ServiceResponseHandler.Invoke(result.ToObject<Tout>());
+        internal override void Consume(string message, ISerializer serializer)
+        {   
+            ServiceResponseHandler.Invoke(serializer.Deserialize<Tout>(message));
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,12 @@ using System.Collections.Generic;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JointStatePublisher : Publisher<Messages.Sensor.JointState>
+    public class JointStatePublisher : UnityPublisher<MessageTypes.Sensor.JointState>
     {
         public List<JointStateReader> JointStateReaders;
         public string FrameId = "Unity";
 
-        private Messages.Sensor.JointState message;    
+        private MessageTypes.Sensor.JointState message;    
         
         protected override void Start()
         {
@@ -38,9 +38,9 @@ namespace RosSharp.RosBridgeClient
         private void InitializeMessage()
         {
             int jointStateLength = JointStateReaders.Count;
-            message = new Messages.Sensor.JointState
+            message = new MessageTypes.Sensor.JointState
             {
-                header = new Messages.Standard.Header { frame_id = FrameId },
+                header = new MessageTypes.Std.Header { frame_id = FrameId },
                 name = new string[jointStateLength],
                 position = new double[jointStateLength],
                 velocity = new double[jointStateLength],

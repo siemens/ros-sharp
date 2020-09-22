@@ -14,11 +14,11 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using rosapi = RosSharp.RosBridgeClient.Services.RosApi;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class GetParamServiceProvider : ServiceProvider<rosapi.GetParamRequest, rosapi.GetParamResponse>
+    public class GetParamServiceProvider : UnityServiceProvider<rosapi.GetParamRequest, rosapi.GetParamResponse>
     {
         public Dictionary<string, string> Parameters = new Dictionary<string, string>
         {
@@ -28,10 +28,12 @@ namespace RosSharp.RosBridgeClient
         protected override bool ServiceCallHandler(rosapi.GetParamRequest request, out rosapi.GetParamResponse response)
         {
             response = new rosapi.GetParamResponse();
-            
-            if (Parameters.TryGetValue(request.name, out response.value))
+            string responseValue;
+            if (Parameters.TryGetValue(request.name, out responseValue))
+            {
+                response.value = responseValue;
                 return true;
-
+            }
             response.value = "unknown parameter " + request.name;
             return false;
         }

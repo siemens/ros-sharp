@@ -32,11 +32,11 @@ namespace RosSharp.Urdf.Editor
             
             if (link != null)
                 urdfLink.ImportLinkData(link, joint);
-            else
+           /* else
             {
                 UrdfInertial.Create(linkObject);
                 UnityEditor.EditorGUIUtility.PingObject(linkObject);
-            }
+            }*/
 
             return urdfLink;
         }

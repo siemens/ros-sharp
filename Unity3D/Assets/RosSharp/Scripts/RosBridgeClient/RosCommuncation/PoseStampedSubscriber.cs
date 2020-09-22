@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseStampedSubscriber : Subscriber<Messages.Geometry.PoseStamped>
+    public class PoseStampedSubscriber : UnitySubscriber<MessageTypes.Geometry.PoseStamped>
     {
         public Transform PublishedTransform;
 
@@ -36,7 +36,7 @@ namespace RosSharp.RosBridgeClient
                 ProcessMessage();
         }
 
-        protected override void ReceiveMessage(Messages.Geometry.PoseStamped message)
+        protected override void ReceiveMessage(MessageTypes.Geometry.PoseStamped message)
         {
             position = GetPosition(message).Ros2Unity();
             rotation = GetRotation(message).Ros2Unity();
@@ -49,21 +49,21 @@ namespace RosSharp.RosBridgeClient
             PublishedTransform.rotation = rotation;
         }
 
-        private Vector3 GetPosition(Messages.Geometry.PoseStamped message)
+        private Vector3 GetPosition(MessageTypes.Geometry.PoseStamped message)
         {
             return new Vector3(
-                message.pose.position.x,
-                message.pose.position.y,
-                message.pose.position.z);
+                (float)message.pose.position.x,
+                (float)message.pose.position.y,
+                (float)message.pose.position.z);
         }
 
-        private Quaternion GetRotation(Messages.Geometry.PoseStamped message)
+        private Quaternion GetRotation(MessageTypes.Geometry.PoseStamped message)
         {
             return new Quaternion(
-                message.pose.orientation.x,
-                message.pose.orientation.y,
-                message.pose.orientation.z,
-                message.pose.orientation.w);
+                (float)message.pose.orientation.x,
+                (float)message.pose.orientation.y,
+                (float)message.pose.orientation.z,
+                (float)message.pose.orientation.w);
         }
     }
 }
