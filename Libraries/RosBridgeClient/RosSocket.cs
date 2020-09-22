@@ -185,10 +185,7 @@ namespace RosSharp.RosBridgeClient
 
         private void Send<T>(T communication) where T : Communication
         {
-            Output.Log("Serializing item");
             byte[] data = Serializer.Serialize<T>(communication);
-            Output.Log(System.Text.Encoding.UTF8.GetString(data));
-            Output.Log($"Sent {communication.op}, {communication.id}");
             protocol.Send(data);
             return;
         }
