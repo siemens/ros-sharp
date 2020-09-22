@@ -29,15 +29,16 @@ namespace RosSharp.RosBridgeClient
         public RosSocket RosSocket { get; private set; }
         public RosSocket.SerializerEnum Serializer;
         public Protocol protocol;
-        public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
+        public string RosBridgeServerUrl = "ws://localhost:9090";
 
         public ManualResetEvent IsConnected { get; private set; }
 
         public virtual void Awake()
+        {
 #if WINDOWS_UWP
+            // overwrite selection
             protocol = Protocol.WebSocketUWP;
 #endif
-        {
             IsConnected = new ManualResetEvent(false);
 #if WINDOWS_UWP
             ConnectAndWait();
@@ -67,6 +68,7 @@ namespace RosSharp.RosBridgeClient
         {
 
 #if WINDOWS_UWP
+            Debug.Log("Defaulted to UWP Protocol");
             return new RosBridgeClient.Protocols.WebSocketUWPProtocol(rosBridgeServerUrl);
 #else
             switch (protocol)
