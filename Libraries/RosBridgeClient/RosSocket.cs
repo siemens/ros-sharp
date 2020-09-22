@@ -59,7 +59,6 @@ namespace RosSharp.RosBridgeClient
             }
             this.protocol.OnReceive += (sender, e) => Receive(sender, e);
             this.protocol.Connect();
-            Output.Log($"Using {serializer} as a serialzer");
         }
 
         public byte[] TestJson(object obj)
@@ -198,7 +197,6 @@ namespace RosSharp.RosBridgeClient
                     {
                         string topic = jsonElement.GetProperty("topic");
                         string msg = jsonElement.GetProperty("msg");
-                        RosSharp.RosBridgeClient.Output.Log("Received: " + msg);
                         foreach (Subscriber subscriber in SubscribersOf(topic))
                             subscriber.Receive(msg, Serializer);
                         return;
