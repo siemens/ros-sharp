@@ -64,10 +64,6 @@ namespace RosSharp.RosBridgeClient
 
         public byte[] TestJson(object obj)
         {
-            Output.Log("Attempting to deserialize: ");
-#if WINDOWS_UWP
-            Output.Log("I am UWP");
-#endif
             return Serializer.Serialize(obj);
         }
 
