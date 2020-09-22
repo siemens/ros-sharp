@@ -61,11 +61,6 @@ namespace RosSharp.RosBridgeClient
             this.protocol.Connect();
         }
 
-        public byte[] TestJson(object obj)
-        {
-            return Serializer.Serialize(obj);
-        }
-
         public void Close(int millisecondsWait = 0)
         {
             bool isAnyCommunicatorActive = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0;
@@ -119,13 +114,10 @@ namespace RosSharp.RosBridgeClient
 
         public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message, new()
         {
-            Output.Log("Entered Subscribe Method from RosSocket");
-
             string id;
             lock (SubscriberLock)
             {
                 id = GetUnusedCounterID(Subscribers, topic);
-                Output.Log($"Subscriber ID distributed: {id}");
                 Subscription subscription;
                 Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
                 Output.Log($"sending: {subscription.compression}, {subscription.fragment_size}, {subscription.id}, {subscription.op}, {subscription.topic}");
