@@ -1,4 +1,4 @@
-﻿/*
+/*
 © Siemens AG, 2017-2019
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
@@ -34,6 +34,9 @@ namespace RosSharp.RosBridgeClient
         public ManualResetEvent IsConnected { get; private set; }
 
         public virtual void Awake()
+#if WINDOWS_UWP
+            protocol = Protocol.WebSocketUWP;
+#endif
         {
             IsConnected = new ManualResetEvent(false);
 #if WINDOWS_UWP
