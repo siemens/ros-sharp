@@ -17,12 +17,12 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class LaserScanPublisher : Publisher<Messages.Sensor.LaserScan>
+    public class LaserScanPublisher : UnityPublisher<MessageTypes.Sensor.LaserScan>
     {
         public LaserScanReader laserScanReader;
         public string FrameId = "Unity";
 
-        private Messages.Sensor.LaserScan message;
+        private MessageTypes.Sensor.LaserScan message;
         private float scanPeriod;
         private float previousScanTime = 0;
                 
@@ -45,9 +45,9 @@ namespace RosSharp.RosBridgeClient
         {
             scanPeriod = (float)laserScanReader.samples / (float)laserScanReader.update_rate;
 
-            message = new Messages.Sensor.LaserScan
+            message = new MessageTypes.Sensor.LaserScan
             {
-                header = new Messages.Standard.Header { frame_id = FrameId },
+                header = new MessageTypes.Std.Header { frame_id = FrameId },
                 angle_min       = laserScanReader.angle_min,
                 angle_max       = laserScanReader.angle_max,
                 angle_increment = laserScanReader.angle_increment,

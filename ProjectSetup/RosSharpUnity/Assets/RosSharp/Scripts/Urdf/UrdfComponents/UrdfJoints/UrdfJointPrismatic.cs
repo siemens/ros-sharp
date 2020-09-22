@@ -1,5 +1,5 @@
 ﻿/*
-© Siemens AG, 2018
+© Siemens AG, 2018-2019
 Author: Suzannah Smith (suzannah.smith@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,10 @@ namespace RosSharp.Urdf
 {
     public class UrdfJointPrismatic : UrdfJoint
     {
-        public override JointTypes JointType => JointTypes.Prismatic;
-
         public static UrdfJoint Create(GameObject linkObject)
         {
             UrdfJointPrismatic urdfJoint = linkObject.AddComponent<UrdfJointPrismatic>();
-
+            urdfJoint._jointType = JointTypes.Prismatic;
             urdfJoint.UnityJoint = linkObject.AddComponent<ConfigurableJoint>();
             urdfJoint.UnityJoint.autoConfigureConnectedAnchor = true;
 

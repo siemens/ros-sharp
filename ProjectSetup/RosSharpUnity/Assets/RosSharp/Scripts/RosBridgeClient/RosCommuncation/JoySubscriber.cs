@@ -15,7 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JoySubscriber : Subscriber<Messages.Sensor.Joy>
+    public class JoySubscriber : UnitySubscriber<MessageTypes.Sensor.Joy>
     {
         public JoyButtonWriter[] joyButtonWriters;
         public JoyAxisWriter[] joyAxisWriters;
@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient
 			base.Start();
 		}
 		
-        protected override void ReceiveMessage(Messages.Sensor.Joy joy)
+        protected override void ReceiveMessage(MessageTypes.Sensor.Joy joy)
         {
             int I = joyButtonWriters.Length < joy.buttons.Length ? joyButtonWriters.Length : joy.buttons.Length;
             for (int i = 0; i < I; i++)

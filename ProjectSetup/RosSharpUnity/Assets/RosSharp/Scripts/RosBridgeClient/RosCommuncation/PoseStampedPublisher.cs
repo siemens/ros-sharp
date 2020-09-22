@@ -13,16 +13,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Added allocation free alternatives
+// UoK , 2019, Odysseas Doumas (od79@kent.ac.uk / odydoum@gmail.com)
+
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class PoseStampedPublisher : Publisher<Messages.Geometry.PoseStamped>
+    public class PoseStampedPublisher : UnityPublisher<MessageTypes.Geometry.PoseStamped>
     {
         public Transform PublishedTransform;
         public string FrameId = "Unity";
 
-        private Messages.Geometry.PoseStamped message;
+        private MessageTypes.Geometry.PoseStamped message;
 
         protected override void Start()
         {
@@ -37,9 +40,9 @@ namespace RosSharp.RosBridgeClient
 
         private void InitializeMessage()
         {
-            message = new Messages.Geometry.PoseStamped
+            message = new MessageTypes.Geometry.PoseStamped
             {
-                header = new Messages.Standard.Header()
+                header = new MessageTypes.Std.Header()
                 {
                     frame_id = FrameId
                 }
@@ -49,29 +52,25 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.pose.position = GetGeometryPoint(PublishedTransform.position.Unity2Ros());
-            message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
+            GetGeometryPoint(PublishedTransform.position.Unity2Ros(), message.pose.position);
+            GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros(), message.pose.orientation);
 
             Publish(message);
         }
 
-        private Messages.Geometry.Point GetGeometryPoint(Vector3 position)
+        private static void GetGeometryPoint(Vector3 position, MessageTypes.Geometry.Point geometryPoint)
         {
-            Messages.Geometry.Point geometryPoint = new Messages.Geometry.Point();
             geometryPoint.x = position.x;
             geometryPoint.y = position.y;
             geometryPoint.z = position.z;
-            return geometryPoint;
         }
 
-        private Messages.Geometry.Quaternion GetGeometryQuaternion(Quaternion quaternion)
+        private static void GetGeometryQuaternion(Quaternion quaternion, MessageTypes.Geometry.Quaternion geometryQuaternion)
         {
-            Messages.Geometry.Quaternion geometryQuaternion = new Messages.Geometry.Quaternion();
             geometryQuaternion.x = quaternion.x;
             geometryQuaternion.y = quaternion.y;
             geometryQuaternion.z = quaternion.z;
             geometryQuaternion.w = quaternion.w;
-            return geometryQuaternion;
         }
 
     }
