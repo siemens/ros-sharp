@@ -20,10 +20,7 @@ Step 2, Option 2: Follow these instructions:
  - Copy the [RosSharp folder](https://github.com/EricVoll/ros-sharp/tree/master/Unity3D/Assets) into the Assets Folder of your project
  - Configure the RosBridgeClientUWP.dll to be used for the WSA platform and disable it for all other platforms
  - Configure the RosBridgeClient.dll to be excluded for the WSA platform.
- - Configure the External/NewtonSoft.Json.dll to be excluded from ALL platforms (you can leave External/Newtonsoft.Bson.dll as it is)
  - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins) You don't have to configure any targetplatforms as with the RosBridgeclient(UWP) dlls, since they should be configured correctly.
-
-It is important to keep the NewtonSoft.Json.dll in the RosSharp/Plugins/External folder, to "trick" Unity during development time that a compatible version of NewtonSoft.Json is present. This version is not AOT compilable and will not work in UWP applications using the IL2CPP backend. When building the "Game" Unity ignores this non-AOT-compilable version of NewtonSoft.Json.dll and uses the AOT-Version of NewtonSoft.Json instead, which will work.
 
 With this setup your project should work in Editor Mode and in UWP-Mode.
 
