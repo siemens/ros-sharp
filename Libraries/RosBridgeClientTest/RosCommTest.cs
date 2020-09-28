@@ -1,4 +1,5 @@
-﻿using RosSharp.RosBridgeClient;
+﻿using NUnit.Framework.Constraints;
+using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace RosBridgeClientTest
     public class RosCommTest
     {
         static string LastMsg = "None";
+        static string publishId;
         static RosSocket rosSocket;
 
         public static void Main(string[] args)
@@ -53,7 +55,8 @@ namespace RosBridgeClientTest
             protocol.OnConnected += OnConnected;
             protocol.OnClosed += OnClosed;
             rosSocket = new RosSocket(protocol, RosSocket.SerializerEnum.Newtonsoft_JSON);
-            rosSocket.Subscribe<Clock>("/clock", ReceiveMessage);
+            rosSocket.Subscribe<Clock>("/clock", ReceiveMessage,1000);
+            publishId = rosSocket.Advertise<Clock>("/customTopic_clock");
             //rosSocket.Subscribe<RosSharp.RosBridgeClient.MessageTypes.Std.String>("/clock", ReceiveMessage);
         }
 
@@ -61,6 +64,10 @@ namespace RosBridgeClientTest
         {
             LastMsg = "secs " + msg.clock.secs;
             Console.WriteLine(LastMsg);
+            rosSocket.Publish(publishId, new Clock()
+            {
+                clock = new Time(10, 20),
+            });
         }
 
 
