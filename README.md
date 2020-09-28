@@ -22,6 +22,8 @@ Step 2, Option 2: Follow these instructions:
  - Configure the RosBridgeClient.dll to be excluded for the WSA platform.
  - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins) You don't have to configure any targetplatforms as with the RosBridgeclient(UWP) dlls, since they should be configured correctly. The original source of this is [here](https://github.com/jilleJr/Newtonsoft.Json-for-Unity)
 
+It is important that the [link.xml file](https://github.com/EricVoll/ros-sharp/blob/master/Unity3D/Assets/RosSharp/link.xml) is somewhere within the /Assets/ folder of the Unity Project. The reasons for that are described [here](https://github.com/jilleJr/Newtonsoft.Json-for-Unity/wiki/Fix-AOT-using-link.xml). Basically, Unity's IL2CPP compiler strips away unused code. Since RosSharp works with classes that are never really used but only serialized to be sent via WebSockets, many of these "unused" fields and properties are removed, resulting in (almost) empty json-strings. The link.xml file tells Unity's IL2CPP compiler to not strip any code from the specified assemblies.
+
 With this setup your project should work in Editor Mode and in UWP-Mode.
 
 The simple Demo-App subscribes to the /clock topic and displays the values received. This was successfully deployed to HoloLens 2
