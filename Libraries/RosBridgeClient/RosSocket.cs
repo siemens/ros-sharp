@@ -99,7 +99,13 @@ namespace RosSharp.RosBridgeClient
 
         public void Publish(string id, Message message)
         {
-            Send(Publishers[id].Publish(message));
+            if (!Publishers.ContainsKey(id))
+            {
+                Output.Log("Key of publisher not found! Message was not published");
+                return;
+            }
+            Communication comm = Publishers[id].Publish(message);
+            Send(comm);
         }
 
         public void Unadvertise(string id)
@@ -120,7 +126,6 @@ namespace RosSharp.RosBridgeClient
                 id = GetUnusedCounterID(Subscribers, topic);
                 Subscription subscription = null;
                 Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
-                Output.Log($"sending sub: {subscription.compression}, {subscription.fragment_size}, {subscription.id}, {subscription.op}, {subscription.topic}");
                 Send(subscription);
             }
             
