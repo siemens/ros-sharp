@@ -20,7 +20,7 @@ Step 2, Option 2: Follow these instructions:
  - Copy the [RosSharp folder](https://github.com/EricVoll/ros-sharp/tree/master/Unity3D/Assets) into the Assets Folder of your project
  - Configure the RosBridgeClientUWP.dll to be used for the WSA platform and disable it for all other platforms
  - Configure the RosBridgeClient.dll to be excluded for the WSA platform.
- - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins) You don't have to configure any targetplatforms as with the RosBridgeclient(UWP) dlls, since they should be configured correctly.
+ - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins) You don't have to configure any targetplatforms as with the RosBridgeclient(UWP) dlls, since they should be configured correctly. The original source of this is [here](https://github.com/jilleJr/Newtonsoft.Json-for-Unity)
 
 With this setup your project should work in Editor Mode and in UWP-Mode.
 
