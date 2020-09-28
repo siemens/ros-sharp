@@ -13,17 +13,14 @@ This fork has some changes to allow ROS# to be used in UWP projects, such as the
 
 Step 1: Clone this project
 
-Step 2, Option 1: Open the [Demo Project](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity) and copy its content. It is setup in a way, that it is buildable for UWP applications.
+Step 2, Option 1: Open the [Demo Project](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity) and copy its content. It is setup in a way, that it is buildable for UWP applications and should work right out of the box.
 
 Step 2, Option 2: Follow these instructions:
  - Create a new Unity Project or use an existing one
  - Copy the [RosSharp folder](https://github.com/EricVoll/ros-sharp/tree/master/Unity3D/Assets) into the Assets Folder of your project
- - Configure the RosSharpClientUWP.dll to be used for the WSA platform and disable it for all other platforms
- - Configure the RosSharpClient.dll to be excluded for the WSA platform.
- - Configure the NewtonSoft.dll to be excluded from ALL platforms
- - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins)
-
-It is important to keep the NewtonSoft.dll in the RosSharp/Plugins folder, to "trick" unity during development time that a compatible version of NewtonSoft is present. This version is not AOT compilable and will not work in UWP applications using the IL2CPP backend. When building the "Game" Unity ignores this "faulty" version of NewtonSoft and uses the AOT-Version of NewtonSoft instead, which will work.
+ - Configure the RosBridgeClientUWP.dll to be used for the WSA platform and disable it for all other platforms
+ - Configure the RosBridgeClient.dll to be excluded for the WSA platform.
+ - Copy the [NewtonSoft AOT version](https://github.com/EricVoll/ros-sharp/tree/master/ProjectSetup/RosSharpUnity/Assets/Plugins) into your project (e.g. Assets/Plugins) You don't have to configure any targetplatforms as with the RosBridgeclient(UWP) dlls, since they should be configured correctly. The original source of this is [here](https://github.com/jilleJr/Newtonsoft.Json-for-Unity)
 
 With this setup your project should work in Editor Mode and in UWP-Mode.
 
@@ -32,7 +29,7 @@ The simple Demo-App subscribes to the /clock topic and displays the values recei
 
 ## How it works ##
 There are four main changes to the original Ros-Sharp repository
-1. AOT compilability
+1. [AOT compilability](https://en.wikipedia.org/wiki/Ahead-of-time_compilation)
 The original RosSharp uses reflection and the normal NewtonSoft Json library, which are not AOT compilable and fail to work after Unity's IL2CPP compiler process the files. There were some changes made to the library to not use reflection, and also a AOT compilable version of NewtonSoft Json is included in the Demo-Project
 2. Websockets
 Prev. another than the default version for Websockets was needed, but the newer version of WebSocketSharp works fine for UWP projecst
