@@ -1,0 +1,5 @@
+<linker>
+    <assembly fullname="RosSharp" preserve="all"/>
+    <assembly fullname="RosBridgeClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all"/>
+    <assembly fullname="RosBridgeClientUWP, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all"/>
+</linker>
