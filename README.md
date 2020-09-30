@@ -1,10 +1,12 @@
 # [<img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharpLogo.png" width="480" alt ="ROS#"/>](https://github.com/siemens/ros-sharp) #
 
+
 [ROS#](https://github.com/siemens/ros-sharp) is a set of open source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular [Unity](https://unity3d.com/).
 
 [Here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases) are some showcases illustrating what can be done with ROS#.
 Community provided a variety of other application examples for ROS# [here](https://github.com/siemens/ros-sharp/issues/20). Please don't hesitate to post yours!
 
+# UWP / HoloLens
 ## Notes On This Fork ##
 
 This fork has some changes to allow ROS# to be used in UWP projects, such as the Microsoft HoloLens (1 & 2 - tested and deployed successfully). Like the main ROS# branch, use 2019.x or later.
@@ -41,7 +43,7 @@ The DLL was created by creating a UWP class library project, and then linking al
 Some parts of the library and Unity Scripts needed some platform specific code, which was done with the "WINDOWS_UWP" compiler constant.
 
 ### Compatibile With Mixed Reality Toolkit ###
-This branch is compatible with Microsoft's Mixed Reality Toolkit. See the Preparing Unity Project Section.
+This branch is compatible with Microsoft's Mixed Reality Toolkit. Tested with v. 2.4 and 2.3
 
 Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki/), especially [Section 3.2](https://github.com/siemens/ros-sharp/wiki/User_App_NoROS_ExportURDFOnWindows), for an explanation of how to use the new framework.
 
@@ -70,16 +72,6 @@ ROS# is open source under the [Apache 2.0 license](http://www.apache.org/license
 * [Newtonsoft.Json.Bson](https://github.com/JamesNK/Newtonsoft.Json.Bson) (MIT License)
 * [websocket-sharp](https://github.com/sta/websocket-sharp) (MIT License), required only when using [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)
 
-## Platform Support ##
-
-* [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on a variety of other platforms community members.
-
-* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET Framework 4.6 and Visual Studio 2017 or higher.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) requires Unity Version 2018.3 or higher.
-In Versions below 2019.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
-
-* Please find a UWP version of ROS# [here](https://github.com/EricVoll/ros-sharp).
-* Please find a .NET Standard 2.0 version of UrdfImporter [here](https://github.com/blommers/UdrfImporter).
 
 ## Further Info ##
 
