@@ -16,7 +16,7 @@ limitations under the License.
 <launch>
 
 	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-		<param name="port" value="9090"/>
+		<arg name="port" value="9090"/>
 	</include>
 
 	<node name="file_server" pkg="file_server" type="file_server" output="screen"/>
