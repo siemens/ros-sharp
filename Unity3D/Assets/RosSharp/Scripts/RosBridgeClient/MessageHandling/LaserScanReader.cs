@@ -65,7 +65,7 @@ namespace RosSharp.RosBridgeClient
 
             for (int i = 0; i < samples; i++)
             {
-                rays[i] = new Ray(transform.position, Quaternion.Euler(new Vector3(0, angle_min - angle_increment * i * 180 / Mathf.PI, 0)) * transform.forward);
+                rays[i] = new Ray(transform.position, GetRayRotation(i) * transform.forward);
                 directions[i] = Quaternion.Euler(-transform.rotation.eulerAngles) * rays[i].direction;
 
                 raycastHits[i] = new RaycastHit();
@@ -73,6 +73,13 @@ namespace RosSharp.RosBridgeClient
                     if (raycastHits[i].distance >= range_min && raycastHits[i].distance <= range_max)
                         ranges[i] = raycastHits[i].distance;
             }
+        }
+
+        private Quaternion GetRayRotation(int sample) {
+            float eulerAngleInRadians = angle_min + (angle_increment * sample);
+            float eulerAngleInDegrees = eulerAngleInRadians * 180 / Mathf.PI;
+
+            return Quaternion.Euler(new Vector3(0, eulerAngleInDegrees, 0));
         }
     }
 }
