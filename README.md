@@ -32,6 +32,13 @@ The latest release is also being published in the [Unity Asset Store](https://as
 
 Please get the latest development version directly from the [tip of this master branch](https://github.com/siemens/ros-sharp).
 
+## Unity Robotics Hub ##
+In 11/2020 Unity launched [Unity Robotics Hub](https://github.com/Unity-Technologies/Unity-Robotics-Hub) and included a major part of ROS#.
+* [Short Description](https://github.com/MartinBischoff/ros-sharp/blob/master/UnityRoboticsHub.md) on Unity Robotics Hub written by Unity developers
+* [Differences](https://github.com/MartinBischoff/ros-sharp/blob/master/RosSharp_RoboticsHub.md) between ROS# and Unity Robotics Hub
+
+We are in close contact with the developers and decided to run both initiatives in parallel.
+
 ## Licensing ##
 
 ROS# is open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) and is free for commercial use.
