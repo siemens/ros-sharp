@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MessageGenerationConsoleTool</RootNamespace>
     <AssemblyName>RosMsgGen</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
