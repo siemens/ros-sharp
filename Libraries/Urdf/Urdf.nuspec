@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>RosSharp$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/siemens/ros-sharp</projectUrl>
+    <icon>images\RosSharpLogoNuget.png</icon>
+    <description>$description$</description>
+    <releaseNotes>https://github.com/siemens/ros-sharp/releases</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>ROS Robotic Operating System</tags>
+  </metadata>
+  <files>
+    <file src="..\RosSharpLogoNuget.png" target="images\" />
+  </files>  
+</package>
