@@ -443,6 +443,8 @@
     <Compile Include="MessageTypes\Trajectory\msg\JointTrajectoryPoint.cs" />
     <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectory.cs" />
     <Compile Include="MessageTypes\Trajectory\msg\MultiDOFJointTrajectoryPoint.cs" />
+    <Compile Include="MessageTypes\Visualization\msg\Marker.cs" />
+    <Compile Include="MessageTypes\Visualization\msg\MarkerArray.cs" />
     <Compile Include="PointCloud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\MessageEventArgs.cs" />
