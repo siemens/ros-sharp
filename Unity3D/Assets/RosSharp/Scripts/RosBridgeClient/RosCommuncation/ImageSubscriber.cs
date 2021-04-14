@@ -21,16 +21,20 @@ namespace RosSharp.RosBridgeClient
     public class ImageSubscriber : UnitySubscriber<MessageTypes.Sensor.CompressedImage>
     {
         public MeshRenderer meshRenderer;
-
+	public bool overrideImageMaterial = false;
+	
         private Texture2D texture2D;
         private byte[] imageData;
         private bool isMessageReceived;
 
         protected override void Start()
         {
-			base.Start();
-            texture2D = new Texture2D(1, 1);
-            meshRenderer.material = new Material(Shader.Find("Standard"));
+	    base.Start();
+            texture2D = new Texture2D(1, 1);            
+	    if(overrideImageMaterial)
+	    {
+	    	meshRenderer.material = new Material(Shader.Find("Standard"));
+	    }
         }
         private void Update()
         {
