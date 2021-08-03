@@ -44,7 +44,7 @@ namespace RosSharp.Urdf
 
         private bool isCreated;
 
-        public static void Create(GameObject linkObject, Link.Inertial inertial = null)
+        public static void Create(GameObject linkObject, Link.Inertial inertial)
         {
             UrdfInertial urdfInertial = linkObject.AddComponent<UrdfInertial>();
             urdfInertial.UrdfMass = (float)inertial.mass;
@@ -145,11 +145,8 @@ namespace RosSharp.Urdf
             Vector3[] eigenvectors;
             Matrix3x3 rotationMatrix = ToMatrix3x3(inertia);
             rotationMatrix.DiagonalizeRealSymmetric(out eigenvalues, out eigenvectors);
-
             UrdfInertiaTensor = ToUnityInertiaTensor(FixMinInertia(eigenvalues));
-            Debug.Log(UrdfInertiaTensor);
             UrdfInertiaTensorRotation = ToQuaternion(eigenvectors[0], eigenvectors[1], eigenvectors[2]).Ros2Unity();
-            Debug.Log(UrdfInertiaTensorRotation);
         }
 
         private static Vector3 ToUnityInertiaTensor(Vector3 vector3)
