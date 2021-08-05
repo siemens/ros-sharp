@@ -32,11 +32,11 @@ namespace RosSharp.Urdf.Editor
             
             if (link != null)
                 urdfLink.ImportLinkData(link, joint);
-           /* else
+            else
             {
-                UrdfInertial.Create(linkObject);
+                UrdfInertial.Create(linkObject, new Link.Inertial(1, new Origin(new double[] { 0, 0, 0 }, new double[] { 0, 0, 0 }), new Link.Inertial.Inertia(1, 0, 0, 1, 0, 1)));
                 UnityEditor.EditorGUIUtility.PingObject(linkObject);
-            }*/
+            }
 
             return urdfLink;
         }
@@ -65,7 +65,7 @@ namespace RosSharp.Urdf.Editor
             foreach (Joint childJoint in link.joints)
             {
                 Link child = childJoint.ChildLink;
-                UrdfLinkExtensions.Create(urdfLink.transform, child, childJoint);
+                Create(urdfLink.transform, child, childJoint);
             }
         } 
         
