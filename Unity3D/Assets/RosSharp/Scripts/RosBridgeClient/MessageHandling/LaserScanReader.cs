@@ -23,6 +23,7 @@ namespace RosSharp.RosBridgeClient
         private RaycastHit[] raycastHits;
         private Vector3[] directions;
         private LaserScanVisualizer[] laserScanVisualizers;
+        private float[] rangesReversed;
 
         public int samples = 360;
         public int update_rate = 1800;
@@ -40,6 +41,7 @@ namespace RosSharp.RosBridgeClient
         {
             directions = new Vector3[samples];
             ranges = new float[samples];
+            rangesReversed = new float[samples];
             intensities = new float[samples];
             rays = new Ray[samples];
             raycastHits = new RaycastHit[samples];
@@ -54,7 +56,7 @@ namespace RosSharp.RosBridgeClient
                 foreach (LaserScanVisualizer laserScanVisualizer in laserScanVisualizers)
                     laserScanVisualizer.SetSensorData(gameObject.transform, directions, ranges, range_min, range_max);
 
-            return ranges;
+            return rangesReversed;
         }
 
         private void MeasureDistance()
@@ -72,12 +74,15 @@ namespace RosSharp.RosBridgeClient
                 if (Physics.Raycast(rays[i], out raycastHits[i], range_max))
                     if (raycastHits[i].distance >= range_min && raycastHits[i].distance <= range_max)
                         ranges[i] = raycastHits[i].distance;
+
+                rangesReversed[samples - i - 1] = ranges[i];
             }
         }
 
-        private Quaternion GetRayRotation(int sample) {
+        private Quaternion GetRayRotation(int sample)
+        {
             float eulerAngleInRadians = angle_min + (angle_increment * sample);
-            float eulerAngleInDegrees = eulerAngleInRadians * 180 / Mathf.PI;
+            float eulerAngleInDegrees = eulerAngleInRadians * Mathf.Rad2Deg;
 
             return Quaternion.Euler(new Vector3(0, eulerAngleInDegrees, 0));
         }
