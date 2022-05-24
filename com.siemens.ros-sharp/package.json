@@ -1,7 +1,7 @@
 {
     "name": "com.siemens.ros-sharp",
     "displayName": "ros-sharp",
-    "version": "1.7",
+    "version": "1.7.1",
     "unity": "2019.4",
     "description": "Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) example scenes and reference code",
     "keywords": [
