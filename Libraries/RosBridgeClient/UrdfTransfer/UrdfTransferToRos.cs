@@ -19,10 +19,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Xml.Linq;
-using Newtonsoft.Json;
-
+//using Newtonsoft.Json;
+using System.Text.Json;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 using file_server = RosSharp.RosBridgeClient.MessageTypes.FileServer;
+
 
 namespace RosSharp.RosBridgeClient.UrdfTransfer
 {
@@ -54,8 +55,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             //Publish robot name param
             RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
                 SetRobotNameHandler,
-                new rosapi.SetParamRequest("/robot/name", JsonConvert.SerializeObject(RobotName)));
-            
+                //new rosapi.SetParamRequest("/robot/name", JsonConvert.SerializeObject(RobotName))); for Newtonsoft.Json
+                new rosapi.SetParamRequest("/robot/name", JsonSerializer.Serialize(RobotName)));    //for system.text.json
+
             PublishRobotDescription();
 
             PublishResourceFiles();
@@ -69,7 +71,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             //Publish /robot_description param
             RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
                 SetRobotDescriptionHandler,
-                new rosapi.SetParamRequest("/robot_description", JsonConvert.SerializeObject(urdfXDoc.ToString())));
+                //new rosapi.SetParamRequest("/robot_description", JsonConvert.SerializeObject(urdfXDoc.ToString()))); for Newtonsoft.Json
+                new rosapi.SetParamRequest("/robot_description", JsonSerializer.Serialize(urdfXDoc.ToString())));    //for system.text.json
 
             //Send URDF file to ROS package
             string urdfPackagePath = "package://" + rosPackage + "/" + Path.GetFileName(urdfFilePath);
