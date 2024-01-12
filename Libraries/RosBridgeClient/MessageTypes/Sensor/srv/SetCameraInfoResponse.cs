@@ -7,7 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
