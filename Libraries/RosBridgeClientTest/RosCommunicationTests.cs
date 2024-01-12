@@ -15,7 +15,8 @@ limitations under the License.
 
 using System;
 using NUnit.Framework;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
+using System.Text.Json;
 using RosSharp.RosBridgeClient;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 
@@ -35,37 +36,53 @@ namespace RosSharp.RosBridgeClientTest
         {
 
         }
-        
+
+        // Configure JsonSerializerOptions for indented formatting (system.text.json)
+        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true
+            // Other options can be set here
+        };
+
         [Test, Category("Offline")]
         public void PublicationTest()
         {
             Communication comm = new Publication<std_msgs.Time>("myid", "mytopic", new std_msgs.Time());
-            string json = JsonConvert.SerializeObject(comm);
+            //string json = JsonConvert.SerializeObject(comm); // for newtonsoft
+            string json = JsonSerializer.Serialize(comm);      // for system.text.json
+
             Assert.AreEqual("{\"topic\":\"mytopic\",\"msg\":{\"secs\":0,\"nsecs\":0},\"op\":\"publish\",\"id\":\"myid\"}",
                            json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            //Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n"); // for newtonsoft
+            Console.WriteLine("JSON:\n" + JsonSerializer.Serialize(comm, JsonOptions) + "\n");              // for system.text.json
         }
 
         [Test, Category("Offline")]
         public void SubscriptionTest()
         {
             Communication comm = new Subscription("myid", "mytopic", "mytype");
-            string json = JsonConvert.SerializeObject(comm);
+            //string json = JsonConvert.SerializeObject(comm); // for newtonsoft
+            string json = JsonSerializer.Serialize(comm);      // for system.text.json
+
             Assert.AreEqual("{\"topic\":\"mytopic\",\"type\":\"mytype\",\"throttle_rate\":0,\"queue_length\":1," +
                             "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"subscribe\",\"id\":\"myid\"}",
                             json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            //Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n"); // for newtonsoft
+            Console.WriteLine("JSON:\n" + JsonSerializer.Serialize(comm, JsonOptions) + "\n");              // for system.text.json
         }
 
         [Test, Category("Offline")]
         public void ServiceCallTest()
         {
             Communication comm = new ServiceCall<std_msgs.Time>("myid", "myservice", new std_msgs.Time());
-            string json = JsonConvert.SerializeObject(comm);
+            //string json = JsonConvert.SerializeObject(comm); // for newtonsoft
+            string json = JsonSerializer.Serialize(comm);      // for system.text.json
+
             Assert.AreEqual("{\"service\":\"myservice\",\"args\":{\"secs\":0,\"nsecs\":0}," +
                             "\"fragment_size\":2147483647,\"compression\":\"none\",\"op\":\"call_service\",\"id\":\"myid\"}",
                             json);
-            Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n");
+            //Console.WriteLine("JSON:\n" + JsonConvert.SerializeObject(comm, Formatting.Indented) + "\n"); // for newtonsoft
+            Console.WriteLine("JSON:\n" + JsonSerializer.Serialize(comm, JsonOptions) + "\n");              // for system.text.json
         }
     }
 }
