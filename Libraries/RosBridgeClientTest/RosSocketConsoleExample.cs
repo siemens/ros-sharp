@@ -22,12 +22,18 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 // commands on ROS system:
 // launch before starting:
+// ROS:
 // roslaunch rosbridge_server rosbridge_websocket.launch
 // rostopic echo /pub_test
 // rostopic pub /sub_test std_msgs/String "subscription test message data"
-
 // launch after starting:
 // rosservice call /service_response_test
+
+// ROS2:
+// ros2 launch rosbridge_server rosbridge_websocket.launch
+// ros2 topic echo /pub_test
+// ros2 topic pub /sub_test std_msgs/String "data: subscription test message data"
+
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -51,7 +57,7 @@ namespace RosSharp.RosBridgeClientTest
 
             // Subscription:
             string subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
-            subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
+            //subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
 
             // Service Call:
             rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
