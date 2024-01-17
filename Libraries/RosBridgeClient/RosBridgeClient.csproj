@@ -455,7 +455,6 @@
     <Compile Include="Protocols\WebSocketNetProtocol.cs" />
     <Compile Include="Serializers\ISerializer.cs" />
     <Compile Include="Serializers\MicrosoftSerializer.cs" />
-    <Compile Include="Serializers\NewtonsoftBsonSerializer.cs" />
     <Compile Include="Serializers\NewtonsoftJsonSerializer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransfer.cs" />
     <Compile Include="UrdfTransfer\UrdfTransferFromRos.cs" />
