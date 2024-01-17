@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsole
     {
-        static readonly string uri = "ws://192.168.56.102:9090";
+        static readonly string uri = "ws://172.30.113.96:9090";
 
         public static void Main(string[] args)
         {

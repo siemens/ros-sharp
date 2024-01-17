@@ -20,6 +20,7 @@ namespace RosSharp.RosBridgeClient
         byte[] Serialize<T>(T obj);
         DeserializedObject Deserialize(byte[] rawData);
         T Deserialize<T>(string JsonString);
+        RosSocket.SerializerEnum GetSerializerEnum();
     } 
 
     internal abstract class DeserializedObject

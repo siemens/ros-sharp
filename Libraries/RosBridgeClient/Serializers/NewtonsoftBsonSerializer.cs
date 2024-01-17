@@ -45,6 +45,10 @@ namespace RosSharp.RosBridgeClient
         {
             return JsonConvert.DeserializeObject<T>(json);
         }
+        public RosSocket.SerializerEnum GetSerializerEnum()
+        {
+            return RosSocket.SerializerEnum.Newtonsoft_BSON;
+        }
     }
 
     internal class NewtonsoftBsonObject : DeserializedObject

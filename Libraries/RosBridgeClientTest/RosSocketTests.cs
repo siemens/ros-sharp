@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClientTest
         // launch after starting:
         // rosservice call /service_response_test
 
-        private static readonly string Uri = "ws://192.168.137.195:9090";
+        private static readonly string Uri = "ws://172.30.113.96:9090";
         private static RosSocket RosSocket;
         private ManualResetEvent OnMessageReceived = new ManualResetEvent(false);
         private ManualResetEvent OnServiceReceived = new ManualResetEvent(false);

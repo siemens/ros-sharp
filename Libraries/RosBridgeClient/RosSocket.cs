@@ -33,7 +33,7 @@ namespace RosSharp.RosBridgeClient
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
         private Dictionary<string, ServiceConsumer> ServiceConsumers = new Dictionary<string, ServiceConsumer>();
-        private ISerializer Serializer;
+        internal ISerializer Serializer;
         private object SubscriberLock = new object();
 
         public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.Microsoft)
