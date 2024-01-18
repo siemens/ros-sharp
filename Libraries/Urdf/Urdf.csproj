@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>RosSharp.Urdf</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputPath>$(SolutionDir)CombinedOutput\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
