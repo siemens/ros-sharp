@@ -1,0 +1,33 @@
+# © Siemens AG, 2024
+# Author: Mehmet Emre Cakal (emre.cakal@siemens.com)
+
+name: Build ROS#
+
+on:
+  push:
+    branches: [ "workflow-test" ]
+    
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+
+    - name: Restore NuGet
+      run: nuget restore .\Libraries\RosSharp.sln
+ 
+    - name: Restore dependencies
+      run: dotnet restore .\Libraries\RosSharp.sln
+      
+    - name: Build
+      run: dotnet build .\Libraries\RosSharp.sln 
+
