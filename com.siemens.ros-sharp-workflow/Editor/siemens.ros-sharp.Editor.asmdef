@@ -1,0 +1,16 @@
+{
+    "name": "siemens.ros-sharp.Editor",
+    "rootNamespace": "",
+    "references": [
+        "siemens.ros-sharp.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

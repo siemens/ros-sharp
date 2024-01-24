@@ -1,18 +1,23 @@
 {
-    "name": "com.siemens.ros-sharp-workflow",
-    "displayName": "ros-sharp-workflow",
-    "version": "1.7.1",
+    "name": "com.siemens.ros-sharp",
+    "displayName": "ROS#",
+    "version": "1.8.0",
     "unity": "2019.4",
     "description": "Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) example scenes and reference code",
     "keywords": [
            "Unity",
            "Ros",
-           "Urdf"
+           "ROS",
+           "Ros2",
+           "ROS2",
+           "import",
+           "Urdf",
+           "Robot"
        ],
     "homepage": "https://github.com/siemens/ros-sharp/",
     "bugs": {
        "url": "https://github.com/siemens/ros-sharp/issues",
-       "email" : "ros-sharp@siemens.com"
+       "email" : "ros-sharp.ct@siemens.com"
      },
     "repository": {
         "type": "git",
