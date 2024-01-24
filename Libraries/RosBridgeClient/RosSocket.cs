@@ -29,6 +29,17 @@ namespace RosSharp.RosBridgeClient
         public IProtocol protocol;
         public enum SerializerEnum { Microsoft, Newtonsoft_JSON }
 
+        //public SerializerEnum SerializerType;
+        //public ISerializer Serializer
+        //{
+        //    get { return serializerDictionary[SerializerType]; }
+        //}
+        //// typeof
+        //private readonly Dictionary<SerializerEnum, ISerializer> serializerDictionary = new Dictionary<SerializerEnum, ISerializer>()
+        //{
+        //    { SerializerEnum.Microsoft, MicrosoftSerializer},
+        //    { SerializerEnum.Newtonsoft_JSON, MicrosoftSerializer}
+        //};
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
