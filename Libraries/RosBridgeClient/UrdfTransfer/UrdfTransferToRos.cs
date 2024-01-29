@@ -39,7 +39,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             this.urdfFilePath = urdfFilePath;
             this.rosPackage = rosPackage;
 
-            serializerEnum = RosSocket.Serializer.GetSerializerEnum();
+            serializerEnum = RosSocket.SerializerType;
 
             Status = new Dictionary<string, ManualResetEvent>
             {

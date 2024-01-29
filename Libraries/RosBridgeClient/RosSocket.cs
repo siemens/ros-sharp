@@ -29,17 +29,13 @@ namespace RosSharp.RosBridgeClient
         public IProtocol protocol;
         public enum SerializerEnum { Microsoft, Newtonsoft_JSON }
 
-        //public SerializerEnum SerializerType;
-        //public ISerializer Serializer
-        //{
-        //    get { return serializerDictionary[SerializerType]; }
-        //}
-        //// typeof
-        //private readonly Dictionary<SerializerEnum, ISerializer> serializerDictionary = new Dictionary<SerializerEnum, ISerializer>()
-        //{
-        //    { SerializerEnum.Microsoft, MicrosoftSerializer},
-        //    { SerializerEnum.Newtonsoft_JSON, MicrosoftSerializer}
-        //};
+        public SerializerEnum SerializerType;
+        
+        private readonly Dictionary<SerializerEnum, ISerializer> serializerDictionary = new Dictionary<SerializerEnum, ISerializer>()
+        {
+            { SerializerEnum.Microsoft, new MicrosoftSerializer()},
+            { SerializerEnum.Newtonsoft_JSON, new NewtonsoftJsonSerializer()}
+        };
         private Dictionary<string, Publisher> Publishers = new Dictionary<string, Publisher>();
         private Dictionary<string, Subscriber> Subscribers = new Dictionary<string, Subscriber>();
         private Dictionary<string, ServiceProvider> ServiceProviders = new Dictionary<string, ServiceProvider>();
@@ -50,19 +46,16 @@ namespace RosSharp.RosBridgeClient
         public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.Microsoft)
         {
             this.protocol = protocol;
-            switch (serializer)
+
+            if (serializerDictionary.TryGetValue(serializer, out Serializer))
             {
-                case SerializerEnum.Microsoft:
-                    {
-                        Serializer = new MicrosoftSerializer();
-                        break;
-                    }
-                case SerializerEnum.Newtonsoft_JSON:
-                    {
-                        Serializer = new NewtonsoftJsonSerializer();
-                        break;
-                    }
+                SerializerType = serializer;
             }
+            else
+            {
+                throw new ArgumentException("Invalid serializer type specified.");
+            }
+
             this.protocol.OnReceive += (sender, e) => Receive(sender, e);
             this.protocol.Connect();
         }
