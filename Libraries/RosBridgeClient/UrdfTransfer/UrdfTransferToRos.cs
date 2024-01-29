@@ -30,7 +30,6 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private string urdfFilePath;
         private string assetRootFolder;
         private string rosPackage;
-        private RosSocket.SerializerEnum serializerEnum;
 
         public UrdfTransferToRos(RosSocket rosSocket, string robotName, string urdfFilePath, string rosPackage)
         {
@@ -38,8 +37,6 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             RobotName = robotName;
             this.urdfFilePath = urdfFilePath;
             this.rosPackage = rosPackage;
-
-            serializerEnum = RosSocket.SerializerType;
 
             Status = new Dictionary<string, ManualResetEvent>
             {
@@ -54,23 +51,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         public override void Transfer()
         {
             //Publish robot name param
-            switch(serializerEnum)
-            {
-                case RosSocket.SerializerEnum.Microsoft: //for system.text.json
-                    {
-                        RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
+            RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
                         SetRobotNameHandler,
-                        new rosapi.SetParamRequest("/robot/name", System.Text.Json.JsonSerializer.Serialize(RobotName)));    
-                        break;
-                    }
-                case RosSocket.SerializerEnum.Newtonsoft_JSON: //for Newtonsoft.Json
-                    {
-                        RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
-                        SetRobotNameHandler,
-                        new rosapi.SetParamRequest("/robot/name", Newtonsoft.Json.JsonConvert.SerializeObject(RobotName))); 
-                        break;
-                    }
-            }        
+                        new rosapi.SetParamRequest("/robot/name", RobotName));
 
             PublishRobotDescription();
 
@@ -83,23 +66,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             FixPackagePaths(urdfXDoc);
 
             //Publish /robot_description param
-            switch (serializerEnum)
-            {
-                case RosSocket.SerializerEnum.Microsoft: //for system.text.json
-                    {
-                        RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
+            RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
                         SetRobotDescriptionHandler,
-                        new rosapi.SetParamRequest("/robot_description", System.Text.Json.JsonSerializer.Serialize(urdfXDoc.ToString())));    
-                        break;
-                    }
-                case RosSocket.SerializerEnum.Newtonsoft_JSON: //for Newtonsoft.Json
-                    {
-                        RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>("/rosapi/set_param",
-                        SetRobotDescriptionHandler,
-                        new rosapi.SetParamRequest("/robot_description", Newtonsoft.Json.JsonConvert.SerializeObject(urdfXDoc.ToString()))); 
-                        break;
-                    }
-            }
+                        new rosapi.SetParamRequest("/robot_description", urdfXDoc.ToString()));
 
             //Send URDF file to ROS package
             string urdfPackagePath = "package://" + rosPackage + "/" + Path.GetFileName(urdfFilePath);
