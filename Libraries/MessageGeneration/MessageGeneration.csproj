@@ -3,7 +3,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)CombinedOutput\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -19,4 +18,11 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
+  <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
+    <!-- Copy the new DLLs to the combined output folder -->
+    <ItemGroup>
+      <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
+  </Target>
 </Project>
