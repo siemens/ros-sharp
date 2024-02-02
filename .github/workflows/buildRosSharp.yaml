@@ -1,11 +1,11 @@
 # © Siemens AG, 2024
 # Author: Mehmet Emre Cakal (emre.cakal@siemens.com)
 
-name: Build ROS#
+name: Build ROS# and Update UPM
 
 on:
   push:
-    branches: [ "workflow-test" ]
+    branches: [ "main" ]
     
 jobs:
   build:
@@ -27,7 +27,37 @@ jobs:
  
     - name: Restore dependencies
       run: dotnet restore .\Libraries\RosSharp.sln
+
+    - name: Create CombinedOutput Directory
+      run: New-Item -ItemType Directory -Path .\Libraries\CombinedOutput -Force
       
     - name: Build
-      run: dotnet build .\Libraries\RosSharp.sln 
+      run: dotnet publish -c Release .\Libraries\RosSharp.sln
+
+    - name: Clean and Copy DLLs to Target Folder
+      run: |
+        Remove-Item -Path .\com.siemens.ros-sharp-workflow\Plugins\* -Recurse -Force
+        Copy-Item .\Libraries\CombinedOutput\*.dll .\com.siemens.ros-sharp-workflow\Plugins\
+
+    - name: Create and Fill the 'Runtime' asmdef File
+      run: |
+        $asmdefContent = @{
+            name = "siemens.ros-sharp-workflow.Runtime"
+            rootNamespace = ""
+            references = @()
+            includePlatforms = @()
+            excludePlatforms = @()
+            allowUnsafeCode = $false
+            overrideReferences = $true
+            precompiledReferences = (Get-ChildItem -Path .\Libraries\CombinedOutput -Filter *.dll | ForEach-Object { $_.Name })
+            autoReferenced = $true
+            defineConstraints = @()
+            versionDefines = @()
+            noEngineReferences = $false
+        } | ConvertTo-Json
+
+        Remove-Item -Path .\com.siemens.ros-sharp-workflow\Runtime\siemens.ros-sharp-workflow.Runtime.asmdef -Force
+        New-Item -Path .\com.siemens.ros-sharp-workflow\Runtime -Name siemens.ros-sharp-workflow.Runtime.asmdef -ItemType File
+        Set-Content -Path .\com.siemens.ros-sharp-workflow\Runtime\siemens.ros-sharp-workflow.Runtime.asmdef -Value $asmdefContent
+
 

@@ -3,7 +3,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)CombinedOutput\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -21,11 +20,18 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
+
+  <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
+    <!-- Copy the new DLLs to the combined output folder -->
+    <ItemGroup>
+      <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
+  </Target>
 </Project>
