@@ -10,10 +10,7 @@
     "Newtonsoft.Json.dll",
     "websocket-sharp.dll",
     "System.Text.Json.dll",
-    "System.Threading.dll",
     "System.Threading.Channels.dll",
-    "System.Threading.Tasks.dll",
-    "System.Threading.Tasks.Extensions.dll",
     "Microsoft.Bcl.AsyncInterfaces.dll"
   ],
   "noEngineReferences": false,
