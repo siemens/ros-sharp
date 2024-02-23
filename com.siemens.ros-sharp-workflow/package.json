@@ -27,5 +27,22 @@
     "author": {
             "name": "Siemens ROS# Team",
             "email": "ros-sharp.ct@siemens.com"
+      },
+    "samples": [
+      {
+          "displayName": "Fibonacci Action Scene",
+          "description": "Sample scene for Fibonacci example. See the wiki for more information.",
+          "path": "Samples~/FibonacciActionScene"
+      },
+      {
+          "displayName": "Gazebo Simulation Scene",
+          "description": "Sample scene for Gazebo example. See the wiki for more information.",
+          "path": "Samples~/GazeboSimulationScene"
+      },
+      {
+          "displayName": "Unity Simulation Scene",
+          "description": "Sample scene for simulation example. See the wiki for more information.",
+          "path": "Samples~/UnitySimulationScene"
       }
+    ]
   }

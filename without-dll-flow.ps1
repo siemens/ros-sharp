@@ -29,4 +29,4 @@ Get-ChildItem -Path $targetDir -Recurse -Directory | Where-Object { $foldersToDe
 }
 
 # Display the contents of the target directory for verification
-#Get-ChildItem -Path $targetDir -Recurse
+Get-ChildItem -Path $targetDir -Recurse
