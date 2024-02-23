@@ -1,11 +1,14 @@
-# test_workflow.ps1
+# Siemens AG 2024
+# Author: Mehmet Emre Cakal <emre.cakal@siemens.com>
+
+# Run from root folder 
 
 # Define the source directories
 $sourceDirs = @("Libraries\MessageGeneration", "Libraries\RosBridgeClient", "Libraries\Urdf")
 
 # Define the target directory
-$targetDir = "com.siemens.ros-sharp-workflow\Runtime\Libraries"
-$packLibraryDir = "com.siemens.ros-sharp-workflow\Runtime";
+$targetDir = "com.siemens.ros-sharp\Runtime\Libraries"
+$packLibraryDir = "com.siemens.ros-sharp\Runtime";
 
 # Recreate the target directory
 Remove-Item -Recurse -Force $targetDir
