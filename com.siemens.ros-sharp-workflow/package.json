@@ -3,7 +3,7 @@
     "displayName": "ROS#",
     "version": "2.0.0",
     "unity": "2022.3",
-    "description": "Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) example scenes and reference code",
+    "description": "ROS# is a ROS bridge for the .NET ecosystem, enabling communication and control of robots and robotic systems using C# and other .NET platforms. Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient)",
     "keywords": [
            "Unity",
            "Ros",

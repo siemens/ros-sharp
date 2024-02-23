@@ -1,1 +1,1 @@
-ROS# now supports .NET 8.0 🎉🎊 
+Please see https://github.com/siemens/ros-sharp/releases
