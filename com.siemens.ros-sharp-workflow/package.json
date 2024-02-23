@@ -1,8 +1,8 @@
 {
     "name": "com.siemens.ros-sharp-workflow",
     "displayName": "ROS#",
-    "version": "1.7.2",
-    "unity": "2019.4",
+    "version": "2.0.0",
+    "unity": "2022.3",
     "description": "Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) example scenes and reference code",
     "keywords": [
            "Unity",
@@ -25,7 +25,7 @@
     },
     "license": "Apache License Version 2.0",
     "author": {
-            "name": "Martin Bischoff",
-            "email": "martin.bischoff@siemens.com"
+            "name": "Siemens ROS# Team",
+            "email": "ros-sharp.ct@siemens.com"
       }
   }
