@@ -1,1 +1,0 @@
-ROS# now supports .NET 8.0 🎉🎊 
