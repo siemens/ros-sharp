@@ -15,6 +15,6 @@
   ],
   "noEngineReferences": false,
   "references": [],
-  "name": "siemens.ros-sharp-workflow.Runtime",
+  "name": "siemens.ros-sharp.Runtime",
   "includePlatforms": []
 }

@@ -1,8 +1,8 @@
 {
-    "name": "siemens.ros-sharp-workflow.Editor",
+    "name": "siemens.ros-sharp.Editor",
     "rootNamespace": "",
     "references": [
-        "siemens.ros-sharp-workflow.Runtime"
+        "siemens.ros-sharp.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
