@@ -17,9 +17,9 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class StringPublisher : UnityPublisher<MessageTypes.Std.String>
+    public class ROSVersionPublisher : UnityPublisher<MessageTypes.Std.String>
     {
-        public string StringData;
+        private string StringData = "Hello ROS";
 
         private MessageTypes.Std.String message;
 
@@ -33,6 +33,7 @@ namespace RosSharp.RosBridgeClient
         private void FixedUpdate()
         {
             UpdateMessage();
+            Debug.Log("Publishing \"" + message.data + "\" over topic \"/" + this.Topic + "\"");
         }
 
         private void InitializeMessage()
@@ -41,7 +42,11 @@ namespace RosSharp.RosBridgeClient
         }
         public void UpdateMessage()
         {
-            message.data = StringData;
+            #if ROS2
+            message.data = StringData + "2!";
+            #else
+            message.data = StringData + "1!";
+            #endif
             Publish(message);
         }
 
