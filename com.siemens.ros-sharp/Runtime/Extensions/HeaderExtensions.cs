@@ -16,6 +16,9 @@ limitations under the License.
 // Added allocation free alternatives
 // UoK , 2019, Odysseas Doumas (od79@kent.ac.uk / odydoum@gmail.com) 
 
+// Added preprocessor directive flag for ROS2 support
+// Siemens AG , 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com) 
+
 namespace RosSharp.RosBridgeClient
 {
     public static class HeaderExtensions
@@ -24,7 +27,9 @@ namespace RosSharp.RosBridgeClient
 
         public static void Update(this MessageTypes.Std.Header header)
         {
+            #if !ROS2
             header.seq++;
+            #endif
             timer.Now(header.stamp);
         }
     }

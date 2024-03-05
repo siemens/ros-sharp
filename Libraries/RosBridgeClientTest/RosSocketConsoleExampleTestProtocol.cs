@@ -13,6 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Added preprocessor directive flags for ROS2 support
+// Siemens AG , 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com) 
+
 using System;
 using RosSharp.RosBridgeClient;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
@@ -52,7 +55,9 @@ namespace RosSharp.RosBridgeClientTest
             Console.ReadKey(true);
             for (int i = 0; i < 100000; i++)
             {
+#if !ROS2
                 image.header.seq += 1;
+#endif
                 image.data = Enumerable.Repeat((byte)0x20, ImageDataSize).ToArray();
                 rosSocket.Publish(publication_id, image);
             }

@@ -41,7 +41,11 @@ namespace RosSharp.RosBridgeClient
         }
         public void UpdateMessage()
         {
-            message.data = StringData;
+            #if ROS2
+            message.data = StringData + " ROS2!";
+            #else
+            message.data = StringData + " ROS1!";
+            #endif
             Publish(message);
         }
 

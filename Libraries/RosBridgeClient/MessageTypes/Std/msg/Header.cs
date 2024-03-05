@@ -18,11 +18,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         //  in a particular coordinate frame.
         //  
         //  sequence ID: consecutively increasing ID 
+#if !ROS2
         public uint seq { get; set; }
         // Two-integer timestamp that is expressed as:
         //  * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
         //  * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
         //  time-handling sugar is provided by the client library
+#endif
         public Time stamp { get; set; }
         // Frame this data is associated with
         //  0: no frame
@@ -31,16 +33,25 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 
         public Header()
         {
+#if !ROS2
             this.seq = 0;
+#endif
             this.stamp = new Time();
             this.frame_id = "";
         }
-
+#if ROS2
+        public Header(Time stamp, string frame_id)
+        {
+            this.stamp = stamp;
+            this.frame_id = frame_id;
+        }
+#else
         public Header(uint seq, Time stamp, string frame_id)
         {
             this.seq = seq;
             this.stamp = stamp;
             this.frame_id = frame_id;
         }
+#endif
     }
 }

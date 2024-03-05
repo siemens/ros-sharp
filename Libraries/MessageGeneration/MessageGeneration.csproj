@@ -3,6 +3,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Configurations>Debug;Release;ROS2</Configurations>
 	</PropertyGroup>
 	<PropertyGroup>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,7 +34,7 @@
 			<PackLibraryDir>$(SolutionDir)\..\\com.siemens.ros-sharp\\Runtime</PackLibraryDir>
 		</PropertyGroup>
 		<Exec Command="powershell.exe -NonInteractive -executionpolicy Unrestricted -command &quot;$solutionDir = '$(SolutionDir)';$sourceDirs=Join-Path $solutionDir '\MessageGeneration';$targetDir= Join-Path $solutionDir '\..\com.siemens.ros-sharp\Runtime\Libraries';$packLibraryDir= Join-Path $solutionDir '\..\com.siemens.ros-sharp\Runtime';Remove-Item -Recurse -Force '$(TargetDir)\MessageGeneration';New-Item -ItemType Directory -Path '$(TargetDir)\MessageGeneration' | Out-Null;Get-ChildItem -Path $sourceDirs -Recurse -File -Exclude 'bin','obj','Properties' -Include *.cs | ForEach-Object {$relativePath=$_.FullName.Substring($_.FullName.IndexOf('Libraries'));$destination=Join-Path '$(PackLibraryDir)' $relativePath;$null=New-Item -ItemType Directory -Path (Split-Path $destination) -Force;Copy-Item $_.FullName -Destination $destination -Force};$foldersToDelete=@('obj','Properties');Get-ChildItem -Path '$(TargetDir)' -Recurse -Directory | Where-Object {$foldersToDelete -contains $_.Name} | ForEach-Object {Remove-Item $_.FullName -Recurse -Force};#Get-ChildItem -Path '$(TargetDir)' -Recurse&quot;" />
-		<Message Text="Updated UPM->MessageGeneration." Importance="High" />
+		<Message Text="Updated UPM-&gt;MessageGeneration." Importance="High" />
 	</Target>
 
 	<Target Name="PostBuildMessageGenerationNonWin" AfterTargets="PostBuildEvent" Condition=" '$(OS)' != 'Windows_NT' ">
@@ -43,7 +44,7 @@
 			<PackLibraryDir>$(SolutionDir)/../com.siemens.ros-sharp/Runtime</PackLibraryDir>
 		</PropertyGroup>
 		<Exec Command="mkdir -p '$(TargetDir)' &amp;&amp; find . -path './MessageGeneration' -prune -o -type f -name '*.cs' -exec cp --parents {} '$(PackLibraryDir)' \; &amp;&amp; find '$(TargetDir)' -type d \( -name 'bin' -o -name 'obj' -o -name 'Properties' \) -exec rm -r {} + &amp;&amp; find '$(TargetDir)' -type d -empty -delete" />
-		<Message Text="Updated UPM->MessageGeneration." Importance="High" />
+		<Message Text="Updated UPM-&gt;MessageGeneration." Importance="High" />
 	</Target>
 
 	<!-- Both versions do the same thing. They are written in one-line syntax due to XML limitations. Here's a more readable syntax:-->
