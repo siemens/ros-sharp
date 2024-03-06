@@ -19,7 +19,9 @@ namespace RosSharp.RosBridgeClient
             {
                 rosConnector.selectedROSVersion = newSelectedROSVersion;
 
-                // Combine all actions when the dropdown changes
+                // Combine all actions when the dropdown changes:
+                //  If different scenes in a single project works with different ROS versions, this
+                // function needs to be called again. Switching scenes does not switch ROS version!
                 ToggleROSVersion(rosConnector.selectedROSVersion);
             }
         }
@@ -45,14 +47,13 @@ namespace RosSharp.RosBridgeClient
             // Set scripting define symbols
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, defines);
 
-            // Rebuild assemblies
-            RebuildAssemblies();
+            // Execute Assembly Builder (for specific assembliy update, check RebuildAssemblies)
+            AssetDatabase.Refresh();
         }
 
-        // Execute Assembly Builder.Build
         private static void RebuildAssemblies()
         {
-            // Just to be safe: rebuilding all assemblies
+            // Pick desired assembly (or all in this example)   
             string[] allAssemblyPaths = AssetDatabase.GetAllAssetPaths();
             foreach (string assemblyPath in allAssemblyPaths)
             {
