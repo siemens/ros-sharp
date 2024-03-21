@@ -29,6 +29,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         private string inPkgPath = "";
         private string rosPackageName = "";
+        protected bool toggleROS2 = true;
         private string outPkgPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
 
         protected abstract string GenerationType { get; }
@@ -38,8 +39,11 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         {
             GUILayout.Label("Package " + GenerationType + " auto generation", EditorStyles.boldLabel);
 
+            toggleROS2 = GUILayout.Toggle(toggleROS2, "ROS2 Message");
+            
             EditorGUILayout.BeginHorizontal();
             inPkgPath = EditorGUILayout.TextField("Input Package Path", inPkgPath);
+            
             if (GUILayout.Button("Browse Package...", GUILayout.Width(150)))
             {
                 inPkgPath = EditorUtility.OpenFolderPanel("Select Package...", lastPackageDirectory, "");
@@ -97,7 +101,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                                     (i + 1) / (float)files.Length);
                                 try
                                 {
-                                    warnings.AddRange(Generate(file, outPkgPath, rosPackageName));
+                                    warnings.AddRange(Generate(file, outPkgPath, toggleROS2, rosPackageName));
                                 }
                                 catch (MessageTokenizerException e)
                                 {
@@ -164,6 +168,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             outPkgPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
         }
 
-        protected abstract List<string> Generate(string inPath, string outPath, string rosPackageName = "");
+        protected abstract List<string> Generate(string inPath, string outPath, bool isROS2, string rosPackageName = "");
     }
 }

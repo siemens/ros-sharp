@@ -25,6 +25,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
     public class MessageAutoGen
     {
+        public static bool isROS2 = true;
         public static List<string> GenerateSingleMessage(string inPath, string outPath, string rosPackageName = "", bool verbose = false)
         {
             // If no ROS package name is provided, extract from path
@@ -52,7 +53,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     throw new MessageParserException("Unexpected number of sections. Simple message should have 1 section.");
                 }
 
-                MessageParser parser = new MessageParser(listOfTokens[0], outPath, rosPackageName, "msg", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues);
+                MessageParser parser = new MessageParser(listOfTokens[0], outPath, rosPackageName, "msg", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, isROS2: isROS2);
                 parser.Parse();
                 return parser.GetWarnings();
             }
