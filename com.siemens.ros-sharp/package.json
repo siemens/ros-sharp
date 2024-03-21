@@ -30,9 +30,9 @@
       },
     "samples": [
       {
-        "displayName": "ROS Version Switch Example",
+        "displayName": "ROS Version Publisher",
         "description": "Sample scene and script to demonstrate preprocessor directives usage for different ROS versions.",
-        "path": "Samples~/ROSVersionSwitch/"
+        "path": "Samples~/ROSVersionPublisher/"
       },
       {
           "displayName": "Fibonacci Action Scene",
