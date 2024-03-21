@@ -27,24 +27,4 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
 	</Target>
-
-	<!-- Following two Target tags copy updated source to the unity package after each build depending on the OS.-->
-	<Target Name="PostBuildUrdfWin" AfterTargets="PostBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">
-		<PropertyGroup>
-			<TargetDir>$(SolutionDir)\..\\com.siemens.ros-sharp\\Runtime\\Libraries</TargetDir>
-			<PackLibraryDir>$(SolutionDir)\..\\com.siemens.ros-sharp\\Runtime</PackLibraryDir>
-		</PropertyGroup>
-		<Exec Command="powershell.exe -NonInteractive -executionpolicy Unrestricted -command &quot;$solutionDir = '$(SolutionDir)';$sourceDirs=Join-Path $solutionDir '\Urdf';$targetDir= Join-Path $solutionDir '\..\com.siemens.ros-sharp\Runtime\Libraries';$packLibraryDir= Join-Path $solutionDir '\..\com.siemens.ros-sharp\Runtime';Remove-Item -Recurse -Force '$(TargetDir)\Urdf';New-Item -ItemType Directory -Path '$(TargetDir)\Urdf' | Out-Null;Get-ChildItem -Path $sourceDirs -Recurse -File -Exclude 'bin','obj','Properties' -Include *.cs | ForEach-Object {$relativePath=$_.FullName.Substring($_.FullName.IndexOf('Libraries'));$destination=Join-Path '$(PackLibraryDir)' $relativePath;$null=New-Item -ItemType Directory -Path (Split-Path $destination) -Force;Copy-Item $_.FullName -Destination $destination -Force};$foldersToDelete=@('obj','Properties');Get-ChildItem -Path '$(TargetDir)' -Recurse -Directory | Where-Object {$foldersToDelete -contains $_.Name} | ForEach-Object {Remove-Item $_.FullName -Recurse -Force};#Get-ChildItem -Path '$(TargetDir)' -Recurse&quot;" />
-		<Message Text="Updated UPM-&gt;Urdf." Importance="High" />
-	</Target>
-
-	<Target Name="PostBuildUrdfNonWin" AfterTargets="PostBuildEvent" Condition=" '$(OS)' != 'Windows_NT' ">
-		<PropertyGroup>
-			<SolutionDir>$(SolutionDir)</SolutionDir>
-			<TargetDir>$(SolutionDir)/../com.siemens.ros-sharp/Runtime/Libraries</TargetDir>
-			<PackLibraryDir>$(SolutionDir)/../com.siemens.ros-sharp/Runtime</PackLibraryDir>
-		</PropertyGroup>
-		<Exec Command="mkdir -p '$(TargetDir)' &amp;&amp; find . -path './Urdf' -prune -o -type f -name '*.cs' -exec cp --parents {} '$(PackLibraryDir)' \; &amp;&amp; find '$(TargetDir)' -type d \( -name 'bin' -o -name 'obj' -o -name 'Properties' \) -exec rm -r {} + &amp;&amp; find '$(TargetDir)' -type d -empty -delete" />
-		<Message Text="Updated UPM-&gt;Urdf." Importance="High" />
-	</Target>
 </Project>
