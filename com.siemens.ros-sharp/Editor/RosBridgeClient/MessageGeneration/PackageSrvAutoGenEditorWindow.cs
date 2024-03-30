@@ -42,7 +42,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         protected override List<string> Generate(string inPath, string outPath, bool isRos2, string rosPackageName = "")
         {
-            //todo: Do I need this?
+            ServiceAutoGen.isRos2 = isRos2;
             return ServiceAutoGen.GenerateSingleService(inPath, outPath, rosPackageName);
         }
     }

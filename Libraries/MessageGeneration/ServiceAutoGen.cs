@@ -22,6 +22,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 {
     public class ServiceAutoGen
     {
+        public static bool isRos2 = true;
         private static readonly string[] types = {"Request", "Response"};
 
         public static List<string> GenerateSingleService(string inPath, string outPath, string rosPackageName = "", bool verbose = false)
@@ -60,7 +61,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 // Service is made up of request and response
                 string className = inFileName + types[i];
 
-                MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "srv", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className);
+                MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "srv", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className, isRos2: isRos2);
                 parser.Parse();
                 warnings.AddRange(parser.GetWarnings());
             }
