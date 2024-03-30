@@ -32,34 +32,19 @@ The latest release is also being published in the [Unity Asset Store](https://as
 
 Please get the latest development version directly from the [tip of this master branch](https://github.com/siemens/ros-sharp).
 
-## Unity Robotics Hub ##
-In 11/2020 Unity launched [Unity Robotics Hub](https://github.com/Unity-Technologies/Unity-Robotics-Hub) and included a major part of ROS#.
-* [Short Description](https://github.com/siemens/ros-sharp/wiki/Ext_UnityRoboticsHub) on Unity Robotics Hub written by Unity developers
-* [Differences](https://github.com/siemens/ros-sharp/wiki/Ext_RosSharp_RoboticsHub) between ROS# and Unity Robotics Hub
-
-We are in close contact with the developers and decided to run both initiatives in parallel.
-
-## Licensing ##
-
-ROS# is open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) and is free for commercial use.
-
 ## External Dependencies ##
 
 [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) requires:
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) (MIT License)
-* [Newtonsoft.Json.Bson](https://github.com/JamesNK/Newtonsoft.Json.Bson) (MIT License)
 * [websocket-sharp](https://github.com/sta/websocket-sharp) (MIT License), required only when using [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)
 
 ## Platform Support ##
 
 * [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on a variety of other platforms community members.
 
-* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET Framework 4.6.1 and Visual Studio 2017 or higher.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) has been developed with Unity Version 2019.4.18f (LTS) and should be compatible also with older versions.
-In Versions below 2019.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
-
-* Please find a UWP version of ROS# [here](https://github.com/EricVoll/ros-sharp).
-* Please find a .NET Standard 2.0 version of UrdfImporter [here](https://github.com/blommers/UdrfImporter).
+* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET 8 and Visual Studio 2022 or higher.
+* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) has been developed with Unity Version 2022.3.17f1 (LTS) and should be compatible also with older versions.
+In Versions below 2022.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
 
 ## Further Info ##
 
@@ -69,6 +54,6 @@ In Versions below 2019.3, make sure to set the scripting runtime version to `.NE
 
 ---
 
-© Siemens AG, 2017-2021
+© Siemens AG, 2017-2024
 
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
