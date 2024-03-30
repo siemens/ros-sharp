@@ -168,6 +168,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             outPkgPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
         }
 
-        protected abstract List<string> Generate(string inPath, string outPath, bool isROS2, string rosPackageName = "");
+        protected abstract List<string> Generate(string inPath, string outPath, bool isRos2, string rosPackageName = "");
     }
 }
