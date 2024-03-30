@@ -30,6 +30,9 @@
   <ItemGroup>
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MessageTypes\ROS2\" />
+  </ItemGroup>
 
   <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
     <!-- Copy the new DLLs to the combined output folder -->
