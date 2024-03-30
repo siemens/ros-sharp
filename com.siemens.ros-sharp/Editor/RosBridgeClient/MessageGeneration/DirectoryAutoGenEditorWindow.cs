@@ -53,7 +53,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             }
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("GENERATE!"))
+            if (GUILayout.Button("Generate"))
             {
                 if (inPath.Equals(""))
                 {
@@ -157,6 +157,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
         }
 
-        protected abstract List<string> Generate(string inPath, string outPath, bool isROS2, string rosPackageName = "");
+        protected abstract List<string> Generate(string inPath, string outPath, bool isRos2, string rosPackageName = "");
     }
 }

@@ -50,9 +50,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private string body = "";
 
         private List<string> warnings = new List<string>();
-        protected bool isROS2;
+        protected bool isRos2;
 
-        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "", bool isROS2 = true) {
+        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "", bool isRos2 = true) {
             this.tokens = tokens;
 
             this.inFilePath = tokens[0].content;
@@ -84,7 +84,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             this.builtInTypeMapping = builtInTypeMapping;
             this.builtInTypesDefaultInitialValues = builtInTypesDefaultInitialValues;
-            this.isROS2 = isROS2;
+            this.isRos2 = isRos2;
         }
 
         public void Parse() {
@@ -108,7 +108,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 }
 
                 // Write preprocessor directive: Begin
-                if (isROS2) 
+                if (isRos2) 
                 {
                     writer.Write("#if ROS2");
                 }
@@ -132,7 +132,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                if (isROS2)
+                if (isRos2)
                 {
                     writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/msg/" + rosMsgName + "\";\n\n");
                 }
