@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private readonly string rosPackageName;
         private readonly string className;
         private readonly string rosMsgName;
-
+        private readonly string type;
         private readonly string outPath;
         private string outFilePath;
 
@@ -59,6 +59,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             this.inFileName = Path.GetFileNameWithoutExtension(inFilePath);
 
             this.rosPackageName = rosPackageName;
+            this.type = type;
 
             if (className.Equals("")) {
                 this.className = MsgAutoGenUtilities.CapitalizeFirstLetter(inFileName);
@@ -134,7 +135,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 // Write ROS package name
                 if (isRos2)
                 {
-                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/msg/" + rosMsgName + "\";\n\n");
+                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + type + "/" + rosMsgName + "\";\n\n");
                 }
                 else 
                 {

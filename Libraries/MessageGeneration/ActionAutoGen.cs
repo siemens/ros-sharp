@@ -329,9 +329,18 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                writer.Write(
-                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
-                    );
+                if (ActionAutoGen.isRos2)
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + "action" + "/" 
+                        + wrapperName + "\";\n");
+                }
+                else
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
+                        );
+                }
 
                 // Record variables
                 // Action Goal
