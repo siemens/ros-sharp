@@ -32,7 +32,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private readonly string rosPackageName;
         private readonly string className;
         private readonly string rosMsgName;
-
+        private readonly string type;
         private readonly string outPath;
         private string outFilePath;
 
@@ -50,14 +50,16 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private string body = "";
 
         private List<string> warnings = new List<string>();
+        protected bool isRos2;
 
-        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "") {
+        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "", bool isRos2 = true) {
             this.tokens = tokens;
 
             this.inFilePath = tokens[0].content;
             this.inFileName = Path.GetFileNameWithoutExtension(inFilePath);
 
             this.rosPackageName = rosPackageName;
+            this.type = type;
 
             if (className.Equals("")) {
                 this.className = MsgAutoGenUtilities.CapitalizeFirstLetter(inFileName);
@@ -83,6 +85,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             this.builtInTypeMapping = builtInTypeMapping;
             this.builtInTypesDefaultInitialValues = builtInTypesDefaultInitialValues;
+            this.isRos2 = isRos2;
         }
 
         public void Parse() {
@@ -105,6 +108,15 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     Line();
                 }
 
+                // Write preprocessor directive: Begin
+                if (isRos2) 
+                {
+                    writer.Write("#if ROS2");
+                }
+                else 
+                {
+                    writer.Write("#if !ROS2");
+                }
                 // Write imports
                 writer.Write(GenerateImports());
 
@@ -121,7 +133,14 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");
+                if (isRos2)
+                {
+                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + type + "/" + rosMsgName + "\";\n\n");
+                }
+                else 
+                {
+                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");                   
+                }
 
                 // Write body
                 writer.Write(body);
@@ -138,6 +157,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(MsgAutoGenUtilities.ONE_TAB + "}\n");
                 // Close namespace
                 writer.Write("}\n");
+
+                // Write preprocessor directive: End
+                writer.Write("#endif\n");
 
                 writer.Flush();
                 writer.Close();

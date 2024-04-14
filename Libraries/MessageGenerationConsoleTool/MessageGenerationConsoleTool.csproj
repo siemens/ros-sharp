@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>RosMsgGen</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>RosSharp.RosBridgeClient.MessageGenerationConsoleTool.RosMsgGen</StartupObject>

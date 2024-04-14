@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -10,9 +11,12 @@
     <Description>.NET API to ROS via rosbridge_suite</Description>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
-    <Copyright>Copyright © 2021</Copyright>
-    <AssemblyVersion>1.7.0.0</AssemblyVersion>
-    <FileVersion>1.7.0.0</FileVersion>
+    <Copyright>Copyright © 2024</Copyright>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ROS2|AnyCPU'">
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
@@ -26,6 +30,9 @@
   <ItemGroup>
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MessageTypes\ROS2\" />
+  </ItemGroup>
 
   <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
     <!-- Copy the new DLLs to the combined output folder -->
@@ -33,5 +40,9 @@
       <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="cd ..&#xD;&#xA;cd ..&#xD;&#xA;if &quot;$(OS)&quot; == &quot;Windows_NT&quot; (&#xD;&#xA; powershell.exe -ExecutionPolicy Bypass -File .\Libraries\PostBuildEvents\UpdateUPM_Win.ps1&#xD;&#xA;) else (&#xD;&#xA;  ./Libraries/PostBuildEvents/UpdateUPM_NonWin.sh&#xD;&#xA;)" />
   </Target>
 </Project>

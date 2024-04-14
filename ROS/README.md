@@ -17,6 +17,6 @@ __Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further i
 
 ---
 
-© Siemens AG, 2017-2019
+© Siemens AG, 2017-2024
 
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)

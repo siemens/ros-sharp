@@ -21,8 +21,10 @@ limitations under the License.
 // Added allocation free alternatives
 // UoK , 2019, Odysseas Doumas (od79@kent.ac.uk / odydoum@gmail.com) 
 
+// Added preprocessor directive flags for ROS2 support
+// Siemens AG , 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com) 
+
 using System;
-using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -30,6 +32,7 @@ namespace RosSharp.RosBridgeClient
     {
         public static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
+#if !ROS2
         public virtual MessageTypes.Std.Time Now()
         {
             Now(out uint secs, out uint nsecs);
@@ -50,5 +53,27 @@ namespace RosSharp.RosBridgeClient
             secs = (uint)(msecs / 1000);
             nsecs = (uint)((msecs / 1000 - secs) * 1e+9);
         }
+#else
+        public virtual MessageTypes.BuiltinInterfaces.Time Now()
+        {
+            Now(out uint sec, out uint nanosec);
+            return new MessageTypes.BuiltinInterfaces.Time((int)sec, nanosec);
+        }
+
+        public virtual void Now(MessageTypes.BuiltinInterfaces.Time stamp)
+        {
+            uint sec; uint nanosec;
+            Now(out sec, out nanosec);
+            stamp.sec = (int)sec; stamp.nanosec = nanosec;
+        }
+
+        private static void Now(out uint sec, out uint nanosec)
+        {
+            TimeSpan timeSpan = DateTime.Now.ToUniversalTime() - UNIX_EPOCH;
+            double msecs = timeSpan.TotalMilliseconds;
+            sec = (uint)(msecs / 1000);
+            nanosec = (uint)((msecs / 1000 - sec) * 1e+9);
+        }
+#endif    
     }
 }

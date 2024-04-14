@@ -30,19 +30,24 @@
       },
     "samples": [
       {
+        "displayName": "ROS Version Publisher",
+        "description": "Sample scene and script to demonstrate preprocessor directives usage for different ROS versions.",
+        "path": "Samples~/ROSVersionPublisher/"
+      },
+      {
           "displayName": "Fibonacci Action Scene",
           "description": "Sample scene for Fibonacci example. See the wiki for more information.",
-          "path": "Samples~/FibonacciActionScene"
+          "path": "Samples~/FibonacciAction/"
       },
       {
           "displayName": "Gazebo Simulation Scene",
           "description": "Sample scene for Gazebo example. See the wiki for more information.",
-          "path": "Samples~/GazeboSimulationScene"
+          "path": "Samples~/GazeboSimulation/"
       },
       {
           "displayName": "Unity Simulation Scene",
           "description": "Sample scene for simulation example. See the wiki for more information.",
-          "path": "Samples~/UnitySimulationScene"
+          "path": "Samples~/UnitySimulation/"
       }
     ]
   }

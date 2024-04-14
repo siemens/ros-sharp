@@ -22,6 +22,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 {
     public class ActionAutoGen
     {
+        public static bool isRos2 = true;
         private static readonly string[] types = {"Goal", "Result", "Feedback"};
 
         public static List<string> GenerateSingleAction(string inPath, string outPath, string rosPackageName = "", bool verbose = false) {
@@ -61,7 +62,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 string className = inFileName + types[i];
 
                 // Parse and generate goal, result, feedback messages
-                MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "action", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className, className);
+                MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "action", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className, className, isRos2: isRos2);
                 parser.Parse();
                 warnings.AddRange(parser.GetWarnings());
 
@@ -228,6 +229,16 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 // Write block comment
                 writer.Write(MsgAutoGenUtilities.BLOCK_COMMENT + "\n");
 
+                // Write preprocessor directive: Begin
+                if (ActionAutoGen.isRos2)
+                {
+                    writer.Write("#if ROS2\n");
+                }
+                else
+                {
+                    writer.Write("#if !ROS2\n");
+                }
+
                 // Write imports
                 writer.Write(imports);
 
@@ -263,6 +274,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(ONE_TAB + "}\n");
                 // Close namespace
                 writer.Write("}\n");
+
+                // Write preprocessor directive: End
+                writer.Write("#endif\n");
             }
         }
 
@@ -280,6 +294,16 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             {
                 // Write block comment
                 writer.Write(MsgAutoGenUtilities.BLOCK_COMMENT + "\n");
+
+                // Write preprocessor directive: Begin
+                if (ActionAutoGen.isRos2)
+                {
+                    writer.Write("#if ROS2\n");
+                }
+                else
+                {
+                    writer.Write("#if !ROS2\n");
+                }
 
                 // Write imports
                 writer.Write(imports);
@@ -305,9 +329,18 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     );
 
                 // Write ROS package name
-                writer.Write(
-                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
-                    );
+                if (ActionAutoGen.isRos2)
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + "action" + "/" 
+                        + wrapperName + "\";\n");
+                }
+                else
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
+                        );
+                }
 
                 // Record variables
                 // Action Goal
@@ -324,6 +357,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 writer.Write(ONE_TAB + "}\n");
                 // Close namespace
                 writer.Write("}\n");
+
+                // Write preprocessor directive: End
+                writer.Write("#endif\n");
             }
         }
 

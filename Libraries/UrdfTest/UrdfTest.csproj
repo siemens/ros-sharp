@@ -9,6 +9,7 @@
     <Copyright>Copyright © 2021</Copyright>
     <AssemblyVersion>1.7.0.0</AssemblyVersion>
     <FileVersion>1.7.0.0</FileVersion>
+    <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Urdf\Urdf.csproj" />

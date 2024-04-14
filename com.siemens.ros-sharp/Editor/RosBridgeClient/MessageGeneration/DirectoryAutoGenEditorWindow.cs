@@ -27,13 +27,15 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         private string inPath = "";
         private string outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
-
+        protected bool toggleROS2 = true;
         protected abstract string GenerationType { get; }
         protected abstract string FileExtension { get; }
 
         protected virtual void OnGUI()
         {
             GUILayout.Label("Directory " + GenerationType + " auto generation", EditorStyles.boldLabel);
+            
+            toggleROS2 = GUILayout.Toggle(toggleROS2, "ROS2 Message");
 
             EditorGUILayout.BeginHorizontal();
             inPath = EditorGUILayout.TextField("Input Path", inPath);
@@ -51,7 +53,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             }
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("GENERATE!"))
+            if (GUILayout.Button("Generate"))
             {
                 if (inPath.Equals(""))
                 {
@@ -89,7 +91,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                                         "Working...(" + (i + 1) + "/" + files.Length + ") Checkout xkcd.com/303",
                                         "Parsing " + file,
                                         (i + 1) / (float)files.Length);
-                                    warnings.AddRange(Generate(file, outPath, rosPackageName));
+                                    warnings.AddRange(Generate(file, outPath, toggleROS2, rosPackageName));
                                 }
                                 catch (MessageTokenizerException e)
                                 {
@@ -155,6 +157,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             outPath = Path.Combine(System.Environment.CurrentDirectory, "Assets", "RosSharpMessages");
         }
 
-        protected abstract List<string> Generate(string inPath, string outPath, string rosPackageName = "");
+        protected abstract List<string> Generate(string inPath, string outPath, bool isRos2, string rosPackageName = "");
     }
 }

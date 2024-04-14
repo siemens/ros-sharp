@@ -1,29 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>RosSharp.Urdf</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyTitle>Urdf</AssemblyTitle>
-    <Description>URDF file parser for .NET applications</Description>
-    <Company>Siemens AG</Company>
-    <Product>ROS#</Product>
-    <Copyright>Copyright © 2021</Copyright>
-    <AssemblyVersion>1.7.0.0</AssemblyVersion>
-    <FileVersion>1.7.0.0</FileVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
-    <!-- Copy the new DLLs to the combined output folder -->
-    <ItemGroup>
-      <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
-  </Target>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<OutputType>Library</OutputType>
+		<RootNamespace>RosSharp.Urdf</RootNamespace>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Configurations>Debug;Release;ROS2</Configurations>
+	</PropertyGroup>
+	<PropertyGroup>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<AssemblyTitle>Urdf</AssemblyTitle>
+		<Description>URDF file parser for .NET applications</Description>
+		<Company>Siemens AG</Company>
+		<Product>ROS#</Product>
+		<Copyright>Copyright © 2024</Copyright>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+	</ItemGroup>
+	<Target Name="CopyToCombinedOutput" AfterTargets="Publish">
+		<!-- Copy the new DLLs to the combined output folder -->
+		<ItemGroup>
+			<NewDllFiles Include="$(OutputPath)\publish\*.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
+	</Target>
 </Project>
