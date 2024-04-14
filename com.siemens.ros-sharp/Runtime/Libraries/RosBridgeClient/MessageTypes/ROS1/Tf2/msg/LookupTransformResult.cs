@@ -7,7 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
+using RosSharp.RosBridgeClient.MessageTypes.Tf2;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
@@ -32,3 +35,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         }
     }
 }
+#endif

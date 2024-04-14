@@ -7,10 +7,12 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Float32 : Message
-    { 
+    {
         public const string RosMessageName = "std_msgs/Float32";
 
         public float data { get; set; }
@@ -26,3 +28,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         }
     }
 }
+#endif

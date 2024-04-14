@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
@@ -46,6 +48,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public Header header { get; set; }
         public float voltage { get; set; }
         //  Voltage in Volts (Mandatory)
+        public float temperature { get; set; }
+        //  Temperature in Degrees Celsius (If unmeasured NaN)
         public float current { get; set; }
         //  Negative when discharging (A)  (If unmeasured NaN)
         public float charge { get; set; }
@@ -67,6 +71,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public float[] cell_voltage { get; set; }
         //  An array of individual cell voltages for each cell in the pack
         //  If individual voltages unknown but number of cells known set each to NaN
+        public float[] cell_temperature { get; set; }
+        //  An array of individual cell temperatures for each cell in the pack
+        //  If individual temperatures unknown but number of cells known set each to NaN
         public string location { get; set; }
         //  The location into which the battery is inserted. (slot number or plug)
         public string serial_number { get; set; }
@@ -76,6 +83,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         {
             this.header = new Header();
             this.voltage = 0.0f;
+            this.temperature = 0.0f;
             this.current = 0.0f;
             this.charge = 0.0f;
             this.capacity = 0.0f;
@@ -86,14 +94,16 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.power_supply_technology = 0;
             this.present = false;
             this.cell_voltage = new float[0];
+            this.cell_temperature = new float[0];
             this.location = "";
             this.serial_number = "";
         }
 
-        public BatteryState(Header header, float voltage, float current, float charge, float capacity, float design_capacity, float percentage, byte power_supply_status, byte power_supply_health, byte power_supply_technology, bool present, float[] cell_voltage, string location, string serial_number)
+        public BatteryState(Header header, float voltage, float temperature, float current, float charge, float capacity, float design_capacity, float percentage, byte power_supply_status, byte power_supply_health, byte power_supply_technology, bool present, float[] cell_voltage, float[] cell_temperature, string location, string serial_number)
         {
             this.header = header;
             this.voltage = voltage;
+            this.temperature = temperature;
             this.current = current;
             this.charge = charge;
             this.capacity = capacity;
@@ -104,8 +114,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
             this.power_supply_technology = power_supply_technology;
             this.present = present;
             this.cell_voltage = cell_voltage;
+            this.cell_temperature = cell_temperature;
             this.location = location;
             this.serial_number = serial_number;
         }
     }
 }
+#endif

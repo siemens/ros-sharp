@@ -7,6 +7,9 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
+
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciAction : Action<FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
@@ -22,3 +25,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 
     }
 }
+#endif

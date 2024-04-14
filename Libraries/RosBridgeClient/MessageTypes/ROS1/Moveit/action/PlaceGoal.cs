@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -22,7 +22,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public string attached_object_name { get; set; }
         //  a list of possible transformations for placing the object
         public PlaceLocation[] place_locations { get; set; }
-        //  if the user prefers setting the eef pose (same as in pick) rather than 
+        //  if the user prefers setting the eef pose (same as in pick) rather than
         //  the location of the object, this flag should be set to true
         public bool place_eef { get; set; }
         //  the name that the support surface (e.g. table) has in the collision world
@@ -38,8 +38,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  a default motion planner will be used
         public string planner_id { get; set; }
         //  an optional list of obstacles that we have semantic information about
-        //  and that can be touched/pushed/moved in the course of placing;
-        //  CAREFUL: If the object name 'all' is used, collisions with all objects are disabled during the approach & retreat.
+        //  and that can be touched/pushed/moved in the course of placing
         public string[] allowed_touch_objects { get; set; }
         //  The maximum amount of time the motion planner is allowed to plan for
         public double allowed_planning_time { get; set; }
@@ -77,3 +76,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

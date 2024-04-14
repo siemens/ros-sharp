@@ -7,6 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
@@ -27,3 +28,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

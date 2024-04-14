@@ -17,8 +17,13 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
+#if ROS2
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+#else
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+#endif
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -49,7 +54,12 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
             List<int> sequence = new List<int> { 0, 1 };
 
+            #if ROS2
+            action.action_feedback.feedback.partial_sequence = sequence.ToArray();
+            #else
             action.action_feedback.feedback.sequence = sequence.ToArray();
+            #endif
+
             PublishFeedback();
 
             for (int i = 1; i < action.action_goal.goal.order; i++)
@@ -62,7 +72,13 @@ namespace RosSharp.RosBridgeClient.Actionlib
                 }
 
                 sequence.Add(sequence[i] + sequence[i - 1]);
+
+                #if ROS2
+                action.action_feedback.feedback.partial_sequence = sequence.ToArray();
+                #else
                 action.action_feedback.feedback.sequence = sequence.ToArray();
+                #endif
+
                 PublishFeedback();
 
                 Thread.Sleep(1000);
@@ -75,7 +91,12 @@ namespace RosSharp.RosBridgeClient.Actionlib
         public string GetFeedbackSequenceString()
         {
             if (action != null)
+                #if ROS2
+                return String.Join(",", action.action_feedback.feedback.partial_sequence);
+                #else
                 return String.Join(",", action.action_feedback.feedback.sequence);
+                #endif
+
             return "";
         }
 

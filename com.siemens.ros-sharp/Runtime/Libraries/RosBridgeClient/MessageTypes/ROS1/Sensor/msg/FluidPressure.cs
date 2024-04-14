@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
@@ -42,3 +44,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         }
     }
 }
+#endif

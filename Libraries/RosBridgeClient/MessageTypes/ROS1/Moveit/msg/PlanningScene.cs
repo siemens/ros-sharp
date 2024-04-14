@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
 
@@ -31,7 +31,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public LinkPadding[] link_padding { get; set; }
         //  all link scales
         public LinkScale[] link_scale { get; set; }
-        //  Attached objects, collision objects, even the octomap or collision map can have 
+        //  Attached objects, collision objects, even the octomap or collision map can have
         //  colors associated to them. This array specifies them.
         public ObjectColor[] object_colors { get; set; }
         //  the collision map
@@ -68,3 +68,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

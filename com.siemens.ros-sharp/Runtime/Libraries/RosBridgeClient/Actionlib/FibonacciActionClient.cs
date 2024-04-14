@@ -14,7 +14,12 @@ limitations under the License.
 */
 
 using System;
+
+#if ROS2
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+#else
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
+#endif
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -66,7 +71,11 @@ namespace RosSharp.RosBridgeClient.Actionlib
         public string GetFeedbackString()
         {
             if (action != null)
+                #if ROS2
+                return String.Join(",", action.action_feedback.feedback.partial_sequence);
+                #else
                 return String.Join(",", action.action_feedback.feedback.sequence);
+                #endif
             return "";
         }
 

@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -34,8 +34,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  A set of trajectories that may be used as reference or initial trajectories for (typically optimization-based) planners
         //  These trajectories do not override start_state or goal_constraints
         public GenericTrajectory[] reference_trajectories { get; set; }
-        //  The name of the motion planner to use. If no name is specified,
-        //  a default motion planner will be used
+        //  The name of the planning pipeline to use. If no name is specified,
+        //  the configured planning pipeline will be used
+        public string pipeline_id { get; set; }
+        //  The name of the planning algorithm to use. If no name is specified,
+        //  the default planner of the planning pipeline will be used
         public string planner_id { get; set; }
         //  The name of the group of joints on which this planner is operating
         public string group_name { get; set; }
@@ -52,10 +55,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  internally (i.e., maximum joint velocity or maximum joint acceleration).
         public double max_velocity_scaling_factor { get; set; }
         public double max_acceleration_scaling_factor { get; set; }
-        //  Maximum cartesian speed for the given end effector.
+        //  Maximum cartesian speed for the given link.
         //  If max_cartesian_speed <= 0 the trajectory is not modified.
-        //  These fields require the following planning request adapter: default_planner_request_adapters/SetMaxCartesianEndEffectorSpeed
-        public string cartesian_speed_end_effector_link { get; set; }
+        //  These fields require the following planning request adapter: default_planner_request_adapters/LimitMaxCartesianLinkSpeed
+        public string cartesian_speed_limited_link { get; set; }
         public double max_cartesian_speed { get; set; }
         //  m/s
 
@@ -67,17 +70,18 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
             this.path_constraints = new Constraints();
             this.trajectory_constraints = new TrajectoryConstraints();
             this.reference_trajectories = new GenericTrajectory[0];
+            this.pipeline_id = "";
             this.planner_id = "";
             this.group_name = "";
             this.num_planning_attempts = 0;
             this.allowed_planning_time = 0.0;
             this.max_velocity_scaling_factor = 0.0;
             this.max_acceleration_scaling_factor = 0.0;
-            this.cartesian_speed_end_effector_link = "";
+            this.cartesian_speed_limited_link = "";
             this.max_cartesian_speed = 0.0;
         }
 
-        public MotionPlanRequest(WorkspaceParameters workspace_parameters, RobotState start_state, Constraints[] goal_constraints, Constraints path_constraints, TrajectoryConstraints trajectory_constraints, GenericTrajectory[] reference_trajectories, string planner_id, string group_name, int num_planning_attempts, double allowed_planning_time, double max_velocity_scaling_factor, double max_acceleration_scaling_factor, string cartesian_speed_end_effector_link, double max_cartesian_speed)
+        public MotionPlanRequest(WorkspaceParameters workspace_parameters, RobotState start_state, Constraints[] goal_constraints, Constraints path_constraints, TrajectoryConstraints trajectory_constraints, GenericTrajectory[] reference_trajectories, string pipeline_id, string planner_id, string group_name, int num_planning_attempts, double allowed_planning_time, double max_velocity_scaling_factor, double max_acceleration_scaling_factor, string cartesian_speed_limited_link, double max_cartesian_speed)
         {
             this.workspace_parameters = workspace_parameters;
             this.start_state = start_state;
@@ -85,14 +89,16 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
             this.path_constraints = path_constraints;
             this.trajectory_constraints = trajectory_constraints;
             this.reference_trajectories = reference_trajectories;
+            this.pipeline_id = pipeline_id;
             this.planner_id = planner_id;
             this.group_name = group_name;
             this.num_planning_attempts = num_planning_attempts;
             this.allowed_planning_time = allowed_planning_time;
             this.max_velocity_scaling_factor = max_velocity_scaling_factor;
             this.max_acceleration_scaling_factor = max_acceleration_scaling_factor;
-            this.cartesian_speed_end_effector_link = cartesian_speed_end_effector_link;
+            this.cartesian_speed_limited_link = cartesian_speed_limited_link;
             this.max_cartesian_speed = max_cartesian_speed;
         }
     }
 }
+#endif

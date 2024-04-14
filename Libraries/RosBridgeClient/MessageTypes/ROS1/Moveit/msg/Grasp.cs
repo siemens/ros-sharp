@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Trajectory;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
@@ -48,7 +48,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  The retreat motion to perform when releasing the object; this information
         //  is not necessary for the grasp itself, but when releasing the object,
         //  the information will be necessary. The grasp used to perform a pickup
-        //  is returned as part of the result, so this information is available for 
+        //  is returned as part of the result, so this information is available for
         //  later use.
         public GripperTranslation post_place_retreat { get; set; }
         //  the maximum contact force to use while grasping (<=0 to disable)
@@ -86,3 +86,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

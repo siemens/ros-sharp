@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class LaserEcho : Message
@@ -30,3 +32,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         }
     }
 }
+#endif

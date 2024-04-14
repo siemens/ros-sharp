@@ -7,13 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciFeedback : Message
     {
         public const string RosMessageName = "actionlib_tutorials/FibonacciFeedback";
 
-        //  feedback
+        // feedback
         public int[] sequence { get; set; }
 
         public FibonacciFeedback()
@@ -27,3 +29,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
         }
     }
 }
+#endif

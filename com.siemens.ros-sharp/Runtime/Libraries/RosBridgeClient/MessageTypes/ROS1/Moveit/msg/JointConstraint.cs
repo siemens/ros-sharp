@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -43,3 +43,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

@@ -7,6 +7,10 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
+using RosSharp.RosBridgeClient.MessageTypes.Nav;
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class GetPlanResponse : Message
@@ -26,3 +30,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
         }
     }
 }
+#endif

@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Vector3 : Message
@@ -38,3 +40,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         }
     }
 }
+#endif

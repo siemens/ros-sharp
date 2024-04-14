@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -45,8 +45,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  a default motion planner will be used
         public string planner_id { get; set; }
         //  an optional list of obstacles that we have semantic information about
-        //  and that can be touched/pushed/moved in the course of grasping;
-        //  CAREFUL: If the object name 'all' is used, collisions with all objects are disabled during the approach & lift.
+        //  and that can be touched/pushed/moved in the course of grasping
         public string[] allowed_touch_objects { get; set; }
         //  The maximum amount of time the motion planner is allowed to plan for
         public double allowed_planning_time { get; set; }
@@ -88,3 +87,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

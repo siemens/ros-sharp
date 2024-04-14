@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public RobotTrajectory[] trajectory { get; set; }
         //  Description of the reported trajectories (name of processing step)
         public string[] description { get; set; }
-        //  The amount of time spent computing a particular step in motion plan computation 
+        //  The amount of time spent computing a particular step in motion plan computation
         public double[] processing_time { get; set; }
         //  Status at the end of this plan
         public MoveItErrorCodes error_code { get; set; }
@@ -51,3 +51,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

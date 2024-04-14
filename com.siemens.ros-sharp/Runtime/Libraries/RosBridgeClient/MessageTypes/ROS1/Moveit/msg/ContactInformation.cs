@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
@@ -18,8 +18,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
     {
         public const string RosMessageName = "moveit_msgs/ContactInformation";
 
-        //  Standard ROS header contains information 
-        //  about the frame in which this 
+        //  Standard ROS header contains information
+        //  about the frame in which this
         //  contact is specified
         public Header header { get; set; }
         //  Position of the contact point
@@ -65,3 +65,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

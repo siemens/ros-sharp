@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Nav
 {
     public class SetMapResponse : Message
@@ -26,3 +28,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
         }
     }
 }
+#endif

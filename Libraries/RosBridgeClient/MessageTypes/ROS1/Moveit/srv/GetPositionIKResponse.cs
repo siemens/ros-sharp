@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -15,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
     {
         public const string RosMessageName = "moveit_msgs/GetPositionIK";
 
-        //  The returned solution 
+        //  The returned solution
         //  (in the same order as the list of joints specified in the IKRequest message)
         public RobotState solution { get; set; }
         public MoveItErrorCodes error_code { get; set; }
@@ -33,3 +33,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

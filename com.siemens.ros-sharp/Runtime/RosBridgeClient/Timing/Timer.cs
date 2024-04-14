@@ -25,7 +25,6 @@ limitations under the License.
 // Siemens AG , 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com) 
 
 using System;
-using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -55,17 +54,17 @@ namespace RosSharp.RosBridgeClient
             nsecs = (uint)((msecs / 1000 - secs) * 1e+9);
         }
 #else
-        public virtual MessageTypes.Std.Time Now()
+        public virtual MessageTypes.BuiltinInterfaces.Time Now()
         {
             Now(out uint sec, out uint nanosec);
-            return new MessageTypes.Std.Time(sec, nanosec);
+            return new MessageTypes.BuiltinInterfaces.Time((int)sec, nanosec);
         }
 
-        public virtual void Now(MessageTypes.Std.Time stamp)
+        public virtual void Now(MessageTypes.BuiltinInterfaces.Time stamp)
         {
             uint sec; uint nanosec;
             Now(out sec, out nanosec);
-            stamp.sec = sec; stamp.nanosec = nanosec;
+            stamp.sec = (int)sec; stamp.nanosec = nanosec;
         }
 
         private static void Now(out uint sec, out uint nanosec)

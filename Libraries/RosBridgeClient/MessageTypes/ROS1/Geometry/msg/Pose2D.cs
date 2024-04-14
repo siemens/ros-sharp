@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
 {
     public class Pose2D : Message
@@ -37,3 +39,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Geometry
         }
     }
 }
+#endif

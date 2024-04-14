@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Shape
 {
     public class Plane : Message
@@ -31,3 +33,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Shape
         }
     }
 }
+#endif

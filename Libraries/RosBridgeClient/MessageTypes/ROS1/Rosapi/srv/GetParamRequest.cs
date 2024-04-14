@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class GetParamRequest : Message
@@ -14,7 +16,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         public const string RosMessageName = "rosapi/GetParam";
 
         public string name { get; set; }
-
         public string @default { get; set; }
 
         public GetParamRequest()
@@ -23,10 +24,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
             this.@default = "";
         }
 
-        public GetParamRequest(string name, string _default)
+        public GetParamRequest(string name, string @default)
         {
             this.name = name;
-            this.@default = _default;
+            this.@default = default;
         }
     }
 }
+#endif

@@ -7,6 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
@@ -14,7 +15,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
     {
         public const string RosMessageName = "actionlib_tutorials/FibonacciResult";
 
-        //  result definition
+        // result definition
         public int[] sequence { get; set; }
 
         public FibonacciResult()
@@ -28,3 +29,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
         }
     }
 }
+#endif

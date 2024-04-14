@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class NavSatStatus : Message
@@ -43,3 +45,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         }
     }
 }
+#endif

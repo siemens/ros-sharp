@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class TF2Error : Message
@@ -36,3 +38,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         }
     }
 }
+#endif

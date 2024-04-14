@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class TypeDef : Message
@@ -18,6 +20,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         public string[] fieldtypes { get; set; }
         public int[] fieldarraylen { get; set; }
         public string[] examples { get; set; }
+        public string[] constnames { get; set; }
+        public string[] constvalues { get; set; }
 
         public TypeDef()
         {
@@ -26,15 +30,20 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
             this.fieldtypes = new string[0];
             this.fieldarraylen = new int[0];
             this.examples = new string[0];
+            this.constnames = new string[0];
+            this.constvalues = new string[0];
         }
 
-        public TypeDef(string type, string[] fieldnames, string[] fieldtypes, int[] fieldarraylen, string[] examples)
+        public TypeDef(string type, string[] fieldnames, string[] fieldtypes, int[] fieldarraylen, string[] examples, string[] constnames, string[] constvalues)
         {
             this.type = type;
             this.fieldnames = fieldnames;
             this.fieldtypes = fieldtypes;
             this.fieldarraylen = fieldarraylen;
             this.examples = examples;
+            this.constnames = constnames;
+            this.constvalues = constvalues;
         }
     }
 }
+#endif

@@ -7,14 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class DeleteParamResponse : Message
     {
         public const string RosMessageName = "rosapi/DeleteParam";
 
+
         public DeleteParamResponse()
         {
         }
     }
 }
+#endif

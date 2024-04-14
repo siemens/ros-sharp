@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
@@ -52,3 +52,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
         }
     }
 }
+#endif

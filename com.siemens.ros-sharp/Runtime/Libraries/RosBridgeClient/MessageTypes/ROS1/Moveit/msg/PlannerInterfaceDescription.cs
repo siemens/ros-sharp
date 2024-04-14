@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -17,19 +17,24 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 
         //  The name of the planner interface
         public string name { get; set; }
+        //  The name of the planning pipeline
+        public string pipeline_id { get; set; }
         //  The names of the planner ids within the interface
         public string[] planner_ids { get; set; }
 
         public PlannerInterfaceDescription()
         {
             this.name = "";
+            this.pipeline_id = "";
             this.planner_ids = new string[0];
         }
 
-        public PlannerInterfaceDescription(string name, string[] planner_ids)
+        public PlannerInterfaceDescription(string name, string pipeline_id, string[] planner_ids)
         {
             this.name = name;
+            this.pipeline_id = pipeline_id;
             this.planner_ids = planner_ids;
         }
     }
 }
+#endif

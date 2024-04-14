@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class Int8 : Message
@@ -26,3 +28,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         }
     }
 }
+#endif

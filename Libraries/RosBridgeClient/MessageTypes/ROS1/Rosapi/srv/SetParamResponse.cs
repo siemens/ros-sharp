@@ -7,14 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
 {
     public class SetParamResponse : Message
     {
         public const string RosMessageName = "rosapi/SetParam";
-        
+
+
         public SetParamResponse()
         {
         }
     }
 }
+#endif

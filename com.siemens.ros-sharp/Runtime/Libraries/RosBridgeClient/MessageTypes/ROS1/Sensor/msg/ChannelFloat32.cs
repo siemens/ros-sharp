@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class ChannelFloat32 : Message
@@ -48,3 +50,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         }
     }
 }
+#endif

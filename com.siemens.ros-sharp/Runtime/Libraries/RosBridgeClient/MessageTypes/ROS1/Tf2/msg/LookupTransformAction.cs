@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class LookupTransformAction : Message
@@ -33,3 +35,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
         }
     }
 }
+#endif

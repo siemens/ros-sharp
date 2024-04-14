@@ -7,6 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
@@ -14,8 +15,10 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
     {
         public const string RosMessageName = "std_srvs/Empty";
 
+
         public EmptyRequest()
         {
         }
     }
 }
+#endif

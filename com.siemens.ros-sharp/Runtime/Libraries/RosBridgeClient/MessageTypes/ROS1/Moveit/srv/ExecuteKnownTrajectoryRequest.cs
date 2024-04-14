@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 
         //  This service is deprecated and will go away at some point. For new development use the ExecuteTrajectory action.
         //  Effective since: Indigo 0.7.4, Jade and Kinetic 0.8.3
-        //  The trajectory to execute 
+        //  The trajectory to execute
         public RobotTrajectory trajectory { get; set; }
         //  Set this to true if the service should block until the execution is complete
         public bool wait_for_execution { get; set; }
@@ -35,3 +35,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

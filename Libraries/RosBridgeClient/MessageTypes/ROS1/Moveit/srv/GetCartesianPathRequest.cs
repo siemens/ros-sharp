@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
@@ -53,6 +53,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public bool avoid_collisions { get; set; }
         //  Specify additional constraints to be met by the Cartesian path
         public Constraints path_constraints { get; set; }
+        //  Maximum cartesian speed for the given link.
+        //  If max_cartesian_speed <= 0 the trajectory is not modified.
+        public string cartesian_speed_limited_link { get; set; }
+        public double max_cartesian_speed { get; set; }
+        //  m/s
 
         public GetCartesianPathRequest()
         {
@@ -67,9 +72,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
             this.revolute_jump_threshold = 0.0;
             this.avoid_collisions = false;
             this.path_constraints = new Constraints();
+            this.cartesian_speed_limited_link = "";
+            this.max_cartesian_speed = 0.0;
         }
 
-        public GetCartesianPathRequest(Header header, RobotState start_state, string group_name, string link_name, Pose[] waypoints, double max_step, double jump_threshold, double prismatic_jump_threshold, double revolute_jump_threshold, bool avoid_collisions, Constraints path_constraints)
+        public GetCartesianPathRequest(Header header, RobotState start_state, string group_name, string link_name, Pose[] waypoints, double max_step, double jump_threshold, double prismatic_jump_threshold, double revolute_jump_threshold, bool avoid_collisions, Constraints path_constraints, string cartesian_speed_limited_link, double max_cartesian_speed)
         {
             this.header = header;
             this.start_state = start_state;
@@ -82,6 +89,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
             this.revolute_jump_threshold = revolute_jump_threshold;
             this.avoid_collisions = avoid_collisions;
             this.path_constraints = path_constraints;
+            this.cartesian_speed_limited_link = cartesian_speed_limited_link;
+            this.max_cartesian_speed = max_cartesian_speed;
         }
     }
 }
+#endif

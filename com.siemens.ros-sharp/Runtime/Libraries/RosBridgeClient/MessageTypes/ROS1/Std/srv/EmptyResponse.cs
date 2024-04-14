@@ -7,14 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
     public class EmptyResponse : Message
     {
         public const string RosMessageName = "std_srvs/Empty";
 
+
         public EmptyResponse()
         {
         }
     }
 }
+#endif

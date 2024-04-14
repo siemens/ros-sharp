@@ -7,13 +7,14 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-using Newtonsoft.Json;
+#if !ROS2
+
+using RosSharp.RosBridgeClient.MessageTypes.Sensor;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 {
     public class SetCameraInfoRequest : Message
     {
-        [JsonIgnore]
         public const string RosMessageName = "sensor_msgs/SetCameraInfo";
 
         //  This service requests that a camera stores the given CameraInfo 
@@ -23,7 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  camera is currently outputting on its camera_info topic, and the camera
         //  will assume that the region of the imager that is being referred to is
         //  the region that the camera is currently capturing.
-        public CameraInfo camera_info;
+        public CameraInfo camera_info { get; set; }
         //  The camera_info to store
 
         public SetCameraInfoRequest()
@@ -37,3 +38,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         }
     }
 }
+#endif

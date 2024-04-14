@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
@@ -29,9 +29,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  planning & kinematics request errors
         public const int START_STATE_IN_COLLISION = -10;
         public const int START_STATE_VIOLATES_PATH_CONSTRAINTS = -11;
+        public const int START_STATE_INVALID = -26;
         public const int GOAL_IN_COLLISION = -12;
         public const int GOAL_VIOLATES_PATH_CONSTRAINTS = -13;
         public const int GOAL_CONSTRAINTS_VIOLATED = -14;
+        public const int GOAL_STATE_INVALID = -27;
+        public const int UNRECOGNIZED_GOAL_TYPE = -28;
         public const int INVALID_GROUP_NAME = -15;
         public const int INVALID_GOAL_CONSTRAINTS = -16;
         public const int INVALID_ROBOT_STATE = -17;
@@ -43,6 +46,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public const int ROBOT_STATE_STALE = -23;
         public const int SENSOR_INFO_STALE = -24;
         public const int COMMUNICATION_FAILURE = -25;
+        public const int CRASH = -29;
+        public const int ABORT = -30;
         //  kinematics errors
         public const int NO_IK_SOLUTION = -31;
 
@@ -57,3 +62,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

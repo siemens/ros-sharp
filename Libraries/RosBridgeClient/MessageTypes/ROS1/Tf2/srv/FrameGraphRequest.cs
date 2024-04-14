@@ -7,14 +7,18 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class FrameGraphRequest : Message
     {
         public const string RosMessageName = "tf2_msgs/FrameGraph";
 
+
         public FrameGraphRequest()
         {
         }
     }
 }
+#endif

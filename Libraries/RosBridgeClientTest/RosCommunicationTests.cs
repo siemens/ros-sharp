@@ -21,7 +21,12 @@ using NUnit.Framework;
 //using Newtonsoft.Json;
 using System.Text.Json;
 using RosSharp.RosBridgeClient;
-using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
+
+#if ROS2
+using Time = RosSharp.RosBridgeClient.MessageTypes.BuiltinInterfaces.Time;
+#else
+using Time = RosSharp.RosBridgeClient.MessageTypes.Std.Time;
+#endif
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -50,7 +55,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test, Category("Offline")]
         public void PublicationTest()
         {
-            Communication comm = new Publication<std_msgs.Time>("myid", "mytopic", new std_msgs.Time());
+            Communication comm = new Publication<Time>("myid", "mytopic", new Time());
             //string json = JsonConvert.SerializeObject(comm); // for newtonsoft
             string json = JsonSerializer.Serialize(comm);      // for system.text.json
 
@@ -82,7 +87,7 @@ namespace RosSharp.RosBridgeClientTest
         [Test, Category("Offline")]
         public void ServiceCallTest()
         {
-            Communication comm = new ServiceCall<std_msgs.Time>("myid", "myservice", new std_msgs.Time());
+            Communication comm = new ServiceCall<Time>("myid", "myservice", new Time());
             //string json = JsonConvert.SerializeObject(comm); // for newtonsoft
             string json = JsonSerializer.Serialize(comm);      // for system.text.json
 

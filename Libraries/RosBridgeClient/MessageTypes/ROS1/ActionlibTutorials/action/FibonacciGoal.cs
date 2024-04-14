@@ -7,13 +7,15 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
 {
     public class FibonacciGoal : Message
     {
         public const string RosMessageName = "actionlib_tutorials/FibonacciGoal";
 
-        //  goal definition
+        // goal definition
         public int order { get; set; }
 
         public FibonacciGoal()
@@ -27,3 +29,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials
         }
     }
 }
+#endif

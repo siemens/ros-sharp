@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 {
     public class GoalStatus : Message
@@ -15,7 +17,6 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
 
         public GoalID goal_id { get; set; }
         public byte status { get; set; }
-
         public const byte PENDING = 0; //  The goal has yet to be processed by the action server
         public const byte ACTIVE = 1; //  The goal is currently being processed by the action server
         public const byte PREEMPTED = 2; //  The goal received a cancel request after it started executing
@@ -51,3 +52,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Actionlib
         }
     }
 }
+#endif

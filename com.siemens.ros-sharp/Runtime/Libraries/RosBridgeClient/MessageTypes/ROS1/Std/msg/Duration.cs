@@ -1,4 +1,4 @@
-/*
+﻿/*
 © Siemens AG, 2019
 Author: Sifan Ye (sifan.ye@siemens.com)
 
@@ -13,10 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.Std
 {
-	public class Duration : Message
-	{
+    public class Duration : Message
+    {
         public const string RosMessageName = "std_msgs/Duration";
 
         public uint secs { get; set; }
@@ -30,8 +32,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
 
         public Duration(uint secs, uint nsecs)
         {
-        	this.secs = secs;
-        	this.nsecs = nsecs;
+            this.secs = secs;
+            this.nsecs = nsecs;
         }
-	}
+    }
 }
+#endif

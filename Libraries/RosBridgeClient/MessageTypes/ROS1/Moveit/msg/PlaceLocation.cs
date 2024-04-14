@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Trajectory;
 using RosSharp.RosBridgeClient.MessageTypes.Geometry;
@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  The internal posture of the hand for the grasp
         //  positions and efforts are used
         public JointTrajectory post_place_posture { get; set; }
-        //  The position of the end-effector for the grasp relative to a reference frame 
+        //  The position of the end-effector for the grasp relative to a reference frame
         //  (that is always specified elsewhere, not in this message)
         public PoseStamped place_pose { get; set; }
         //  The estimated probability of success for this place, or some other
@@ -60,3 +60,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         }
     }
 }
+#endif

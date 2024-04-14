@@ -7,7 +7,7 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-
+#if !ROS2
 
 using RosSharp.RosBridgeClient.MessageTypes.Shape;
 using RosSharp.RosBridgeClient.MessageTypes.Sensor;
@@ -44,3 +44,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
         }
     }
 }
+#endif

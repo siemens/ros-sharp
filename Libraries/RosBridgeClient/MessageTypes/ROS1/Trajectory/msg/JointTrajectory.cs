@@ -7,7 +7,9 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
- using RosSharp.RosBridgeClient.MessageTypes.Std;
+#if !ROS2
+
+using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
 {
@@ -34,3 +36,4 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Trajectory
         }
     }
 }
+#endif
