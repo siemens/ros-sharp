@@ -5,6 +5,6 @@ __Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) page for [New
 
 ---
 
-© Siemens AG, 2019
+© Siemens AG, 2017-2024
 
 Author: Sifan Ye (sifan.ye@siemens.com)
