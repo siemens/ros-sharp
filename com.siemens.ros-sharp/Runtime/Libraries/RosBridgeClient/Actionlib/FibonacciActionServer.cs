@@ -16,13 +16,12 @@ limitations under the License.
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 #else
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 #endif
 
 namespace RosSharp.RosBridgeClient.Actionlib
