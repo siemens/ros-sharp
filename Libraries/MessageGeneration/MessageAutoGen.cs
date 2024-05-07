@@ -58,9 +58,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 return parser.GetWarnings();
             }
             else {
-                if (verbose) {
-                    Console.WriteLine(inFileName + " will not be generated");
-                }
+                Console.WriteLine(inFileName + " will not be generated, needs manuel attention.");
                 return new List<string>();
             }
         }
