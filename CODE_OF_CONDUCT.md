@@ -74,7 +74,5 @@ available at [http://contributor-covenant.org/version/1/4][version]
 [homepage]: http://contributor-covenant.org
 [version]: http://contributor-covenant.org/version/1/4/
 ---
-
 © Siemens AG, 2017-2024
 
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
