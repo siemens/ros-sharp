@@ -13,6 +13,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Removed additional RosConnector instance. Urdf transfer is now handled by the existing RosConnector component.
+* If no RosConnector component is present in the scene, one can be created by pressing the button.
+* RosConnector specific input fields have been removed as they are no longer required.
+* Robot name parameter input field added.
+* The 'Reset to Default' button now behaves according to the selected ROS version (from the RosConnector component). 
+* Added GUI hints for parameter syntax. 
+    (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
 using System.IO;
@@ -23,16 +31,22 @@ namespace RosSharp.RosBridgeClient
 {
     public class TransferToRosEditorWindow : EditorWindow
     {
-        private static Protocols.Protocol protocolType;
-        private static RosSocket.SerializerEnum serializerType;
-        private static string serverUrl = "ws://192.168.56.102:9090";
+        private static string robotNameParameter;
+        private bool rosConnectorFound = false;
         private static string urdfPath;
-        private static int timeout;
         private static string rosPackage;
-        
         private TransferToRosHandler transferHandler;
+        private bool showSettings = true;
+        private static string defaultRosPackage = "urdfExportTest";
 
-        private bool showSettings = false;
+#if ROS2
+        private static string defautRobotNameParameter = "turtlebot4:robot_name";
+        private static string hintRobotNameParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\nturtlebot4:robot_name";
+        
+#else
+        private static string defautRobotNameParameter = "/robot/name";
+        private static string hintRobotNameParameter = "Syntax:\n<param_name>\nExample usage:\n/robot/name";
+#endif
 
         [MenuItem("RosBridgeClient/Transfer URDF to ROS...", false, 51)]
         private static void Init()
@@ -41,30 +55,26 @@ namespace RosSharp.RosBridgeClient
             editorWindow.minSize = new Vector2(500, 300);
 
             editorWindow.transferHandler = new TransferToRosHandler();
-            editorWindow.GetEditorPrefs();
+            // Check if a RosConnector is already present
+            editorWindow.rosConnectorFound = editorWindow.transferHandler.CheckForRosConnector();
 
+            editorWindow.GetEditorPrefs();
             editorWindow.Show();
         }
 
         private void OnGUI()
         {
             GUILayout.Label("URDF Transfer (From Unity to ROS)", EditorStyles.boldLabel);
-
-            EditorGUILayout.BeginHorizontal();
-            serverUrl = EditorGUILayout.TextField("Server URL", serverUrl);
-            EditorGUILayout.EndHorizontal();
+            
+            GUILayout.Space(15);
+            HandleRosConnectorButton();
+            GUILayout.Space(15);
 
             showSettings = EditorGUILayout.Foldout(showSettings, "Settings");
             if (showSettings)
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUIUtility.labelWidth = 100;
-                protocolType = (Protocols.Protocol)EditorGUILayout.EnumPopup("Protocol", protocolType);
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal();
-                EditorGUIUtility.labelWidth = 100;
-                serializerType = (RosSocket.SerializerEnum)EditorGUILayout.EnumPopup("Serializer", serializerType);
+                robotNameParameter = EditorGUILayout.TextField(new GUIContent("Robot name parameter", hintRobotNameParameter), robotNameParameter);
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
@@ -73,10 +83,6 @@ namespace RosSharp.RosBridgeClient
                 {
                     urdfPath = EditorUtility.OpenFilePanel("Select a URDF file", urdfPath, "urdf");
                 }
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal();
-                timeout = EditorGUILayout.IntField("Timeout [s]", timeout);
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
@@ -102,7 +108,7 @@ namespace RosSharp.RosBridgeClient
             if (GUILayout.Button("Publish Robot Description"))
             { 
                 SetEditorPrefs();
-                transferHandler.Transfer(protocolType, serverUrl, timeout, urdfPath, rosPackage, serializerType);
+                transferHandler.Transfer(urdfPath, rosPackage, robotNameParameter);
             }
             EditorGUILayout.EndHorizontal();
 
@@ -117,8 +123,10 @@ namespace RosSharp.RosBridgeClient
 
             GUILayout.Space(10);
             EditorGUI.BeginDisabledGroup(transferHandler.RosSocket == null || !transferHandler.RosSocket.protocol.IsAlive());
-            if (GUILayout.Button("Close Connection"))
+            if (GUILayout.Button("Close Connection")) {
+                Debug.Log("Closing connection to ROS...");
                 transferHandler.RosSocket?.Close();
+                }
 
             EditorGUI.EndDisabledGroup();
         }
@@ -141,21 +149,16 @@ namespace RosSharp.RosBridgeClient
 
         private void DeleteEditorPrefs()
         {
-            EditorPrefs.DeleteKey("UrdfPublisherProtocolNumber");
-            EditorPrefs.DeleteKey("UrdfPublisherServerUrl");
+            EditorPrefs.DeleteKey("UrdfImporterRobotName");
             EditorPrefs.DeleteKey("UrdfPublisherUrdfPath");
-            EditorPrefs.DeleteKey("UrdfPublisherTimeout");
             EditorPrefs.DeleteKey("UrdfPublisherRosPackage");
         }
 
         private void GetEditorPrefs()
         {
-            protocolType = (Protocols.Protocol)(EditorPrefs.HasKey("UrdfPublisherProtocolNumber") ?
-                EditorPrefs.GetInt("UrdfPublisherProtocolNumber") : 1);
-
-            serverUrl = (EditorPrefs.HasKey("UrdfPublisherServerUrl") ?
-                EditorPrefs.GetString("UrdfPublisherServerUrl") :
-                "ws://192.168.0.1:9090");
+            robotNameParameter = (EditorPrefs.HasKey("UrdfImporterRobotName") ?
+                EditorPrefs.GetString("UrdfImporterRobotName") :
+                defautRobotNameParameter);
 
             urdfPath = (EditorPrefs.HasKey("UrdfPublisherUrdfPath") ?
                 EditorPrefs.GetString("UrdfPublisherUrdfPath") :
@@ -163,22 +166,52 @@ namespace RosSharp.RosBridgeClient
 
             rosPackage = (EditorPrefs.HasKey("UrdfPublisherRosPackage") ?
                 EditorPrefs.GetString("UrdfPublisherRosPackage") :
-                "new_package");
-
-            timeout = (EditorPrefs.HasKey("UrdfPublisherTimeout") ?
-                EditorPrefs.GetInt("UrdfPublisherTimeout") :
-                10);
+                defaultRosPackage);
         }
 
         private void SetEditorPrefs()
         {
-            EditorPrefs.SetInt("UrdfPublisherProtocolNumber", protocolType.GetHashCode());
-            EditorPrefs.SetString("UrdfPublisherServerUrl", serverUrl);
+            EditorPrefs.SetString("UrdfImporterRobotName", robotNameParameter);
             EditorPrefs.SetString("UrdfPublisherUrdfPath", urdfPath);
             EditorPrefs.SetString("UrdfPublisherRosPackage", rosPackage);
-            EditorPrefs.SetInt("UrdfPublisherTimeout", timeout);
         }
 
         #endregion
+
+        private void HandleRosConnectorButton() {       
+            // Display the "ROS Connector Status:" text
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("ROS Connector Status: ", GUILayout.Width(200));
+
+            // Set the button text and color based on whether a RosConnector was found
+            string buttonText = rosConnectorFound ? "Available" : "Not found. Create one?";
+            Color buttonColor = rosConnectorFound ? Color.green : Color.red;
+
+            // Set the GUI color
+            GUI.color = buttonColor;
+
+            // Enable or disable the button based on whether a RosConnector was found
+            GUI.enabled = !rosConnectorFound;
+
+            // Display the button
+            if (GUILayout.Button(buttonText, GUILayout.ExpandWidth(true)))
+            {
+                // If the button is clicked, create a new RosConnector
+                transferHandler.CreateRosConnector();
+                rosConnectorFound = transferHandler.CheckForRosConnector();
+
+                // Update the button text and color based on the new result
+                buttonText = rosConnectorFound ? "Available" : "Not found. Create one?";
+                buttonColor = rosConnectorFound ? Color.green : Color.red;
+                GUI.color = buttonColor;
+                GUI.enabled = !rosConnectorFound;
+            }
+
+            // Reset the GUI color and enabled state
+            GUI.color = Color.white;
+            GUI.enabled = true;
+
+            EditorGUILayout.EndHorizontal();
+        }
     }
 }

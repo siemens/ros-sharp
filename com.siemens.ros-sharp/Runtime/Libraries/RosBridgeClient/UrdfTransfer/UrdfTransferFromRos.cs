@@ -11,6 +11,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Removed additional RosConnector instance. Urdf transfer is now handled by the existing RosConnector component.
+* If no RosConnector component is present in the scene, one can be created by pressing the button.
+* RosConnector specific input fields have been removed as they are no longer required.
+* Robot name parameter input field added.
+* The 'Reset to Default' button now behaves according to the selected ROS version (from the RosConnector component). 
+* Added GUI hints for parameter syntax. 
+    (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
 using System;
@@ -26,9 +34,16 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 {
     public class UrdfTransferFromRos : UrdfTransfer
     {
+        #if !ROS2
+        private const string DEFAULT_STRING = "default";
+        #else
+        private const string DEFAULT_STRING = "default_value";
+        #endif
+        
         private readonly string localUrdfDirectory;
         private string urdfParameter;
-        
+        private string robotNameParameter;
+
         public string LocalUrdfDirectory
         {
             get
@@ -38,12 +53,13 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             }
         }
 
-        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory, string urdfParameter)
+        public UrdfTransferFromRos(RosSocket rosSocket, string localUrdfDirectory, string urdfParameter, string robotNameParameter)
         {
             RosSocket = rosSocket;
             this.localUrdfDirectory = localUrdfDirectory;
             this.urdfParameter = urdfParameter;
-            
+            this.robotNameParameter = robotNameParameter;
+
 
             Status = new Dictionary<string, ManualResetEvent>
             {
@@ -59,15 +75,14 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         {
             RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
                                                                                     ReceiveRobotName,
-                                                                                    new rosapi.GetParamRequest("/robot/name", "default"));
+                                                                                    new rosapi.GetParamRequest(robotNameParameter, DEFAULT_STRING));
 
-            var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest,  rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
-                                                                                        new rosapi.GetParamRequest(urdfParameter, "default"),
-                                                                                        Path.DirectorySeparatorChar + urdfParameter + ".urdf");
+            var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
+                                                                                        new rosapi.GetParamRequest(urdfParameter, DEFAULT_STRING),
+                                                                                        Path.DirectorySeparatorChar + CutAfterColon(urdfParameter) + ".urdf");
 
-            robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;  
+            robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;
         }
-
         private void ReceiveRobotName(object serviceResponse)
         {
             RobotName = FormatTextFileContents(((rosapi.GetParamResponse)serviceResponse).value);
@@ -143,7 +158,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             if (FilesBeingProcessed.Values.All(x => x == true))
                 Status["resourceFilesReceived"].Set();
         }
-        
+
         private void ImportColladaTextureFiles(Uri daeFileUri, string fileContents)
         {
             XDocument xDocument = XDocument.Parse(fileContents);
@@ -180,6 +195,16 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             return Path.DirectorySeparatorChar
                 + resourceFilePath.Host
                 + resourceFilePath.LocalPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
+
+        private static string CutAfterColon(string input)
+        {
+            int colonIndex = input.IndexOf(':');
+            if (colonIndex >= 0)
+            {
+                input = input.Substring(colonIndex + 1);
+            }
+            return input;
         }
 
         private static string FormatTextFileContents(string fileContents)
