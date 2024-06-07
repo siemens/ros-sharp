@@ -11,6 +11,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Removed duplications from ReadResourceFileUris' return list.
+    (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
 using System;
@@ -29,9 +32,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         public Dictionary<string, ManualResetEvent> Status;
         public Dictionary<string, bool> FilesBeingProcessed;
-        
+
         public abstract void Transfer();
-        
+
         protected static bool HasValidResourcePath(XElement xElement)
         {
             return (xElement.Name.ToString().Equals("mesh") || xElement.Name.ToString().Equals("texture"))
@@ -47,21 +50,21 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         {
             XNamespace xmlns = "http://www.collada.org/2005/11/COLLADASchema";
             return (from x in xDocument.Descendants()
-                where x.Name.LocalName == "library_images"
-                let imageElement = x.Element(xmlns + "image")
-                where imageElement != null
-                let initElement = imageElement.Element(xmlns + "init_from")
-                where initElement != null
-                select new Uri(resourceFileUri, initElement.Value)).ToList();
+                    where x.Name.LocalName == "library_images"
+                    let imageElement = x.Element(xmlns + "image")
+                    where imageElement != null
+                    let initElement = imageElement.Element(xmlns + "init_from")
+                    where initElement != null
+                    select new Uri(resourceFileUri, initElement.Value)).ToList();
         }
 
         protected static List<Uri> ReadResourceFileUris(XDocument xDocument)
         {
             return (from xElement in xDocument.Descendants()
-                where HasValidResourcePath(xElement)
-                let filename = xElement.Attribute("filename").Value
-                where Uri.IsWellFormedUriString(filename, UriKind.Absolute)
-                select new Uri(filename)).ToList();
+                    where HasValidResourcePath(xElement)
+                    let filename = xElement.Attribute("filename").Value
+                    where Uri.IsWellFormedUriString(filename, UriKind.Absolute)
+                    select new Uri(filename)).Distinct().ToList();
         }
     }
 }

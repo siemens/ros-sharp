@@ -34,12 +34,12 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 {
     public class UrdfTransferFromRos : UrdfTransfer
     {
-        #if !ROS2
+#if !ROS2
         private const string DEFAULT_STRING = "default";
-        #else
+#else
         private const string DEFAULT_STRING = "default_value";
-        #endif
-        
+#endif
+
         private readonly string localUrdfDirectory;
         private string urdfParameter;
         private string robotNameParameter;

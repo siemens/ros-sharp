@@ -46,7 +46,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private string rosPackage;
         private string robotNameParameter;
         private int numUris;
-        private int numUrisSoFar = 0;
+        private int sentFileCountSoFar = 0;
+        private int totalValidFileCount;
 
         public UrdfTransferToRos(RosSocket rosSocket, string robotName, string robotNameParameter, string urdfFilePath, string rosPackage)
         {
@@ -102,9 +103,10 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             XDocument xDocument = XDocument.Load(urdfFilePath);
             numUris = xDocument.Descendants().Count(HasValidResourcePath);
             List<Uri> resourceFileUris = ReadResourceFileUris(xDocument);
+            totalValidFileCount = resourceFileUris.Count;
 
-            bool badUriInFile = numUris != resourceFileUris.Count;
-            if (resourceFileUris.Count == 0 && !badUriInFile)
+            bool badUriInFile = numUris != totalValidFileCount;
+            if (totalValidFileCount == 0 && !badUriInFile)
             {
                 Status["resourceFilesSent"].Set();
                 LogMessage("No resource files to send.");
@@ -236,8 +238,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private void SaveFileResponseHandler()
         {
-            numUrisSoFar++;
-            if (numUris != 0 && numUrisSoFar == numUris + 1)
+            sentFileCountSoFar++;
+            if (numUris != 0 && sentFileCountSoFar == totalValidFileCount + 1)
             {
                 Status["resourceFilesSent"].Set();
                 LogMessage("All resource files sent. Closing connection.");
