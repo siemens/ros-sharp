@@ -32,14 +32,20 @@ namespace RosSharp.RosBridgeClientTest
 
         public static void Main(string[] args)
         {
-            string uri = "ws://192.168.56.102:9090";
-            string robotDescription = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "TestUrdf", "R2D2WithTexture.urdf");
+            string uri = "ws://localhost:9090";
+            string urdfFilePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "TestUrdf", "R2D2WithTexture.urdf");
+
+#if ROS2
+            string robotNameParameter = "turtlebot4:robot_name"; // <node_name>:<param_name>
+#else
+            string robotNameParameter = "robot_name"; // <param_name>
+#endif
 
             WebSocketNetProtocol webSocketNetProtocol = new WebSocketNetProtocol(uri);
             RosSocket rosSocket = new RosSocket(webSocketNetProtocol);
 
             // Publication:
-            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotDescription, "test_package");
+            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotNameParameter, urdfFilePath, "urdfExportTest");
             transferor.Transfer();
 
             transferor.Status["robotNamePublished"].WaitOne();
