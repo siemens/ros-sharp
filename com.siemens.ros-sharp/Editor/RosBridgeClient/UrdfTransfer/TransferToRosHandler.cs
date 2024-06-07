@@ -77,7 +77,8 @@ namespace RosSharp.RosBridgeClient
 
             if (Path.GetExtension(urdfPath)?.ToLowerInvariant() != ".urdf")
             {
-                Debug.LogWarning("Please select a valid URDF file to publish.");
+                Debug.LogWarning("Please select a valid URDF file to publish. Closing connection.");
+                RosSocket.Close();
                 return;
             }
 
