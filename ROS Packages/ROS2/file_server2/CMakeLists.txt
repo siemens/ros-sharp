@@ -35,7 +35,13 @@ ament_target_dependencies(file_server2_node
   std_msgs
 )
 
-rosidl_target_interfaces(file_server2_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+# Get the typesupport targets
+rosidl_get_typesupport_target(typesupport_target_cpp ${PROJECT_NAME} rosidl_typesupport_cpp)
+
+# Link the typesupport targets to your project
+target_link_libraries(file_server2_node ${typesupport_target_cpp})
+
+# rosidl_target_interfaces(file_server2_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 # Install
 install(TARGETS file_server2_node
@@ -52,6 +58,12 @@ install(DIRECTORY
 install(DIRECTORY
   srv
   DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install rviz files
+install(DIRECTORY
+  rviz
+  DESTINATION share/${PROJECT_NAME}/rviz
 )
 
 # Install package.xml
