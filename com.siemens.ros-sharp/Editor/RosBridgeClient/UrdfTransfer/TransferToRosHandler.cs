@@ -122,6 +122,8 @@ namespace RosSharp.RosBridgeClient
         {
             GameObject newGameObject = new GameObject("RosConnectorObject");
             rosConnector = newGameObject.AddComponent<RosConnector>();
+            RosConnectorEditor.IsInitialized = false;
+            RosConnectorEditor.ToggleROSVersion(rosConnector.selectedROSVersion);
         }
 
         private void OnClose(object sender, EventArgs e)

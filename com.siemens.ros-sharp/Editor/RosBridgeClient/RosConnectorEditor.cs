@@ -6,6 +6,9 @@ namespace RosSharp.RosBridgeClient
     [CustomEditor(typeof(RosConnector))]
     public class RosConnectorEditor : Editor
     {
+        private static bool isInitialized = false;
+        public static bool IsInitialized { get; set; }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -15,19 +18,16 @@ namespace RosSharp.RosBridgeClient
             // Dropdown to select ROS version
             ROSVersion newSelectedROSVersion = (ROSVersion)EditorGUILayout.EnumPopup("ROS Version", rosConnector.selectedROSVersion);
 
-            if (newSelectedROSVersion != rosConnector.selectedROSVersion)
+            if (!isInitialized || newSelectedROSVersion != rosConnector.selectedROSVersion)
             {
                 rosConnector.selectedROSVersion = newSelectedROSVersion;
-
-                // Combine all actions when the dropdown changes:
-                //  If different scenes in a single project works with different ROS versions, this
-                // function needs to be called again. Switching scenes does not switch ROS version!
                 ToggleROSVersion(rosConnector.selectedROSVersion);
+                isInitialized = true;
             }
         }
 
         // Toggle ROS Version
-        private static void ToggleROSVersion(ROSVersion selectedROSVersion)
+        public static void ToggleROSVersion(ROSVersion selectedROSVersion)
         {
             string defineSymbolROS2 = "ROS2"; 
 
