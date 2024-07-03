@@ -199,6 +199,7 @@ namespace RosSharp.RosBridgeClient
                 // If the button is clicked, create a new RosConnector
                 transferHandler.CreateRosConnector();
                 rosConnectorFound = transferHandler.CheckForRosConnector();
+                RosConnectorEditor.ShowRosConnectorEditorInspector(transferHandler.rosConnector.gameObject);
 
                 // Update the button text and color based on the new result
                 buttonText = rosConnectorFound ? "Available" : "Not found. Create one?";

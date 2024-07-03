@@ -6,28 +6,30 @@ namespace RosSharp.RosBridgeClient
     [CustomEditor(typeof(RosConnector))]
     public class RosConnectorEditor : Editor
     {
-        private static bool isInitialized = false;
-        public static bool IsInitialized { get; set; }
+        RosConnector rosConnector;
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            RosConnector rosConnector = (RosConnector)target;
-
             // Dropdown to select ROS version
-            ROSVersion newSelectedROSVersion = (ROSVersion)EditorGUILayout.EnumPopup("ROS Version", rosConnector.selectedROSVersion);
+            RosVersion newSelectedRosVersion = (RosVersion)EditorGUILayout.EnumPopup("ROS Version", rosConnector.selectedRosVersion);
 
-            if (!isInitialized || newSelectedROSVersion != rosConnector.selectedROSVersion)
+            if (newSelectedRosVersion != rosConnector.selectedRosVersion)
             {
-                rosConnector.selectedROSVersion = newSelectedROSVersion;
-                ToggleROSVersion(rosConnector.selectedROSVersion);
-                isInitialized = true;
+                rosConnector.selectedRosVersion = newSelectedRosVersion;
+                ToggleROSVersion(rosConnector.selectedRosVersion);
             }
         }
 
+        public void OnEnable()
+        {
+            rosConnector = (RosConnector)target;
+            ToggleROSVersion(rosConnector.selectedRosVersion);
+        }
+
         // Toggle ROS Version
-        public static void ToggleROSVersion(ROSVersion selectedROSVersion)
+        public static void ToggleROSVersion(RosVersion selectedROSVersion)
         {
             string defineSymbolROS2 = "ROS2"; 
 
@@ -38,7 +40,7 @@ namespace RosSharp.RosBridgeClient
             defines = defines.Replace($"{defineSymbolROS2};", "").Replace(defineSymbolROS2, "");
 
             // Add the define symbol for the selected ROS version (ROS2 is default if not present)
-            string defineSymbol = selectedROSVersion == ROSVersion.ROS1 ? "" : defineSymbolROS2;
+            string defineSymbol = selectedROSVersion == RosVersion.ROS1 ? "" : defineSymbolROS2;
             if (!string.IsNullOrEmpty(defineSymbol) && !defines.Contains(defineSymbol))
             {
                 defines += $";{defineSymbol}";
@@ -49,6 +51,14 @@ namespace RosSharp.RosBridgeClient
 
             // Execute Assembly Builder
             AssetDatabase.Refresh();
+        }
+
+        // Display the RosConnector object's inspector
+        public static void ShowRosConnectorEditorInspector(GameObject rosConnectorObject)
+        {
+            EditorGUIUtility.PingObject(rosConnectorObject.gameObject);
+            Selection.activeGameObject = rosConnectorObject.gameObject;
+            EditorApplication.RepaintHierarchyWindow();
         }
     }
 }

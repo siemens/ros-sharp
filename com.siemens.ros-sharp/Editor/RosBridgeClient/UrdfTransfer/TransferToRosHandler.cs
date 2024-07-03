@@ -38,7 +38,7 @@ namespace RosSharp.RosBridgeClient
     public class TransferToRosHandler
     {
         public RosSocket RosSocket;
-        private RosConnector rosConnector;
+        public RosConnector rosConnector;
 
         public Dictionary<string, ManualResetEvent> StatusEvents;
 
@@ -122,8 +122,6 @@ namespace RosSharp.RosBridgeClient
         {
             GameObject newGameObject = new GameObject("RosConnectorObject");
             rosConnector = newGameObject.AddComponent<RosConnector>();
-            RosConnectorEditor.IsInitialized = false;
-            RosConnectorEditor.ToggleROSVersion(rosConnector.selectedROSVersion);
         }
 
         private void OnClose(object sender, EventArgs e)
