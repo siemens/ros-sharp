@@ -22,11 +22,11 @@ using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public enum ROSVersion {ROS1 = 0, ROS2 = 1}
+    public enum RosVersion {ROS1 = 0, ROS2 = 1}
     public class RosConnector : MonoBehaviour
     {
         [HideInInspector]
-        public ROSVersion selectedROSVersion = ROSVersion.ROS2;
+        public RosVersion selectedRosVersion = RosVersion.ROS2;
         public int SecondsTimeout = 10;
         public RosSocket RosSocket { get; private set; }
         public RosSocket.SerializerEnum Serializer;
