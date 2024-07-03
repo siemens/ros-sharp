@@ -18,7 +18,7 @@ using UnityEngine;
 namespace RosSharp.RosBridgeClient
 {
     [RequireComponent(typeof(RosConnector))]
-    public class ImageSubscriber : UnitySubscriber<MessageTypes.Sensor.CompressedImage>
+    public class CompressedImageSubscriber : UnitySubscriber<MessageTypes.Sensor.CompressedImage>
     {
         public MeshRenderer meshRenderer;
 
