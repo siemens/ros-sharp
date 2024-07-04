@@ -11,18 +11,27 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Instead of using JoyAxisReader, now JoyPublisher seeks for IAxisReader interfaces.
+    © Siemens AG, 2024 Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
 */
+
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RosSharp.RosBridgeClient
 {
     public class JoyPublisher : UnityPublisher<MessageTypes.Sensor.Joy>
     {
-        private JoyAxisReader[] JoyAxisReaders;
+        // private JoyAxisReader[] JoyAxisReaders;
+        private List<IAxisReader> axisReaders = new List<IAxisReader>();
         private JoyButtonReader[] JoyButtonReaders;
 
         public string FrameId = "Unity";
-
+        public float CycleTime = 0.1f;
         private MessageTypes.Sensor.Joy message;
+        private float nextPublishTime;
 
         protected override void Start()
         {
@@ -33,12 +42,18 @@ namespace RosSharp.RosBridgeClient
 
         private void Update()
         {
-            UpdateMessage();
+            if (Time.time >= nextPublishTime)
+            {
+                nextPublishTime = Time.time + CycleTime;
+                UpdateMessage();
+            }
         }      
 
         private void InitializeGameObject()
         {
-            JoyAxisReaders = GetComponents<JoyAxisReader>();
+            axisReaders = FindObjectsOfType<MonoBehaviour>().OfType<IAxisReader>().ToList();
+            
+            // JoyAxisReaders = GetComponents<JoyAxisReader>();
             JoyButtonReaders = GetComponents<JoyButtonReader>();            
         }
 
@@ -46,7 +61,10 @@ namespace RosSharp.RosBridgeClient
         {
             message = new MessageTypes.Sensor.Joy();
             message.header.frame_id = FrameId;
-            message.axes = new float[JoyAxisReaders.Length];
+
+            // message.axes = new float[JoyAxisReaders.Length];
+            message.axes = new float[axisReaders.Count];
+
             message.buttons = new int[JoyButtonReaders.Length];
         }
 
@@ -54,13 +72,16 @@ namespace RosSharp.RosBridgeClient
         {
             message.header.Update();
 
-            for (int i = 0; i < JoyAxisReaders.Length; i++)
-                message.axes[i] = JoyAxisReaders[i].Read();
+            // for (int i = 0; i < JoyAxisReaders.Length; i++)
+            //     message.axes[i] = JoyAxisReaders[i].Read();
+
+            for (int i = 0; i < axisReaders.Count; i++)
+                message.axes[i] = axisReaders[i].Read();
             
             for (int i = 0; i < JoyButtonReaders.Length; i++)
                 message.buttons[i] = (JoyButtonReaders[i].Read() ? 1 : 0);
 
             Publish(message);
-        }
+        }  
     }
 }

@@ -11,15 +11,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Now the JoyAxisReader class implements the IAxisReader interface. 
+    © Siemens AG, 2024 Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
 */
 
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
 {
-    public class JoyAxisReader : MonoBehaviour
+    public class JoyAxisReader : MonoBehaviour, IAxisReader
     {        
-        public string Name;
+        [SerializeField]
+        public new string name;
+
+        public string Name
+        {
+            get { return name; }
+            private set { name = value; }
+        }
         
         public float Read()
         {
