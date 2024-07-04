@@ -32,22 +32,27 @@
       {
         "displayName": "ROS Version Publisher",
         "description": "Sample scene and script to demonstrate preprocessor directives usage for different ROS versions.",
-        "path": "Samples~/ROSVersionPublisher/"
+        "path": "Samples~/ROS Version Publisher/"
+      },
+      {
+          "displayName": "Unity Simulation Scene ROS2",
+          "description": "Sample scene for simulation example. See the wiki for more information.",
+          "path": "Samples~/Unity Simulation Scene ROS2/"
+      },
+      {
+        "displayName": "Gazebo Simulation Scenes ROS2",
+        "description": "Sample scenes for Gazebo example. See the wiki for more information.",
+        "path": "Samples~/Gazebo Simulation Scenes ROS2/"
+      },
+      {
+        "displayName": "Gazebo Simulation Scene ROS1",
+        "description": "Sample scene for Gazebo example. See the wiki for more information.",
+        "path": "Samples~/Gazebo Simulation Scene ROS1/"
       },
       {
           "displayName": "Fibonacci Action Scene",
           "description": "Sample scene for Fibonacci example. See the wiki for more information.",
-          "path": "Samples~/FibonacciAction/"
-      },
-      {
-          "displayName": "Gazebo Simulation Scene",
-          "description": "Sample scene for Gazebo example. See the wiki for more information.",
-          "path": "Samples~/GazeboSimulation/"
-      },
-      {
-          "displayName": "Unity Simulation Scene",
-          "description": "Sample scene for simulation example. See the wiki for more information.",
-          "path": "Samples~/UnitySimulation/"
+          "path": "Samples~/Fibonacci Action/"
       }
     ],
     "documentationUrl": "https://github.com/siemens/ros-sharp/wiki",
