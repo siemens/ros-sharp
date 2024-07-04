@@ -63,7 +63,13 @@ install(DIRECTORY
 # Install rviz files
 install(DIRECTORY
   rviz
-  DESTINATION share/${PROJECT_NAME}/rviz
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Install urdf file
+install(DIRECTORY
+  urdf
+  DESTINATION share/${PROJECT_NAME}
 )
 
 # Install package.xml

@@ -22,7 +22,7 @@ def generate_launch_description():
     # Declare launch arguments
     gui_arg = DeclareLaunchArgument('gui', default_value='true', description='Whether to show GUI')
     urdf_file_arg = DeclareLaunchArgument('urdf_file', default_value='robot_description.urdf', description='URDF file name')
-    package_name_arg = DeclareLaunchArgument('package_name', default_value='urdfExportTest', description='Package name containing URDF file')
+    package_name_arg = DeclareLaunchArgument('package_name', default_value='urdf_export_test', description='Package name containing URDF file')
     rviz_config_file_arg = DeclareLaunchArgument('rviz_config_file', default_value='robot_visualization.rviz', description='RViz configuration file')
 
     return LaunchDescription([
