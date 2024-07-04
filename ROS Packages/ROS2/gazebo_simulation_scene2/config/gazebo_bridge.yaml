@@ -1,0 +1,49 @@
+---
+- ros_topic_name: "/model/r2d2/cmd_vel"
+  gz_topic_name: "/model/r2d2/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/odometry"
+  gz_topic_name: "/model/r2d2/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/joint_state"
+  gz_topic_name: "/world/gazebo_simulation_scene2_world/model/r2d2/joint_state"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "ignition.msgs.Model"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/tf"
+  gz_topic_name: "/model/r2d2/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/pose_static"
+  gz_topic_name: "/model/r2d2/pose_static"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# Instead of using the following, we will use the image_bridge node from ros_gz_image package with "camera" parameter
+# - ros_topic_name: "/camera"
+#   gz_topic_name: "/camera"
+#   ros_type_name: "sensor_msgs/msg/Image"
+#   gz_type_name: "ignition.msgs.Image"
+#   direction: GZ_TO_ROS
+
+# - ros_topic_name: "/camera_info"
+#   gz_topic_name: "camera_info"
+#   ros_type_name: "sensor_msgs/msg/CameraInfo"
+#   gz_type_name: "ignition.msgs.CameraInfo"
+#   direction: GZ_TO_ROS
