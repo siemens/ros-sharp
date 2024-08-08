@@ -40,6 +40,11 @@
           "path": "Samples~/Unity Simulation Scene ROS2/"
       },
       {
+        "displayName": "Unity Simulation Scene ROS1",
+        "description": "Sample scene for simulation example. See the wiki for more information.",
+        "path": "Samples~/Unity Simulation Scene ROS1/"
+      },
+      {
         "displayName": "Gazebo Simulation Scenes ROS2",
         "description": "Sample scenes for Gazebo example. See the wiki for more information.",
         "path": "Samples~/Gazebo Simulation Scenes ROS2/"
