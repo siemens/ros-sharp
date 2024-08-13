@@ -62,6 +62,6 @@ def generate_launch_description():
         urdf_file_arg,
         ros_sharp_communication_launch,
         r2d2_launch,
-        joint_state_publisher_node
+        # joint_state_publisher_node
     ])
 
