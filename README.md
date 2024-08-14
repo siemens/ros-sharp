@@ -16,7 +16,7 @@ ROS# is a set of open-source software libraries and tools in [C\# ](https://docs
 
 ## Installation ##
 
-ROS# can be used with Unity Engine __or__ with any compatible .NET project, see [platform support](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#platform-support) and [external dependencies](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#external-dependencies).
+ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, see [platform support](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#platform-support) and [external dependencies](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#external-dependencies).
 
 * ### For Unity Integration: Unity Package Manager ###
   1. In Unity Package Manager, click the "Add package from git URL" option at the top left corner.
@@ -42,7 +42,7 @@ ROS# can be used with Unity Engine __or__ with any compatible .NET project, see 
 
 Below is an overview of the main directories and their purposes:
 
-- **`com.siemens.ros-sharp/`**: Contains custom Unity [UPM](https://docs.unity3d.com/Manual/CustomPackages.html) package for integrating ROS# into Unity projects. The package includes the whole ROS# .NET solution, as well as Unity specific scripts, external dependencies, and samples. This folder follows a planned layout as Unity [recommends](https://docs.unity3d.com/Manual/cus-layout.html).
+- **`com.siemens.ros-sharp/`**: Contains the custom Unity [UPM](https://docs.unity3d.com/Manual/CustomPackages.html) package for integrating ROS# into Unity projects. The package includes the whole ROS# .NET solution, as well as Unity specific scripts, external dependencies, and samples. This folder follows a planned layout as Unity [recommends](https://docs.unity3d.com/Manual/cus-layout.html).
   - **`Runtime/`**: Core ROS# .NET scripts and components for Unity integration.
   - **`Editor/`**: Unity specific editor scripts for mainly UI extensions.
   - **`Plugins/`**: External dependencies with specific versions.
@@ -54,7 +54,7 @@ Below is an overview of the main directories and their purposes:
   - **`Urdf/`**: Library for parsing URDF files and creating Unity GameObjects.
   - **`PostBuildEvents/`**: OS specific post build scripts. Please see [post build events](https://github.com/siemens/ros-sharp/wiki/Dev_PostBuildEvents.md) for more information.
 
-- **`ROS Packages/`**: ROS [packages](https://github.com/siemens/ros-sharp/tree/8330f5b433da22fff028dd1f355233b2f3e008e7/ROS) that are (optionally) used by ROS# for testing and demonstration purposes.
+- **`ROS Packages/`**: ROS [packages](https://github.com/siemens/ros-sharp/tree/8330f5b433da22fff028dd1f355233b2f3e008e7/ROS%20Packages) that are used by ROS# for tutorial, testing and demonstration purposes.
 
 
 
