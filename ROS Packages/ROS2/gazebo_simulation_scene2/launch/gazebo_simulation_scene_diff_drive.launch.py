@@ -21,7 +21,7 @@ from tempfile import NamedTemporaryFile
 
 def generate_launch_description():
     # Declare launch arguments
-    urdf_file_arg = DeclareLaunchArgument('urdf_file', default_value='custom_r2d2_for_gazebo.urdf', description='URDF file name')
+    urdf_file_arg = DeclareLaunchArgument('urdf_file', default_value='custom_r2d2.urdf', description='URDF file name')
     bridge_config_file_arg = DeclareLaunchArgument('bridge_config_file', default_value='gazebo_bridge.yaml', description='Bridge config file name')
     package_name_arg = DeclareLaunchArgument('package_name', default_value='gazebo_simulation_scene2', description='Package name containing URDF file')
     gazebo_world_arg = DeclareLaunchArgument('gazebo_world', default_value='gazebo_simulation_scene2_world.sdf', description='Gazebo world file name')
@@ -45,7 +45,7 @@ def launch_setup(context, *args, **kwargs):
     pkg_file_server2 = get_package_share_directory('file_server2')
 
     urdf_file_path = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory("file_server2"),
         "urdf",
         urdf_file
     )
