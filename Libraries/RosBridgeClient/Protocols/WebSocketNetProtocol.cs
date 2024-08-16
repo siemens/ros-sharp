@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// this class (System.Net.WebSockets) requires .NET 4.5+ to compile and Windows 8+ to work
+// this class (System.Net.WebSockets) requires .NET 4.6+ to compile and Windows 8+ to work
 
 using System;
 using System.IO;
