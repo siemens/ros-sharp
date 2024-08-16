@@ -5,13 +5,13 @@
 ROS# is a set of open-source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular [Unity](https://unity3d.com/). With ROS#, developers can effortlessly create .NET applications that communicate with ROS nodes, subscribe to and publish topics, handle actions and services, and interact with ROS messages. This enables the development of robotics applications, simulations, and automation systems within the .NET ecosystem.
 
 <div style="text-align: center;">
-  <img src="img_placeholder\Draft3_arch.png" alt="ROS# Showcase" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
+  <img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharp_arch.png" alt="ROS# Architecture" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
 </div>
 
 [Here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases) are some showcases illustrating what can be done with ROS#. The community provided various other application examples for ROS# [here](https://github.com/siemens/ros-sharp/issues/20). 
 
 <div style="text-align: center;">
-<img src="img_placeholder\Draft3_showcase.png" alt="ROS# Showcase" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
+<img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharp_showcase.png" alt="ROS# Showcase" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
 </div>
 
 ## Installation ##
@@ -21,7 +21,7 @@ ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, 
 * ### For Unity Integration: Unity Package Manager ###
   1. In Unity Package Manager, click the "Add package from git URL" option at the top left corner.
   2. Paste the following URL: https://github.com/siemens/ros-sharp.git?path=/com.siemens.ros-sharp
-  <img src="img_placeholder\User_Inst_InstallationROS_sharp_From_GitCombined.png" alt="ROS# Package Install from Git" style="padding-top: 10px; padding-bottom: 0px; width: 90%; height: 100%;">
+  <img src="https://github.com/siemens/ros-sharp/wiki/img/User_Inst_InstallationROS_sharp_From_GitCombined.png" alt="ROS# Package Install from Git" style="padding-top: 10px; padding-bottom: 0px; width: 90%; height: 100%;">
 
 > For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for Unity](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp.md). 
 
