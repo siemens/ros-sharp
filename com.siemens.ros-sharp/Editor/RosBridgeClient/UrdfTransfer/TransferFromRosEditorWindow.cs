@@ -42,9 +42,9 @@ namespace RosSharp.RosBridgeClient
         private bool rosConnectorFound = false;
 
 #if ROS2
-        private static string defautRobotName = "turtlebot4:robot_name";
+        private static string defautRobotName = "r2d2:file_server2";
         private static string defaultUrdfParameter = "robot_state_publisher:robot_description";
-        private static string hintRobotName = "Syntax:\n<node_name>:<param_name>\nExample usage:\nturtlebot4:robot_name";
+        private static string hintRobotName = "Syntax:\n<node_name>:<param_name>\nExample usage:\n<robot_name>:<pacakge_name>";
         private static string hintUrdfParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\nrobot_state_publisher:robot_description";
 #else
         private static string defautRobotName = "/robot/name";

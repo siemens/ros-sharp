@@ -75,7 +75,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         {
             RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
                                                                                     ReceiveRobotName,
-                                                                                    new rosapi.GetParamRequest(robotNameParameter, DEFAULT_STRING));
+                                                                                    new rosapi.GetParamRequest(robotNameParameter, CutAfterColon(robotNameParameter)));
 
             var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
                                                                                         new rosapi.GetParamRequest(urdfParameter, DEFAULT_STRING),
