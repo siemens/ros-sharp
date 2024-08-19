@@ -91,7 +91,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                 new rosapi.SetParamRequest(JsonSerializer.Serialize(rosPackage), JsonSerializer.Serialize(urdfXDoc.ToString()))));
 
             // Send URDF file to ROS package
-            string urdfPackagePath = "package://" + rosPackage + "/" + Path.GetFileName(urdfFilePath);
+            string urdfPackagePath = "package://" + CutBeforeColon(rosPackage) + "/" + Path.GetFileName(urdfFilePath);
             string urdfFileContents = "<?xml version='1.0' encoding='utf-8'?>\n" + urdfXDoc.ToString();
             byte[] urdfBytes = System.Text.Encoding.UTF8.GetBytes(urdfFileContents);
 
@@ -132,6 +132,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                 if (IsColladaFile(resourceFilePath))
                 {
                     List<Uri> colladaTextureFiles = ReadDaeTextureUris(resourceFilePath, XDocument.Load(absolutePath));
+                    totalValidFileCount += colladaTextureFiles.Count;
                     await PublishFiles(colladaTextureFiles);
                 }
 
@@ -220,10 +221,10 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private string GetNewPackagePath(Uri originalPath)
         {
             string packageName = originalPath.Host;
-            if (packageName.Equals(rosPackage))
+            if (packageName.Equals(CutBeforeColon(rosPackage)))
                 return originalPath.ToString();
 
-            return "package://" + rosPackage + "/" + packageName + originalPath.AbsolutePath;
+            return "package://" + CutBeforeColon(rosPackage) + "/" + packageName + originalPath.AbsolutePath;
         }
 
         private void SetRobotNameHandler(rosapi.SetParamResponse serviceResponse)
@@ -239,6 +240,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private void SaveFileResponseHandler()
         {
             sentFileCountSoFar++;
+            LogMessage("Sent file count: " + sentFileCountSoFar);
             if (numUris != 0 && sentFileCountSoFar == totalValidFileCount + 1)
             {
                 Status["resourceFilesSent"].Set();
@@ -252,8 +254,19 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 #if USINGWITHUNITY
             UnityEngine.Debug.LogFormat(message);
 #else
-                Console.WriteLine(message);
+            Console.WriteLine(message);
 #endif
         }
+
+        private static string CutBeforeColon(string input)
+        {
+            int colonIndex = input.IndexOf(':');
+            if (colonIndex >= 0)
+            {
+                input = input.Substring(0, colonIndex);
+            }
+            return input;
+        }
+
     }
 }

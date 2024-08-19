@@ -37,11 +37,11 @@ namespace RosSharp.RosBridgeClient
         private static string rosPackage;
         private TransferToRosHandler transferHandler;
         private bool showSettings = true;
-        private static string defaultRosPackage = "urdfExportTest";
+        private static string defaultRosPackage = "urdf_export_test:param_name";
 
 #if ROS2
-        private static string defautRobotNameParameter = "turtlebot4:robot_name";
-        private static string hintRobotNameParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\nturtlebot4:robot_name";
+        private static string defautRobotNameParameter = "r2d2:file_server2";
+        private static string hintRobotNameParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\n<robot_name>:<package_name>";
         
 #else
         private static string defautRobotNameParameter = "/robot/name";
