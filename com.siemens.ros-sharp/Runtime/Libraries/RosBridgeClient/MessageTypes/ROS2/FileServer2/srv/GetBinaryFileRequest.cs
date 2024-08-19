@@ -9,7 +9,7 @@
 
 #if ROS2
 
-namespace RosSharp.RosBridgeClient.MessageTypes.FileServer2
+namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
     public class GetBinaryFileRequest : Message
     {

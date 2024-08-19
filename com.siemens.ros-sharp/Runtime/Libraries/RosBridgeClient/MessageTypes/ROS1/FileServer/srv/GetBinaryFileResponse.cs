@@ -7,6 +7,8 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
+#if !ROS2
+
 namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
 {
     public class GetBinaryFileResponse : Message
@@ -26,3 +28,5 @@ namespace RosSharp.RosBridgeClient.MessageTypes.FileServer
         }
     }
 }
+
+#endif
