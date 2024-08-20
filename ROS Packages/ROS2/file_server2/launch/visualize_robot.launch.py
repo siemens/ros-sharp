@@ -15,6 +15,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node, SetParameter
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
+from ament_index_python.packages import get_package_share_directory
 import os
 from tempfile import NamedTemporaryFile
 
@@ -37,11 +38,6 @@ def launch_setup(context, *args, **kwargs):
     urdf_file = LaunchConfiguration('urdf_file').perform(context)
     package_name = LaunchConfiguration('package_name').perform(context)
     rviz_config_file = LaunchConfiguration('rviz_config_file').perform(context)
-
-    # Function to get package share directory
-    def get_package_share_directory(package_name):
-        from ament_index_python.packages import get_package_share_directory as get_pkg_share_dir
-        return get_pkg_share_dir(package_name)
 
     # Construct the URDF file path
     urdf_file_path = os.path.join(
@@ -94,8 +90,3 @@ def launch_setup(context, *args, **kwargs):
         robot_state_publisher_node,
         rviz_node
     ]
-
-# Function to get the package share directory
-def get_package_share_directory(package_name):
-    from ament_index_python.packages import get_package_share_directory as get_pkg_share_dir
-    return get_pkg_share_dir(package_name)

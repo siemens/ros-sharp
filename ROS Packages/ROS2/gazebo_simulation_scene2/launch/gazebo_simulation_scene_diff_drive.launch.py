@@ -16,6 +16,7 @@ from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, OpaqueFunction, IncludeLaunchDescription, ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python.packages import get_package_share_directory
 import os
 from tempfile import NamedTemporaryFile
 
@@ -126,7 +127,3 @@ def launch_setup(context, *args, **kwargs):
         joy_to_twist2_node
     ]
 
-# Function to get the package share directory
-def get_package_share_directory(package_name):
-    from ament_index_python.packages import get_package_share_directory as get_pkg_share_dir
-    return get_pkg_share_dir(package_name)
