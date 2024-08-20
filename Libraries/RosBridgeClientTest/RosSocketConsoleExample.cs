@@ -57,10 +57,9 @@ namespace RosSharp.RosBridgeClientTest
 
             // Subscription:
             string subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
-            //subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
 
             // Service Call:
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
+            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "defaut_value")); // Just "default" for ROS1
 
             // Service Response:
             string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);

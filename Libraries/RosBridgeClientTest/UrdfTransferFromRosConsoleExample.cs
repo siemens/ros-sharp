@@ -39,7 +39,7 @@ namespace RosSharp.RosBridgeClientTest
                 string robotNameParameter = "/robot/name";
 #else           // <node_name>:<param_name>
                 string urdfParameter = "robot_state_publisher:robot_description";
-                string robotNameParameter = "turtlebot4:robot_name";
+                string robotNameParameter = "r2d2:urdf_tutorial";
 #endif
                 // Publication:
                 UrdfTransferFromRos urdfTransferFromRos = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory(), urdfParameter, robotNameParameter);

@@ -253,7 +253,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 #if USINGWITHUNITY
             UnityEngine.Debug.LogFormat(message);
 #else
-                Console.WriteLine(message);
+            Console.WriteLine(message);
 #endif
         }
 

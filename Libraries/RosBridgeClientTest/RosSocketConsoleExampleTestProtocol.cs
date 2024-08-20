@@ -24,8 +24,16 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 using sensor_msgs = RosSharp.RosBridgeClient.MessageTypes.Sensor;
 using System.Linq;
 
+// on ROS2 system:
+// launch before starting:
+// ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+// ros2 topic echo /publication_test
+// ros2 topic pub --once /subscription_test std_msgs/msg/String "data: 'subscription test message data'"
 
-// commands on ROS system:
+// launch after starting:
+// ros2 service call /service_response_test <service_type> <request_data>
+
+// on ROS1 system:
 // launch before starting:
 // roslaunch rosbridge_server rosbridge_websocket.launch
 // rostopic echo /publication_test
@@ -38,7 +46,7 @@ namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsoleTestProtocol
     {
-        static readonly string uri = "ws://192.168.56.102:9090";
+        static readonly string uri = "ws://localhost:9090";
 
         public static void Main(string[] args)
         {

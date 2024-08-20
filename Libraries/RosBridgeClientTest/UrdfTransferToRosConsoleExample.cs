@@ -33,10 +33,10 @@ namespace RosSharp.RosBridgeClientTest
         public static void Main(string[] args)
         {
             string uri = "ws://localhost:9090";
-            string urdfFilePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "TestUrdf", "R2D2WithTexture.urdf");
+            string urdfFilePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "<package_name>", "<urdf_name>.urdf");
 
 #if ROS2
-            string robotNameParameter = "turtlebot4:robot_name"; // <node_name>:<param_name>
+            string robotNameParameter = "r2d2:urdf_tutorial"; // <node_name>:<param_name>
 #else
             string robotNameParameter = "robot_name"; // <param_name>
 #endif
@@ -45,7 +45,7 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket rosSocket = new RosSocket(webSocketNetProtocol);
 
             // Publication:
-            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotNameParameter, urdfFilePath, "urdfExportTest");
+            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotNameParameter, urdfFilePath, "<package_name_to_be_exported>"); //urdf_export_test
             transferor.Transfer();
 
             transferor.Status["robotNamePublished"].WaitOne();
