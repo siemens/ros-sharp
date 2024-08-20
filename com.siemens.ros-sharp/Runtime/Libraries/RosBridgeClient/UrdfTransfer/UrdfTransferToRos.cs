@@ -23,7 +23,7 @@ limitations under the License.
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
-//#define USINGWITHUNITY
+// Use UnityEngine.Debug.LogFormat instead of Console.WriteLine for Unity
 
 using System;
 using System.Collections.Generic;
@@ -104,11 +104,12 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             numUris = xDocument.Descendants().Count(HasValidResourcePath);
             List<Uri> resourceFileUris = ReadResourceFileUris(xDocument);
             totalValidFileCount = resourceFileUris.Count;
+
             bool badUriInFile = numUris != totalValidFileCount;
             if (totalValidFileCount == 0 && !badUriInFile)
             {
                 Status["resourceFilesSent"].Set();
-                LogMessage("No resource files to send.");
+                Console.WriteLine("No resource files to send.");
             }
             else
             {
@@ -166,11 +167,11 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             }
             else
             {
-                LogMessage("File path already exists in FilesBeingProcessed");
+                Console.WriteLine("File path already exists in FilesBeingProcessed");
             }
 
             var response = await taskCompletionSource.Task;
-            LogMessage("File sent to ROS: " + rosPackagePath);
+            Console.WriteLine("File sent to ROS: " + rosPackagePath);
             SaveFileResponseHandler();
 
         }
@@ -239,22 +240,13 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private void SaveFileResponseHandler()
         {
             sentFileCountSoFar++;
-            LogMessage("Sent file count: " + sentFileCountSoFar);
+            Console.WriteLine("Sent file count: " + sentFileCountSoFar);
             if (numUris != 0 && sentFileCountSoFar == totalValidFileCount + 1)
             {
                 Status["resourceFilesSent"].Set();
-                LogMessage("All resource files sent. Closing connection.");
+                Console.WriteLine("All resource files sent. Closing connection.");
                 RosSocket.Close();
             }
-        }
-
-        private void LogMessage(string message)
-        {
-#if USINGWITHUNITY
-            UnityEngine.Debug.LogFormat(message);
-#else
-            Console.WriteLine(message);
-#endif
         }
 
         private static string CutBeforeColon(string input)
