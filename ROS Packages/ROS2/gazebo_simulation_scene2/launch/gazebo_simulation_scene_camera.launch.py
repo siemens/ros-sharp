@@ -52,7 +52,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     bridge_config_file_path = os.path.join(
-        get_package_share_directory("package_name"),
+        get_package_share_directory(package_name),
         "config",
         bridge_config_file
     )
@@ -86,15 +86,6 @@ def launch_setup(context, *args, **kwargs):
         arguments=["-file", urdf_file_path, " -z ",  "1"]
         )
 
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[
-            {'use_sim_time': True}, 
-            {'robot_description': robot_description}
-        ]
-    )
-
     gazebo_bridge_node = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -116,6 +107,5 @@ def launch_setup(context, *args, **kwargs):
         gazebo_node,
         spawn_entity,
         gazebo_bridge_node,
-        gazebo_camera_bridge_node,
-        robot_state_publisher_node
+        gazebo_camera_bridge_node
     ]

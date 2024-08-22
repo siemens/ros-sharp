@@ -16,6 +16,11 @@
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
+  qos:
+      reliability: "best_effort" # or "reliable"
+      durability: "transient_local" # or "volatile"
+      history: "keep_last"
+      depth: 10
 
 - ros_topic_name: "/model/r2d2/joint_state"
   gz_topic_name: "/world/gazebo_simulation_scene2_world/model/r2d2/joint_state"
