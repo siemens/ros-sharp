@@ -86,15 +86,6 @@ def launch_setup(context, *args, **kwargs):
         arguments=["-file", urdf_file_path, " -z ",  "1"]
         )
 
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[
-            {'use_sim_time': True}, 
-            {'robot_description': robot_description}
-        ]
-    )
-
     gazebo_bridge_node = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -123,7 +114,6 @@ def launch_setup(context, *args, **kwargs):
         spawn_entity,
         gazebo_bridge_node,
         gazebo_camera_bridge_node,
-        robot_state_publisher_node,
         joy_to_twist2_node
     ]
 

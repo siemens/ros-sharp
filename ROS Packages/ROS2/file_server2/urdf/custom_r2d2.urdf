@@ -445,6 +445,7 @@
         <min_linear_velocity>-10</min_linear_velocity>
         <max_angular_velocity>10</max_angular_velocity>
         <min_angular_velocity>-10</min_angular_velocity>
+        <odom_topic>/model/r2d2/odometry_estimate_dont_use</odom_topic>
     </plugin>
   </gazebo>
 
@@ -497,6 +498,15 @@
 
   <gazebo>
     <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher"/>
+  </gazebo>
+
+  <gazebo>
+    <plugin
+      filename="ignition-gazebo-odometry-publisher-system"
+      name="ignition::gazebo::systems::OdometryPublisher">
+      <dimensions>3</dimensions>
+      <odom_topic>/model/r2d2/odometry</odom_topic>
+    </plugin>
   </gazebo>
 
 
