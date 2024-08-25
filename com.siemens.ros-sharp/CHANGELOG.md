@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- ## [Unreleased] - xx.xx.2024 -->
 
-## [2.0.0] - 14.08.2024
+## [2.0.0] - 26.08.2024
 
 ### Added
 
@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - New ROS packages: File Server, Unity Simuatlion Scene, and Gazebo Simulation Scene, with ROS2 support.
 - Unity Simulation Scene and Gazebo Simulation Scene, included in the Unity Package for ROS2 support.
 - RawImageSubscriber script is now part of the Unity package.
-- TODO: Add beginner tutorial.
+- New quick start page.
 - Post-build events for Visual Studio streamline development between Unity and .NET.
 
 ### Fixed
