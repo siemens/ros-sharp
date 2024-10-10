@@ -1,74 +1,70 @@
-# [<img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharpLogo.png" width="480" alt ="ROS#"/>](https://github.com/siemens/ros-sharp) #
+[<img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharpLogo.png" width="480" alt ="ROS#"/>](https://github.com/siemens/ros-sharp)
 
-[ROS#](https://github.com/siemens/ros-sharp) is a set of open source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular [Unity](https://unity3d.com/).
+## Overview ##
 
-[Here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases) are some showcases illustrating what can be done with ROS#.
-Community provided a variety of other application examples for ROS# [here](https://github.com/siemens/ros-sharp/issues/20). Please don't hesitate to post yours!
+ROS# is a set of open-source software libraries and tools in [C\# ](https://docs.microsoft.com/de-de/dotnet/csharp/csharp) for communicating with [ROS](http://www.ros.org/) from .[NET](https://www.microsoft.com/net) applications, in particular [Unity](https://unity3d.com/). With ROS#, developers can effortlessly create .NET applications that communicate with ROS nodes, subscribe to and publish topics, handle actions and services, and interact with ROS messages. This enables the development of robotics applications, simulations, and automation systems within the .NET ecosystem.
 
-## Contents ##
+<div style="text-align: center;">
+  <img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharp_arch.png" alt="ROS# Architecture" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
+</div>
 
-* [Libraries](https://github.com/siemens/ros-sharp/tree/master/Libraries): .NET solution for
-[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient),
-[Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf) and
-[MessageGeneration](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration)
-* [ROS](https://github.com/siemens/ros-sharp/tree/master/ROS):  [ROS](http://wiki.ros.org/) packages used by ROS#.
-* [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D): [Unity](https://unity3d.com/) project containing
-  * Unity-specific extensions to
-   [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and
-   [Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter) and
-   [MessageGeneration](https://github.com/siemens/ros-sharp/tree/master/Libraries/MessageGeneration)
-  * example scenes and reference code (see [Wiki](https://github.com/siemens/ros-sharp/wiki))
+[Here](https://github.com/siemens/ros-sharp/wiki/Info_Showcases) are some showcases illustrating what can be done with ROS#. The community provided various other application examples for ROS# [here](https://github.com/siemens/ros-sharp/issues/20). 
 
-## Releases ##
+<div style="text-align: center;">
+<img src="https://github.com/siemens/ros-sharp/wiki/img/Home_RosSharp_showcase.png" alt="ROS# Showcase" style="padding-top: 5px; padding-bottom: 5px; width: 100%; height: 100%;">
+</div>
 
-In addition to the source code, [Releases](https://github.com/siemens/ros-sharp/releases) contain:
+## Installation ##
 
-* a [Unity Asset Package](https://docs.unity3d.com/Manual/AssetPackages.html) containing the [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) project assets:
-  * to be imported in other Unity projects using ROS#.
-* binaries of [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [Urdf](https://github.com/siemens/ros-sharp/tree/master/Libraries/Urdf)
-  * to be used in other .NET projects using these libraries.
+ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, see [platform support](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#platform-support) and [external dependencies](https://github.com/siemens/ros-sharp/tree/master?tab=readme-ov-file#external-dependencies).
 
-The latest release is also being published in the [Unity Asset Store](https://assetstore.unity.com/packages/tools/physics/ros-ros-unity-communication-package-107085).
+* ### For Unity Integration: Unity Package Manager ###
+  1. In Unity Package Manager, click the "Add package from git URL" option at the top left corner.
+  2. Paste the following URL: https://github.com/siemens/ros-sharp.git?path=/com.siemens.ros-sharp
+  <img src="https://github.com/siemens/ros-sharp/wiki/img/User_Inst_InstallationROS_sharp_From_GitCombined.png" alt="ROS# Package Install from Git" style="padding-top: 10px; padding-bottom: 0px; width: 90%; height: 100%;">
 
-Please get the latest development version directly from the [tip of this master branch](https://github.com/siemens/ros-sharp).
+> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for Unity](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp.md). 
 
-## Unity Robotics Hub ##
-In 11/2020 Unity launched [Unity Robotics Hub](https://github.com/Unity-Technologies/Unity-Robotics-Hub) and included a major part of ROS#.
-* [Short Description](https://github.com/siemens/ros-sharp/wiki/Ext_UnityRoboticsHub) on Unity Robotics Hub written by Unity developers
-* [Differences](https://github.com/siemens/ros-sharp/wiki/Ext_RosSharp_RoboticsHub) between ROS# and Unity Robotics Hub
+* ### For .NET Projects: NuGet Gallery ###
+  1. Head to the [NuGet](https://www.nuget.org/profiles/MartinBischoff) page.
+  2. Install the required packages individually from NuGet.
 
-We are in close contact with the developers and decided to run both initiatives in parallel.
+> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for .NET](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp_DotNET.md). 
 
-## Licensing ##
-
-ROS# is open source under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0) and is free for commercial use.
-
-## External Dependencies ##
-
-[RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) requires:
-* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) (MIT License)
-* [Newtonsoft.Json.Bson](https://github.com/JamesNK/Newtonsoft.Json.Bson) (MIT License)
-* [websocket-sharp](https://github.com/sta/websocket-sharp) (MIT License), required only when using [WebSocketSharpProtocol](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient/Protocols/WebSocketSharpProtocol.cs)
 
 ## Platform Support ##
 
-* [ROS#](https://github.com/siemens/ros-sharp) is developed for Windows and has successfully been used on a variety of other platforms community members.
+* The [ROS#](https://github.com/siemens/ros-sharp/tree/master/Libraries/) dependencies require __.NET 8__ and __Visual Studio 2022__ or higher.
+* The [Unity package](https://github.com/siemens/ros-sharp/tree/master/com.siemens.ros-sharp) has been developed with Unity Version __2022.3.17f1 (LTS)__ and should also be compatible with older versions.
+> For Unity versions below 2022.3: See [wiki](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows).
 
-* The [RosSharp](https://github.com/siemens/ros-sharp/tree/master/Libraries/) Visual Studio solution requires .NET Framework 4.6.1 and Visual Studio 2017 or higher.
-* The Unity Project [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) has been developed with Unity Version 2019.4.18f (LTS) and should be compatible also with older versions.
-In Versions below 2019.3, make sure to set the scripting runtime version to `.NET 4.x Equivalent` ([see Wiki page](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows)).
+## Repository Structure ##
 
-* Please find a UWP version of ROS# [here](https://github.com/EricVoll/ros-sharp).
-* Please find a .NET Standard 2.0 version of UrdfImporter [here](https://github.com/blommers/UdrfImporter).
+Below is an overview of the main directories and their purposes:
+
+- **`com.siemens.ros-sharp/`**: Contains the custom Unity [UPM](https://docs.unity3d.com/Manual/CustomPackages.html) package for integrating ROS# into Unity projects. The package includes the whole ROS# .NET solution, as well as Unity specific scripts, external dependencies, and samples. This folder follows a planned layout as Unity [recommends](https://docs.unity3d.com/Manual/cus-layout.html).
+  - **`Runtime/`**: Core ROS# .NET scripts and components for Unity integration.
+  - **`Editor/`**: Unity specific editor scripts for mainly UI extensions.
+  - **`Plugins/`**: External dependencies with specific versions.
+  - **`Samples~/`**: Example samples that need to be imported through the package manager window. For more info about example scenes and reference code, see [wiki](https://github.com/siemens/ros-sharp/wiki).
+
+- **`Libraries/`**: .NET solution containing the core ROS# libraries and tools for communicating with ROS.
+  - **`RosBridgeClient/`**: Core ROS# .NET library for communicating with ROS via websockets.
+  - **`MessageGeneration/`**: Tools for generating C# classes from ROS message definitions, including messages, actions, and services with both ROS1/2 support.
+  - **`Urdf/`**: Library for parsing URDF files and creating Unity GameObjects.
+  - **`PostBuildEvents/`**: OS specific post build scripts. Please see [post build events](https://github.com/siemens/ros-sharp/wiki/Dev_PostBuildEvents.md) for more information.
+
+- **`ROS Packages/`**: ROS [packages](https://github.com/siemens/ros-sharp/tree/8330f5b433da22fff028dd1f355233b2f3e008e7/ROS%20Packages) that are used by ROS# for tutorial, testing and demonstration purposes.
+
+
 
 ## Further Info ##
 
 * [Read the Wiki](https://github.com/siemens/ros-sharp/wiki)
-* [Contact the project team](mailto:ros-sharp.ct@siemens.com)
-* [Contributors and Acknowledgements](https://github.com/siemens/ros-sharp/wiki/Info_Acknowledgements)
+* [External Dependencies](https://github.com/siemens/ros-sharp/wiki/Dev_ExternalDependencies)
+* [Project Team, Contributors and Acknowledgements](https://github.com/siemens/ros-sharp/wiki/Info_Acknowledgements)
+* [Contact the Project Team](mailto:ros-sharp.ct@siemens.com)
 
 ---
+© Siemens AG, 2017-2024
 
-© Siemens AG, 2017-2021
-
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)

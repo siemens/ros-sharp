@@ -1,0 +1,57 @@
+---
+- ros_topic_name: "/model/r2d2/cmd_vel"
+  gz_topic_name: "/model/r2d2/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+  qos:
+      reliability: "best_effort" # or "reliable"
+      durability: "transient_local" # or "volatile"
+      history: "keep_last"
+      depth: 10
+
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/odometry"
+  gz_topic_name: "/model/r2d2/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+  qos:
+      reliability: "best_effort" # or "reliable"
+      durability: "transient_local" # or "volatile"
+      history: "keep_last"
+      depth: 10
+
+- ros_topic_name: "/model/r2d2/joint_state"
+  gz_topic_name: "/world/gazebo_simulation_scene2_world/model/r2d2/joint_state"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "ignition.msgs.Model"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/tf"
+  gz_topic_name: "/model/r2d2/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/pose_static"
+  gz_topic_name: "/model/r2d2/pose_static"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/model/r2d2/joint/head_swivel/cmd_force"
+  gz_topic_name: "/model/r2d2/joint/head_swivel/cmd_force"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+  qos:
+      reliability: "best_effort" # or "reliable"
+      durability: "transient_local" # or "volatile"
+      history: "keep_last"
+      depth: 10

@@ -22,18 +22,24 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 // commands on ROS system:
 // launch before starting:
+// ROS:
 // roslaunch rosbridge_server rosbridge_websocket.launch
-// rostopic echo /publication_test
-// rostopic pub /subscription_test std_msgs/String "subscription test message data"
-
+// rostopic echo /pub_test
+// rostopic pub /sub_test std_msgs/String "subscription test message data"
 // launch after starting:
 // rosservice call /service_response_test
+
+// ROS2:
+// ros2 launch rosbridge_server rosbridge_websocket.launch
+// ros2 topic echo /pub_test
+// ros2 topic pub -r 50 /sub_test std_msgs/String "data: subscription test message data"
+
 
 namespace RosSharp.RosBridgeClientTest
 {
     public class RosSocketConsole
     {
-        static readonly string uri = "ws://192.168.56.102:9090";
+        static readonly string uri = "ws://localhost:9090";
 
         public static void Main(string[] args)
         {
@@ -46,15 +52,14 @@ namespace RosSharp.RosBridgeClientTest
                 data = "publication test masdasdessage data"
             };
 
-            string publication_id = rosSocket.Advertise<std_msgs.String>("publication_test");
+            string publication_id = rosSocket.Advertise<std_msgs.String>("pub_test");
             rosSocket.Publish(publication_id, message);
 
             // Subscription:
-            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
-            subscription_id = rosSocket.Subscribe<std_msgs.String>("/subscription_test", SubscriptionHandler);
+            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
 
             // Service Call:
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
+            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "defaut_value")); // Just "default" for ROS1
 
             // Service Response:
             string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);

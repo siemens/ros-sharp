@@ -27,16 +27,22 @@ namespace RosSharp.RosBridgeClientTest
     {
         public static void Main(string[] args)
         {
-            string uri = "ws://192.168.56.102:9090";
+            string uri = "ws://localhost:9090";
 
             for (int i = 1; i < 3; i++)
             {
                 RosBridgeClient.Protocols.WebSocketNetProtocol webSocketNetProtocol = new RosBridgeClient.Protocols.WebSocketNetProtocol(uri);
                 RosSocket rosSocket = new RosSocket(webSocketNetProtocol);
-                string urdfParameter = "/robot_description";
 
+#if !ROS2       // <param_name>
+                string urdfParameter = "/robot_description";
+                string robotNameParameter = "/robot/name";
+#else           // <node_name>:<param_name>
+                string urdfParameter = "robot_state_publisher:robot_description";
+                string robotNameParameter = "r2d2:urdf_tutorial";
+#endif
                 // Publication:
-                UrdfTransferFromRos urdfTransferFromRos = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory(), urdfParameter);
+                UrdfTransferFromRos urdfTransferFromRos = new UrdfTransferFromRos(rosSocket, System.IO.Directory.GetCurrentDirectory(), urdfParameter, robotNameParameter);
                 urdfTransferFromRos.Transfer();
 
                 urdfTransferFromRos.Status["robotNameReceived"].WaitOne();
