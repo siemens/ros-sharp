@@ -1,12 +1,9 @@
-# [Unity3D](https://github.com/siemens/ros-sharp/tree/master/Unity3D) #
-[Unity](https://unity3d.com/) project containing
-* Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient) and [UrdfImporter](https://github.com/siemens/ros-sharp/tree/master/Libraries/UrdfImporter)
-* example scenes and reference code
-
-__Please see the [Wiki](https://github.com/siemens/ros-sharp/wiki) for further info.__
-
+This folder contains the custom Unity [UPM](https://docs.unity3d.com/Manual/CustomPackages.html) package for integrating ROS# into Unity projects. The package includes the whole ROS# .NET solution, as well as Unity specific scripts, external dependencies, and samples. This folder follows a planned layout as Unity [recommends](https://docs.unity3d.com/Manual/cus-layout.html).
+  - **`Runtime/`**: Core ROS# .NET scripts and components for Unity integration.
+  - **`Editor/`**: Unity specific editor scripts for mainly UI extensions.
+  - **`Plugins/`**: External dependencies with specific versions.
+  - **`Samples~/`**: Example samples that need to be imported through the package manager window. For more info about example scenes and reference code, see [wiki](https://github.com/siemens/ros-sharp/wiki).
 ---
 
-© Siemens AG, 2017-2018
+© Siemens AG, 2017-2024
 
-Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)

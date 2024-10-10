@@ -11,6 +11,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS1 version switch toggle. (--ros1)
+    © Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
 */
 
 using System;
@@ -27,7 +30,7 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
     {
         private static readonly string usage =
             "Usage:\n" +
-            "RosMsgGen.exe [-h | --help] [-v | --verbose] [-s | --service] [-a | --action] [-r | --recursive] [-p | --package] <input-path> [-n | --ros-package-name <package-name>] [-o | --output <output-path>]\n" +
+            "RosMsgGen.exe [-h | --help] [-v | --verbose] [-s | --service] [-a | --action] [-r | --recursive] [-p | --package] [-n | --ros-package-name <package-name>] [-o | --output <output-path>] [--ros1]\n" +
             "    help\t\t\tPrints this message. Only valid if it is the first flag\n" +
             "    verbose\t\t\tOutputs extra information\n" +
             "    service\t\t\tGenerate service messages\n" +
@@ -37,22 +40,24 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
             "    ros-package-name\t\tSpecify the ROS package name for the message\n" +
             "                    \t\tIf unspecified, package name will be retrieved from path, assuming ROS package structure\n" +
             "    output\t\t\tSpecify output path\n" +
-            "          \t\t\tIf unspecified, output will be in current working directory, under RosSharpMessages\n\n" +
+            "          \t\t\tIf unspecified, output will be in current working directory, under RosSharpMessages\n" +
+            "    ros1\t\t\t\tGenerate for ROS1 instead of ROS2\n\n" +
             "Note:\n" +
             "- std_msgs/Time and std_msgs/Duration will not be generated since they need to be defined with primitive variables\n" +
             "- The Message abstract class will also not be generated, but is required since all generated message classes inherit it\n" +
             "Those can be found at the ROS# GitHub repo <https://github.com/siemens/ros-sharp>\n";
 
         private static readonly HashSet<string> validOptions = new HashSet<string>(){
-            "-h", "--help",
-            "-v", "--verbose",
-            "-s", "--service",
-            "-a", "--action",
-            "-r", "--recursive",
-            "-p", "--package",
-            "-n", "--ros-package-name",
-            "-o", "--output"
-        };
+        "-h", "--help",
+        "-v", "--verbose",
+        "-s", "--service",
+        "-a", "--action",
+        "-r", "--recursive",
+        "-p", "--package",
+        "-n", "--ros-package-name",
+        "-o", "--output",
+        "--ros1"
+    };
 
         private static readonly string defaultOutputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "RosSharpMessages");
 
@@ -88,6 +93,27 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
 
             for (int i = 0; i < args.Length; i++) {
                 string arg = args[i];
+
+                if (arg.Equals("--ros1"))
+                {
+                    if (verbose)
+                    {
+                        Console.WriteLine("'--ros1' flag seen. Generating for ROS1");
+                    }
+                    if (action)
+                    {
+                        ActionAutoGen.isRos2 = false;
+                    }
+                    else if (service)
+                    {
+                        ServiceAutoGen.isRos2 = false;
+                    }
+                    else
+                    {
+                        MessageAutoGen.isRos2 = false;
+                    }
+                    continue;
+                }
 
                 if (arg.Equals("-s") || arg.Equals("--service")) {
                     if (action) {
