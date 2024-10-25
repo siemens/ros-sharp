@@ -44,6 +44,9 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private string urdfParameter;
         private string robotNameParameter;
 
+        private string urdfFileName;
+        public string UrdfFileName { get => urdfFileName; }
+
         public string LocalUrdfDirectory
         {
             get
@@ -76,10 +79,10 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param",
                                                                                     ReceiveRobotName,
                                                                                     new rosapi.GetParamRequest(robotNameParameter, CutAfterColon(robotNameParameter)));
-
+            urdfFileName = CutAfterColon(urdfParameter) + ".urdf";
             var robotDescriptionReceiver = new ServiceReceiver<rosapi.GetParamRequest, rosapi.GetParamResponse>(RosSocket, "/rosapi/get_param",
                                                                                         new rosapi.GetParamRequest(urdfParameter, DEFAULT_STRING),
-                                                                                        Path.DirectorySeparatorChar + CutAfterColon(urdfParameter) + ".urdf");
+                                                                                        Path.DirectorySeparatorChar + urdfFileName);
 
             robotDescriptionReceiver.ReceiveEventHandler += ReceiveRobotDescription;
         }

@@ -42,6 +42,7 @@ namespace RosSharp.RosBridgeClient
         private string assetPath;
         private string urdfParameter;
         private string robotNameParameter; 
+        private string urdfFileName;
 
         private RosSocket rosSocket;
         public RosConnector rosConnector;
@@ -91,6 +92,7 @@ namespace RosSharp.RosBridgeClient
             StatusEvents["resourceFilesReceived"] = urdfTransfer.Status["resourceFilesReceived"];
 
             urdfTransfer.Transfer();
+            urdfFileName = urdfTransfer.UrdfFileName;
 
             if (StatusEvents["robotNameReceived"].WaitOne(timeout * 1000))
             {
@@ -119,9 +121,7 @@ namespace RosSharp.RosBridgeClient
                 "Do you want to generate a " + robotName + " GameObject now?",
                 "Yes", "No"))
             {
-                Urdf.Editor.UrdfRobotExtensions.Create(Path.Combine(
-                    localDirectory,
-                    Path.GetFileNameWithoutExtension(urdfParameter) + ".urdf"));
+                Urdf.Editor.UrdfRobotExtensions.Create(Path.Combine(localDirectory, urdfFileName));
             }
 
             StatusEvents["importComplete"].Set();
