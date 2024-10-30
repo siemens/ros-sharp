@@ -111,14 +111,20 @@ namespace RosSharp.RosBridgeClient
 
         #region Subscribers
 
-        public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") where T : Message
+        public string Subscribe<T>(string topic, SubscriptionHandler<T> subscriptionHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none", bool ensureThreadSafety = false) where T : Message
         {
             string id;
             lock (SubscriberLock)
             {
                 id = GetUnusedCounterID(Subscribers, topic);
                 Subscription subscription;
-                Subscribers.Add(id, new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression));
+
+                var subscriber = new Subscriber<T>(id, topic, subscriptionHandler, out subscription, throttle_rate, queue_length, fragment_size, compression)
+                {
+                    DoEnsureThreadSafety = ensureThreadSafety
+                };
+
+                Subscribers.Add(id, subscriber);
                 Send(subscription);
             }
             
