@@ -14,6 +14,25 @@
     <Copyright>Copyright © 2024</Copyright>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<PackageId Condition="'$(Configuration)' == 'ROS2'">RosSharpRosBridgeClient.ROS2</PackageId>
+	<PackageId Condition="'$(Configuration)' == 'Release'">RosSharpRosBridgeClient.ROS1</PackageId>
+    <Title>RosBridgeClient</Title>
+    <Authors>ros-sharp</Authors>
+	<EnablePackageValidation>true</EnablePackageValidation>
+    <PackageProjectUrl>https://github.com/siemens/ros-sharp</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/siemens/ros-sharp</RepositoryUrl>
+    <PackageTags>ROS2;ROS;Robotic;Operating;System</PackageTags>
+	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<SourceLinkCreate>true</SourceLinkCreate>
+	<DebugType>portable</DebugType>
+	<DebugSymbols>true</DebugSymbols>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageIcon>images\RosSharpLogoNuget.png</PackageIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ROS2|AnyCPU'">
     <Optimize>True</Optimize>
@@ -33,8 +52,22 @@
   <ItemGroup>
     <Folder Include="MessageTypes\ROS2\" />
   </ItemGroup>
-
-  <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
+	<ItemGroup>
+		<None Include="..\..\LICENSE.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\RosSharpLogoNuget.png">
+			<Pack>True</Pack>
+			<PackagePath>\images\</PackagePath>
+		</None>
+	</ItemGroup>
+	
+	<Target Name="CopyToCombinedOutput" AfterTargets="Publish">
     <!-- Copy the new DLLs to the combined output folder -->
     <ItemGroup>
       <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
