@@ -14,11 +14,45 @@
 		<Copyright>Copyright © 2024</Copyright>
 		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<FileVersion>2.0.0.0</FileVersion>
+		<Version>2.0.0</Version>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageId>RosSharpMessageGeneration</PackageId>
+		<Title>MessageGeneration</Title>
+		<Authors>ros-sharp</Authors>
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PackageProjectUrl>https://github.com/siemens/ros-sharp</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/siemens/ros-sharp</RepositoryUrl>
+		<PackageTags>ROS2;ROS;Robotic;Operating;System;Message;Generation</PackageTags>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<SourceLinkCreate>true</SourceLinkCreate>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageIcon>images\RosSharpLogoNuget.png</PackageIcon>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\RosSharpLogoNuget.png">
+			<Pack>True</Pack>
+			<PackagePath>\images\</PackagePath>
+		</None>
+	</ItemGroup>
+	
 	<Target Name="CopyToCombinedOutput" AfterTargets="Publish">
 		<!-- Copy the new DLLs to the combined output folder -->
 		<ItemGroup>

@@ -18,7 +18,7 @@ Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 -->
 
 * [ ] I am at the right place and my issue is directly related to ROS#. General technical questions I would post e.g. at [ROS Answers](https://answers.ros.org/) or [Stack Overflow](https://stackoverflow.com). For library-specific questions I would look for help in the corresponding library forums.
-* [ ] I have thoroughly read [the Contributing Guideline](Contributing.md) and writing this issue is the right thing to do in my case.
+* [ ] I have thoroughly read [the Contributing Guideline](Contributing) and writing this issue is the right thing to do in my case.
 
 ---
 

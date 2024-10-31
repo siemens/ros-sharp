@@ -81,18 +81,57 @@ namespace RosSharp.RosBridgeClient
 
         internal SubscriptionHandler<T> SubscriptionHandler { get; }
 
+        private bool _doEnsureThreadSafety = false;
+        public bool DoEnsureThreadSafety
+        {
+            get => _doEnsureThreadSafety;
+            set
+            {
+                _doEnsureThreadSafety= value;
+                SetReceiveMethod();
+            }
+        }
+
+        private readonly object _lock = new object();
+        private Action<string, ISerializer> _receiveMethod;
+
         internal Subscriber(string id, string topic, SubscriptionHandler<T> subscriptionHandler, out Subscription subscription, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none")
         {
             Id = id;
             Topic = topic;
             SubscriptionHandler = subscriptionHandler;
             subscription = new Subscription(id, Topic, GetRosName<T>(), throttle_rate, queue_length, fragment_size, compression);
+
+            SetReceiveMethod();
+        }
+
+        private void SetReceiveMethod()
+        {
+            if (_doEnsureThreadSafety)
+            {
+                _receiveMethod = ReceiveThreadSafe;
+            }
+            else
+            {
+                _receiveMethod = ReceiveNonThreadSafe;
+            }
         }
 
         internal override void Receive(string message, ISerializer serializer)
         {
-            //string replacedString = message.Replace("null", "0.0");
-            //SubscriptionHandler.Invoke(serializer.Deserialize<T>(replacedString));
+            _receiveMethod(message, serializer);
+        }
+
+        private void ReceiveThreadSafe(string message, ISerializer serializer)
+        {
+            lock (_lock)
+            {
+                SubscriptionHandler.Invoke(serializer.Deserialize<T>(message));
+            }
+        }
+
+        private void ReceiveNonThreadSafe(string message, ISerializer serializer)
+        {
             SubscriptionHandler.Invoke(serializer.Deserialize<T>(message));
         }
     }
