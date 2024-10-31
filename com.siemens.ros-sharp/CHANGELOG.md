@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - RawImageSubscriber script is now part of the Unity package.
 - New quick start page.
 - Post-build events for Visual Studio streamline development between Unity and .NET.
+- Thread safety for `Subscriber : RosBridgeClient.Communication`. Each Subscriber, including .NET and Unity package, can be configured to receive thread-safe. 
 
 ### Fixed
 
