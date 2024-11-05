@@ -33,6 +33,7 @@ add_executable(file_server2_node src/file_server.cpp)
 ament_target_dependencies(file_server2_node
   rclcpp
   std_msgs
+  ament_index_cpp
 )
 
 # Get the typesupport targets
