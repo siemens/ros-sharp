@@ -17,7 +17,7 @@
 		<FileVersion>2.0.0.0</FileVersion>
 		<Version>2.0.0</Version>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageId>RosSharpUrdf</PackageId>
+		<PackageId>Siemens.RosSharp.Urdf</PackageId>
 		<Title>Urdf</Title>
 		<Authors>ros-sharp</Authors>
 		<EnablePackageValidation>true</EnablePackageValidation>
