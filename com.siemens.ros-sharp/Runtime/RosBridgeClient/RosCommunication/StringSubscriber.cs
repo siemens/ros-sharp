@@ -19,7 +19,7 @@ namespace RosSharp.RosBridgeClient
 {
     public class StringSubscriber : UnitySubscriber<MessageTypes.Std.String>
     {
-        public bool isMessageReceived;
+        private bool isMessageReceived;
         private string messageData;
 
         protected override void Start()
