@@ -25,5 +25,6 @@ namespace RosSharp.RosBridgeClient
     internal abstract class DeserializedObject
     {
         internal abstract string GetProperty(string property);
+        internal abstract string GetAll();
     }
 }

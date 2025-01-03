@@ -14,8 +14,9 @@ limitations under the License.
 */
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
+#if !ROS2
+using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 namespace RosSharp.RosBridgeClient
 {
     public abstract class ActionFeedback<TFeedback> : Message where TFeedback : Message
@@ -36,3 +37,30 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#else
+namespace RosSharp.RosBridgeClient
+{
+    public abstract class ActionFeedback<TFeedback> : Message where TFeedback : Message 
+    {
+        public Header header { get; set; }
+        public TFeedback values { get; set; }
+        public string id { get; set; }
+        public string action { get; set; }
+
+        public ActionFeedback()
+        {
+            header = new Header();
+            id = "";
+            action = "";
+        }
+
+        public ActionFeedback(Header header, string action, string id)
+        {
+            this.header = header;
+            this.id = id;
+            this.action = action;
+        }
+    }
+}
+#endif

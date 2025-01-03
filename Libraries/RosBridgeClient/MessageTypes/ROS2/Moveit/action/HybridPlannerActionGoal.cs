@@ -9,22 +9,22 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+using RosSharp.RosBridgeClient.MessageTypes.Action;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class HybridPlannerActionGoal : ActionGoal<HybridPlannerGoal>
     {
-        public const string RosMessageName = "moveit_msgs/HybridPlannerActionGoal";
+        public const string RosMessageName = "moveit_msgs/action/HybridPlannerActionGoal";
 
         public HybridPlannerActionGoal() : base()
         {
-            this.goal = new HybridPlannerGoal();
+            this.args = new HybridPlannerGoal();
         }
 
-        public HybridPlannerActionGoal(Header header, GoalID goal_id, HybridPlannerGoal goal) : base(header, goal_id)
+        public HybridPlannerActionGoal(Header header, GoalInfo goalInfo, HybridPlannerGoal args) : base(header, goalInfo)
         {
-            this.goal = goal;
+            this.args = args;
         }
     }
 }

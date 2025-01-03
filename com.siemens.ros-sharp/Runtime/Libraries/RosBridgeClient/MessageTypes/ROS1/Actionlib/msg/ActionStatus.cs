@@ -15,6 +15,7 @@ limitations under the License.
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
+#if !ROS2
     // This is defined according to actionlib_msgs/GoalStatus
     public enum ActionStatus
     {
@@ -30,4 +31,28 @@ namespace RosSharp.RosBridgeClient.Actionlib
         RECALLED,   //  The goal received a cancel request before it started executing and was successfully cancelled (Terminal State)
         LOST,       //  An action client can determine that a goal is LOST. This should not be sent over the wire by an action server
     }
+
+#else
+    public enum ActionStatus
+    {
+        // For internal server use. If status is NA, published status array will have length 0
+        STATUS_NO_GOAL = -1,    
+        //  Indicates status has not been properly set.
+        STATUS_UNKNOWN = 0,
+        //  The goal has been accepted and is awaiting execution.
+        STATUS_ACCEPTED = 1,
+        //  The goal is currently being executed by the action server.
+        STATUS_EXECUTING = 2,
+        //  The client has requested that the goal be canceled and the action server has
+        //  accepted the cancel request.
+        STATUS_CANCELING = 3,
+        //  The goal was achieved successfully by the action server.
+        STATUS_SUCCEEDED = 4,
+        //  The goal was canceled after an external request from an action client.
+        STATUS_CANCELED = 5,
+        //  The goal was terminated by the action server without an external request.
+        STATUS_ABORTED = 6,
+    }
+
+#endif
 }

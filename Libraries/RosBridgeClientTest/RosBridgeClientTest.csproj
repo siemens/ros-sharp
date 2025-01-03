@@ -12,7 +12,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosSharp.RosBridgeClientTest.RosSocketConsole</StartupObject>
+    <StartupObject>RosBridgeClientTest.ActionTest</StartupObject>
     <AssemblyTitle>RosBridgeClientTest</AssemblyTitle>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>

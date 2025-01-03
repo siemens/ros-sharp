@@ -52,5 +52,9 @@ namespace RosSharp.RosBridgeClient
         {
             return jObject.GetProperty(property).ToString();
         }
+        internal override string GetAll()
+        {
+            return jObject.GetRawText();
+        }
     }
 }

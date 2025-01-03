@@ -34,6 +34,8 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 // ros2 topic echo /pub_test
 // ros2 topic pub -r 50 /sub_test std_msgs/String "data: subscription test message data"
 
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -58,21 +60,28 @@ namespace RosSharp.RosBridgeClientTest
             // Subscription:
             string subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
 
-            // Service Call:
-            rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "defaut_value")); // Just "default" for ROS1
+            //// Service Call:
+            //rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "defaut_value")); // Just "default" for ROS1
 
-            // Service Response:
-            string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+            //// Service Response:
+            //string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
 
+            // Action Goal Call:
+            //rosSocket.SendActionGoalRequest<FibonacciActionGoal, std_msgs.String>("/action_tutorials_interfaces/FibonacciGoal", "/fibonacci", actionGoalHandler, false, int.MaxValue, "none", new FibonacciActionGoal(goal_id: new RosBridgeClient.MessageTypes.Actionlib.GoalID(), header: new Header(),goal: new FibonacciGoal(order: 10)));
             Console.WriteLine("Press any key to unsubscribe...");
             Console.ReadKey(true);
             rosSocket.Unadvertise(publication_id);
             rosSocket.Unsubscribe(subscription_id);
-            rosSocket.UnadvertiseService(service_id);
+            //rosSocket.UnadvertiseService(service_id);
 
             Console.WriteLine("Press any key to close...");
             Console.ReadKey(true);
             rosSocket.Close();
+        }
+        private static void actionGoalHandler(std_msgs.String message)
+        {
+            Console.WriteLine("Is this working?");
+            Console.WriteLine((message).data);
         }
         private static void SubscriptionHandler(std_msgs.String message)
         {

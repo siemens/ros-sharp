@@ -54,5 +54,9 @@ namespace RosSharp.RosBridgeClient
         {
             return jObject.GetValue(property).ToString();
         }
+        internal override string GetAll()
+        {
+            return jObject.ToString();
+        }
     }
 }

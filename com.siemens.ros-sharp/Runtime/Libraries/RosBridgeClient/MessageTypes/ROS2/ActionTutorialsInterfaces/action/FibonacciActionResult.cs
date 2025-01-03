@@ -7,9 +7,11 @@
  * <https://github.com/siemens/ros-sharp> 
  */
 
-#if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
+
+#if !ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
 {
@@ -25,6 +27,26 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
         public FibonacciActionResult(Header header, GoalStatus status, FibonacciResult result) : base(header, status)
         {
             this.result = result;
+        }
+    }
+}
+
+#else
+namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
+{
+    public class FibonacciActionResult : ActionResult<FibonacciResult>
+    {
+        public const string RosMessageName = "action_tutorials_interfaces/action/FibonacciActionResult";
+
+        public FibonacciActionResult() : base()
+        {
+            this.values = new FibonacciResult();
+        }
+
+
+        public FibonacciActionResult(Header header, string action, sbyte status, bool result, string id, FibonacciResult values) : base(header, action, status, result, id)
+        {
+            this.values = values;
         }
     }
 }

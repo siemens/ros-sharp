@@ -9,22 +9,22 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+using RosSharp.RosBridgeClient.MessageTypes.Action;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteTrajectoryActionGoal : ActionGoal<ExecuteTrajectoryGoal>
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteTrajectoryActionGoal";
+        public const string RosMessageName = "moveit_msgs/action/ExecuteTrajectoryActionGoal";
 
         public ExecuteTrajectoryActionGoal() : base()
         {
-            this.goal = new ExecuteTrajectoryGoal();
+            this.args = new ExecuteTrajectoryGoal();
         }
 
-        public ExecuteTrajectoryActionGoal(Header header, GoalID goal_id, ExecuteTrajectoryGoal goal) : base(header, goal_id)
+        public ExecuteTrajectoryActionGoal(Header header, GoalInfo goalInfo, ExecuteTrajectoryGoal args) : base(header, goalInfo)
         {
-            this.goal = goal;
+            this.args = args;
         }
     }
 }
