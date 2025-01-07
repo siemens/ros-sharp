@@ -65,7 +65,7 @@ namespace RosSharp.RosBridgeClient
             this.protocol.Connect();
         }
 
-        public void Close(int millisecondsWait = 0) // TODO Actions
+        public void Close(int millisecondsWait = 0)
         {
 #if ROS2
             bool isAnyCommunicatorActive = Publishers.Count > 0 || Subscribers.Count > 0 || ServiceProviders.Count > 0 || ActionProviders.Count > 0 || ActionConsumers.Count > 0;

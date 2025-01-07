@@ -147,6 +147,8 @@ namespace RosSharp.RosBridgeClient.Actionlib
                 action.action_goal,
                 ResultCallback,
                 FeedbackCallback);
+
+            lastResultSuccess = false;
         }
 
         public void CancelGoal(string frameId = null)

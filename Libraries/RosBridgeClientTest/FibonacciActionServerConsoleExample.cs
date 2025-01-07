@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if !ROS2
+
 using System;
 using System.Threading;
 using RosSharp.RosBridgeClient;
@@ -22,21 +22,25 @@ namespace RosSharp.RosBridgeClientTest
 {
     class FibonacciActionServerConsoleExample
     {
-        static readonly string uri = "ws://10.42.0.1:9090";
-        static readonly string actionName = "fibonacci";
+        static readonly string uri = "ws://localhost:9090";
+        static readonly string actionName = "/fibonacci";
 
         private static RosSocket rosSocket;
-        private static ManualResetEvent isWaitingForGoal = new ManualResetEvent(false);
         private static FibonacciActionServer fibonacciActionServer;
+
+#if !ROS2
+        private static ManualResetEvent isWaitingForGoal = new ManualResetEvent(false);
+#endif
 
         public static void Main(string[] args)
         {
-            //RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(uri));
             rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Initialize server
             fibonacciActionServer = new FibonacciActionServer(actionName, rosSocket, new Log(x => Console.WriteLine(x)));
             fibonacciActionServer.Initialize();
+
+#if !ROS2
 
             // Run server and wait for goal
             isWaitingForGoal.Set();
@@ -44,18 +48,25 @@ namespace RosSharp.RosBridgeClientTest
             Thread waitForGoal = new Thread(WaitForGoal);
             waitForGoal.Start();
 
-            Console.WriteLine("\nPress any key to stop server...");
+            Console.WriteLine("\nPress any key to stop server.");
             Console.ReadKey(true);
             isWaitingForGoal.Reset();
             waitForGoal.Join();
             fibonacciActionServer.Terminate();
+#else
+            Console.WriteLine("Waiting for goal. Press any key to stop server.");
+            Console.ReadKey(true);
 
+            fibonacciActionServer.Terminate();
+            rosSocket.Close();
+#endif
             // End of console example
-            Console.WriteLine("\nPress any key to close...");
+            Console.WriteLine("\nPress any key to close.");
             Console.ReadKey(true);
             rosSocket.Close();
-        }
 
+        }
+#if !ROS2
         private static void WaitForGoal()
         {
             while (isWaitingForGoal.WaitOne(0))
@@ -64,6 +75,6 @@ namespace RosSharp.RosBridgeClientTest
                 Thread.Sleep(50);
             }
         }
+#endif
     }
 }
-#endif

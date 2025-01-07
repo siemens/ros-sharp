@@ -63,9 +63,11 @@ namespace RosSharp.RosBridgeClientTest
             SimulateParallelMessageReception(rosSocket, 8);
 
             // Service Call:
-            //rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default")); //  ROS1
+#if !ROS2
+//rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default")); 
+#else
             rosSocket.CallService<rosapi.GetROSVersionRequest, rosapi.GetROSVersionResponse>("/rosapi/get_ros_version", ServiceCallHandlerROS2, new rosapi.GetROSVersionRequest());
-
+#endif
             // Service Response:
             string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
             Console.WriteLine("Service id: " + service_id);
@@ -88,17 +90,17 @@ namespace RosSharp.RosBridgeClientTest
             Thread.Sleep(100); // simulate some work
             Console.WriteLine("done processing message: " + (message).data);
         }
-
+#if !ROS2
         private static void ServiceCallHandler(rosapi.GetParamResponse message)
         {
             Console.WriteLine("Response value: " + message.value);
         }
-
+#else
         private static void ServiceCallHandlerROS2(rosapi.GetROSVersionResponse message)
         {
             Console.WriteLine("Response value: " + message.distro);
         }
-
+#endif
         private static bool ServiceResponseHandler(std_srvs.TriggerRequest arguments, out std_srvs.TriggerResponse result)
         {
             result = new std_srvs.TriggerResponse(true, "service response message");
@@ -106,7 +108,7 @@ namespace RosSharp.RosBridgeClientTest
         }
 
         // Simple message pub
-        private static void SimpleMessagePub(RosSocket rosSocket, String topic)
+        private static void SimpleMessagePub(RosSocket rosSocket, string topic)
         {
             std_msgs.String message = new std_msgs.String
             {
@@ -123,7 +125,7 @@ namespace RosSharp.RosBridgeClientTest
         }
 
         // Simple message sub
-        private static void SimpleMessageSub(RosSocket rosSocket, String topic)
+        private static void SimpleMessageSub(RosSocket rosSocket, string topic)
         {
             string subscription_id = rosSocket.Subscribe<std_msgs.String>(topic, SubscriptionHandler, ensureThreadSafety: false);
 

@@ -10,7 +10,7 @@
 //#if ROS2
 //using RosSharp.RosBridgeClient.MessageTypes.Std;
 
-//// TODO: constructor?
+//
 
 //namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
 //{

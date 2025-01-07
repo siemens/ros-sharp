@@ -13,26 +13,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#if !ROS2
+
 using System;
-using System.Threading;
 using RosSharp.RosBridgeClient;
 using RosSharp.RosBridgeClient.Actionlib;
+
+#if !ROS2
+using System.Threading;
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+#else
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+#endif
 
 namespace RosSharp.RosBridgeClientTest
 {
     class FibonacciActionClientConsoleExample
     {
-        static readonly string uri = "ws://10.42.0.1:9090";
-        static readonly string actionName = "fibonacci";
+        static readonly string uri = "ws://localhost:9090";
+        static readonly string actionName = "/fibonacci";
 
         private static RosSocket rosSocket;
         private static FibonacciActionClient fibonacciActionClient;
 
         public static void Main(string[] args)
         {
-            //RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(uri));
             rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
             // Initialize Client
@@ -40,12 +44,23 @@ namespace RosSharp.RosBridgeClientTest
             fibonacciActionClient.Initialize();
 
             // Send goal
-            Console.WriteLine("\nPress any key to send goal with fibonacci order 5...");
+            Console.WriteLine("Press any key to send goal with fibonacci order 5.");
             Console.ReadKey(true);
+
+#if !ROS2
             fibonacciActionClient.fibonacciOrder = 5;
+#else
+            fibonacciActionClient.SetActionGoal(new FibonacciGoal
+            {
+                order = 5
+            });
+
+            Console.WriteLine("Order is: " + fibonacciActionClient.GetActionGoal().args.order);
+#endif
             fibonacciActionClient.SendGoal();
 
             // Get feedback, status and result
+#if !ROS2
             do
             {
                 Console.WriteLine(fibonacciActionClient.GetFeedbackString());
@@ -56,15 +71,25 @@ namespace RosSharp.RosBridgeClientTest
             Thread.Sleep(500);
             Console.WriteLine(fibonacciActionClient.GetResultString());
             Console.WriteLine(fibonacciActionClient.GetStatusString());
+#endif
 
             // Cancel goal
-            Console.WriteLine("\nPress any key to send goal with fibonacci order 50...");
+            Console.WriteLine("\nPress any key to send goal with fibonacci order 50.");
             Console.ReadKey(true);
+#if !ROS2
             fibonacciActionClient.fibonacciOrder = 50;
+#else
+            fibonacciActionClient.SetActionGoal(new FibonacciGoal
+            {
+                order = 50
+            });
+#endif
             fibonacciActionClient.SendGoal();
 
-            Console.WriteLine("\nPress any key to cancel the goal...");
+            Console.WriteLine("\nPress any key to cancel the goal.");
             Console.ReadKey(true);
+
+#if !ROS2
             fibonacciActionClient.CancelGoal();
             Thread.Sleep(1000);
             Console.WriteLine(fibonacciActionClient.GetResultString());
@@ -74,12 +99,25 @@ namespace RosSharp.RosBridgeClientTest
             // Terminate client
             fibonacciActionClient.Terminate();
 
+#else
+
+            if (!fibonacciActionClient.lastResultSuccess)
+            {
+                Console.WriteLine("Action not completed. Cancelling...");
+                fibonacciActionClient.CancelGoal();
+                Console.ReadKey(true);
+            }
+            else
+            {
+                Console.WriteLine("Action completed.");
+            }
+
+#endif
             // End of console example
-            Console.WriteLine("\nPress any key to close...");
+            Console.WriteLine("\nPress any key to close.");
             Console.ReadKey(true);
             rosSocket.Close();
         }
 
     }
 }
-#endif

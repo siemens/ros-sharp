@@ -350,7 +350,6 @@ namespace RosSharp.RosBridgeClient
             Id = id;
             Action = action;
             ActionType = GetRosName<TActionResult>().Substring(0, GetRosName<TActionResult>().LastIndexOf("ActionResult"));
-            Console.WriteLine(ActionType);
             ActionResultResponseHandler = actionResultResponseHandler;
             ActionFeedbackResponseHandler = actionFeedbackResponseHandler;
             ActionCancelResponseHandler = actionCancelResponseHandler;

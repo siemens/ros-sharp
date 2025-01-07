@@ -4,7 +4,6 @@ using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
 using RosSharp.RosBridgeClient.Actionlib;
 
 
-#if ROS2
 namespace RosBridgeClientTest
 {
     public class ActionTest
@@ -16,6 +15,7 @@ namespace RosBridgeClientTest
 
         public static void Main(string[] args)
         {
+#if ROS2
             /// --- Server Test ---
 
             //fibonacciActionServer = new FibonacciActionServer("/fibonacci", rosSocket, new Log(x => Console.WriteLine(x)));
@@ -56,11 +56,10 @@ namespace RosBridgeClientTest
             {
                 Console.WriteLine("Action completed.");
             }
-
+#endif
         }
 
     }
 
 
 }
-#endif

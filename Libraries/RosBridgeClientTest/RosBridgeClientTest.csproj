@@ -12,7 +12,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RosBridgeClientTest.ActionTest</StartupObject>
+    <StartupObject>RosSharp.RosBridgeClientTest.FibonacciActionServerConsoleExample</StartupObject>
     <AssemblyTitle>RosBridgeClientTest</AssemblyTitle>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
