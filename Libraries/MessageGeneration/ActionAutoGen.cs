@@ -287,9 +287,12 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             string imports = "using RosSharp.RosBridgeClient.MessageTypes.Std;\n";
 
-            if (ActionAutoGen.isRos2 && type == "Result")
+            if (ActionAutoGen.isRos2)
             {
-                imports += "using RosSharp.RosBridgeClient.MessageTypes.Action;\n\n";
+                if (type == "Goal")
+                {
+                    imports += "using RosSharp.RosBridgeClient.MessageTypes.Action;\n\n";
+                }
             }
             else
             {

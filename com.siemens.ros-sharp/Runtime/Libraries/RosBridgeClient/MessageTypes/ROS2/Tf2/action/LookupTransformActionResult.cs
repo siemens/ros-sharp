@@ -9,8 +9,6 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Action;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class LookupTransformActionResult : ActionResult<LookupTransformResult>

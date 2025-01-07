@@ -238,16 +238,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 }
             }
 
-            //if (msgType.Equals("Goal"))
-            //{
-            //    paramsIn += "Header header, GoalID goal_id, ";
-            //    paramsOut += "header, goal_id";
-            //}
-            //else if (msgType.Equals("Result") || msgType.Equals("Feedback")) {
-            //    paramsIn += "Header header, GoalStatus status, ";
-            //    paramsOut += "header, status";
-            //}
-
             foreach (string identifier in symbolTable.Keys)
             {
                 string type = symbolTable[identifier];
@@ -299,7 +289,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             if (ActionAutoGen.isRos2)
             {
-                imports += "using RosSharp.RosBridgeClient.MessageTypes.Action;\n\n";
+                if (type == "Goal")
+                {
+                    imports += "using RosSharp.RosBridgeClient.MessageTypes.Action;\n\n";
+                }
             }
             else
             {
@@ -337,11 +330,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     ONE_TAB + "public class " + wrapperName + " : Action" + type + "<" + inFileName + type +  ">\n" +
                     ONE_TAB + "{\n"
                     );
-
-                // Write ROS package name
-                //writer.Write(
-                //    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
-                //    );
 
                 if (ActionAutoGen.isRos2)
                 {
