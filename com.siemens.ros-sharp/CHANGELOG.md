@@ -5,7 +5,13 @@ Please see [releases](https://github.com/siemens/ros-sharp/releases).
 All notable changes to this project will be documented in this file. 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## [Unreleased] - xx.xx.2024 -->
+<!-- Unreleased -->
+<!-- ## [2.0.1] - xx.xx.2024
+
+### Added 
+- Thread safety for `Subscriber : RosBridgeClient.Communication`. Each Subscriber, including .NET and Unity package, can be configured to receive thread-safe. 
+ -->
+
 
 ## [2.0.0] - 26.08.2024
 
@@ -18,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - RawImageSubscriber script is now part of the Unity package.
 - New quick start page.
 - Post-build events for Visual Studio streamline development between Unity and .NET.
+- Thread safety for `Subscriber : RosBridgeClient.Communication`. Each Subscriber, including .NET and Unity package, can be configured to receive thread-safe. 
 
 ### Fixed
 

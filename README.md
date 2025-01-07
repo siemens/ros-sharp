@@ -23,13 +23,13 @@ ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, 
   2. Paste the following URL: https://github.com/siemens/ros-sharp.git?path=/com.siemens.ros-sharp
   <img src="https://github.com/siemens/ros-sharp/wiki/img/User_Inst_InstallationROS_sharp_From_GitCombined.png" alt="ROS# Package Install from Git" style="padding-top: 10px; padding-bottom: 0px; width: 90%; height: 100%;">
 
-> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for Unity](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp.md). 
+> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for Unity](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp). 
 
 * ### For .NET Projects: NuGet Gallery ###
   1. Head to the [NuGet](https://www.nuget.org/profiles/MartinBischoff) page.
   2. Install the required packages individually from NuGet.
 
-> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for .NET](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp_DotNET.md). 
+> For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for .NET](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp_DotNET). 
 
 
 ## Platform Support ##
@@ -52,7 +52,7 @@ Below is an overview of the main directories and their purposes:
   - **`RosBridgeClient/`**: Core ROS# .NET library for communicating with ROS via websockets.
   - **`MessageGeneration/`**: Tools for generating C# classes from ROS message definitions, including messages, actions, and services with both ROS1/2 support.
   - **`Urdf/`**: Library for parsing URDF files and creating Unity GameObjects.
-  - **`PostBuildEvents/`**: OS specific post build scripts. Please see [post build events](https://github.com/siemens/ros-sharp/wiki/Dev_PostBuildEvents.md) for more information.
+  - **`PostBuildEvents/`**: OS specific post build scripts. Please see [post build events](https://github.com/siemens/ros-sharp/wiki/Dev_PostBuildEvents) for more information.
 
 - **`ROS Packages/`**: ROS [packages](https://github.com/siemens/ros-sharp/tree/8330f5b433da22fff028dd1f355233b2f3e008e7/ROS%20Packages) that are used by ROS# for tutorial, testing and demonstration purposes.
 

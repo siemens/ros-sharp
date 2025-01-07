@@ -18,6 +18,11 @@ using RosSharp.RosBridgeClient;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using std_srvs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Text;
+using System.Collections.Generic;
+using System.Reflection;
 
 
 // commands on ROS system:
@@ -48,33 +53,27 @@ namespace RosSharp.RosBridgeClientTest
             //RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketSharpProtocol(uri));
             RosSocket rosSocket = new RosSocket(new RosBridgeClient.Protocols.WebSocketNetProtocol(uri));
 
-            // Publication:
-            std_msgs.String message = new std_msgs.String
-            {
-                data = "publication test masdasdessage data"
-            };
-
-            string publication_id = rosSocket.Advertise<std_msgs.String>("pub_test");
-            rosSocket.Publish(publication_id, message);
+            // Publication
+            SimpleMessagePub(rosSocket, "/pub_test");
 
             // Subscription:
-            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/sub_test", SubscriptionHandler);
+            SimpleMessageSub(rosSocket, "/sub_test");
 
-            //// Service Call:
-            //rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "defaut_value")); // Just "default" for ROS1
+            // Thread Safety Test:
+            SimulateParallelMessageReception(rosSocket, 8);
 
-            //// Service Response:
-            //string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+            // Service Call:
+            //rosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default")); //  ROS1
+            rosSocket.CallService<rosapi.GetROSVersionRequest, rosapi.GetROSVersionResponse>("/rosapi/get_ros_version", ServiceCallHandlerROS2, new rosapi.GetROSVersionRequest());
 
-            // Action Goal Call:
-            //rosSocket.SendActionGoalRequest<FibonacciActionGoal, std_msgs.String>("/action_tutorials_interfaces/FibonacciGoal", "/fibonacci", actionGoalHandler, false, int.MaxValue, "none", new FibonacciActionGoal(goal_id: new RosBridgeClient.MessageTypes.Actionlib.GoalID(), header: new Header(),goal: new FibonacciGoal(order: 10)));
-            Console.WriteLine("Press any key to unsubscribe...");
+            // Service Response:
+            string service_id = rosSocket.AdvertiseService<std_srvs.TriggerRequest, std_srvs.TriggerResponse>("/service_response_test", ServiceResponseHandler);
+            Console.WriteLine("Service id: " + service_id);
+            Console.WriteLine("Press any key to close unadvertise service...");
             Console.ReadKey(true);
-            rosSocket.Unadvertise(publication_id);
-            rosSocket.Unsubscribe(subscription_id);
-            //rosSocket.UnadvertiseService(service_id);
+            rosSocket.UnadvertiseService(service_id);
 
-            Console.WriteLine("Press any key to close...");
+            Console.WriteLine("Press any key to close RosSocket...");
             Console.ReadKey(true);
             rosSocket.Close();
         }
@@ -85,18 +84,79 @@ namespace RosSharp.RosBridgeClientTest
         }
         private static void SubscriptionHandler(std_msgs.String message)
         {
-            Console.WriteLine((message).data);
+            Console.WriteLine("processing message: " + (message).data);
+            Thread.Sleep(100); // simulate some work
+            Console.WriteLine("done processing message: " + (message).data);
         }
 
         private static void ServiceCallHandler(rosapi.GetParamResponse message)
         {
-            Console.WriteLine("ROS distro: " + message.value);
+            Console.WriteLine("Response value: " + message.value);
+        }
+
+        private static void ServiceCallHandlerROS2(rosapi.GetROSVersionResponse message)
+        {
+            Console.WriteLine("Response value: " + message.distro);
         }
 
         private static bool ServiceResponseHandler(std_srvs.TriggerRequest arguments, out std_srvs.TriggerResponse result)
         {
             result = new std_srvs.TriggerResponse(true, "service response message");
             return true;
+        }
+
+        // Simple message pub
+        private static void SimpleMessagePub(RosSocket rosSocket, String topic)
+        {
+            std_msgs.String message = new std_msgs.String
+            {
+                data = "single pub test msg"
+            };
+
+            string publication_id = rosSocket.Advertise<std_msgs.String>(topic);
+            rosSocket.Publish(publication_id, message);
+
+            Console.WriteLine("Press any key to unadvertise...");
+            Console.ReadKey(true);
+
+            rosSocket.Unadvertise(publication_id);
+        }
+
+        // Simple message sub
+        private static void SimpleMessageSub(RosSocket rosSocket, String topic)
+        {
+            string subscription_id = rosSocket.Subscribe<std_msgs.String>(topic, SubscriptionHandler, ensureThreadSafety: false);
+
+            Console.WriteLine("Press any key to unsubscribe...");
+            Console.ReadKey(true);
+
+            rosSocket.Unsubscribe(subscription_id);
+        }
+
+        // Simulate receiving messages from multiple threads to test thread safety
+        private static void SimulateParallelMessageReception(RosSocket rosSocket, int numberOfMessages)
+        {
+            string subscription_id = rosSocket.Subscribe<std_msgs.String>("/thread_test", SubscriptionHandler, ensureThreadSafety: true);
+            var rosSocketType = rosSocket.GetType();
+            var subscribersField = rosSocketType.GetField("Subscribers", BindingFlags.NonPublic | BindingFlags.Instance);
+            var subscribers = (Dictionary<string, Subscriber>)subscribersField.GetValue(rosSocket);
+            var subscriber = subscribers[subscription_id];
+
+            Parallel.For(0, numberOfMessages, i =>
+            {
+                // Fake message data
+                var message = new std_msgs.String { data = $"message {i}" };
+                
+                byte[] serializedBytes = rosSocket.Serializer.Serialize(message);
+                string serializedMessage = Encoding.UTF8.GetString(serializedBytes);
+                var deserializedMessage = rosSocket.Serializer.Deserialize<std_msgs.String>(serializedMessage);
+
+                Console.WriteLine($"Processing thread: {i}");
+
+                subscriber.Receive(serializedMessage, rosSocket.Serializer);
+            });
+
+            rosSocket.Unsubscribe(subscription_id);
         }
     }
 }
