@@ -15,11 +15,8 @@ limitations under the License.
 
 using System;
 
-#if ROS2
-using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
-#else
+#if !ROS2
 using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
-#endif
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -71,11 +68,8 @@ namespace RosSharp.RosBridgeClient.Actionlib
         public string GetFeedbackString()
         {
             if (action != null)
-                #if ROS2
-                return String.Join(",", action.action_feedback.feedback.partial_sequence);
-                #else
                 return String.Join(",", action.action_feedback.feedback.sequence);
-                #endif
+
             return "";
         }
 
@@ -83,7 +77,84 @@ namespace RosSharp.RosBridgeClient.Actionlib
         {
             if (action != null)
                 return String.Join(",", action.action_result.result.sequence);
+
             return "";
         }
     }
 }
+
+#else
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+using RosSharp.RosBridgeClient.MessageTypes.Action;
+
+namespace RosSharp.RosBridgeClient.Actionlib
+{
+    public class FibonacciActionClient : ActionClient<FibonacciAction, FibonacciActionGoal, FibonacciActionResult, FibonacciActionFeedback, FibonacciGoal, FibonacciResult, FibonacciFeedback>
+    {
+        public FibonacciActionClient(string actionName, RosSocket rosSocket)
+        {
+            this.actionName = actionName;
+            this.rosSocket = rosSocket;
+
+            action = new FibonacciAction();
+            goalStatus = new GoalStatus();
+        }
+
+        public override void SetActionGoal(FibonacciGoal fibonacciOrder, bool feedback = true, int fragmentSize = int.MaxValue, string compression = "none")
+        {
+            action.action_goal.action = actionName;
+            action.action_goal.args = fibonacciOrder;
+            action.action_goal.feedback = feedback;
+            action.action_goal.fragment_size = fragmentSize;
+            action.action_goal.compression = compression;
+        }
+
+        public override FibonacciActionGoal GetActionGoal()
+        {
+            return action.action_goal;
+        }
+
+        protected override void OnStatusUpdated()
+        {
+            // Not implemented for this particular application
+        }
+
+        protected override void OnFeedbackReceived()
+        {
+            Console.WriteLine("Feedback received: " + GetFeedbackString());
+        }
+
+        protected override void OnResultReceived()
+        {
+            Console.WriteLine("Result received: " + GetResultString());
+            Console.WriteLine("Status: " + GetStatusString());
+            Console.WriteLine("Result (success?): " + lastResultSuccess); // todo: needs better naming
+            Console.WriteLine("Frame ID: " + action.action_result.id);
+        }
+
+        public string GetStatusString()
+        {
+            if (goalStatus != null)
+            {
+                return ((ActionStatus)(goalStatus.status)).ToString();
+            }
+            return "";
+        }
+
+        public string GetFeedbackString()
+        {
+            if (action != null)
+                return String.Join(", ", action.action_feedback.values.partial_sequence);
+
+            return "";
+        }
+
+        public string GetResultString()
+        {
+            if (action != null)
+                return String.Join(", ", action.action_result.values.sequence);
+            return "";
+        }
+    }
+}
+#endif

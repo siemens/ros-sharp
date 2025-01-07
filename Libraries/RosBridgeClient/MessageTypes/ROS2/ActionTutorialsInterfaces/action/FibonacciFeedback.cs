@@ -13,7 +13,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
 {
     public class FibonacciFeedback : Message
     {
-        public const string RosMessageName = "action_tutorials_interfaces/action/FibonacciFeedback";
+        public const string RosMessageName = "action_tutorials_interfaces/action/Fibonacci_FeedbackMessage";
 
         public int[] partial_sequence { get; set; }
 

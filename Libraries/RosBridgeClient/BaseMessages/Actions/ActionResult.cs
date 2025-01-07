@@ -14,6 +14,8 @@ limitations under the License.
 */
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;
+
+#if !ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient
@@ -35,3 +37,41 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#else
+using RosSharp.RosBridgeClient.MessageTypes.Action;
+
+namespace RosSharp.RosBridgeClient
+{
+    public abstract class ActionResult<TResult> : Message where TResult : Message
+    {
+        public Header header { get; set; }
+        public string action { get; set; }
+        public TResult values { get; set; }
+        public sbyte status { get; set; }
+        public GoalStatus goalStatus { get; set; }
+        public bool result { get; set; }
+        public string id { get; set; }
+
+
+        public ActionResult()
+        {
+            header = new Header();
+            status = 0;
+            goalStatus = new GoalStatus();
+
+        }
+
+        public ActionResult(Header header, string action, sbyte status, bool result, string id)
+        {
+            this.header = header;
+            this.status = status;
+            this.action = action;
+            this.values = values;
+            this.goalStatus = new GoalStatus(new GoalInfo(), status);
+            this.result = result;
+            this.id = id;
+        }
+    }
+}
+#endif

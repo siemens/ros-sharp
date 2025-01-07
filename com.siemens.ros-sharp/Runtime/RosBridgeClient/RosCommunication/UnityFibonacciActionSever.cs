@@ -14,6 +14,7 @@ limitations under the License.
 */
 
 using UnityEngine;
+using UnityEditor;
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -22,10 +23,15 @@ namespace RosSharp.RosBridgeClient.Actionlib
     {
         private RosConnector rosConnector;
         private FibonacciActionServer fibonacciActionServer;
-
+        
         public string actionName;
-        public string status;
-        public string feedback;
+        [SerializeField, ReadOnly, Tooltip("Status (Read-Only)")]
+        private string status;
+        [SerializeField, ReadOnly, Tooltip("Feedback (Read-Only)")]
+        private string feedback;
+
+        public string Status => status;
+        public string Feedback => feedback;
 
         private void Start()
         {
@@ -36,10 +42,25 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         private void Update()
         {
+            #if !ROS2
             fibonacciActionServer.PublishStatus();
+            #endif
+
             status = fibonacciActionServer.GetStatus().ToString();
             feedback = fibonacciActionServer.GetFeedbackSequenceString();
         }
     }
 
+    public class ReadOnlyAttribute : PropertyAttribute { }
+
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label);
+            GUI.enabled = true;
+        }
+    }
 }

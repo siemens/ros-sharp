@@ -39,6 +39,8 @@ using System.Reflection;
 // ros2 topic echo /pub_test
 // ros2 topic pub -r 50 /sub_test std_msgs/String "data: subscription test message data"
 
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClientTest
 {
@@ -74,6 +76,11 @@ namespace RosSharp.RosBridgeClientTest
             Console.WriteLine("Press any key to close RosSocket...");
             Console.ReadKey(true);
             rosSocket.Close();
+        }
+        private static void actionGoalHandler(std_msgs.String message)
+        {
+            Console.WriteLine("Is this working?");
+            Console.WriteLine((message).data);
         }
         private static void SubscriptionHandler(std_msgs.String message)
         {

@@ -13,6 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if ROS2
+using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
+#else
+using RosSharp.RosBridgeClient.MessageTypes.ActionlibTutorials;
+#endif
+
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient.Actionlib
@@ -25,8 +31,11 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         public string actionName;
         public int fibonacciOrder = 20;
+        [SerializeField, ReadOnly, Tooltip("Status (Read-Only)")]
         public string status = "";
+        [SerializeField, ReadOnly, Tooltip("Feedback (Read-Only)")]
         public string feedback = "";
+        [SerializeField, ReadOnly, Tooltip("Result (Read-Only)")]
         public string result = "";
 
         private void Start()
@@ -45,7 +54,11 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         public void RegisterGoal()
         {
+            #if !ROS2
             fibonacciActionClient.fibonacciOrder = fibonacciOrder;
+            #else
+            fibonacciActionClient.SetActionGoal(new FibonacciGoal(fibonacciOrder));
+            #endif
         }
 
     }

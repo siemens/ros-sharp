@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteTrajectoryActionFeedback : ActionFeedback<ExecuteTrajectoryFeedback>
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteTrajectoryActionFeedback";
+        public const string RosMessageName = "moveit_msgs/action/ExecuteTrajectoryActionFeedback";
 
         public ExecuteTrajectoryActionFeedback() : base()
         {
-            this.feedback = new ExecuteTrajectoryFeedback();
+            this.values = new ExecuteTrajectoryFeedback();
         }
 
-        public ExecuteTrajectoryActionFeedback(Header header, GoalStatus status, ExecuteTrajectoryFeedback feedback) : base(header, status)
+        public ExecuteTrajectoryActionFeedback(Header header, string id, string action, ExecuteTrajectoryFeedback values) : base(header, id, action)
         {
-            this.feedback = feedback;
+            this.values = values;
         }
     }
 }

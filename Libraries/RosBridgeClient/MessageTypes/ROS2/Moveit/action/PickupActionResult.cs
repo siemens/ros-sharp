@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class PickupActionResult : ActionResult<PickupResult>
     {
-        public const string RosMessageName = "moveit_msgs/PickupActionResult";
+        public const string RosMessageName = "moveit_msgs/action/PickupActionResult";
 
         public PickupActionResult() : base()
         {
-            this.result = new PickupResult();
+            this.values = new PickupResult();
         }
 
-        public PickupActionResult(Header header, GoalStatus status, PickupResult result) : base(header, status)
+        public PickupActionResult(Header header, string action, sbyte status, bool result, string id, PickupResult values) : base(header, action, status, result, id)
         {
-            this.result = result;
+            this.values = values;
         }
     }
 }
