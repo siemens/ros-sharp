@@ -14,14 +14,14 @@ limitations under the License.
 */
 
 using UnityEngine;
+using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
     public class StringSubscriber : UnitySubscriber<MessageTypes.Std.String>
     {
-        private bool isMessageReceived;
         private string messageData;
-
+        
         protected override void Start()
         {
             base.Start();
@@ -30,11 +30,6 @@ namespace RosSharp.RosBridgeClient
         protected override void ReceiveMessage(MessageTypes.Std.String message)
         {
             messageData = message.data;
-            isMessageReceived = true;
-        }
-
-        void FixedUpdate()
-        {
             Debug.Log("Received message: " + messageData);
         }
     }

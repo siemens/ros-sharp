@@ -31,11 +31,11 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         public string actionName;
         public int fibonacciOrder = 20;
-        [SerializeField, ReadOnly, Tooltip("Status (Read-Only)")]
+        [SerializeField, ReadOnly, Tooltip("Status (ReadOnly)")]
         public string status = "";
-        [SerializeField, ReadOnly, Tooltip("Feedback (Read-Only)")]
+        [SerializeField, ReadOnly, Tooltip("Feedback (ReadOnly)")]
         public string feedback = "";
-        [SerializeField, ReadOnly, Tooltip("Result (Read-Only)")]
+        [SerializeField, ReadOnly, Tooltip("Result (ReadOnly)")]
         public string result = "";
 
         private void Start()

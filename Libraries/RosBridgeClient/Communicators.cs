@@ -331,7 +331,7 @@ namespace RosSharp.RosBridgeClient
 
     internal class ActionConsumer<TActionResult, TActionFeedback> : ActionConsumer
         where TActionResult : Message
-        where TActionFeedback : Message
+        where TActionFeedback : Message 
     {
         internal override string Id { get; }
         internal override string Action { get; }

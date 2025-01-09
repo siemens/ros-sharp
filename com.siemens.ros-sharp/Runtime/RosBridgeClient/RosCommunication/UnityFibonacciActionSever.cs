@@ -25,9 +25,9 @@ namespace RosSharp.RosBridgeClient.Actionlib
         private FibonacciActionServer fibonacciActionServer;
         
         public string actionName;
-        [SerializeField, ReadOnly, Tooltip("Status (Read-Only)")]
+        [SerializeField, ReadOnly, Tooltip("Status (ReadOnly)")]
         private string status;
-        [SerializeField, ReadOnly, Tooltip("Feedback (Read-Only)")]
+        [SerializeField, ReadOnly, Tooltip("Feedback (ReadOnly)")]
         private string feedback;
 
         public string Status => status;
