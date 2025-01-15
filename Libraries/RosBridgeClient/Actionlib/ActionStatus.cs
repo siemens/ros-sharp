@@ -11,6 +11,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support:
+    - New status enum based on ROS2 action design.
+    - This file is moved from (auto generated) MessageTypes/Actionlib to Actionlib.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 namespace RosSharp.RosBridgeClient.Actionlib
@@ -36,7 +42,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
     public enum ActionStatus
     {
         // For internal server use. If status is NA, published status array will have length 0
-        STATUS_NO_GOAL = -1,    
+        STATUS_NO_GOAL = -1,
         //  Indicates status has not been properly set.
         STATUS_UNKNOWN = 0,
         //  The goal has been accepted and is awaiting execution.
