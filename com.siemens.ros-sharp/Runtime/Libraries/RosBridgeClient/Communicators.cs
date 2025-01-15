@@ -11,6 +11,30 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added option to ensure thread safety in Subscriber class.
+    © Siemens AG 2024, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
+
+- Added ROS2 action support for actions: Action Consumer and Provider classes and their respective delegates.
+    - Added ActionResultResponseHandler<TActionResult> delegate.
+        - Handles action result responses, allowing the client to process the final result of an action.
+    - Added ActionFeedbackResponseHandler<TActionFeedback> delegate.
+        - Handles action feedback responses, enabling the client to receive periodic updates on the progress of an action.
+    - Added ActionCancelResponseHandler<TActionResult> delegate.
+        - Handles action cancel responses, allowing the client to process the result of a cancel request for an action.
+    - Added SendActionGoalHandler<TActionGoal> delegate.
+        - Handles sending action goals, enabling the client to send a goal for a specific action.
+    - Added CancelActionGoalHandler delegate.
+        - Handles canceling action goals, allowing the client to cancel a previously sent goal for an action.
+    - Added ActionProvider abstract class.
+        - Manages action advertisement, goal reception, and feedback/result responses on the provider side.
+    - Added ActionProvider<TActionGoal> class.
+        - Implements ActionProvider for specific action goals, handling goal reception and feedback/result responses.
+    - Added ActionConsumer abstract class.
+        - Manages action goal requests, feedback/result consumption, and cancel requests on the consumer side.
+    - Added ActionConsumer<TActionResult, TActionFeedback> class.
+        - Implements ActionConsumer for specific action results and feedback, handling goal requests, feedback/result consumption, and cancel requests.
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 //using RosSharp.RosBridgeClient.Actionlib;

@@ -11,6 +11,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support
+    - Removed GoalStatus status property.
+    - Added string action property.
+    - Renamed TResult result property to TResult values.
+    - Added sbyte status property.
+    - Added GoalStatus goalStatus property.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;

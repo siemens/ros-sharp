@@ -11,6 +11,21 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support:
+    - Removed GoalID goal_id property.
+    - Added GoalInfo goalInfo property.
+    - Renamed TGoal goal property to TGoal args.
+    - Added string id property.
+    - Added string action property.
+    - Added string action_type property.
+    - Added bool feedback property.
+    - Added int fragment_size property.
+    - Added string compression property.
+    - Modified constructor to initialize goalInfo property.
+    - Modified parameterized constructor to accept header and goalInfo parameters.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using RosSharp.RosBridgeClient.MessageTypes.Std;

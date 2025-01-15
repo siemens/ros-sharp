@@ -11,11 +11,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Adding BSON (de-)seriliazation option
+    Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
+
+- Added ROS2 action support:
+    - Added ActionProvider and ActionConsumer dictionaries.
+    - Added AdvertiseAction<TActionGoal, TActionFeedback, TActionResult> method.
+    - Added RespondFeedback<TActionFeedback, TFeedback> method.
+    - Added RespondResult<TActionResult, TResult> method.
+    - Added UnadvertiseAction method.
+    - Added CancelActionGoalRequest<TActionResult> method.
+    - Added SendActionGoalRequest<TActionGoal, TGoal, TActionFeedback, TActionResult> method.
+    - Added handling for send_action_goal message, cancel_action_goal message, action_feedback message, and action_result message.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
-
-// Adding BSON (de-)seriliazation option
-// Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
-
 using System;
 using System.Collections.Generic;
 using System.Linq;

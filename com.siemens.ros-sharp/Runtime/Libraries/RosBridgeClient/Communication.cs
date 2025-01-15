@@ -11,6 +11,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support
+    - Added `ActionAdvertisement` for advertising actions (Provider side): 
+        - Used to notify clients about the availability of a specific action with its type.  
+    - Added `ActionUnadvertisement` for unadvertising actions (Provider side): 
+        - Used to stop the advertisement of an action, removing it from the available actions list.  
+    - Added `SendActionGoal<T>` for sending action goals (Consumer side): 
+        - Allows clients to send a goal for a specific action, with optional feedback and compression settings.  
+    - Added `CancelActionGoal` for canceling action goals (Consumer side): 
+        - Enables clients to cancel a previously sent goal for an action, identified by its ID.  
+    - Added `ActionFeedbackResponse<T>` for sending feedback on actions (Provider side): 
+        - Used by the server to send periodic feedback about the progress of a goal to the client.  
+    - Added `ActionResultResponse<T>` for sending action result responses (Provider side): 
+        - Communicates the final result, status, and success or failure of an action goal to the client.  
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 

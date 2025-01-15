@@ -11,6 +11,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support: ROS2 client registers goal with the proper message type.
+- Added ReadOnlyAttribute and ReadOnlyDrawer for read-only fields in the Unity Editor: status, feedback, and result should not be modified by the user.
+    © Siemens AG, 2025, Mehmet Emre Cakal,
 */
 
 #if ROS2

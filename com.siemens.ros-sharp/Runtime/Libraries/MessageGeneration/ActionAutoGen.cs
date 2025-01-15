@@ -11,6 +11,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support: Added new identifiers for ROS2 default constructor, parameterized constructor, and ROS message name.
+                        - Default constructor: goal -> args, result -> values, feedback -> values
+                        - Parameterized constructor: goal -> GoalInfo instead of GoalID, result -> sbyte status, bool result, string id instead of GoalStatus, feedback -> string id, string action instead of GoalStatus
+                        - ROS message name: rosPackageName/action/wrapperName
+                        - Namespace: RosSharp.RosBridgeClient.MessageTypes.Action instead of RosSharp.RosBridgeClient.MessageTypes.Actionlib
+    © Siemens AG, 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;

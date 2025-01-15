@@ -11,6 +11,23 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support: 
+    - ROS2 uses RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces and RosSharp.RosBridgeClient.MessageTypes.Action instead of ActionlibTutorials and Actionlib.
+    - Added the SetActionGoal method in ROS2 to set additional parameters such as feedback, fragmentSize, and compression.
+    - Replaced MessageTypes.Actionlib.GoalStatus with GoalStatus.
+    - Adjusted data structures to handle ROS2-specific feedback and result fields:
+        - Feedback uses action.action_feedback.values.partial_sequence.
+        - Result uses action.action_result.values.sequence.
+        - Metadata like frame ID is accessed through action.action_result.id.
+    - Added Console.WriteLine statements in OnFeedbackReceived and OnResultReceived to log feedback, results, and metadata to the console.
+    - In ROS2, action.action_goal.action and action.action_goal.args are used to set the goal, replacing direct manipulation of action.action_goal.goal.order in ROS1.
+    - Removed ROS1-specific fields like fibonacciOrder and string-based status, feedback, and result tracking.
+    - Updated string formatting for feedback and result:
+        - ROS2 constructs strings using action.action_feedback.values.partial_sequence and action.action_result.values.sequence.
+        - ROS1 constructs strings using action.action_feedback.feedback.sequence and action.action_result.result.sequence.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;

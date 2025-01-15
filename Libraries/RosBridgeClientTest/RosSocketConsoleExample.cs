@@ -39,8 +39,10 @@ using System.Reflection;
 // ros2 topic echo /pub_test
 // ros2 topic pub -r 50 /sub_test std_msgs/String "data: subscription test message data"
 
+#if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces;
 using RosSharp.RosBridgeClient.MessageTypes.Std;
+#endif
 
 namespace RosSharp.RosBridgeClientTest
 {
