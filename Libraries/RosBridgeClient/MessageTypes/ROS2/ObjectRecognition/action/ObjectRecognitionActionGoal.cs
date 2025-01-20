@@ -9,22 +9,22 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
+using RosSharp.RosBridgeClient.MessageTypes.Action;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
 {
     public class ObjectRecognitionActionGoal : ActionGoal<ObjectRecognitionGoal>
     {
-        public const string RosMessageName = "object_recognition_msgs/ObjectRecognitionActionGoal";
+        public const string RosMessageName = "object_recognition_msgs/action/ObjectRecognitionActionGoal";
 
         public ObjectRecognitionActionGoal() : base()
         {
-            this.goal = new ObjectRecognitionGoal();
+            this.args = new ObjectRecognitionGoal();
         }
 
-        public ObjectRecognitionActionGoal(Header header, GoalID goal_id, ObjectRecognitionGoal goal) : base(header, goal_id)
+        public ObjectRecognitionActionGoal(Header header, GoalInfo goalInfo, ObjectRecognitionGoal args) : base(header, goalInfo)
         {
-            this.goal = goal;
+            this.args = args;
         }
     }
 }

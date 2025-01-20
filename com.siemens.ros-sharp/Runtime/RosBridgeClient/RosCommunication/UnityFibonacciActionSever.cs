@@ -11,9 +11,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support: ROS2 server does not need to publish status in the update loop.
+- Added ReadOnlyAttribute and ReadOnlyDrawer for read-only fields in the Unity Editor: status and feedback should not be modified by the user.
+    © Siemens AG, 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using UnityEngine;
+using UnityEditor;
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -22,10 +27,15 @@ namespace RosSharp.RosBridgeClient.Actionlib
     {
         private RosConnector rosConnector;
         private FibonacciActionServer fibonacciActionServer;
-
+        
         public string actionName;
-        public string status;
-        public string feedback;
+        [SerializeField, ReadOnly, Tooltip("Status (ReadOnly)")]
+        private string status;
+        [SerializeField, ReadOnly, Tooltip("Feedback (ReadOnly)")]
+        private string feedback;
+
+        public string Status => status;
+        public string Feedback => feedback;
 
         private void Start()
         {
@@ -36,10 +46,25 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         private void Update()
         {
+            #if !ROS2
             fibonacciActionServer.PublishStatus();
+            #endif
+
             status = fibonacciActionServer.GetStatus().ToString();
             feedback = fibonacciActionServer.GetFeedbackSequenceString();
         }
     }
 
+    public class ReadOnlyAttribute : PropertyAttribute { }
+
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            GUI.enabled = false;
+            EditorGUI.PropertyField(position, property, label);
+            GUI.enabled = true;
+        }
+    }
 }

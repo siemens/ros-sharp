@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveGroupActionFeedback : ActionFeedback<MoveGroupFeedback>
     {
-        public const string RosMessageName = "moveit_msgs/MoveGroupActionFeedback";
+        public const string RosMessageName = "moveit_msgs/action/MoveGroupActionFeedback";
 
         public MoveGroupActionFeedback() : base()
         {
-            this.feedback = new MoveGroupFeedback();
+            this.values = new MoveGroupFeedback();
         }
 
-        public MoveGroupActionFeedback(Header header, GoalStatus status, MoveGroupFeedback feedback) : base(header, status)
+        public MoveGroupActionFeedback(Header header, string id, string action, MoveGroupFeedback values) : base(header, id, action)
         {
-            this.feedback = feedback;
+            this.values = values;
         }
     }
 }

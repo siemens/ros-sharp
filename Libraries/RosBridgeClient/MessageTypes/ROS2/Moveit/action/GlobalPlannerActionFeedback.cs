@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class GlobalPlannerActionFeedback : ActionFeedback<GlobalPlannerFeedback>
     {
-        public const string RosMessageName = "moveit_msgs/GlobalPlannerActionFeedback";
+        public const string RosMessageName = "moveit_msgs/action/GlobalPlannerActionFeedback";
 
         public GlobalPlannerActionFeedback() : base()
         {
-            this.feedback = new GlobalPlannerFeedback();
+            this.values = new GlobalPlannerFeedback();
         }
 
-        public GlobalPlannerActionFeedback(Header header, GoalStatus status, GlobalPlannerFeedback feedback) : base(header, status)
+        public GlobalPlannerActionFeedback(Header header, string id, string action, GlobalPlannerFeedback values) : base(header, id, action)
         {
-            this.feedback = feedback;
+            this.values = values;
         }
     }
 }

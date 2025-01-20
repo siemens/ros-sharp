@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.ActionTutorialsInterfaces
 {
     public class FibonacciActionFeedback : ActionFeedback<FibonacciFeedback>
     {
-        public const string RosMessageName = "action_tutorials_interfaces/FibonacciActionFeedback";
+        public const string RosMessageName = "action_tutorials_interfaces/action/FibonacciActionFeedback";
 
         public FibonacciActionFeedback() : base()
         {
-            this.feedback = new FibonacciFeedback();
+            this.values = new FibonacciFeedback();
         }
 
-        public FibonacciActionFeedback(Header header, GoalStatus status, FibonacciFeedback feedback) : base(header, status)
+        public FibonacciActionFeedback(Header header, string id, string action, FibonacciFeedback values) : base(header, id, action)
         {
-            this.feedback = feedback;
+            this.values = values;
         }
     }
 }

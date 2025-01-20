@@ -6,11 +6,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- Unreleased -->
-<!-- ## [2.0.1] - xx.xx.2024
 
-### Added 
-- Thread safety for `Subscriber : RosBridgeClient.Communication`. Each Subscriber, including .NET and Unity package, can be configured to receive thread-safe. 
- -->
+
+## [2.1.0] - 20.01.2025
+
+### Added
+- **ROS2 Action Support**:
+    - In **ActionClient.cs** and **ActionServer.cs**, new methods were introduced for setting, sending, canceling, and responding to action goals, accommodating ROS2-specific parameters like feedback, fragment size, and compression, etc. Additionally, **Communicators.cs** now includes new classes—**ActionConsumer** and **ActionProvider**—which facilitate ROS2 action goal management and feedback/result handling (including non-blocking listener callbacks, custom delegates, and more). 
+        - Derived example classes **FibonacciActionClient.cs** and **FibonacciActionServer.cs** and their console examples are updated as well. 
+    - **ActionServer.cs** now features the ROS2 server state machine model ([ROS2 Design - Actions](https://design.ros2.org/articles/actions.html))  
+
+    - **Namespace and Message Type Integration**:
+        - Across key files such as **ActionAutoGen.cs**, **FibonacciActionClient.cs**, and **FibonacciActionServer.cs**, namespaces were updated to `RosSharp.RosBridgeClient.MessageTypes.Action`, aligning with ROS2. Furthermore, message types and identifiers were modified to reflect ROS2 constructs.
+
+    - **Abstract Action Message Types**:
+        - In **ActionFeedback.cs**, **ActionResult.cs**, and **ActionGoal.cs**, (`TActionFeedback/Result/Goal`) new properties were added to support ROS2's (action) feedback system and result tracking, enhancing metadata management.
+
+    - **Utility and Infrastructure Enhancements**:
+        - **RosSocket.cs** now feature new methods for ROS2 action advertising, unadvertising, managing action goals, cancel requests; feedback, result and status responses.
+        - **Communication.cs** now feature ROS2 action message structures defined by the [ROS Bridge Protocol](https://github.com/RobotWebTools/rosbridge_suite/blob/ros2/ROSBRIDGE_PROTOCOL.md#rosbridge-v20-protocol-specification).  
+
+    - **MessageGeneration Support for ROS2 Actions**:
+        - In **ActionAutoGen.cs**, automatic action message generation capabilities have been implemented, including dynamic package inclusion, default and parameterized constructors based on ROS version.
+
+    - **ROS2 Action Support for Unity Fibonacci Examples**
+
+
+### Changed/Removed
+- There were no changes/removals affecting ROS1 functionalities. All new ROS2 enhancements were contained within conditional compilation directives, thereby maintaining the continuity of ROS1 operations.
+
+---
 
 
 ## [2.0.0] - 26.08.2024

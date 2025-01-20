@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class MoveGroupSequenceActionResult : ActionResult<MoveGroupSequenceResult>
     {
-        public const string RosMessageName = "moveit_msgs/MoveGroupSequenceActionResult";
+        public const string RosMessageName = "moveit_msgs/action/MoveGroupSequenceActionResult";
 
         public MoveGroupSequenceActionResult() : base()
         {
-            this.result = new MoveGroupSequenceResult();
+            this.values = new MoveGroupSequenceResult();
         }
 
-        public MoveGroupSequenceActionResult(Header header, GoalStatus status, MoveGroupSequenceResult result) : base(header, status)
+        public MoveGroupSequenceActionResult(Header header, string action, sbyte status, bool result, string id, MoveGroupSequenceResult values) : base(header, action, status, result, id)
         {
-            this.result = result;
+            this.values = values;
         }
     }
 }

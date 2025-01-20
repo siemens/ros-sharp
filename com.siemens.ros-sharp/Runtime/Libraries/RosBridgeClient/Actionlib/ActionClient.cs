@@ -11,8 +11,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support:
+    - The Initialize() and Terminate() methods are no longer needed.
+    - The SetActionGoal() method has been added, which allows the user to set the action goal with additional parameters such as feedback, fragment size, and compression.
+    - The SendGoal() method now uses the SendActionGoalRequest() method from the RosSocket class to send the action goal request.
+    - The CancelGoal() method now uses the CancelActionGoalRequest() method from the RosSocket class to cancel the action goal request.
+    - The StatusCallback(), FeedbackCallback(), and ResultCallback() methods have been modified to handle the new message types in ROS2.
+    - The OnStatusUpdated(), OnFeedbackReceived(), and OnResultReceived() methods are still implemented by the user to handle the status, feedback, and result respectively.
+    - The goalStatus, lastResultSuccess, and frameId variables have been added to store the goal status, last result success status, and frame ID respectively.
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
+#if !ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
 
 namespace RosSharp.RosBridgeClient.Actionlib
@@ -99,3 +111,105 @@ namespace RosSharp.RosBridgeClient.Actionlib
         }
     }
 }
+
+#else
+
+using RosSharp.RosBridgeClient.MessageTypes.Action;
+using System;
+
+namespace RosSharp.RosBridgeClient.Actionlib 
+{
+    public abstract class ActionClient<TAction, TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
+        where TAction : Action<TActionGoal, TActionResult, TActionFeedback, TGoal, TResult, TFeedback>
+        where TActionGoal : ActionGoal<TGoal>
+        where TActionResult : ActionResult<TResult>
+        where TActionFeedback : ActionFeedback<TFeedback>
+        where TGoal : Message
+        where TResult : Message
+        where TFeedback : Message
+    {
+        public RosSocket rosSocket;
+
+        public TAction action;
+        public string actionName;
+        public string actionType;
+
+        public GoalStatus goalStatus;
+        public bool lastResultSuccess;
+        public string frameId;
+
+
+        public void Initialize()
+        {
+            // Not needed anymore
+        }
+
+        public void Terminate()
+        {
+            // Not needed anymore
+        }
+
+        public abstract void SetActionGoal(TGoal goal, bool feedback, int fragmentSize, string compression);
+        public abstract TActionGoal GetActionGoal();
+
+        public void SendGoal()
+        {
+            rosSocket.SendActionGoalRequest<TActionGoal, TGoal, TActionFeedback, TActionResult>(
+                action.action_goal,
+                ResultCallback,
+                FeedbackCallback);
+
+            lastResultSuccess = false;
+        }
+
+        public void CancelGoal(string frameId = null)
+        {
+            rosSocket.CancelActionGoalRequest<TActionResult>(
+                frameId ?? this.frameId,
+                actionName,
+                ResultCallback);
+        }
+
+
+
+        // Implement by user to handle status
+        protected abstract void OnStatusUpdated();
+        private void StatusCallback(GoalStatusArray actionGoalStatusArray)
+        {
+            if (actionGoalStatusArray.status_list.Length > 0)
+            {
+                goalStatus = actionGoalStatusArray.status_list[actionGoalStatusArray.status_list.Length - 1];
+            }
+            OnStatusUpdated();
+        }
+
+        // Implement by user to handle feedback.
+        protected abstract void OnFeedbackReceived();
+        private void FeedbackCallback(TActionFeedback actionFeedbackValues)
+        {
+            action.action_feedback = actionFeedbackValues;
+            frameId = actionFeedbackValues.id;
+            OnFeedbackReceived();
+        }
+
+        // Implement by user to handle result.
+        protected abstract void OnResultReceived();
+        private void ResultCallback(TActionResult actionResult)
+        {
+            if (actionResult.result == false)
+            {
+                Console.WriteLine("Request failed!");
+            }
+            else
+            {
+                action.action_result = actionResult;
+                goalStatus.status = actionResult.status;
+                lastResultSuccess = actionResult.result;
+                frameId = actionResult.id;
+                OnResultReceived();
+            }
+
+        }
+    }
+}
+#endif

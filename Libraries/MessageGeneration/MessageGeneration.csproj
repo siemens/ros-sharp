@@ -12,11 +12,11 @@
 		<Company>Siemens AG</Company>
 		<Product>ROS#</Product>
 		<Copyright>Copyright © 2024</Copyright>
-		<AssemblyVersion>2.0.0.0</AssemblyVersion>
-		<FileVersion>2.0.0.0</FileVersion>
-		<Version>2.0.0</Version>
+		<AssemblyVersion>2.1.0.0</AssemblyVersion>
+		<FileVersion>2.1.0.0</FileVersion>
+		<Version>2.1.0</Version>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageId>RosSharpMessageGeneration</PackageId>
+		<PackageId>Siemens.RosSharp.MessageGeneration</PackageId>
 		<Title>MessageGeneration</Title>
 		<Authors>ros-sharp</Authors>
 		<EnablePackageValidation>true</EnablePackageValidation>

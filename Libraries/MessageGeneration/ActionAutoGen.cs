@@ -11,6 +11,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support: Added new identifiers for ROS2 default constructor, parameterized constructor, and ROS message name.
+                        - Default constructor: goal -> args, result -> values, feedback -> values
+                        - Parameterized constructor: goal -> GoalInfo instead of GoalID, result -> sbyte status, bool result, string id instead of GoalStatus, feedback -> string id, string action instead of GoalStatus
+                        - ROS message name: rosPackageName/action/wrapperName
+                        - Namespace: RosSharp.RosBridgeClient.MessageTypes.Action instead of RosSharp.RosBridgeClient.MessageTypes.Actionlib
+    © Siemens AG, 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;
@@ -163,8 +170,28 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             foreach (string identifier in symbolTable.Keys)
             {
-                constructor += TWO_TABS + ONE_TAB + "this." + identifier + " = ";
                 string type = symbolTable[identifier];
+
+                string adjustedIdentifier = identifier;
+
+                if (ActionAutoGen.isRos2)
+                {
+                    if (identifier.Equals("goal"))
+                    {
+                        adjustedIdentifier = "args";
+                    }
+                    else if (identifier.Equals("result") || identifier.Equals("feedback"))
+                    {
+                        adjustedIdentifier = "values";
+                    }
+                    else
+                    {
+                        adjustedIdentifier = identifier;
+                        Console.WriteLine("Warning: Unrecognized identifier: " + identifier);
+                    }
+                }
+
+                constructor += TWO_TABS + ONE_TAB + "this." + adjustedIdentifier + " = ";
                 constructor += "new " + type + "();\n";
             }
 
@@ -181,21 +208,68 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             string paramsOut = "";
             string assignments = "";
 
-            if (msgType.Equals("Goal"))
+            if (ActionAutoGen.isRos2)
             {
-                paramsIn += "Header header, GoalID goal_id, ";
-                paramsOut += "header, goal_id";
+                if (msgType.Equals("Goal")) 
+                {
+                    paramsIn += "Header header, GoalInfo goalInfo, ";
+                    paramsOut += "header, goalInfo";
+                }
+                else if (msgType.Equals("Result"))
+                {
+                    paramsIn += "Header header, string action, sbyte status, bool result, string id, ";
+                    paramsOut += "header, action, status, result, id";
+                }
+                else if (msgType.Equals("Feedback"))
+                {
+                    paramsIn += "Header header, string id, string action, ";
+                    paramsOut += "header, id, action";
+                }
+                else
+                {
+                    Console.WriteLine("Warning: Unrecognized message type: " + msgType);
+                }
             }
-            else if (msgType.Equals("Result") || msgType.Equals("Feedback")) {
-                paramsIn += "Header header, GoalStatus status, ";
-                paramsOut += "header, status";
+
+            else
+            {
+                if (msgType.Equals("Goal"))
+                {
+                    paramsIn += "Header header, GoalID goal_id, ";
+                    paramsOut += "header, goal_id";
+                }
+                else if (msgType.Equals("Result") || msgType.Equals("Feedback"))
+                {
+                    paramsIn += "Header header, GoalStatus status, ";
+                    paramsOut += "header, status";
+                }
             }
 
             foreach (string identifier in symbolTable.Keys)
             {
                 string type = symbolTable[identifier];
-                paramsIn += type + " " + identifier + ", ";
-                assignments += TWO_TABS + ONE_TAB + "this." + identifier + " = " + identifier + ";\n";
+
+                string adjustedIdentifier = identifier;
+
+                if (ActionAutoGen.isRos2)
+                {
+                    if (identifier.Equals("goal"))
+                    {
+                        adjustedIdentifier = "args";
+                    }
+                    else if (identifier.Equals("result") || identifier.Equals("feedback"))
+                    {
+                        adjustedIdentifier = "values";
+                    }
+                    else
+                    {
+                        adjustedIdentifier = identifier;
+                        Console.WriteLine("Warning: Unrecognized identifier: " + identifier);
+                    }
+                }
+
+                paramsIn += type + " " + adjustedIdentifier + ", ";
+                assignments += TWO_TABS + ONE_TAB + "this." + adjustedIdentifier + " = " + adjustedIdentifier + ";\n";
             }
 
             if (!paramsIn.Equals(""))
@@ -218,9 +292,19 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             string outPath = Path.Combine(this.outPath, wrapperName + ".cs");
 
-            string imports =
-                "using RosSharp.RosBridgeClient.MessageTypes.Std;\n" +
-                "using RosSharp.RosBridgeClient.MessageTypes.Actionlib;\n\n";
+            string imports = "using RosSharp.RosBridgeClient.MessageTypes.Std;\n";
+
+            if (ActionAutoGen.isRos2)
+            {
+                if (type == "Goal")
+                {
+                    imports += "using RosSharp.RosBridgeClient.MessageTypes.Action;\n\n";
+                }
+            }
+            else
+            {
+                imports += "using RosSharp.RosBridgeClient.MessageTypes.Actionlib;\n\n";
+            }
 
             symbolTable = new Dictionary<string, string>();
 
@@ -254,10 +338,19 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     ONE_TAB + "{\n"
                     );
 
-                // Write ROS package name
-                writer.Write(
-                    TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
-                    );
+                if (ActionAutoGen.isRos2)
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + "action" + "/"
+                        + wrapperName + "\";\n");
+                }
+                else
+                {
+                    writer.Write(
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + wrapperName + "\";\n"
+                        );
+                }
+                Console.WriteLine("RosMessageName: " + rosPackageName + "/" + wrapperName);
 
                 // Record goal/result/feedback declaration
                 symbolTable.Add(MsgAutoGenUtilities.LowerFirstLetter(type), msgName);

@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Tf2
 {
     public class LookupTransformActionResult : ActionResult<LookupTransformResult>
     {
-        public const string RosMessageName = "tf2_msgs/LookupTransformActionResult";
+        public const string RosMessageName = "tf2_msgs/action/LookupTransformActionResult";
 
         public LookupTransformActionResult() : base()
         {
-            this.result = new LookupTransformResult();
+            this.values = new LookupTransformResult();
         }
 
-        public LookupTransformActionResult(Header header, GoalStatus status, LookupTransformResult result) : base(header, status)
+        public LookupTransformActionResult(Header header, string action, sbyte status, bool result, string id, LookupTransformResult values) : base(header, action, status, result, id)
         {
-            this.result = result;
+            this.values = values;
         }
     }
 }

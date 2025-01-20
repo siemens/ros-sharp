@@ -9,22 +9,20 @@
 
 #if ROS2
 using RosSharp.RosBridgeClient.MessageTypes.Std;
-using RosSharp.RosBridgeClient.MessageTypes.Actionlib;
-
 namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
 {
     public class ExecuteTrajectoryActionResult : ActionResult<ExecuteTrajectoryResult>
     {
-        public const string RosMessageName = "moveit_msgs/ExecuteTrajectoryActionResult";
+        public const string RosMessageName = "moveit_msgs/action/ExecuteTrajectoryActionResult";
 
         public ExecuteTrajectoryActionResult() : base()
         {
-            this.result = new ExecuteTrajectoryResult();
+            this.values = new ExecuteTrajectoryResult();
         }
 
-        public ExecuteTrajectoryActionResult(Header header, GoalStatus status, ExecuteTrajectoryResult result) : base(header, status)
+        public ExecuteTrajectoryActionResult(Header header, string action, sbyte status, bool result, string id, ExecuteTrajectoryResult values) : base(header, action, status, result, id)
         {
-            this.result = result;
+            this.values = values;
         }
     }
 }

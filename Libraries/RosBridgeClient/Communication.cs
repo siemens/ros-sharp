@@ -11,8 +11,26 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added ROS2 action support
+    - Added `ActionAdvertisement` for advertising actions (Provider side): 
+        - Used to notify clients about the availability of a specific action with its type.  
+    - Added `ActionUnadvertisement` for unadvertising actions (Provider side): 
+        - Used to stop the advertisement of an action, removing it from the available actions list.  
+    - Added `SendActionGoal<T>` for sending action goals (Consumer side): 
+        - Allows clients to send a goal for a specific action, with optional feedback and compression settings.  
+    - Added `CancelActionGoal` for canceling action goals (Consumer side): 
+        - Enables clients to cancel a previously sent goal for an action, identified by its ID.  
+    - Added `ActionFeedbackResponse<T>` for sending feedback on actions (Provider side): 
+        - Used by the server to send periodic feedback about the progress of a goal to the client.  
+    - Added `ActionResultResponse<T>` for sending action result responses (Provider side): 
+        - Communicates the final result, status, and success or failure of an action goal to the client.  
+
+    © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
+
+using System.Text.Json.Serialization;
 
 namespace RosSharp.RosBridgeClient
 {
@@ -149,4 +167,108 @@ namespace RosSharp.RosBridgeClient
             service = Service;
         }
     }
+
+    #if ROS2 
+    #region Action
+
+    // Provider side
+    internal class ActionAdvertisement : Communication
+    {
+        public string type { get; set; } // required, message type of the advertised action
+        public string action { get; set; } // required, name of the action to advertise
+
+        internal ActionAdvertisement(string action, string type)
+        {
+            this.op = "advertise_action";
+            this.type = type;
+            this.action = action;
+        }
+    }
+
+    // Provider side
+    internal class ActionUnadvertisement : Communication
+    {
+        public string action { get; set; } // required
+
+        internal ActionUnadvertisement(string action)
+        {
+            this.op = "unadvertise_action";
+            this.action = action;
+        }
+    }
+    
+    // Consumer side
+    internal class SendActionGoal<T> : Communication where T : Message // Message is the auto generated action goal message
+    {
+        public string action { get; set; } // required, the name of the action to send a goal to
+        public string action_type { get; set; } // required, the action message type
+        public T args { get; set; } // optional, list of json objects representing the arguments to the service
+        public bool feedback { get; set; } // optional, if true, sends feedback messages over rosbridge. Defaults to false.
+        public int fragment_size { get; set; } // optional, maximum size that the result and feedback messages can take before they are fragmented
+        public string compression {  get; set; } // optional, an optional string to specify the compression scheme to be used on messages. Valid values are "none" and "png"
+
+        internal SendActionGoal(string id, string action, string action_type, T args, bool feedback = false, int fragment_size = int.MaxValue, string compression = "none") : base(id)
+        {
+            this.op = "send_action_goal";
+            this.id = id;
+            this.action = action;
+            this.action_type = action_type;
+            this.args = args;
+            this.feedback = feedback;
+            this.fragment_size = fragment_size;
+            this.compression = compression;
+        }
+    }
+
+    // Consumer Side
+    internal class CancelActionGoal : Communication
+    {
+        public string action { get; set; } // required
+        
+        internal CancelActionGoal(string id, string frameId, string action) : base(id) 
+        {
+            this.op = "cancel_action_goal";
+            this.id = frameId;  // The ID of the goal to cancel, needs to match the ID of the goal that was sent
+            this.action = action;
+        }
+    }
+
+    // Provider side
+    internal class ActionFeedbackResponse<T> : Communication where T : Message
+    {
+        public string action { get; set; } // required
+        public T values { get; set; } // (values) required
+
+        internal ActionFeedbackResponse(string id, string action, T values) : base(id) // id must match an already in-progress goal
+        {
+            this.op = "action_feedback";
+            this.id = id;
+            this.action = action;
+            this.values = values;
+        }
+    }
+
+    // Provider side
+    internal class ActionResultResponse<T> : Communication where T : Message
+    {
+        public string action { get; set; } // required
+        public T values { get; set; } // required, if the service had no return values, then this field can be omitted (and will be by the rosbridge server)
+        public int status { get; set; } // required, return status of the action. This matches the enumeration in the action_msgs/msg/GoalStatus
+        public bool result { get; set; } // required, return value of action. True means success, false failure.
+
+
+        internal ActionResultResponse(string id, string action, T values, int status, bool result) : base(id) // if an ID was provided to the action goal, then the action result will contain the ID
+        {
+            this.op = "action_result";
+            this.action = action;
+            this.id = id;
+            this.values = values;
+            this.status = status;
+            this.result = result;
+        }
+    }
+
+
+    #endregion
+    #endif
 }
