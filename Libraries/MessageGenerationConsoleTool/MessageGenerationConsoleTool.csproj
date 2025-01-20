@@ -13,8 +13,8 @@
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
     <Copyright>Copyright © 2024</Copyright>
-    <AssemblyVersion>1.7.0.0</AssemblyVersion>
-    <FileVersion>1.7.0.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageGeneration\MessageGeneration.csproj" />
