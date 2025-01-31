@@ -14,7 +14,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEditor;
 
 namespace RosSharp.RosBridgeClient
 {
