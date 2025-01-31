@@ -18,7 +18,9 @@ limitations under the License.
 */
 
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -57,6 +59,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
     public class ReadOnlyAttribute : PropertyAttribute { }
 
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {
@@ -67,4 +70,5 @@ namespace RosSharp.RosBridgeClient.Actionlib
             GUI.enabled = true;
         }
     }
+#endif    
 }
