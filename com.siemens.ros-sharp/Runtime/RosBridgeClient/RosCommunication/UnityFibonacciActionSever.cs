@@ -57,6 +57,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
     public class ReadOnlyAttribute : PropertyAttribute { }
 
+    #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {
@@ -67,4 +68,5 @@ namespace RosSharp.RosBridgeClient.Actionlib
             GUI.enabled = true;
         }
     }
+    #endif
 }

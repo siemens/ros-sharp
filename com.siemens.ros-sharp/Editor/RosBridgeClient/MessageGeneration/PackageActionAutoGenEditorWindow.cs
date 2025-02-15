@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if UNITY_EDITOR
+
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -48,3 +50,4 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
     }
 }
 
+#endif

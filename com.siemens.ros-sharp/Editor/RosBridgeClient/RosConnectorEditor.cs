@@ -1,4 +1,7 @@
+#if UNITY_EDITOR
+
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient
@@ -34,7 +37,7 @@ namespace RosSharp.RosBridgeClient
             string defineSymbolROS2 = "ROS2"; 
 
             BuildTargetGroup targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
-            string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup);
+            string defines = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(targetGroup));
 
             // Remove ROS2 define symbol
             defines = defines.Replace($"{defineSymbolROS2};", "").Replace(defineSymbolROS2, "");
@@ -47,7 +50,7 @@ namespace RosSharp.RosBridgeClient
             }
 
             // Set scripting define symbols
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, defines);
+            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(targetGroup), defines);
 
             // Execute Assembly Builder
             AssetDatabase.Refresh();
@@ -62,3 +65,5 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#endif

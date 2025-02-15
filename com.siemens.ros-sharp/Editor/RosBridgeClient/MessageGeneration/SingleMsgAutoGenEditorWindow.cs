@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if UNITY_EDITOR
+
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +33,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             get { return "msg"; }
         }
 
-
         [MenuItem("RosBridgeClient/Auto Generate Messages/Single Message...", false, 0)]
         private static void OpenWindow()
         {
@@ -49,3 +50,5 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
     }
 }
+
+#endif

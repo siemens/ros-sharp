@@ -107,6 +107,8 @@ namespace RosSharp.RosBridgeClient
             rosSocket.Close();
         }
 
+#if UNITY_EDITOR
+
         public void GenerateModelIfReady()
         {
             if (!StatusEvents["resourceFilesReceived"].WaitOne(0) || StatusEvents["importComplete"].WaitOne(0))
@@ -127,8 +129,10 @@ namespace RosSharp.RosBridgeClient
             StatusEvents["importComplete"].Set();
         }
 
+#endif
+
         public bool CheckForRosConnector() {
-            rosConnector = GameObject.FindObjectOfType(typeof(RosConnector)) as RosConnector;
+            rosConnector = GameObject.FindFirstObjectByType(typeof(RosConnector)) as RosConnector;
             return rosConnector != null;    
         }
 

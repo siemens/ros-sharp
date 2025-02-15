@@ -12,6 +12,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if UNITY_EDITOR
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -171,3 +173,5 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         protected abstract List<string> Generate(string inPath, string outPath, bool isRos2, string rosPackageName = "");
     }
 }
+
+#endif

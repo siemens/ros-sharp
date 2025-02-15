@@ -23,6 +23,8 @@ limitations under the License.
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
+#if UNITY_EDITOR
+
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -216,3 +218,5 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#endif

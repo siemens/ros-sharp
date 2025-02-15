@@ -111,7 +111,7 @@ namespace RosSharp.RosBridgeClient
         /// </summary>
         /// <returns><c>true</c> if a RosConnector component exists; otherwise, <c>false</c>.</returns>
         public bool CheckForRosConnector() {
-            rosConnector = GameObject.FindObjectOfType(typeof(RosConnector)) as RosConnector;
+            rosConnector = GameObject.FindFirstObjectByType(typeof(RosConnector)) as RosConnector;
             return rosConnector != null;
         }
 

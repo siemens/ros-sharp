@@ -23,6 +23,8 @@ limitations under the License.
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
+#if UNITY_EDITOR
+
 using System.IO;
 using System.Threading;
 using UnityEngine;
@@ -132,6 +134,8 @@ namespace RosSharp.RosBridgeClient
             EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
         }
 
+#if UNITY_EDITOR
+
         private void OnInspectorUpdate()
         {
             Repaint();
@@ -140,6 +144,8 @@ namespace RosSharp.RosBridgeClient
             // We check the status to call the methods at the right step in the process:
             transferHandler.GenerateModelIfReady();
         }
+
+#endif
 
         #region EditorPrefs
 
@@ -226,3 +232,5 @@ namespace RosSharp.RosBridgeClient
         }
     }
 }
+
+#endif

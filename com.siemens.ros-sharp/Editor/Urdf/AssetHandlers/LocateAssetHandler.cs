@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if UNITY_EDITOR
+
 using System.IO;
 using System;
 using UnityEngine;
@@ -109,3 +111,5 @@ namespace RosSharp.Urdf.Editor
         }
     }
 }
+
+#endif
