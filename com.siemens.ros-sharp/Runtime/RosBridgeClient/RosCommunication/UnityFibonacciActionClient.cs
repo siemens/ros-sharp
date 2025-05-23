@@ -35,6 +35,7 @@ namespace RosSharp.RosBridgeClient.Actionlib
 
         public string actionName;
         public int fibonacciOrder = 20;
+
         [SerializeField, ReadOnly, Tooltip("Status (ReadOnly)")]
         public string status = "";
         [SerializeField, ReadOnly, Tooltip("Feedback (ReadOnly)")]
@@ -64,6 +65,5 @@ namespace RosSharp.RosBridgeClient.Actionlib
             fibonacciActionClient.SetActionGoal(new FibonacciGoal(fibonacciOrder));
             #endif
         }
-
     }
 }

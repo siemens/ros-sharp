@@ -1,6 +1,6 @@
 /*
-© Siemens AG, 2024
-Author: Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
+© Siemens AG, 2025
+Author: Mehmet Emre Cakal (emre.cakal@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEditor;
 using UnityEngine;
-// using UnityEditor;
 
-namespace RosSharp.RosBridgeClient
+namespace RosSharp.RosBridgeClient.Actionlib
 {
-    public class StringSubscriber : UnitySubscriber<MessageTypes.Std.String>
+    // Custom property drawer for ReadOnlyAttribute
+    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public class ReadOnlyDrawer : PropertyDrawer
     {
-        private string messageData;
-        
-        protected override void Start()
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            base.Start();
-        }
-
-        protected override void ReceiveMessage(MessageTypes.Std.String message)
-        {
-            messageData = message.data;
-            Debug.Log("Received message: " + messageData);
+            GUI.enabled = false; // Disable the field
+            EditorGUI.PropertyField(position, property, label);
+            GUI.enabled = true;  // Re-enable GUI for other fields
         }
     }
 }

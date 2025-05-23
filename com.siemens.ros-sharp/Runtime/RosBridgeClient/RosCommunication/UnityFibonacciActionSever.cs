@@ -18,7 +18,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEditor;
 
 namespace RosSharp.RosBridgeClient.Actionlib
 {
@@ -33,9 +32,6 @@ namespace RosSharp.RosBridgeClient.Actionlib
         private string status;
         [SerializeField, ReadOnly, Tooltip("Feedback (ReadOnly)")]
         private string feedback;
-
-        public string Status => status;
-        public string Feedback => feedback;
 
         private void Start()
         {
@@ -56,15 +52,4 @@ namespace RosSharp.RosBridgeClient.Actionlib
     }
 
     public class ReadOnlyAttribute : PropertyAttribute { }
-
-    [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
-    public class ReadOnlyDrawer : PropertyDrawer
-    {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            GUI.enabled = false;
-            EditorGUI.PropertyField(position, property, label);
-            GUI.enabled = true;
-        }
-    }
 }
