@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>RosMsgGen</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -12,9 +12,9 @@
     <Description>Console tool for generating C# source code for ROS message/service/action.</Description>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
-    <Copyright>Copyright © 2024</Copyright>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
+    <Copyright>Copyright © 2025</Copyright>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <FileVersion>2.1.1.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MessageGeneration\MessageGeneration.csproj" />

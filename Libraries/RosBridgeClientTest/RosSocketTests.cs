@@ -63,7 +63,7 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket.Publish(id, message);
             RosSocket.Unadvertise(id);
             Thread.Sleep(100);
-            Assert.IsTrue(true);
+            Assert.That(true, Is.True);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace RosSharp.RosBridgeClientTest
             OnMessageReceived.Reset();
             RosSocket.Unsubscribe(id);
             Thread.Sleep(100);
-            Assert.IsTrue(true);
+            Assert.That(true, Is.True);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket.CallService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/rosapi/get_param", ServiceCallHandler, new rosapi.GetParamRequest("/rosdistro", "default"));
             OnServiceReceived.WaitOne();
             OnServiceReceived.Reset();
-            Assert.IsTrue(true);
+            Assert.That(true, Is.True);
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace RosSharp.RosBridgeClientTest
             OnServiceProvided.WaitOne();
             OnServiceProvided.Reset();
             RosSocket.UnadvertiseService(id);
-            Assert.IsTrue(true);
+            Assert.That(true, Is.True);
         }
 
         private void SubscriptionHandler(std_msgs.String message)
