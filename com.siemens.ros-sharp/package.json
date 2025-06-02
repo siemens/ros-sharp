@@ -1,7 +1,7 @@
 {
     "name": "com.siemens.ros-sharp",
     "displayName": "ROS#",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "unity": "2022.3",
     "description": "ROS# is a ROS bridge for the .NET ecosystem, enabling communication and control of robots and robotic systems using C# and other .NET platforms. Unity-specific extensions to [RosBridgeClient](https://github.com/siemens/ros-sharp/tree/master/Libraries/RosBridgeClient)",
     "keywords": [

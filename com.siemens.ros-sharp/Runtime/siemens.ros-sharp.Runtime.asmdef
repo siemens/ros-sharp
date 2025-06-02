@@ -11,7 +11,8 @@
     "websocket-sharp.dll",
     "System.Text.Json.dll",
     "System.Threading.Channels.dll",
-    "Microsoft.Bcl.AsyncInterfaces.dll"
+    "Microsoft.Bcl.AsyncInterfaces.dll",
+    "System.IO.Pipelines.dll"
   ],
   "noEngineReferences": false,
   "references": [],

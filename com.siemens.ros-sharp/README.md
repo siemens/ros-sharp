@@ -5,5 +5,5 @@ This folder contains the custom Unity [UPM](https://docs.unity3d.com/Manual/Cust
   - **`Samples~/`**: Example samples that need to be imported through the package manager window. For more info about example scenes and reference code, see [wiki](https://github.com/siemens/ros-sharp/wiki).
 ---
 
-© Siemens AG, 2017-2024
+© Siemens AG, 2017-2025
 

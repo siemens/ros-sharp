@@ -7,6 +7,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- Unreleased -->
 
+## [2.1.1] - 02.06.2025
+
+### Added
+-  Multi-framework targeting support, new .NET Standard 2.1 alongside .NET 8.0.
+
+- Updated dependencies, including but not limited to:
+    - Microsoft.Bcl.AsyncInterfaces 9.0.5.
+    - NUnit 4.3.2.
+    - NUnit3TestAdapter 5.0.0.
+    - System.Runtime.CompilerServices.Unsafe 6.1.2.
+    - System.Text.Encodings.Web 9.0.5.
+    - System.Text.Json 9.0.5.
+    - System.Threading.Channels 9.0.5.
+    - System.IO.Pipelines 9.0.5.
+    - websocket-sharp 1.0.3-rc11
+
+### Fixed
+- Separate *Editor* and *Runtime* codes (`UnityFibonacciAction*.cs`), which caused build errors for Android and Windows.
+
+- Various wiki enhancements. 
 
 ## [2.1.0] - 20.01.2025
 
@@ -70,5 +90,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-© Siemens AG, 2017-2024
+© Siemens AG, 2017-2025
 

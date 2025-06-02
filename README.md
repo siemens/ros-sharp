@@ -34,8 +34,8 @@ ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, 
 
 ## Platform Support ##
 
-* The [ROS#](https://github.com/siemens/ros-sharp/tree/master/Libraries/) dependencies require __.NET 8__ and __Visual Studio 2022__ or higher.
-* The [Unity package](https://github.com/siemens/ros-sharp/tree/master/com.siemens.ros-sharp) has been developed with Unity Version __2022.3.17f1 (LTS)__ and should also be compatible with older versions.
+* The [ROS#](https://github.com/siemens/ros-sharp/tree/master/Libraries/) dependencies require __.NET 8__ or __.NET Standard 2.1__ and __Visual Studio 2022__ or higher.
+* The [Unity package](https://github.com/siemens/ros-sharp/tree/master/com.siemens.ros-sharp) has been developed with __Unity 2022.3.17f1 (LTS)__ and should also be compatible with older versions. __Unity 6__ support has not yet been thoroughly tested. However, some community members were able to use ROS# with Unity 6. 
 > For Unity versions below 2022.3: See [wiki](https://github.com/siemens/ros-sharp/wiki/User_Inst_Unity3DOnWindows).
 
 ## Repository Structure ##
@@ -66,5 +66,5 @@ Below is an overview of the main directories and their purposes:
 * [Contact the Project Team](mailto:ros-sharp.ct@siemens.com)
 
 ---
-© Siemens AG, 2017-2024
+© Siemens AG, 2017-2025
 

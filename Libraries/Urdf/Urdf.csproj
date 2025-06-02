@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<RootNamespace>RosSharp.Urdf</RootNamespace>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -12,10 +12,10 @@
 		<Description>URDF file parser for .NET applications</Description>
 		<Company>Siemens AG</Company>
 		<Product>ROS#</Product>
-		<Copyright>Copyright © 2024</Copyright>
-		<AssemblyVersion>2.1.0.0</AssemblyVersion>
-		<FileVersion>2.1.0.0</FileVersion>
-		<Version>2.1.0</Version>
+		<Copyright>Copyright © 2025</Copyright>
+		<AssemblyVersion>2.1.1.0</AssemblyVersion>
+		<FileVersion>2.1.1.0</FileVersion>
+		<Version>2.1.1</Version>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>Siemens.RosSharp.Urdf</PackageId>
 		<Title>Urdf</Title>
