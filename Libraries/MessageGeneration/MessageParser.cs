@@ -1,6 +1,6 @@
 ﻿/*
-© Siemens AG, 2019
-Author: Sifan Ye (sifan.ye@siemens.com)
+© Siemens AG, 2025
+Author: Mehmet Emre Cakal (emre.cakal@siemens.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -11,24 +11,24 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Note: This file is a refactored version of the original MessageParser.cs
+    written by Sifan Ye, © Siemens AG, 2019
 */
 
 using System;
 using System.IO;
-
 using System.Collections.Generic;
-
-using System.CodeDom.Compiler;
+using System.Linq;
 
 namespace RosSharp.RosBridgeClient.MessageGeneration
 {
-    public class MessageParser{
+    public class MessageParser
+    {
 
         private List<MessageToken> tokens;
 
         private readonly string inFilePath;
-        private readonly string inFileName;
-
         private readonly string rosPackageName;
         private readonly string className;
         private readonly string rosMsgName;
@@ -44,611 +44,344 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         private uint lineNum = 1;
 
         private Dictionary<string, string> symbolTable = new Dictionary<string, string>();
-        private HashSet<string> constants = new HashSet<string>();
+        private HashSet<string> constantValuedIdentifiers = new HashSet<string>();
+        private HashSet<string> defaultValuedIdentifiers = new HashSet<string>();
+
         private Dictionary<string, int> arraySizes = new Dictionary<string, int>();
-            
+        private Dictionary<string, string> boundedArraySizeDirection = new Dictionary<string, string>();
+
         private string body = "";
 
-        private List<string> warnings = new List<string>();
+        public List<string> warnings = new List<string>();
         protected bool isRos2;
 
-        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "", bool isRos2 = true) {
-            this.tokens = tokens;
+        private readonly Dictionary<string, string> defaultValues = new Dictionary<string, string>();
 
+        public MessageParser(List<MessageToken> tokens, string outPath, string rosPackageName, string type, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> builtInTypesDefaultInitialValues, string className = "", string rosMsgName = "", bool isRos2 = true)
+        {
             this.inFilePath = tokens[0].content;
-            this.inFileName = Path.GetFileNameWithoutExtension(inFilePath);
-
+            // this.tokens = tokens;
+            this.tokens = tokens.Skip(1).ToList();
             this.rosPackageName = rosPackageName;
             this.type = type;
+            this.builtInTypeMapping = builtInTypeMapping;
+            this.builtInTypesDefaultInitialValues = builtInTypesDefaultInitialValues;
+            this.isRos2 = isRos2;
 
-            if (className.Equals("")) {
-                this.className = MsgAutoGenUtilities.CapitalizeFirstLetter(inFileName);
-            }
-            else
-            {
-                this.className = className;
-            }
+            this.className = string.IsNullOrWhiteSpace(className) ?
+                MsgAutoGenUtilities.CapitalizeFirstLetter(Path.GetFileNameWithoutExtension(inFilePath)) :
+                className;
 
-            if (rosMsgName.Equals(""))
-            {
-                this.rosMsgName = MsgAutoGenUtilities.CapitalizeFirstLetter(inFileName);
-            }
-            else {
-                this.rosMsgName = rosMsgName;
-            }
-            
+            this.rosMsgName = string.IsNullOrWhiteSpace(rosMsgName) ?
+                MsgAutoGenUtilities.CapitalizeFirstLetter(Path.GetFileNameWithoutExtension(inFilePath)) :
+                rosMsgName;
 
             this.outPath = outPath;
             this.outFilePath = Path.Combine(outPath, type);
 
-            this.tokens.RemoveAt(0);
 
-            this.builtInTypeMapping = builtInTypeMapping;
-            this.builtInTypesDefaultInitialValues = builtInTypesDefaultInitialValues;
-            this.isRos2 = isRos2;
         }
-
-        public void Parse() {
-            // If outpath doesn't exist, mkdir
-            if (!Directory.Exists(outFilePath))
-            {
-                Directory.CreateDirectory(outFilePath);
-            }
-            // Append filename
+        #region MAIN_PARSE_LOGIC
+        public void Parse()
+        {
+            // Create output directory if it does not exist
+            Directory.CreateDirectory(outFilePath);
             this.outFilePath = Path.Combine(this.outFilePath, this.className + ".cs");
 
             using (StreamWriter writer = new StreamWriter(outFilePath, false))
             {
                 writer.Write(MsgAutoGenUtilities.BLOCK_COMMENT + "\n");
 
-                // Message -> Lines
-                // Lines -> Line Lines | e
-                while (!IsEmpty())
-                {
-                    Line();
-                }
+                body = ReadTokens();
 
-                // Write preprocessor directive: Begin
-                if (isRos2) 
-                {
-                    writer.Write("#if ROS2");
-                }
-                else 
-                {
-                    writer.Write("#if !ROS2");
-                }
+                // Write ROS version preprocessor directive
+                writer.Write(isRos2 ? "#if ROS2" : "#if !ROS2");
+
                 // Write imports
-                writer.Write(GenerateImports());
+                writer.Write(MsgAutoGenUtilities.GenerateImports(imports));
 
                 // Write namespace
                 writer.Write(
                     "namespace RosSharp.RosBridgeClient.MessageTypes." + MsgAutoGenUtilities.ResolvePackageName(rosPackageName) + "\n" +
-                    "{\n"
-                    );
+                    "{\n");
 
                 // Write class declaration
-                writer.Write(
-                    MsgAutoGenUtilities.ONE_TAB + "public class " + className + " : Message\n" +
-                    MsgAutoGenUtilities.ONE_TAB + "{\n"
-                    );
+                writer.Write(MsgAutoGenUtilities.ONE_TAB + $"public class {className} : Message\n" + MsgAutoGenUtilities.ONE_TAB + "{\n");
 
                 // Write ROS package name
-                if (isRos2)
-                {
-                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + type + "/" + rosMsgName + "\";\n\n");
-                }
-                else 
-                {
-                    writer.Write(MsgAutoGenUtilities.TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + rosMsgName + "\";\n\n");                   
-                }
+                writer.Write(isRos2 ?
+                    MsgAutoGenUtilities.TWO_TABS + $"public const string RosMessageName = \"{rosPackageName}/{type}/{rosMsgName}\";\n\n" :
+                    MsgAutoGenUtilities.TWO_TABS + $"public const string RosMessageName = \"{rosPackageName}/{rosMsgName}\";\n\n");
 
                 // Write body
-                writer.Write(body);
-                writer.Write("\n");
+                writer.Write($"{body}\n");
 
                 // Write constructors
                 writer.Write(GenerateDefaultValueConstructor());
-                if (symbolTable.Count != 0 && !new HashSet<string>(symbolTable.Keys).SetEquals(constants)) {
-                    writer.Write("\n");
-                    writer.Write(GenerateParameterizedConstructor());
-                }
+                if (symbolTable.Count != 0 && symbolTable.Keys.Except(constantValuedIdentifiers).Any())
+                    writer.Write("\n" + GenerateParameterizedConstructor());
 
-                // Close class
+                // Close class, namespace, and preprocessor directive
                 writer.Write(MsgAutoGenUtilities.ONE_TAB + "}\n");
-                // Close namespace
                 writer.Write("}\n");
-
-                // Write preprocessor directive: End
                 writer.Write("#endif\n");
 
                 writer.Flush();
                 writer.Close();
             }
         }
-
-        // Line -> Comment | Declaration
-        private void Line() {
-            MessageToken peeked = Peek();
-            if (PeekType(MessageTokenType.Comment))
+        #endregion
+        #region DECLARATIONS
+        private string ReadTokens()
+        {
+            string body = "";
+            for (int tokenIndex = 0; tokenIndex < tokens.Count; tokenIndex++)
             {
-                Comment();
-            }
-            else if (PeekType(MessageTokenType.BuiltInType) || PeekType(MessageTokenType.DefinedType) || PeekType(MessageTokenType.Header))
-            {
-                Declaration();
-            }
-            else {
-                // Mumble mumble
-                if (peeked == null)
+                var token = tokens[tokenIndex];
+                var tokenType = token.type;
+                if (tokenType == MessageTokenType.Comment)
                 {
-                    throw new MessageParserException(
-                        "Unexpected end of input " +
-                        "' at " + inFilePath + ":" + lineNum);
+                    body += $"{MsgAutoGenUtilities.TWO_TABS}// {token.content}\n";
                 }
-                else {
-                    throw new MessageParserException(
-                        "Unexpected token '" + peeked.content +
-                        "' at " + inFilePath + ":" + lineNum +
-                        ". Expecting a comment or field declaration.");
-                }
-            }
-        }
-
-        // Comment -> # sigma* \n
-        private void Comment() {
-            body += MsgAutoGenUtilities.TWO_TABS + "// " + MatchByType(MessageTokenType.Comment) + "\n";
-        }
-
-        // Declaration -> BuiltInType Identifier | BuiltInType Identifier ConstantDeclaration | BuiltInType ArrayDeclaration Identifier
-        // Declaration -> DefinedType Identifier | DefinedType ArrayDeclaration Identifier
-        // Declaration -> Header Identifier
-        private void Declaration() {
-            string declaration = "";
-            // Type
-            MessageToken peeked = Peek();
-            string type = "";
-            bool canHaveConstDecl = false;
-            declaration += MsgAutoGenUtilities.TWO_TABS + "public ";
-            if (PeekType(MessageTokenType.BuiltInType)) {
-                type = builtInTypeMapping[MatchByType(MessageTokenType.BuiltInType)];
-                if (!type.Equals("Time") && !type.Equals("Duration"))
+                else if (tokenType == MessageTokenType.BuiltInType ||
+                         tokenType == MessageTokenType.DefinedType ||
+                         tokenType == MessageTokenType.Header)
                 {
-                    // Time and Duration can't have constant declaration
-                    // See <wiki.ros.org/msg>
-                    canHaveConstDecl = true;
-                }
-                else {
-                    // Need to import Standard
-                    imports.Add("Std");
-                }
-            }
-            else if (PeekType(MessageTokenType.DefinedType)) {
-                type = MatchByType(MessageTokenType.DefinedType);
-                string[] hierarchy = type.Split(new char[] { '/', '\\' });
-                // Assume type can only be either:
-                // Type
-                // package/Type
-                switch (hierarchy.Length) {
-                    case 1:
-                        break;
-                    case 2:
-                        if (hierarchy[0].Equals("") || hierarchy[1].Equals("")) {
-                            throw new MessageParserException(
-                            "Invalid field type '" + type + "'. + " +
-                            "(" + inFilePath + ":" + lineNum + ")");
-                        }
-                        string package = MsgAutoGenUtilities.ResolvePackageName(hierarchy[0]);
-                        imports.Add(package);
-                        type = hierarchy[1];
-                        break;
-                    default:
-                        throw new MessageParserException(
-                            "Invalid field type '" + type + "'. + " +
-                            "(" + inFilePath + ":" + lineNum + ")");
-                }
-            } else {
-                type = MatchByType(MessageTokenType.Header);
-                if (PeekType(MessageTokenType.FixedSizeArray) || PeekType(MessageTokenType.VariableSizeArray)) {
-                    Warn(
-                        "By convention, there is only one header for each message."  + 
-                        "(" + inFilePath + ":" + lineNum + ")");
-                }
-                if (PeekType(MessageTokenType.Identifier) && !Peek().content.Equals("header")) {
-                    Warn(
-                        "By convention, a ros message Header will be named 'header'. '" 
-                        + Peek().content + "'. (" + inFilePath + ":" + lineNum + ")");
-                }
-                imports.Add("Std");
-            }
-
-            // Array Declaration
-            int arraySize = -1;
-            if (PeekType(MessageTokenType.FixedSizeArray)) {
-                type += "[]";
-                canHaveConstDecl = false;
-                arraySize = int.Parse(MatchByType(MessageTokenType.FixedSizeArray));
-            }
-            if (PeekType(MessageTokenType.VariableSizeArray)) {
-                type += "[]";
-                canHaveConstDecl = false;
-                MatchByType(MessageTokenType.VariableSizeArray);
-                arraySize = 0;
-            }
-
-            // Identifier
-            string identifier = MatchByType(MessageTokenType.Identifier);
-            // Check for duplicate declaration
-            if (symbolTable.ContainsKey(identifier)) {
-                throw new MessageParserException(
-                    "Field '" + identifier +
-                    "' at " + inFilePath + ":" + lineNum +
-                    " already declared!");
-            }
-            // Check if identifier is a ROS message built-in type
-            if (builtInTypeMapping.ContainsKey(identifier) && identifier.Equals("time") && identifier.Equals("duration")) {
-                throw new MessageParserException(
-                    "Invalid field identifier '" + identifier +
-                    "' at " + inFilePath + ":" + lineNum +
-                    ". '" + identifier + "' is a ROS message built-in type.");
-            }
-
-#if NETFRAMEWORK
-            CodeDomProvider provider = CodeDomProvider.CreateProvider("C#");
-            // Check if identifier is a C# keyword
-            if (!provider.IsValidIdentifier(identifier))
-            {
-                Warn(
-                    "'" + identifier + "' is a C# keyword. We have appended \"_\" at the front to avoid C# compile-time issues." +
-                    "(" + inFilePath + ":" + lineNum + ")");
-                declaration = MsgAutoGenUtilities.TWO_TABS + "[JsonProperty(\"" + identifier + "\")]\n" + declaration; 
-                identifier = "_" + identifier;
-            }
-#else
-            Warn(
-                "'CodeDomProvider class might not exist on your platform. We did not check whether " + identifier + "' is a C# keyword." +
-                "(" + inFilePath + ":" + lineNum + ")");
-#endif
-
-            symbolTable.Add(identifier, type);
-
-            // Array declaration table
-            if (arraySize > -1) {
-                arraySizes.Add(identifier, arraySize);
-            }
-
-            // Constant Declaration
-            if (PeekType(MessageTokenType.ConstantDeclaration))
-            {
-                if (canHaveConstDecl)
-                {
-                    declaration += "const " + type + " " + identifier + " = ";
-                    declaration += ConstantDeclaration(type);
-                    constants.Add(identifier);
+                    body += ReadLine(ref tokenIndex);
                 }
                 else
                 {
                     throw new MessageParserException(
-                        "Type " + type +
-                        "' at " + inFilePath + ":" + lineNum +
-                        " cannot have constant declaration");
+                        "Unexpected token '" + token.content +
+                        "' at " + inFilePath + ":" + token.lineNum +
+                        ". Expecting a comment or field declaration.");
                 }
             }
-            else {
-                declaration += type + " " + identifier + MsgAutoGenUtilities.PROPERTY_EXTENSION + "\n";
-            }
-            body += declaration;
+            return body;
         }
+        private string ReadLine(ref int tokenIndex)
+        {
+            var token = tokens[tokenIndex];
+            bool canHaveConstDecl = false;
+            string declaration = $"{MsgAutoGenUtilities.TWO_TABS}public ";
+            string resolvedType = MsgAutoGenUtilities.ResolveType(token, ref canHaveConstDecl, ref imports, builtInTypeMapping);
+            bool isArray = false;
+            int arraySize = 0;
+            string boundDir = "";
 
-        // Constant Declaration -> = NumericalConstantValue Comment
-        // Constant Declaration -> = StringConstantValue
-        // Note that a comment cannot be present in a string constant definition line
-        private string ConstantDeclaration(string type) {
-            string declaration = MatchByType(MessageTokenType.ConstantDeclaration);
-            if (type.Equals("string"))
+            // --- Array Declaration ---
+            if (tokenIndex + 1 < tokens.Count)
             {
-                return "\"" + declaration.Trim() + "\";\n";
-            }
-            else {
-                string ret = "";
-                // Parse constant value using exisiting C# routines
-                // Parse by invoking method
-                // First check if a comment exists
-                string val = "";
-                string comment = "";
-                if (declaration.Contains("#"))
+                var nextToken = tokens[tokenIndex + 1];
+
+                if (nextToken.type == MessageTokenType.FixedSizeArray ||
+                    nextToken.type == MessageTokenType.VariableSizeArray ||
+                    nextToken.type == MessageTokenType.BoundedVariableSizeArray)
                 {
-                    string[] contents = declaration.Split('#');
-                    val = contents[0].Trim();
-                    comment = String.Join("#", contents, 1, contents.Length - 1);
-                }
-                else {
-                    val = declaration.Trim();
-                }
-                // Parse value
-                switch (type) {
-                    case "bool":
-                        if (val.Equals("True"))
-                        {
-                            ret += "true";
-                        }
-                        else if (val.Equals("False"))
-                        {
-                            ret += "false";
-                        }
-                        else {
-                            if (byte.TryParse(val, out byte a))
-                            {
-                                if (a == 0)
-                                {
-                                    ret += "false";
-                                }
-                                else
-                                {
-                                    ret += "true";
-                                }
-                            }
-                            else {
-                                throw new MessageParserException(
-                                    "Type mismatch: Expecting bool, but value '" + val +
-                                    "' at " + inFilePath + ":" + lineNum +
-                                    " is not bool/uint8/byte");
-                            }
-                        }
-                        break;
-                    case "sbyte":
-                        if (sbyte.TryParse(val, out sbyte b))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting int8, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not int8/sbyte");
-                        }
-                        break;
-                    case "byte":
-                        if (byte.TryParse(val, out byte c))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting uint8, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not uint8/byte");
-                        }
-                        break;
-                    case "short":
-                        if (short.TryParse(val, out short d))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting int16, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not int16/short");
-                        }
-                        break;
-                    case "ushort":
-                        if (ushort.TryParse(val, out ushort e))
-                        {
-                            ret += val;
-                        }
-                        else
-                        {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting uint16, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not uint16/ushort");
-                        }
-                        break;
-                    case "int":
-                        if (int.TryParse(val, out int f))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting int32, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not int32/int");
-                        }
-                        break;
-                    case "uint":
-                        if (uint.TryParse(val, out uint g))
-                        {
-                            ret += val;
-                        }
-                        else
-                        {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting uint32, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not uint32/uint");
-                        }
-                        break;
-                    case "long":
-                        if (long.TryParse(val, out long h))
-                        {
-                            ret += val;
-                        }
-                        else
-                        {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting int64, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not int64/long");
-                        }
-                        break;
-                    case "ulong":
-                        if (ulong.TryParse(val, out ulong i))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting uint64, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not uint64/ulong");
-                        }
-                        break;
-                    case "float":
-                        if (float.TryParse(val, out float j))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting float32, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not float32/float");
-                        }
-                        break;
-                    case "double":
-                        if (double.TryParse(val, out double k))
-                        {
-                            ret += val;
-                        }
-                        else {
-                            throw new MessageParserException(
-                                "Type mismatch: Expecting float64, but value '" + val +
-                                "' at " + inFilePath + ":" + lineNum +
-                                " is not float64/double");
-                        }
-                        break;
-                }
-                ret += ";";
+                    isArray = true;
+                    tokenIndex++;
+                    if (nextToken.type == MessageTokenType.FixedSizeArray)
+                        arraySize = int.Parse(nextToken.content);
 
-                // Take care of comment
-                if (!comment.Equals("")) {
-                    ret += " // " + comment;
+                    else if (nextToken.type == MessageTokenType.BoundedVariableSizeArray)
+                    {
+                        var parts = nextToken.content.Split('~');
+                        boundDir = parts[0];
+                        arraySize = int.Parse(parts[1]);
+                    }
+                    resolvedType += "[]";
                 }
-
-                return ret + "\n";
             }
-        }
 
-        private string GenerateImports() {
-            string importsStr = "\n\n";
-            if (imports.Count > 0) {
-                foreach (string s in imports)
+            // --- Identifier Declaration ---
+            string identifier = MsgAutoGenUtilities.CheckAndCorrectIdentifier(tokens[++tokenIndex].content, builtInTypeMapping, symbolTable, inFilePath, lineNum, ref warnings);
+            symbolTable[identifier] = resolvedType;
+
+            if (isArray)
+            {
+                arraySizes[identifier] = arraySize;
+                if (!string.IsNullOrEmpty(boundDir))
+                    boundedArraySizeDirection[identifier] = boundDir;
+            }
+
+            // --- Value Declaration ---
+            if (tokenIndex + 1 < tokens.Count)
+            {
+                var nextToken = tokens[tokenIndex + 1];
+                // Constant
+                if (nextToken.type == MessageTokenType.ConstantValueDeclaration)
                 {
-                    importsStr += "using RosSharp.RosBridgeClient.MessageTypes." + s + ";\n";
+                    if (canHaveConstDecl)
+                    {
+                        declaration += "const " + resolvedType + " " + identifier + " = " +
+                            ParseAnyValue(resolvedType, nextToken.content, identifier);
+                        constantValuedIdentifiers.Add(identifier);
+                        tokenIndex++;
+                    }
+                    else
+                    {
+                        throw new MessageParserException(
+                            "Type " + resolvedType +
+                            "' at " + inFilePath + ":" + nextToken.lineNum +
+                            " cannot have constant declaration");
+                    }
                 }
-                importsStr += "\n";
+                // Default
+                else if (nextToken.type == MessageTokenType.DefaultValueDeclaration)
+                {
+                    var value = ParseAnyValue(resolvedType, nextToken.content, identifier);
+                    defaultValuedIdentifiers.Add(identifier);
+                    defaultValues[identifier] = value;
+
+                    // If bounded array, encapsulate with backing field
+                    declaration += !string.IsNullOrEmpty(boundDir) ?
+                        MsgAutoGenUtilities.BoundedArrayEncapsulationBackingField(resolvedType, arraySize, boundDir, identifier, value) :
+                        $"{resolvedType} {identifier} = {value}";
+
+                    tokenIndex++;
+                }
+                // No value declared
+                else
+                {
+                    if (!string.IsNullOrEmpty(boundDir))
+                        declaration += $"{MsgAutoGenUtilities.BoundedArrayEncapsulationBackingField(resolvedType, arraySize, boundDir, identifier)}";
+
+                    else
+                        declaration += $"{resolvedType} {identifier}{MsgAutoGenUtilities.PROPERTY_EXTENSION}\n";
+                }
             }
-            return importsStr;
+            // Last token: No value declaration, just type and identifier.
+            else
+            {
+                declaration += resolvedType + " " + identifier + MsgAutoGenUtilities.PROPERTY_EXTENSION + "\n";
+            }
+            return declaration;
         }
 
-        private string GenerateDefaultValueConstructor() {
-            string constructor = "";
+        #endregion
+        #region VALUE_DECLARATION
+        private string ParseAnyValue(string type, string declaration, string identifier)
+        {
+            string formattedValue;
 
-            constructor += MsgAutoGenUtilities.TWO_TABS + "public " + className + "()\n";
-            constructor += MsgAutoGenUtilities.TWO_TABS + "{\n";
+            // Check for comment, if there is one: split it and keep the value part.
+            var commentSplit = declaration.Split('#', 2);
+            var valueContent = commentSplit[0].Trim();
+            var comment = commentSplit.Length > 1 ? $"//  {commentSplit[1]}" : "";
 
-            foreach (string identifier in symbolTable.Keys) {
-                if (!constants.Contains(identifier)) {
-                    constructor += MsgAutoGenUtilities.TWO_TABS + MsgAutoGenUtilities.ONE_TAB + "this." + identifier + " = ";
-                    string type = symbolTable[identifier];
-                    if (builtInTypesDefaultInitialValues.ContainsKey(type))
-                    {
-                        constructor += builtInTypesDefaultInitialValues[type];
-                    }else if (arraySizes.ContainsKey(identifier))
-                    {
-                        constructor += "new " + type.Remove(type.Length - 1) + arraySizes[identifier] + "]";
-                    }
-                    else {
-                        constructor += "new " + type + "()";
-                    }
-                    constructor += ";\n";
+            // Check if this is a bounded array
+            if (declaration.Contains("["))
+            {
+                string baseType = type.EndsWith("]") ? type[..^2] : type;
+                var parsedElements = valueContent.Trim('[', ']').Split(',').Select(v => ParseSingleValue(baseType, v.Trim()));
+                var arraySize = arraySizes[identifier] > 0 ? arraySizes[identifier] : -1; // -1 = variable size array
+
+                int count = parsedElements.Count();
+                if (boundedArraySizeDirection != null && boundedArraySizeDirection.TryGetValue(identifier, out var direction))
+                {
+                    if ((direction == ">=" && count < arraySize) || (direction == "<=" && count > arraySize))
+                        throw new MessageParserException($"Bounded array '{identifier}' invalid size: requires {direction} {arraySize}, got {count}");
+
+                    // For bounded arrays, use the actual element count for initialization
+                    arraySize = count;
                 }
+                else if (arraySize > 0 && count != arraySize)
+                {
+                    throw new MessageParserException($"Array initializer size mismatch: expected {arraySize}, got {count}");
+                }
+
+                var sizeSpecifier = arraySize == -1 ? "" : arraySize.ToString();
+                formattedValue = $"new {baseType}[{sizeSpecifier}] {{ {string.Join(", ", parsedElements)} }}";
+            }
+            // Otherwise single value
+            else
+            {
+                formattedValue = ParseSingleValue(type, valueContent);
             }
 
-            constructor += MsgAutoGenUtilities.TWO_TABS + "}\n";
-
-            return constructor;
+            return $"{formattedValue};{comment}\n";
         }
+        private string ParseSingleValue(string type, string value)
+        {
+            value = value.Trim();
+            return type switch
+            {
+                "bool" =>
+                    (value.ToLower() == "true" || value.ToLower() == "1") ? "true" :
+                    (value.ToLower() == "false" || value.ToLower() == "0") ? "false" :
+                    throw new MessageParserException($"Invalid bool value: {value}"),
+                "byte" => byte.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "sbyte" => sbyte.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "short" => short.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "ushort" => ushort.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "int" => int.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "uint" => uint.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "long" => long.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "ulong" => ulong.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "float" => float.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "double" => double.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
+                "string" => $"\"{value.Trim('"')}\"",
+                _ => throw new MessageParserException($"Unsupported or invalid constant type: {type}")
+            };
+        }
+        #endregion
+        #region CONSTRUCTORS
+        private string GenerateDefaultValueConstructor()
+        {
+            string constructor = $"{MsgAutoGenUtilities.TWO_TABS}public {className}()\n"
+                               + $"{MsgAutoGenUtilities.TWO_TABS}{{\n";
 
-        private string GenerateParameterizedConstructor() {
+            foreach (string identifier in symbolTable.Keys)
+            {
+                if (constantValuedIdentifiers.Contains(identifier) || defaultValuedIdentifiers.Contains(identifier)) continue;
+
+                constructor += $"{MsgAutoGenUtilities.TWO_TABS}{MsgAutoGenUtilities.ONE_TAB}this.{identifier} = ";
+                string type = symbolTable[identifier];
+
+                if (builtInTypesDefaultInitialValues.TryGetValue(type, out var defaultValue))
+                {
+                    constructor += defaultValue;
+                }
+                else if (arraySizes.TryGetValue(identifier, out var arraySize))
+                {
+                    constructor += $"new {type[..^1]}{arraySize}]";
+                }
+                else
+                {
+                    constructor += $"new {type}()";
+                }
+                constructor += ";\n";
+            }
+            return constructor + $"{MsgAutoGenUtilities.TWO_TABS}}}\n";
+        }
+        private string GenerateParameterizedConstructor()
+        {
             string constructor = "";
-
             string parameters = "";
             string assignments = "";
 
             foreach (string identifier in symbolTable.Keys)
             {
-                if (!constants.Contains(identifier))
-                {
-                    string type = symbolTable[identifier];
-                    parameters += type + " " + identifier + ", ";
-                    assignments += MsgAutoGenUtilities.TWO_TABS + MsgAutoGenUtilities.ONE_TAB + "this." + identifier + " = " + identifier + ";\n";
-                }
+                if (constantValuedIdentifiers.Contains(identifier)) continue;
+
+                parameters += $"{symbolTable[identifier]} {identifier}, ";
+                assignments += $"{MsgAutoGenUtilities.TWO_TABS}{MsgAutoGenUtilities.ONE_TAB}this.{identifier} = {identifier};\n";
             }
 
-            if (!parameters.Equals("")) {
-                parameters = parameters.Substring(0, parameters.Length - 2);
-            }
-            
-            constructor += MsgAutoGenUtilities.TWO_TABS + "public " + className + "(" + parameters + ")\n";
-            constructor += MsgAutoGenUtilities.TWO_TABS + "{\n";
-            constructor += assignments;
-            constructor += MsgAutoGenUtilities.TWO_TABS + "}\n";
+            if (!string.IsNullOrEmpty(parameters))
+                parameters = parameters[..^2]; // Remove trailing comma and space
+
+            constructor += $"{MsgAutoGenUtilities.TWO_TABS}public {className}({parameters})\n"
+                        + $"{MsgAutoGenUtilities.TWO_TABS}{{\n"
+                        + assignments
+                        + $"{MsgAutoGenUtilities.TWO_TABS}}}\n";
 
             return constructor;
         }
-
-        private string MatchByType(MessageTokenType type) {
-            MessageToken token = tokens[0];
-            if (token.type.Equals(type))
-            {
-                tokens.RemoveAt(0);
-                // Update line num
-                if (!IsEmpty()) {
-                    lineNum = tokens[0].lineNum;
-                }
-                return token.content;
-            }
-            else {
-                throw new MessageParserException(
-                    "Unexpected token '" + token.content + 
-                    "' at " + inFilePath + ":" + token.lineNum + 
-                    ". Expecting a token of type " + 
-                    Enum.GetName(typeof(MessageTokenType), token.type));
-            }
-        }
-
-        private MessageToken Peek() {
-            if (IsEmpty()) {
-                return null;
-            }
-            return tokens[0];
-        }
-
-        private bool PeekType(MessageTokenType type) {
-            if (IsEmpty()) {
-                return false;
-            }
-            return tokens[0].type.Equals(type);
-        }
-
-        private void Warn(string msg) {
-            warnings.Add(msg);
-        }
-
-        public List<string> GetWarnings() {
-            return warnings;
-        }
-
-        private bool IsEmpty() {
-            return tokens.Count == 0;
-        }
     }
-
+    #endregion
     public class MessageParserException : Exception
     {
         public MessageParserException(string msg) : base(msg) { }
     }
 }
-

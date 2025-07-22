@@ -11,11 +11,18 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Added package name resolution and imports handling for ROS2 msg interface.
+- Simplified utility methods for string manipulation and formatting.
+- Added encapsulation for bounded variable size arrays with backing fields.
+- Added identifier validation and correction methods, including handling C# keywords and ROS built-in types.
+- Refactored code for better readability and maintainability.
+    © Siemens AG, 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;
-
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace RosSharp.RosBridgeClient.MessageGeneration
 {
@@ -31,10 +38,12 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             " * <https://github.com/siemens/ros-sharp> \n" +
             " */\n";
 
+        // --- Constants for code formatting ---
         public const string ONE_TAB = "    ";
         public const string TWO_TABS = "        ";
         public const string PROPERTY_EXTENSION = " { get; set; }";
-        
+
+        // --- Built-in types mapping and default values ---
         public static readonly Dictionary<string, string> builtInTypesMapping = new Dictionary<string, string>
         {
             {"bool", "bool"},
@@ -54,7 +63,6 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             {"char", "byte"}, // Deprecated alias for uint8 -> byte  in C#
             {"byte", "sbyte"} // Deprecated alias for int8  -> sbyte in C#
         };
-
         public static readonly Dictionary<string, string> builtInTypesDefaultInitialValues = new Dictionary<string, string>
         {
             {"bool", "false"},
@@ -73,15 +81,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             {"Duration", "new Duration()"}
         };
 
-        public static string CapitalizeFirstLetter(string s)
-        {
-            return Char.ToUpper(s[0]) + s.Substring(1);
-        }
-
-        public static string LowerFirstLetter(string s) {
-            return Char.ToLower(s[0]) + s.Substring(1);
-        }
-
+        // --- Utility methods for string manipulation and formatting ---
+        public static string CapitalizeFirstLetter(string s) => Char.ToUpper(s[0]) + s.Substring(1);
+        public static string LowerFirstLetter(string s) => Char.ToLower(s[0]) + s.Substring(1);
         public static string PascalCase(string s)
         {
             string[] words = s.Split('_');
@@ -92,7 +94,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             return String.Join("", words);
 
         }
-
+        #region Package Name/Type Resolution + Imports
+        // --- Resolve package name and handle imports accordingly ---
         public static string ResolvePackageName(string s)
         {
             if (s.Contains("_msgs") || s.Contains("_srvs") || s.Contains("_actions"))
@@ -105,5 +108,130 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             }
             return CapitalizeFirstLetter(s);
         }
+        public static string ResolveType(MessageToken token, ref bool canHaveConstDecl, ref HashSet<string> imports, Dictionary<string, string> builtInTypeMapping)
+        {
+            builtInTypeMapping ??= MsgAutoGenUtilities.builtInTypesMapping;
+
+            if (token.type == MessageTokenType.BuiltInType && builtInTypeMapping.TryGetValue(token.content, out var mapped))
+            {
+                if (mapped != "Time" && mapped != "Duration")
+                    canHaveConstDecl = true; // Time and Duration cannot be constant
+                else
+                    imports.Add("Std");
+
+                return mapped;
+            }
+            else if (token.type == MessageTokenType.DefinedType)
+            {
+                var parts = token.content.Split('/');
+                if (parts.Length == 2)
+                {
+                    imports.Add(MsgAutoGenUtilities.ResolvePackageName(parts[0]));
+                    return parts[1];
+                }
+                return token.content;
+            }
+            else if (token.type == MessageTokenType.Header)
+            {
+                imports.Add("Std");
+                return "Header";
+            }
+            throw new Exception($"Unsupported type token: {token.content}, with token type: {token.type} at line {token.lineNum}");
+        }
+
+        public static string GenerateImports(HashSet<string> imports)
+        {
+            string importsStr = "\n\n";
+            if (imports.Count > 0)
+            {
+                foreach (string s in imports)
+                {
+                    importsStr += "using RosSharp.RosBridgeClient.MessageTypes." + s + ";\n";
+                }
+                importsStr += "\n";
+            }
+            return importsStr;
+        }
+        #endregion
+        // Encapsulate a bounded variable size array with backing field 
+        public static string BoundedArrayEncapsulationBackingField(string type, int arrayLimit, string sizeBound, string identifier, string value = "")
+        {
+            string publicGetSet =
+                $"{type} {identifier}\n"
+              + $"{TWO_TABS}{{\n"
+              + $"{TWO_TABS}{ONE_TAB}get => _{identifier};\n"
+              + $"{TWO_TABS}{ONE_TAB}set => _{identifier} = (value.Length {sizeBound} {arrayLimit}) ? value :\n"
+              + $"{TWO_TABS}{TWO_TABS}throw new System.ArgumentException(\"Array length must be {sizeBound} {arrayLimit}.\");\n"
+              + $"{TWO_TABS}}}\n";
+
+            string privateBackingField = string.IsNullOrEmpty(value) ?
+                $"{TWO_TABS}private {type} _{identifier} = new {type.Remove(type.Length - 1)}{arrayLimit}];\n" :
+                $"{TWO_TABS}private {type} _{identifier} = {value}\n";
+
+            return publicGetSet + privateBackingField;
+        }
+        #region Identifier Validation and Correction
+        // --- Identifier validation and correction ---
+        // Custom CodeDomCheck for Unity & .NET Standard 2.x & .NET (Core)
+        private static readonly HashSet<string> CSharpKeywords = new HashSet<string>
+        {
+            "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue",
+            "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
+            "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock",
+            "long", "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected",
+            "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string",
+            "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort",
+            "using", "virtual", "void", "volatile", "while",
+            // Contextual keywords:
+            "add", "allows", "alias", "and", "ascending", "args", "async", "await", "by", "descending", "dynamic", "equals", "extension",
+            "field", "file", "from", "get", "global", "group", "init", "into", "join", "let", "managed",
+            "nameof", "nint", "not", "notnull", "nuint", "on", "or", "orderby", "partial", "record", "remove", "required",
+            "scoped", "select", "set", "unmanaged", "value", "var", "when", "where", "with", "yield"
+        };
+
+        public static bool IsValidIdentifier(string identifier)
+        {
+            if (CSharpKeywords.Contains(identifier))
+                return false;
+
+            // Check identifier naming rules: 
+            // [a-zA-Z] means the first character must be an underscore () or any uppercase/lowercase English letter (A-Z, a-z).
+            // \w* means zero or more word characters can follow. \w matches any letter (A-Z, a-z), digit (0-9), or underscore (_).
+            var identifierRegex = new Regex(@"^[_a-zA-Z]\w*$");
+
+            return identifierRegex.IsMatch(identifier);
+        }
+
+        public static string CheckAndCorrectIdentifier(string identifier, Dictionary<string, string> builtInTypeMapping, Dictionary<string, string> symbolTable, string inFilePath, uint lineNum, ref List<string> warnings)
+        {
+            // Check for duplicate declaration
+            if (symbolTable.ContainsKey(identifier))
+            {
+                throw new MessageParserException(
+                    "Field '" + identifier +
+                    "' at " + inFilePath + ":" + lineNum +
+                    " already declared!");
+            }
+
+            // Check if identifier is a ROS message built-in type
+            // if (builtInTypeMapping.ContainsKey(identifier) && (identifier.Equals("time") || identifier.Equals("duration")))
+            if (builtInTypeMapping.ContainsKey(identifier) && identifier.Equals("duration"))
+            {
+                throw new MessageParserException(
+                    "Invalid field identifier '" + identifier + "' at " + inFilePath + ":" + lineNum +
+                    ". '" + identifier + "' is a ROS message built-in type.");
+            }
+
+            // Check if identifier is a C# keyword 
+            if (!MsgAutoGenUtilities.IsValidIdentifier(identifier))
+            {
+                warnings.Add(
+                    "'" + identifier + "' is a C# keyword. We have appended \"@\" at the front to avoid C# compile-time issues." +
+                    "(" + inFilePath + ":" + lineNum + ")");
+                return "@" + identifier;
+            }
+            return identifier;
+        }
+        #endregion
     }
 }
