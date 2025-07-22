@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
         //  Informs that a planar table has been detected at a given location
         public Header header { get; set; }
         //  The pose gives you the transform that take you to the coordinate system
-        //  of the table, with the origin somewhere in the table plane and the 
+        //  of the table, with the origin somewhere in the table plane and the
         //  z axis normal to the plane
         public Pose pose { get; set; }
         //  There is no guarantee that the table does NOT extend further than the

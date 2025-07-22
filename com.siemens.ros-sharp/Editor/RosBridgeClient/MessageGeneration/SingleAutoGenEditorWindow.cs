@@ -69,9 +69,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 if (inFilePath.Equals(""))
                 {
                     EditorUtility.DisplayDialog(
-                        title: "Error",
-                        message: "Empty input file path!\nPlease specify input file",
-                        ok: "Bricks without straw");
+                        title: "Input File Path Required",
+                        message: "The input file path is empty. Please specify a valid input file.",
+                        ok: "OK");
                 }
                 else
                 {
@@ -84,9 +84,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                         if (warnings.Count == 0)
                         {
                             EditorUtility.DisplayDialog(
-                                title: "Code Generation Complete",
-                                message: "Output at: " + outFilePath,
-                                ok: "Thank you!");
+                                title: "Code Generation Successful",
+                                message: $"Code generation completed successfully. Output location: {outFilePath}",
+                                ok: "OK");
                         }
                         else
                         {
@@ -95,26 +95,26 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                                 Debug.LogWarning(w);
                             }
                             EditorUtility.DisplayDialog(
-                                title: "Code Generation Complete",
-                                message: "Output at: " + outFilePath + "\nYou have " + warnings.Count + " warning(s)",
-                                ok: "I like to live dangerously");
+                                title: "Code Generation Completed with Warnings",
+                                message: $"Output location: {outFilePath}\n{warnings.Count} warning(s) were generated during code generation. Please check the console for details.",
+                                ok: "OK");
                         }
                     }
                     catch (MessageTokenizerException e)
                     {
                         Debug.LogError(e.ToString() + e.Message);
                         EditorUtility.DisplayDialog(
-                            title: "Message Tokenizer Exception",
-                            message: e.Message,
-                            ok: "Wait. That's illegal");
+                            title: "Message Tokenizer Error",
+                            message: $"A tokenizer error occurred while processing the file:\n{inFilePath}\n\n{e.Message}",
+                            ok: "OK");
                     }
                     catch (MessageParserException e)
                     {
                         Debug.LogError(e.ToString() + e.Message);
                         EditorUtility.DisplayDialog(
-                            title: "Message Parser Exception",
-                            message: e.Message,
-                            ok: "Sorry but you can't ignore errors.");
+                            title: "Message Parser Error",
+                            message: $"A parser error occurred while processing the file:\n{inFilePath}\n\n{e.Message}",
+                            ok: "OK");
                     }
                 }
             }

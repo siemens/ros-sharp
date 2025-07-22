@@ -22,15 +22,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  width fields for the associated image; or height = width = 0
         //  indicates that the full resolution image was captured.
         public uint x_offset { get; set; }
-        //  Leftmost pixel of the ROI
+        // Leftmost pixel of the ROI
         //  (0 if the ROI includes the left edge of the image)
         public uint y_offset { get; set; }
-        //  Topmost pixel of the ROI
+        // Topmost pixel of the ROI
         //  (0 if the ROI includes the top edge of the image)
         public uint height { get; set; }
-        //  Height of ROI
+        // Height of ROI
         public uint width { get; set; }
-        //  Width of ROI
+        // Width of ROI
         //  True if a distinct rectified ROI should be calculated from the "raw"
         //  ROI in this message. Typically this should be False if the full image
         //  is captured (ROI not used), and True if a subwindow is captured (ROI

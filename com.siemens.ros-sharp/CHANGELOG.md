@@ -7,6 +7,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- Unreleased -->
 
+## [2.2.0] - 22.07.2025
+
+### Added
+- **ROS2 Message/Service/Action Generation**: Major refactor and extension of the message auto-generation pipeline to support new ROS2 message, service, and action interface features, including:
+    - Support for default values, bounded variable-size arrays and strings in ROS2 `.msg` files. [For example](https://docs.ros.org/en/foxy/Concepts/About-ROS-Interfaces.html):
+        - `string full_name "John Doe"`
+        - `int32[] samples [-200, -100, 0, 100, 200]`
+        - `int32[<=5] up_to_five_integers_array`
+        - `string<=10 up_to_ten_characters_string`
+    - New token types and parsing logic for ROS2 message syntax.
+    - Improved handling of C# keywords and identifier validation in generated code. Invalid identifiers are added with '`@`' instead of '`_`', eliminating the need for an additional `JsonProperty`.
+    - Note: Bounded strings in bounded variable-size arrays are not supported (`string<=10[<=5] up_to_five_strings_up_to_ten_characters_each` for example). These will be generated as standard string arrays. 
+- **Editor Usability**: Improved error messages, dialog titles, and progress reporting in Unity Editor message generation windows.
+
+### Changed
+- **Refactored Message Parser/Tokenizer**: Message parsing and tokenization logic has been refactored for maintainability, extensibility, and ROS2 compatibility.
+    - All API calls below `Parse()` and `Tokenize()` have changed. `Parse()` and `Tokenize()` have the same definition and functionality, and are backwards compatible.
+    - `MessageTokenizer.cs` now processes messages line by line using regular expressions instead of character by character.
+- **Consistent Constructor Generation**: Parameterized and default constructors in generated message/service/action classes now consistently support new ROS2 features.
+
+### Fixed
+- Some of the auto-generated messages now correctly define ROS2-specific arrays.
+
+### Removed
+- `CodeDomProvider` based identifier validation is no longer supported. 
+
 ## [2.1.1] - 02.06.2025
 
 ### Added

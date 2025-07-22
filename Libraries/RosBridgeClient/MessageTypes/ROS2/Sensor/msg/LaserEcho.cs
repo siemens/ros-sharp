@@ -18,7 +18,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  This message is a submessage of MultiEchoLaserScan and is not intended
         //  to be used separately.
         public float[] echoes { get; set; }
-        //  Multiple values of ranges or intensities.
+        // Multiple values of ranges or intensities.
         //  Each array represents data from the same angle increment.
 
         public LaserEcho()

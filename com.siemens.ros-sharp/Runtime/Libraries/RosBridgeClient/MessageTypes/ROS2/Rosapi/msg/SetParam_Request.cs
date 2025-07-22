@@ -16,18 +16,18 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         public const string RosMessageName = "rosapi_msgs/msg/SetParam_Request";
 
         public string name { get; set; }
-        public string value { get; set; }
+        public string @value { get; set; }
 
         public SetParam_Request()
         {
             this.name = "";
-            this.value = "";
+            this.@value = "";
         }
 
-        public SetParam_Request(string name, string value)
+        public SetParam_Request(string name, string @value)
         {
             this.name = name;
-            this.value = value;
+            this.@value = @value;
         }
     }
 }

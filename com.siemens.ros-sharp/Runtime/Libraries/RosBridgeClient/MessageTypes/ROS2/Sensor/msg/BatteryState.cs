@@ -47,37 +47,37 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const byte POWER_SUPPLY_TECHNOLOGY_LIMN = 6;
         public Header header { get; set; }
         public float voltage { get; set; }
-        //  Voltage in Volts (Mandatory)
+        // Voltage in Volts (Mandatory)
         public float temperature { get; set; }
-        //  Temperature in Degrees Celsius (If unmeasured NaN)
+        // Temperature in Degrees Celsius (If unmeasured NaN)
         public float current { get; set; }
-        //  Negative when discharging (A)  (If unmeasured NaN)
+        // Negative when discharging (A)  (If unmeasured NaN)
         public float charge { get; set; }
-        //  Current charge in Ah  (If unmeasured NaN)
+        // Current charge in Ah  (If unmeasured NaN)
         public float capacity { get; set; }
-        //  Capacity in Ah (last full capacity)  (If unmeasured NaN)
+        // Capacity in Ah (last full capacity)  (If unmeasured NaN)
         public float design_capacity { get; set; }
-        //  Capacity in Ah (design capacity)  (If unmeasured NaN)
+        // Capacity in Ah (design capacity)  (If unmeasured NaN)
         public float percentage { get; set; }
-        //  Charge percentage on 0 to 1 range  (If unmeasured NaN)
+        // Charge percentage on 0 to 1 range  (If unmeasured NaN)
         public byte power_supply_status { get; set; }
-        //  The charging status as reported. Values defined above
+        // The charging status as reported. Values defined above
         public byte power_supply_health { get; set; }
-        //  The battery health metric. Values defined above
+        // The battery health metric. Values defined above
         public byte power_supply_technology { get; set; }
-        //  The battery chemistry. Values defined above
+        // The battery chemistry. Values defined above
         public bool present { get; set; }
-        //  True if the battery is present
+        // True if the battery is present
         public float[] cell_voltage { get; set; }
-        //  An array of individual cell voltages for each cell in the pack
+        // An array of individual cell voltages for each cell in the pack
         //  If individual voltages unknown but number of cells known set each to NaN
         public float[] cell_temperature { get; set; }
-        //  An array of individual cell temperatures for each cell in the pack
+        // An array of individual cell temperatures for each cell in the pack
         //  If individual temperatures unknown but number of cells known set each to NaN
         public string location { get; set; }
-        //  The location into which the battery is inserted. (slot number or plug)
+        // The location into which the battery is inserted. (slot number or plug)
         public string serial_number { get; set; }
-        //  The best approximation of the battery serial number
+        // The best approximation of the battery serial number
 
         public BatteryState()
         {

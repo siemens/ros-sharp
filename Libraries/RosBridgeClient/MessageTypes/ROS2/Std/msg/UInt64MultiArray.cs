@@ -22,9 +22,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         //  Please look at the MultiArrayLayout message definition for
         //  documentation on all multiarrays.
         public MultiArrayLayout layout { get; set; }
-        //  specification of data layout
+        // specification of data layout
         public ulong[] data { get; set; }
-        //  array of data
+        // array of data
 
         public UInt64MultiArray()
         {

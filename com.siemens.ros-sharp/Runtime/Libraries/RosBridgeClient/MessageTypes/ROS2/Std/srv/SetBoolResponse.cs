@@ -16,9 +16,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         public const string RosMessageName = "std_srvs/srv/SetBool";
 
         public bool success { get; set; }
-        //  indicate successful run of triggered service
+        // indicate successful run of triggered service
         public string message { get; set; }
-        //  informational, e.g. for error messages
+        // informational, e.g. for error messages
 
         public SetBoolResponse()
         {

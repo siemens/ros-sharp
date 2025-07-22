@@ -23,12 +23,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         // 
         //  This message is not appropriate for force/pressure contact sensors.
         public Header header { get; set; }
-        //  timestamp of the measurement
+        // timestamp of the measurement
         //  frame_id is the location of the pressure sensor
         public double fluid_pressure { get; set; }
-        //  Absolute pressure reading in Pascals.
+        // Absolute pressure reading in Pascals.
         public double variance { get; set; }
-        //  0 is interpreted as variance unknown
+        // 0 is interpreted as variance unknown
 
         public FluidPressure()
         {

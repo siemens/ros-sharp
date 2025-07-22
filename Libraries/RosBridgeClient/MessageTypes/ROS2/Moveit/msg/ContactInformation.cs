@@ -18,8 +18,8 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
     {
         public const string RosMessageName = "moveit_msgs/msg/ContactInformation";
 
-        //  Standard ROS header contains information 
-        //  about the frame in which this 
+        //  Standard ROS header contains information
+        //  about the frame in which this
         //  contact is specified
         public Header header { get; set; }
         //  Position of the contact point

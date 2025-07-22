@@ -23,35 +23,35 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  array), please find or create a different message, since applications
         //  will make fairly laser-specific assumptions about this data
         public Header header { get; set; }
-        //  timestamp in the header is the acquisition time of
+        // timestamp in the header is the acquisition time of
         //  the first ray in the scan.
         // 
         //  in frame frame_id, angles are measured around
         //  the positive Z axis (counterclockwise, if Z is up)
         //  with zero angle being forward along the x axis
         public float angle_min { get; set; }
-        //  start angle of the scan [rad]
+        // start angle of the scan [rad]
         public float angle_max { get; set; }
-        //  end angle of the scan [rad]
+        // end angle of the scan [rad]
         public float angle_increment { get; set; }
-        //  angular distance between measurements [rad]
+        // angular distance between measurements [rad]
         public float time_increment { get; set; }
-        //  time between measurements [seconds] - if your scanner
+        // time between measurements [seconds] - if your scanner
         //  is moving, this will be used in interpolating position
         //  of 3d points
         public float scan_time { get; set; }
-        //  time between scans [seconds]
+        // time between scans [seconds]
         public float range_min { get; set; }
-        //  minimum range value [m]
+        // minimum range value [m]
         public float range_max { get; set; }
-        //  maximum range value [m]
+        // maximum range value [m]
         public LaserEcho[] ranges { get; set; }
-        //  range data [m]
+        // range data [m]
         //  (Note: NaNs, values < range_min or > range_max should be discarded)
         //  +Inf measurements are out of range
         //  -Inf measurements are too close to determine exact distance.
         public LaserEcho[] intensities { get; set; }
-        //  intensity data [device-specific units].  If your
+        // intensity data [device-specific units].  If your
         //  device does not provide intensities, please leave
         //  the array empty.
 

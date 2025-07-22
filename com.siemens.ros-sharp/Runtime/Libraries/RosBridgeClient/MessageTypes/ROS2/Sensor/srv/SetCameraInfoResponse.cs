@@ -16,9 +16,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const string RosMessageName = "sensor_msgs/srv/SetCameraInfo";
 
         public bool success { get; set; }
-        //  True if the call succeeded
+        // True if the call succeeded
         public string status_message { get; set; }
-        //  Used to give details about success
+        // Used to give details about success
 
         public SetCameraInfoResponse()
         {

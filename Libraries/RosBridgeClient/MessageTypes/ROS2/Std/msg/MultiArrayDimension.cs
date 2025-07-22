@@ -20,11 +20,11 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         //  It is recommended to create your own semantically meaningful message.
         //  However if you would like to continue using this please use the equivalent in example_msgs.
         public string label { get; set; }
-        //  label of given dimension
+        // label of given dimension
         public uint size { get; set; }
-        //  size of given dimension (in type units)
+        // size of given dimension (in type units)
         public uint stride { get; set; }
-        //  stride of given dimension
+        // stride of given dimension
 
         public MultiArrayDimension()
         {

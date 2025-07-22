@@ -30,9 +30,10 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
     public class ActionAutoGen
     {
         public static bool isRos2 = true;
-        private static readonly string[] types = {"Goal", "Result", "Feedback"};
+        private static readonly string[] types = { "Goal", "Result", "Feedback" };
 
-        public static List<string> GenerateSingleAction(string inPath, string outPath, string rosPackageName = "", bool verbose = false) {
+        public static List<string> GenerateSingleAction(string inPath, string outPath, string rosPackageName = "", bool verbose = false)
+        {
             // If no ROS package name is provided, extract from path
             if (rosPackageName.Equals(""))
             {
@@ -62,7 +63,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             ActionWrapper actionWrapper = new ActionWrapper(inPath, rosPackageName, outPath);
 
-            for (int i = 0; i < listsOfTokens.Count; i++) {
+            for (int i = 0; i < listsOfTokens.Count; i++)
+            {
                 List<MessageToken> tokens = listsOfTokens[i];
 
                 // Action is made up of goal, result, feedback
@@ -71,7 +73,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 // Parse and generate goal, result, feedback messages
                 MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "action", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className, className, isRos2: isRos2);
                 parser.Parse();
-                warnings.AddRange(parser.GetWarnings());
+                warnings.AddRange(parser.warnings);
 
                 // Generate action section wrapper messages
                 actionWrapper.WrapActionSections(types[i]);
@@ -140,7 +142,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
         }
     }
 
-    public class ActionWrapper {
+    public class ActionWrapper
+    {
 
         private const string ONE_TAB = "    ";
         private const string TWO_TABS = "        ";
@@ -154,7 +157,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
         private Dictionary<string, string> symbolTable;
 
-        public ActionWrapper(string inPath, string rosPackageName, string outPath) {
+        public ActionWrapper(string inPath, string rosPackageName, string outPath)
+        {
             this.inPath = inPath;
             this.inFileName = Path.GetFileNameWithoutExtension(inPath);
             this.rosPackageName = rosPackageName;
@@ -210,7 +214,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
             if (ActionAutoGen.isRos2)
             {
-                if (msgType.Equals("Goal")) 
+                if (msgType.Equals("Goal"))
                 {
                     paramsIn += "Header header, GoalInfo goalInfo, ";
                     paramsOut += "header, goalInfo";
@@ -334,7 +338,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 // Write class declaration
                 writer.Write(
-                    ONE_TAB + "public class " + wrapperName + " : Action" + type + "<" + inFileName + type +  ">\n" +
+                    ONE_TAB + "public class " + wrapperName + " : Action" + type + "<" + inFileName + type + ">\n" +
                     ONE_TAB + "{\n"
                     );
 
@@ -417,7 +421,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     inFileName + "Feedback"
                 };
                 writer.Write(
-                    ONE_TAB + "public class " + wrapperName + " : Action<" + string.Join(", ", genericParams) +  ">\n" +
+                    ONE_TAB + "public class " + wrapperName + " : Action<" + string.Join(", ", genericParams) + ">\n" +
                     ONE_TAB + "{\n"
                     );
 
@@ -425,7 +429,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 if (ActionAutoGen.isRos2)
                 {
                     writer.Write(
-                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + "action" + "/" 
+                        TWO_TABS + "public const string RosMessageName = \"" + rosPackageName + "/" + "action" + "/"
                         + wrapperName + "\";\n");
                 }
                 else

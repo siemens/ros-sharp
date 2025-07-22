@@ -58,9 +58,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 if (inPath.Equals(""))
                 {
                     EditorUtility.DisplayDialog(
-                        title: "Error",
-                        message: "Empty input path!\nPlease specify input path",
-                        ok: "Bricks without straw");
+                        title: "Input Path Required",
+                        message: "The input path is empty. Please specify a valid input directory.",
+                        ok: "OK");
                 }
                 else
                 {
@@ -73,9 +73,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                         if (files.Length == 0)
                         {
                             EditorUtility.DisplayDialog(
-                                title: "No " + GenerationType + " files found!",
-                                message: "No " + GenerationType + " files found!",
-                                ok: "Bricks without straw");
+                                title: "No Files Found",
+                                message: $"No {GenerationType} files were found in the specified directory.",
+                                ok: "OK");
                             Reset();
                         }
                         else
@@ -88,8 +88,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                                 try
                                 {
                                     EditorUtility.DisplayProgressBar(
-                                        "Working...(" + (i + 1) + "/" + files.Length + ") Checkout xkcd.com/303",
-                                        "Parsing " + file,
+                                        $"Processing {GenerationType} Files ({i + 1}/{files.Length})",
+                                        $"Parsing: {file}",
                                         (i + 1) / (float)files.Length);
                                     warnings.AddRange(Generate(file, outPath, toggleROS2, rosPackageName));
                                 }
@@ -97,17 +97,17 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                                 {
                                     Debug.LogError(e.ToString() + e.Message);
                                     EditorUtility.DisplayDialog(
-                                        title: "Message Tokenizer Exception",
-                                        message: e.Message,
-                                        ok: "Wait. That's illegal");
+                                        title: "Message Tokenizer Error",
+                                        message: $"A tokenizer error occurred while processing the file:\n{file}\n\n{e.Message}",
+                                        ok: "OK");
                                 }
                                 catch (MessageParserException e)
                                 {
                                     Debug.LogError(e.ToString() + e.Message);
                                     EditorUtility.DisplayDialog(
-                                        title: "Message Parser Exception",
-                                        message: e.Message,
-                                        ok: "Sorry but you can't ignore errors.");
+                                        title: "Message Parser Error",
+                                        message: $"A parser error occurred while processing the file:\n{file}\n\n{e.Message}",
+                                        ok: "OK");
                                 }
                             }
                             // Done
@@ -116,9 +116,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                             if (warnings.Count > 0)
                             {
                                 EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPath + "\nYou have " + warnings.Count + " warning(s)",
-                                    ok: "I like to live dangerously");
+                                    title: "Code Generation Completed with Warnings",
+                                    message: $"Output location: {outPath}\n{warnings.Count} warning(s) were generated during code generation. Please check the console for details.",
+                                    ok: "OK");
                                 foreach (string w in warnings)
                                 {
                                     Debug.LogWarning(w);
@@ -127,9 +127,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                             else
                             {
                                 EditorUtility.DisplayDialog(
-                                    title: "Code Generation Complete",
-                                    message: "Output at: " + outPath,
-                                    ok: "Thank you!");
+                                    title: "Code Generation Successful",
+                                    message: $"Code generation completed successfully. Output location: {outPath}",
+                                    ok: "OK");
                             }
                             Reset();
                         }
@@ -137,9 +137,9 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                     catch (DirectoryNotFoundException e)
                     {
                         EditorUtility.DisplayDialog(
-                            title: "Folder not found",
-                            message: e.Message,
-                            ok: "Bricks without straw");
+                            title: "Directory Not Found",
+                            message: $"The specified directory could not be found.\n\n{e.Message}",
+                            ok: "OK");
                         Reset();
                     }
                 }

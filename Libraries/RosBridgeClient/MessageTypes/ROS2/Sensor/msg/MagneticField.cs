@@ -27,17 +27,17 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  and to use the data a covariance will have to be assumed or gotten from some
         //  other source.
         public Header header { get; set; }
-        //  timestamp is the time the
+        // timestamp is the time the
         //  field was measured
         //  frame_id is the location and orientation
         //  of the field measurement
         public Vector3 magnetic_field { get; set; }
-        //  x, y, and z components of the
+        // x, y, and z components of the
         //  field vector in Tesla
         //  If your sensor does not output 3 axes,
         //  put NaNs in the components not reported.
         public double[] magnetic_field_covariance { get; set; }
-        //  Row major about x, y, z axes
+        // Row major about x, y, z axes
         //  0 is interpreted as variance unknown
 
         public MagneticField()

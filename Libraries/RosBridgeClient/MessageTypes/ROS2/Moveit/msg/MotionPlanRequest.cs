@@ -60,7 +60,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  These fields require the following planning request adapter: default_planner_request_adapters/SetMaxCartesianEndEffectorSpeed
         public string cartesian_speed_end_effector_link { get; set; }
         public double max_cartesian_speed { get; set; }
-        //  m/s
+        // m/s
 
         public MotionPlanRequest()
         {

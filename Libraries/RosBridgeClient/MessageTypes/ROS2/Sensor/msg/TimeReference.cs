@@ -20,12 +20,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
         //  Measurement from an external time source not actively synchronized with the system clock.
         public Header header { get; set; }
-        //  stamp is system time for which measurement was valid
+        // stamp is system time for which measurement was valid
         //  frame_id is not used
         public Time time_ref { get; set; }
-        //  corresponding time from this external source
+        // corresponding time from this external source
         public string source { get; set; }
-        //  (optional) name of time source
+        // (optional) name of time source
 
         public TimeReference()
         {

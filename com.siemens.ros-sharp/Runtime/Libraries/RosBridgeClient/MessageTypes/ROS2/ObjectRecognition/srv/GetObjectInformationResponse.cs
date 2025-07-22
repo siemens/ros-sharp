@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.ObjectRecognition
     {
         public const string RosMessageName = "object_recognition_msgs/srv/GetObjectInformation";
 
-        //  Extra object info 
+        //  Extra object info
         public ObjectInformation information { get; set; }
 
         public GetObjectInformationResponse()

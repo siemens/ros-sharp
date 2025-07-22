@@ -43,9 +43,9 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         // 
         //  multiarray(i,j,k) refers to the ith row, jth column, and kth channel.
         public MultiArrayDimension[] dim { get; set; }
-        //  Array of dimension properties
+        // Array of dimension properties
         public uint data_offset { get; set; }
-        //  padding bytes at front of data
+        // padding bytes at front of data
 
         public MultiArrayLayout()
         {

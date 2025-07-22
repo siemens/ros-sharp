@@ -18,7 +18,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public const string RosMessageName = "moveit_msgs/srv/GetPositionFK";
 
         //  A service definition for a standard forward kinematics service
-        //  The frame_id in the header message is the frame in which 
+        //  The frame_id in the header message is the frame in which
         //  the forward kinematics poses will be returned
         public Header header { get; set; }
         //  A vector of link name for which forward kinematics must be computed
