@@ -1,0 +1,4 @@
+*.cs text eol=crlf
+*.csproj text eol=crlf
+Libraries/RosBridgeClient/MessageTypes/** text eol=lf
+com.siemens.ros-sharp/Runtime/Libraries/RosBridgeClient/MessageTypes/** text eol=lf
