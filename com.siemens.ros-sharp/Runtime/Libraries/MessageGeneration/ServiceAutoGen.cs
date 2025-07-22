@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
     public class ServiceAutoGen
     {
         public static bool isRos2 = true;
-        private static readonly string[] types = {"Request", "Response"};
+        private static readonly string[] types = { "Request", "Response" };
 
         public static List<string> GenerateSingleService(string inPath, string outPath, string rosPackageName = "", bool verbose = false)
         {
@@ -63,12 +63,13 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
 
                 MessageParser parser = new MessageParser(tokens, outPath, rosPackageName, "srv", MsgAutoGenUtilities.builtInTypesMapping, MsgAutoGenUtilities.builtInTypesDefaultInitialValues, className, isRos2: isRos2);
                 parser.Parse();
-                warnings.AddRange(parser.GetWarnings());
+                warnings.AddRange(parser.warnings);
             }
             return warnings;
         }
 
-        public static List<string> GeneratePackageServices(string inPath, string outPath, string rosPackageName = "", bool verbose = false) {
+        public static List<string> GeneratePackageServices(string inPath, string outPath, string rosPackageName = "", bool verbose = false)
+        {
             List<string> warnings = new List<string>();
 
             string[] files = Directory.GetFiles(Path.Combine(inPath, "srv"), "*.srv");
@@ -78,7 +79,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 Console.Error.WriteLine("No service files found!");
                 return warnings;
             }
-            else {
+            else
+            {
                 if (verbose)
                 {
                     Console.WriteLine("Found " + files.Length + " service files.");
@@ -92,7 +94,8 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             return warnings;
         }
 
-        public static List<string> GenerateDirectoryServices(string inPath, string outPath, bool verbose = false) {
+        public static List<string> GenerateDirectoryServices(string inPath, string outPath, bool verbose = false)
+        {
             List<string> warnings = new List<string>();
 
             if (inPath.EndsWith("/") || inPath.EndsWith("\\"))
