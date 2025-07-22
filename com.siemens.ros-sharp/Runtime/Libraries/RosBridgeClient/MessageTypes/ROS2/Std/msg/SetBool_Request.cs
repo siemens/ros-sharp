@@ -16,7 +16,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Std
         public const string RosMessageName = "std_srvs/msg/SetBool_Request";
 
         public bool data { get; set; }
-        //  e.g. for hardware enabling / disabling
+        // e.g. for hardware enabling / disabling
 
         public SetBool_Request()
         {

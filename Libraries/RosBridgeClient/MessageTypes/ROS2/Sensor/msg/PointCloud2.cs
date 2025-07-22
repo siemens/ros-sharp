@@ -34,15 +34,15 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  Describes the channels and their layout in the binary data blob.
         public PointField[] fields { get; set; }
         public bool is_bigendian { get; set; }
-        //  Is this data bigendian?
+        // Is this data bigendian?
         public uint point_step { get; set; }
-        //  Length of a point in bytes
+        // Length of a point in bytes
         public uint row_step { get; set; }
-        //  Length of a row in bytes
+        // Length of a row in bytes
         public byte[] data { get; set; }
-        //  Actual point data, size is (row_step*height)
+        // Actual point data, size is (row_step*height)
         public bool is_dense { get; set; }
-        //  True if there are no invalid points
+        // True if there are no invalid points
 
         public PointCloud2()
         {

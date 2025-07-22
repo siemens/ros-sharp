@@ -20,16 +20,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  Whether to output an augmented fix is determined by both the fix
         //  type and the last time differential corrections were received.  A
         //  fix is valid when status >= STATUS_FIX.
-        public const sbyte STATUS_NO_FIX = -1; //  unable to fix position
-        public const sbyte STATUS_FIX = 0; //  unaugmented fix
-        public const sbyte STATUS_SBAS_FIX = 1; //  with satellite-based augmentation
-        public const sbyte STATUS_GBAS_FIX = 2; //  with ground-based augmentation
+        public const sbyte STATUS_NO_FIX = -1;
+        // unable to fix position
+        public const sbyte STATUS_FIX = 0;
+        // unaugmented fix
+        public const sbyte STATUS_SBAS_FIX = 1;
+        // with satellite-based augmentation
+        public const sbyte STATUS_GBAS_FIX = 2;
+        // with ground-based augmentation
         public sbyte status { get; set; }
         //  Bits defining which Global Navigation Satellite System signals were
         //  used by the receiver.
         public const ushort SERVICE_GPS = 1;
         public const ushort SERVICE_GLONASS = 2;
-        public const ushort SERVICE_COMPASS = 4; //  includes BeiDou.
+        public const ushort SERVICE_COMPASS = 4;
+        // includes BeiDou.
         public const ushort SERVICE_GALILEO = 8;
         public ushort service { get; set; }
 

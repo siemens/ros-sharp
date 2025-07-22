@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  Name of planning config
         public string planner_config { get; set; }
         //  Optional name of planning group (set global defaults if empty)
-        public string group { get; set; }
+        public string @group { get; set; }
         //  parameters as key-value pairs
         public PlannerParams @params { get; set; }
         //  replace params or augment existing ones?
@@ -30,16 +30,16 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         {
             this.pipeline_id = "";
             this.planner_config = "";
-            this.group = "";
+            this.@group = "";
             this.@params = new PlannerParams();
             this.replace = false;
         }
 
-        public SetPlannerParams_Request(string pipeline_id, string planner_config, string group, PlannerParams @params, bool replace)
+        public SetPlannerParams_Request(string pipeline_id, string planner_config, string @group, PlannerParams @params, bool replace)
         {
             this.pipeline_id = pipeline_id;
             this.planner_config = planner_config;
-            this.group = group;
+            this.@group = @group;
             this.@params = @params;
             this.replace = replace;
         }

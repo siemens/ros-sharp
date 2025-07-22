@@ -21,12 +21,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Nav
         public Header header { get; set; }
         //  MetaData for the map
         public MapMetaData info { get; set; }
-        //  The map data, in row-major order, starting with (0,0). 
-        //  Cell (1, 0) will be listed second, representing the next cell in the x direction. 
+        //  The map data, in row-major order, starting with (0,0).
+        //  Cell (1, 0) will be listed second, representing the next cell in the x direction.
         //  Cell (0, 1) will be at the index equal to info.width, followed by (1, 1).
-        //  The values inside are application dependent, but frequently, 
+        //  The values inside are application dependent, but frequently,
         //  0 represents unoccupied, 1 represents definitely occupied, and
-        //  -1 represents unknown. 
+        //  -1 represents unknown.
         public sbyte[] data { get; set; }
 
         public OccupancyGrid()

@@ -31,12 +31,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //   - Luminance (nits/light output per area)
         //   - Irradiance (watt/area), etc.
         public Header header { get; set; }
-        //  timestamp is the time the illuminance was measured
+        // timestamp is the time the illuminance was measured
         //  frame_id is the location and direction of the reading
         public double illuminance { get; set; }
-        //  Measurement of the Photometric Illuminance in Lux.
+        // Measurement of the Photometric Illuminance in Lux.
         public double variance { get; set; }
-        //  0 is interpreted as variance unknown
+        // 0 is interpreted as variance unknown
 
         public Illuminance()
         {

@@ -34,13 +34,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public Header header { get; set; }
         public Quaternion orientation { get; set; }
         public double[] orientation_covariance { get; set; }
-        //  Row major about x, y, z axes
+        // Row major about x, y, z axes
         public Vector3 angular_velocity { get; set; }
         public double[] angular_velocity_covariance { get; set; }
-        //  Row major about x, y, z axes
+        // Row major about x, y, z axes
         public Vector3 linear_acceleration { get; set; }
         public double[] linear_acceleration_covariance { get; set; }
-        //  Row major x, y z
+        // Row major x, y z
 
         public Imu()
         {

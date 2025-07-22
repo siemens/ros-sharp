@@ -19,12 +19,12 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
 
         //  Single temperature reading.
         public Header header { get; set; }
-        //  timestamp is the time the temperature was measured
+        // timestamp is the time the temperature was measured
         //  frame_id is the location of the temperature reading
         public double temperature { get; set; }
-        //  Measurement of the Temperature in Degrees Celsius.
+        // Measurement of the Temperature in Degrees Celsius.
         public double variance { get; set; }
-        //  0 is interpreted as variance unknown.
+        // 0 is interpreted as variance unknown.
 
         public Temperature()
         {

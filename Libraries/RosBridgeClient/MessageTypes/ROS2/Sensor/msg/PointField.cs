@@ -27,13 +27,13 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         public const byte FLOAT64 = 8;
         //  Common PointField names are x, y, z, intensity, rgb, rgba
         public string name { get; set; }
-        //  Name of field
+        // Name of field
         public uint offset { get; set; }
-        //  Offset from start of point struct
+        // Offset from start of point struct
         public byte datatype { get; set; }
-        //  Datatype enumeration, see above
+        // Datatype enumeration, see above
         public uint count { get; set; }
-        //  How many elements in the field
+        // How many elements in the field
 
         public PointField()
         {

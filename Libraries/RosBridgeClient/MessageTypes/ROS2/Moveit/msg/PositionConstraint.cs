@@ -24,7 +24,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public string link_name { get; set; }
         //  The offset (in the link frame) for the target point on the link we are planning for
         public Vector3 target_point_offset { get; set; }
-        //  The volume this constraint refers to 
+        //  The volume this constraint refers to
         public BoundingVolume constraint_region { get; set; }
         //  A weighting factor for this constraint (denotes relative importance to other constraints. Closer to zero means less important)
         public double weight { get; set; }

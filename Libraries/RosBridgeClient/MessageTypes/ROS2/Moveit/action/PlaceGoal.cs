@@ -22,7 +22,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public string attached_object_name { get; set; }
         //  a list of possible transformations for placing the object
         public PlaceLocation[] place_locations { get; set; }
-        //  if the user prefers setting the eef pose (same as in pick) rather than 
+        //  if the user prefers setting the eef pose (same as in pick) rather than
         //  the location of the object, this flag should be set to true
         public bool place_eef { get; set; }
         //  the name that the support surface (e.g. table) has in the collision world

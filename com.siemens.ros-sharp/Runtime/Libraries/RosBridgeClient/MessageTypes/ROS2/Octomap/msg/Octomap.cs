@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Octomap
         public Header header { get; set; }
         //  Flag to denote a binary (only free/occupied) or full occupancy octree (.bt/.ot file)
         public bool binary { get; set; }
-        //  Class id of the contained octree 
+        //  Class id of the contained octree
         public string id { get; set; }
         //  Resolution (in m) of the smallest octree nodes
         public double resolution { get; set; }

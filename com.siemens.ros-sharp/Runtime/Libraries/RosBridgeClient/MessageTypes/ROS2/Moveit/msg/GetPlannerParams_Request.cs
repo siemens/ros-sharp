@@ -20,20 +20,20 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         //  Name of planning config
         public string planner_config { get; set; }
         //  Optional name of planning group (return global defaults if empty)
-        public string group { get; set; }
+        public string @group { get; set; }
 
         public GetPlannerParams_Request()
         {
             this.pipeline_id = "";
             this.planner_config = "";
-            this.group = "";
+            this.@group = "";
         }
 
-        public GetPlannerParams_Request(string pipeline_id, string planner_config, string group)
+        public GetPlannerParams_Request(string pipeline_id, string planner_config, string @group)
         {
             this.pipeline_id = pipeline_id;
             this.planner_config = planner_config;
-            this.group = group;
+            this.@group = @group;
         }
     }
 }

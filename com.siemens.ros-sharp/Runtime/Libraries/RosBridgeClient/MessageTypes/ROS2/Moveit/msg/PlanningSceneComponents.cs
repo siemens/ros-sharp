@@ -28,7 +28,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Moveit
         public const uint WORLD_OBJECT_NAMES = 8;
         //  The geometry of the world objects
         public const uint WORLD_OBJECT_GEOMETRY = 16;
-        //  The maintained octomap 
+        //  The maintained octomap
         public const uint OCTOMAP = 32;
         //  The maintained list of transforms
         public const uint TRANSFORMS = 64;

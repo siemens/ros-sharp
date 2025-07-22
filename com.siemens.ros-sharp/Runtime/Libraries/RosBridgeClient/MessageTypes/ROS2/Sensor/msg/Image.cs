@@ -20,7 +20,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  This message contains an uncompressed image
         //  (0, 0) is at top-left corner of image
         public Header header { get; set; }
-        //  Header timestamp should be acquisition time of image
+        // Header timestamp should be acquisition time of image
         //  Header frame_id should be optical frame of camera
         //  origin of frame should be optical center of cameara
         //  +x should point to the right in the image
@@ -30,21 +30,21 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  message associated with the image conflict
         //  the behavior is undefined
         public uint height { get; set; }
-        //  image height, that is, number of rows
+        // image height, that is, number of rows
         public uint width { get; set; }
-        //  image width, that is, number of columns
+        // image width, that is, number of columns
         //  The legal values for encoding are in file src/image_encodings.cpp
         //  If you want to standardize a new string format, join
         //  ros-users@lists.ros.org and send an email proposing a new encoding.
         public string encoding { get; set; }
-        //  Encoding of pixels -- channel meaning, ordering, size
+        // Encoding of pixels -- channel meaning, ordering, size
         //  taken from the list of strings in include/sensor_msgs/image_encodings.hpp
         public byte is_bigendian { get; set; }
-        //  is this data bigendian?
+        // is this data bigendian?
         public uint step { get; set; }
-        //  Full row length in bytes
+        // Full row length in bytes
         public byte[] data { get; set; }
-        //  actual matrix data, size is (step * rows)
+        // actual matrix data, size is (step * rows)
 
         public Image()
         {

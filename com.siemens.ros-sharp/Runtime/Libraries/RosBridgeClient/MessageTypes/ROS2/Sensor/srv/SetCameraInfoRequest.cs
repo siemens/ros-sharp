@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Sensor
         //  will assume that the region of the imager that is being referred to is
         //  the region that the camera is currently capturing.
         public CameraInfo camera_info { get; set; }
-        //  The camera_info to store
+        // The camera_info to store
 
         public SetCameraInfoRequest()
         {
