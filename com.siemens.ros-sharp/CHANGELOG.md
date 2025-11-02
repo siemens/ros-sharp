@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- Unreleased -->
 
+## [2.2.1] - 02.11.2025
+- **ROS2 Quaternion parsing fix**: Properly parse Quaternion data stream on Unity side when using ROS2 client. The older method was using member variable instead of member function for respective components, which broke the json parsing pipeline. Using getter/setter method seems to fix this behaviour.
+
 ## [2.2.0] - 22.07.2025
 
 ### Added
