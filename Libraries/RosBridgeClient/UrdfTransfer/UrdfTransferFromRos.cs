@@ -26,6 +26,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using file_server = RosSharp.RosBridgeClient.MessageTypes.FileServer;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
@@ -85,7 +86,8 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         }
         private void ReceiveRobotName(object serviceResponse)
         {
-            RobotName = FormatTextFileContents(((rosapi.GetParamResponse)serviceResponse).value);
+            string raw = FormatTextFileContents(((rosapi.GetParamResponse)serviceResponse).value);
+            RobotName = Regex.Replace(raw, @"[^a-zA-Z0-9_\-]", "_");
             Status["robotNameReceived"].Set();
         }
 
@@ -178,16 +180,25 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private void WriteBinaryResponseToFile(string relativeLocalFilename, byte[] fileContents)
         {
-            string filename = LocalUrdfDirectory + relativeLocalFilename;
+            string filename = SafeLocalPath(relativeLocalFilename);
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllBytes(filename, fileContents);
         }
 
         private void WriteTextFile(string relativeLocalFilename, string fileContents)
         {
-            string filename = LocalUrdfDirectory + relativeLocalFilename;
+            string filename = SafeLocalPath(relativeLocalFilename);
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             File.WriteAllText(filename, fileContents);
+        }
+
+        private string SafeLocalPath(string relativeLocalFilename)
+        {
+            string basePath = Path.GetFullPath(LocalUrdfDirectory);
+            string candidate = Path.GetFullPath(Path.Combine(basePath, relativeLocalFilename.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)));
+            if (!candidate.StartsWith(basePath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                throw new UnauthorizedAccessException("Path escapes the allowed directory: " + candidate);
+            return candidate;
         }
 
         private static string GetLocalFilename(Uri resourceFilePath)
