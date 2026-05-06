@@ -69,14 +69,20 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         public override async void Transfer()
         {
-            // Publish robot name param
-            await Task.Run(() => RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>(
-                "/rosapi/set_param",
-                SetRobotNameHandler,
-                new rosapi.SetParamRequest(JsonSerializer.Serialize(robotNameParameter), JsonSerializer.Serialize("RobotName"))));
+            _ = Task.Run(async () =>
+            {
+                // Publish robot name param
+                await Task.Run(() =>
+                {
+                    RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>(
+                        "/rosapi/set_param",
+                        SetRobotNameHandler,
+                        new rosapi.SetParamRequest(JsonSerializer.Serialize(robotNameParameter), JsonSerializer.Serialize("RobotName")));
+                });
 
-            await PublishRobotDescription();
-            await PublishResourceFiles();
+                await PublishRobotDescription();
+                await PublishResourceFiles();
+            });
         }
 
         private async Task PublishRobotDescription()
