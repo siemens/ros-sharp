@@ -53,7 +53,7 @@
 			<PackagePath>\images\</PackagePath>
 		</None>
 	</ItemGroup>
-	
+
 	<Target Name="CopyToCombinedOutput" AfterTargets="Publish">
 		<!-- Copy the new DLLs to the combined output folder -->
 		<ItemGroup>
