@@ -42,6 +42,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>images/RosSharpLogoNuget.png</PackageIcon>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -69,7 +70,7 @@
     <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
   </Target> -->
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'net8.0'"> 
     <Exec Condition="'$(OS)' == 'Windows_NT'"  
       Command="powershell.exe -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)/../PostBuildEvents/UpdateUPM_Win.ps1&quot;" />
 
