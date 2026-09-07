@@ -13,6 +13,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Sanitized robot name to prevent invalid characters in URDF file.
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System.Collections.Generic;
@@ -40,7 +43,7 @@ namespace RosSharp.Urdf
             this.filename = filename;
             XDocument xdoc = XDocument.Load(filename);
             XElement node = xdoc.Element("robot");
-            name = node.Attribute("name").Value;
+            name = SanitizeRobotName(node.Attribute("name").Value);
 
             materials = ReadMaterials(node);
             links = ReadLinks(node); 
@@ -60,7 +63,7 @@ namespace RosSharp.Urdf
         public Robot(string filename, string name)
         {
             this.filename = filename;
-            this.name = name;
+            this.name = SanitizeRobotName(name);
 
             links = new List<Link>();
             joints = new List<Joint>();
@@ -150,6 +153,12 @@ namespace RosSharp.Urdf
 
                 writer.Close();
             }
+        }
+
+        private static string SanitizeRobotName(string robotName)
+        {
+            string sanitized = System.Text.RegularExpressions.Regex.Replace(robotName ?? string.Empty, @"[^a-zA-Z0-9_\-]", "_");
+            return string.IsNullOrEmpty(sanitized) || sanitized.Trim('_') == string.Empty ? "unnamed_robot" : sanitized;
         }
     }
 }
