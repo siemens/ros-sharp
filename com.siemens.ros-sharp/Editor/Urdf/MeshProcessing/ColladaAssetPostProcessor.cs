@@ -13,11 +13,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Add material support for URP and HDRP.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System.Xml.Linq;
 using System.Globalization;
 using UnityEditor;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 using System.IO;
 
@@ -52,6 +56,25 @@ namespace RosSharp
             gameObject.transform.SetPositionAndRotation(
                 getColladaPositionFix(gameObject.transform.position, orientation),
                 Quaternion.Euler(getColladaRotationFix(orientation)) * gameObject.transform.rotation);
+        }
+
+        // assign the correct shader and set the color/texture for the material
+        public void OnPreprocessMaterialDescription(MaterialDescription description, Material material, AnimationClip[] materialAnimation)
+        {
+            if (!isCollada)
+                return;
+
+            var shader = Urdf.Editor.UrdfMaterial.GetDefaultShader();
+            if (shader == null)
+                return;
+
+            material.shader = shader;
+
+            if (description.TryGetProperty("DiffuseColor", out Vector4 diffuseColor))
+                material.color = new Color(diffuseColor.x, diffuseColor.y, diffuseColor.z, diffuseColor.w);
+
+            if (description.TryGetProperty("DiffuseColor", out TexturePropertyDescription diffuseTexture) && diffuseTexture.texture != null)
+                material.mainTexture = diffuseTexture.texture;
         }
 
         private static string getAbsolutePath(string relativeAssetPath)

@@ -13,6 +13,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Add material support for URP and HDRP.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;
@@ -66,10 +69,29 @@ namespace RosSharp.Urdf.Editor
 
         private static Material InitializeMaterial()
         {
-            var material = new Material(Shader.Find("Standard"));
+            var material = new Material(GetDefaultShader());
+
             material.SetFloat("_Metallic", 0.75f);
-            material.SetFloat("_Glossiness", 0.75f);
+            if (material.HasProperty("_Glossiness"))
+                material.SetFloat("_Glossiness", 0.75f); // Built-in Standard shader
+            else if (material.HasProperty("_Smoothness"))
+                material.SetFloat("_Smoothness", 0.75f); // URP/HDRP Lit shader
+
             return material;
+        }
+
+        // assign proper shader based on the current render pipeline
+        internal static Shader GetDefaultShader()
+        {
+            var pipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+            if (pipeline == null)
+                return Shader.Find("Standard");
+
+            var shaderName = pipeline.GetType().Name.Contains("HD")
+                ? "HDRP/Lit"
+                : "Universal Render Pipeline/Lit";
+
+            return Shader.Find(shaderName) ?? Shader.Find("Standard");
         }
 
         private static string GenerateMaterialName(Link.Visual.Material urdfMaterial)
