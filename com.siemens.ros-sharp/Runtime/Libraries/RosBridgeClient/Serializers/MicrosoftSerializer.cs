@@ -12,21 +12,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-- Added GetAll method to DeserializedObject class to return all properties as a string.
+* Added GetAll method to DeserializedObject class to return all properties as a string.
     © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
-*/
 
+* Add JSON options to include fields and accept numeric values represented as strings
+or named floating-point literals.
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
+*/
 using System.Text;
 using System.Text.Json;
-
+using System.Text.Json.Serialization;
 namespace RosSharp.RosBridgeClient
 {
     class MicrosoftSerializer : ISerializer
     {
+        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions()
+        {
+            IncludeFields = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.AllowNamedFloatingPointLiterals
+        }; 
         public byte[] Serialize<T>(T obj)
         {
-            string json = JsonSerializer.Serialize(obj, obj.GetType());
-            return Encoding.ASCII.GetBytes(json);            
+            string json = JsonSerializer.Serialize(obj, obj.GetType(), jsonOptions);
+            return Encoding.ASCII.GetBytes(json);
         }
 
         public DeserializedObject Deserialize(byte[] buffer)
@@ -38,7 +46,7 @@ namespace RosSharp.RosBridgeClient
 
         public T Deserialize<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            return JsonSerializer.Deserialize<T>(json, jsonOptions);
         }
     }
 
