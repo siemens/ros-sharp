@@ -14,6 +14,9 @@ limitations under the License.
 
 * Removed duplications from ReadResourceFileUris' return list.
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
+
+* Add platform agnostic logger delegate.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
 using System;
@@ -32,6 +35,7 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         public Dictionary<string, ManualResetEvent> Status;
         public Dictionary<string, bool> FilesBeingProcessed;
+        protected Log log;
 
         public abstract void Transfer();
 
