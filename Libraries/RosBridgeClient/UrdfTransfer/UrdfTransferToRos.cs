@@ -21,9 +21,14 @@ limitations under the License.
 * RosConnector specific input fields have been removed as they are no longer required.
 * Robot name parameter input field added.
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
+
+* Add validation and logging for empty robot-name service responses.
+* Add logging for robot-description publication responses.
+* Add validation for empty file-server responses.
+* Add progress tracking for exported resource files.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
-// Use UnityEngine.Debug.LogFormat instead of Console.WriteLine for Unity
 
 using System;
 using System.Collections.Generic;
@@ -49,12 +54,21 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
         private int sentFileCountSoFar = 0;
         private int totalValidFileCount;
 
-        public UrdfTransferToRos(RosSocket rosSocket, string robotName, string robotNameParameter, string urdfFilePath, string rosPackage)
+        public float ResourceFileExportProgress { get; private set; } = 0f;
+
+        public UrdfTransferToRos(
+            RosSocket rosSocket,
+            string robotName,
+            string robotNameParameter,
+            string urdfFilePath,
+            string rosPackage,
+            Log log)
         {
             RosSocket = rosSocket;
             RobotName = robotName;
             this.urdfFilePath = urdfFilePath;
             this.rosPackage = rosPackage;
+            this.log = log;
             this.robotNameParameter = robotNameParameter;
 
             Status = new Dictionary<string, ManualResetEvent>
@@ -69,14 +83,21 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         public override async void Transfer()
         {
-            // Publish robot name param
+            // Publish robot name
+            await PublishRobotName();
+            await PublishRobotDescription();
+            await PublishResourceFiles();
+        }
+
+        private async Task PublishRobotName()
+        {
             await Task.Run(() => RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>(
                 "/rosapi/set_param",
                 SetRobotNameHandler,
-                new rosapi.SetParamRequest(JsonSerializer.Serialize(robotNameParameter), JsonSerializer.Serialize("RobotName"))));
-
-            await PublishRobotDescription();
-            await PublishResourceFiles();
+                new rosapi.SetParamRequest(
+                    JsonSerializer.Serialize(robotNameParameter),
+                    JsonSerializer.Serialize(RobotName)
+                )));
         }
 
         private async Task PublishRobotDescription()
@@ -88,7 +109,10 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
             await Task.Run(() => RosSocket.CallService<rosapi.SetParamRequest, rosapi.SetParamResponse>(
                 "/rosapi/set_param",
                 SetRobotDescriptionHandler,
-                new rosapi.SetParamRequest(JsonSerializer.Serialize(rosPackage), JsonSerializer.Serialize(urdfXDoc.ToString()))));
+                new rosapi.SetParamRequest(
+                    JsonSerializer.Serialize(rosPackage),
+                    JsonSerializer.Serialize(urdfXDoc.ToString())
+                )));
 
             // Send URDF file to ROS package
             string urdfPackagePath = "package://" + CutBeforeColon(rosPackage) + "/" + Path.GetFileName(urdfFilePath);
@@ -156,7 +180,17 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
                 "/file_server/save_file",
                 response =>
                 {
-                    taskCompletionSource.SetResult(true);
+                    if (!string.IsNullOrEmpty(response.name))
+                    {
+                        taskCompletionSource.SetResult(true);
+                    }
+                    else
+                    {
+                        log("ERROR: RosSocket CallService /file_server/save_file response is null.");
+                        // TODO: should terminate, all or nothing, or retry?
+                        taskCompletionSource.SetResult(false);
+                    }
+
                 },
                 new file_server.SaveBinaryFileRequest(rosPackagePath, fileContents));
 
@@ -229,20 +263,36 @@ namespace RosSharp.RosBridgeClient.UrdfTransfer
 
         private void SetRobotNameHandler(rosapi.SetParamResponse serviceResponse)
         {
+            if (string.IsNullOrEmpty(JsonSerializer.Serialize(serviceResponse)))
+            {
+                log("Service response robot name set_param is null.");
+            }
+            else
+            {
+                log("Service response robot name set_param: " + JsonSerializer.Serialize(serviceResponse));
+            }
             Status["robotNamePublished"].Set();
         }
 
         private void SetRobotDescriptionHandler(rosapi.SetParamResponse serviceResponse)
         {
+            log("Service response robot description set_param: " + JsonSerializer.Serialize(serviceResponse));
             Status["robotDescriptionPublished"].Set();
         }
 
         private void SaveFileResponseHandler()
         {
             sentFileCountSoFar++;
-            Console.WriteLine("Sent file count: " + sentFileCountSoFar);
+            ResourceFileExportProgress = (float)sentFileCountSoFar / (float)(totalValidFileCount + 1); // +1 for the URDF file itself
+
+            log("Sent: " + sentFileCountSoFar + " of " + (totalValidFileCount + 1) + " files. Progress: " + ResourceFileExportProgress.ToString("P2"));
+
             if (numUris != 0 && sentFileCountSoFar == totalValidFileCount + 1)
             {
+                if (Status["robotNamePublished"].Equals(false) || Status["robotDescriptionPublished"].Equals(false))
+                {
+                    log("Error: Robot name and description should be published before resource files.");
+                }
                 Status["resourceFilesSent"].Set();
                 Console.WriteLine("All resource files sent. Closing connection.");
                 RosSocket.Close();
