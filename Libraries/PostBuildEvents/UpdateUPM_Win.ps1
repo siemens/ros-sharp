@@ -10,36 +10,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Run from root folder! (ros-sharp\) 
+# Resolve paths relative to the script location instead of the working directory.
+# Exclude bin/obj/Properties during the copy rather than deleting them afterwards.
+#   (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 
-# Define the source directories
-$sourceDirs = @("Libraries\MessageGeneration", "Libraries\RosBridgeClient", "Libraries\Urdf")
+# location: Libraries/PostBuildEvents/UpdateUPM_Win.ps1
+$ErrorActionPreference = 'Stop'
 
-# Define the target directory
-$targetDir = "com.siemens.ros-sharp\Runtime\Libraries"
-$packLibraryDir = "com.siemens.ros-sharp\Runtime";
+try {
+    $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 
-# Recreate the target directory
-Remove-Item -Recurse -Force $targetDir
-New-Item -ItemType Directory -Path $targetDir | Out-Null
+    $sourceDirs = @("Libraries\MessageGeneration", "Libraries\RosBridgeClient", "Libraries\Urdf")
 
-# Copy .cs files from the source directories to the target directories, excluding specified folders
-foreach ($sourceDir in $sourceDirs) {
-    Get-ChildItem -Path $sourceDir -Recurse -File -Exclude "bin", "obj", "Properties" -Include *.cs | ForEach-Object {
-        $relativePath = $_.FullName.Substring($_.FullName.IndexOf($sourceDir))
-        $destination = Join-Path $packLibraryDir $relativePath
-        $null = New-Item -ItemType Directory -Path (Split-Path $destination) -Force
-        Copy-Item $_.FullName -Destination $destination -Force
+    $targetDir      = Join-Path $repoRoot "com.siemens.ros-sharp\Runtime\Libraries"
+    $packLibraryDir = Join-Path $repoRoot "com.siemens.ros-sharp\Runtime"
+
+    if (Test-Path $targetDir) { Remove-Item -Recurse -Force $targetDir }
+    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+
+    foreach ($sourceDir in $sourceDirs) {
+        $sourceFull = Join-Path $repoRoot $sourceDir
+
+        Get-ChildItem -Path $sourceFull -Recurse -File -Filter *.cs | ForEach-Object {
+            # path relative to the source project, e.g. "MessageTypes\ROS2\Foo.cs"
+            $rel = $_.FullName.Substring($sourceFull.Length + 1)
+
+            # prune build/meta directories anywhere in the relative path
+            if ($rel -match '(^|\\)(bin|obj|Properties)\\') { return }
+
+            $destination = Join-Path $packLibraryDir (Join-Path $sourceDir $rel)
+            $null = New-Item -ItemType Directory -Path (Split-Path $destination) -Force
+            Copy-Item $_.FullName -Destination $destination -Force
+        }
     }
+
+    Write-Output 'UPM Updated!'
 }
-
-# Recursively find and delete folders named "obj" and "Properties"
-$foldersToDelete = @("obj", "Properties")
-Get-ChildItem -Path $targetDir -Recurse -Directory | Where-Object { $foldersToDelete -contains $_.Name } | ForEach-Object {
-    Remove-Item $_.FullName -Recurse -Force
+catch {
+    Write-Error $_
+    exit 1
 }
-
-# Display the contents of the target directory for verification
-#Get-ChildItem -Path $targetDir -Recurse
-
-Write-Output 'UPM Updated!'

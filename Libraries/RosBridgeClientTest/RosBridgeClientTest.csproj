@@ -5,27 +5,33 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ROS2|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  
   <PropertyGroup>
     <StartupObject>RosSharp.RosBridgeClientTest.FibonacciActionServerConsoleExample</StartupObject>
     <AssemblyTitle>RosBridgeClientTest</AssemblyTitle>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
-    <Copyright>Copyright © 2025</Copyright>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <Copyright>Copyright © 2026</Copyright>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\RosBridgeClient\RosBridgeClient.csproj" />
+    <ProjectReference Include="../RosBridgeClient/RosBridgeClient.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
@@ -34,6 +40,7 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
     <PackageReference Include="System.Text.Encodings.Web" Version="9.0.5" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
@@ -42,6 +49,7 @@
     <PackageReference Include="System.Threading.Channels" Version="9.0.5" />
     <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="RosSocketUrdfImporterExample.cs" />
   </ItemGroup>

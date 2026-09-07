@@ -5,38 +5,45 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
+
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AssemblyTitle>RosBridgeClient</AssemblyTitle>
     <Description>.NET API to ROS via rosbridge_suite</Description>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
-    <Copyright>Copyright © 2025</Copyright>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
-    <Version>2.2.0</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<PackageId Condition="'$(Configuration)' == 'ROS2'">Siemens.RosSharp.RosBridgeClient.ROS2</PackageId>
-	<PackageId Condition="'$(Configuration)' == 'Release'">Siemens.RosSharp.RosBridgeClient.ROS1</PackageId>
+    <Copyright>Copyright © 2026</Copyright>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
+    <Version>2.3.0</Version>
+    
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release' or '$(Configuration)' == 'ROS2'">true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(Configuration)' != 'Release' and '$(Configuration)' != 'ROS2'">false</GeneratePackageOnBuild>
+
+    <PackageId>Siemens.RosSharp.RosBridgeClient.Debug</PackageId>
+    <PackageId Condition="'$(Configuration)' == 'ROS2'">Siemens.RosSharp.RosBridgeClient.ROS2</PackageId>
+    <PackageId Condition="'$(Configuration)' == 'Release'">Siemens.RosSharp.RosBridgeClient.ROS1</PackageId>
+
+    <Optimize Condition="'$(Configuration)' == 'Release' or '$(Configuration)' == 'ROS2'">true</Optimize>
+    
     <Title>RosBridgeClient</Title>
     <Authors>ros-sharp</Authors>
-	<EnablePackageValidation>true</EnablePackageValidation>
+
+	  <EnablePackageValidation>true</EnablePackageValidation>
     <PackageProjectUrl>https://github.com/siemens/ros-sharp</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/siemens/ros-sharp</RepositoryUrl>
     <PackageTags>ROS2;ROS;Robotic;Operating;System</PackageTags>
-	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<SourceLinkCreate>true</SourceLinkCreate>
-	<DebugType>portable</DebugType>
-	<DebugSymbols>true</DebugSymbols>
-	<IncludeSymbols>true</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<PackageIcon>images\RosSharpLogoNuget.png</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SourceLinkCreate>true</SourceLinkCreate>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageIcon>images/RosSharpLogoNuget.png</PackageIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ROS2|AnyCPU'">
-    <Optimize>True</Optimize>
-  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.5" />
@@ -47,33 +54,26 @@
     <PackageReference Include="System.Threading.Channels" Version="9.0.5" />
     <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="MessageTypes\ROS2\" />
+    <None Include="../../LICENSE.md" Pack="true" PackagePath="/" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../RosSharpLogoNuget.png" Pack="true" PackagePath="images/" />
   </ItemGroup>
-	<ItemGroup>
-		<None Include="..\..\LICENSE.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\..\README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\RosSharpLogoNuget.png">
-			<Pack>True</Pack>
-			<PackagePath>\images\</PackagePath>
-		</None>
-	</ItemGroup>
 	
-	<Target Name="CopyToCombinedOutput" AfterTargets="Publish">
-    <!-- Copy the new DLLs to the combined output folder -->
+  <!-- In case DLLs are wanted instead of source in Unity -->
+	<!-- <Target Name="CopyToCombinedOutput" AfterTargets="Publish">
     <ItemGroup>
-      <NewDllFiles Include="$(OutputPath)\publish\*.dll" />
+      <NewDllFiles Include="$(OutputPath)/publish/*.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(NewDllFiles)" DestinationFolder="$(SolutionDir)CombinedOutput" />
-  </Target>
+  </Target> -->
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="cd ..&#xD;&#xA;cd ..&#xD;&#xA;if &quot;$(OS)&quot; == &quot;Windows_NT&quot; (&#xD;&#xA; powershell.exe -ExecutionPolicy Bypass -File .\Libraries\PostBuildEvents\UpdateUPM_Win.ps1&#xD;&#xA;) else (&#xD;&#xA;  ./Libraries/PostBuildEvents/UpdateUPM_NonWin.sh&#xD;&#xA;)" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">  
+    <Exec Condition="'$(OS)' == 'Windows_NT'"  
+      Command="powershell.exe -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)/../PostBuildEvents/UpdateUPM_Win.ps1&quot;" />
+
+    <Exec Condition="'$(OS)' != 'Windows_NT'"  
+      Command="bash &quot;$(MSBuildProjectDirectory)/../PostBuildEvents/UpdateUPM_NonWin.sh&quot;" />  
   </Target>
 </Project>
