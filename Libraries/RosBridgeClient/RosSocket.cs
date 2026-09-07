@@ -12,20 +12,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-- Adding BSON (de-)seriliazation option
+* Adding BSON (de-)seriliazation option
     Shimadzu corp , 2019, Akira NODA (a-noda@shimadzu.co.jp / you.akira.noda@gmail.com)
 
-- Added ROS2 action support:
-    - Added ActionProvider and ActionConsumer dictionaries.
-    - Added AdvertiseAction<TActionGoal, TActionFeedback, TActionResult> method.
-    - Added RespondFeedback<TActionFeedback, TFeedback> method.
-    - Added RespondResult<TActionResult, TResult> method.
-    - Added UnadvertiseAction method.
-    - Added CancelActionGoalRequest<TActionResult> method.
-    - Added SendActionGoalRequest<TActionGoal, TGoal, TActionFeedback, TActionResult> method.
-    - Added handling for send_action_goal message, cancel_action_goal message, action_feedback message, and action_result message.
-
+* Add ROS2 action support:
+    - ActionProvider and ActionConsumer dictionaries.
+    - AdvertiseAction<TActionGoal, TActionFeedback, TActionResult> method.
+    - RespondFeedback<TActionFeedback, TFeedback> method.
+    - RespondResult<TActionResult, TResult> method.
+    - UnadvertiseAction method.
+    - CancelActionGoalRequest<TActionResult> method.
+    - SendActionGoalRequest<TActionGoal, TGoal, TActionFeedback, TActionResult> method.
+    - handling for send_action_goal message, cancel_action_goal message, action_feedback message, 
+    and action_result message.
     © Siemens AG 2025, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
+
+* Fix ServiceConsumers data race by locking new service registration. 
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 using System;
 using System.Collections.Generic;
@@ -58,6 +61,7 @@ namespace RosSharp.RosBridgeClient
 #endif
         internal ISerializer Serializer;
         private object SubscriberLock = new object();
+        private object ServiceConsumerLock = new object();
 
         public RosSocket(IProtocol protocol, SerializerEnum serializer = SerializerEnum.Microsoft)
         {
@@ -188,9 +192,13 @@ namespace RosSharp.RosBridgeClient
 
         public string CallService<Tin, Tout>(string service, ServiceResponseHandler<Tout> serviceResponseHandler, Tin serviceArguments) where Tin : Message where Tout : Message
         {
-            string id = GetUnusedCounterID(ServiceConsumers, service);
+            string id;
             Communication serviceCall;
-            ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out serviceCall, serviceArguments));
+            lock (ServiceConsumerLock)
+            {
+                id = GetUnusedCounterID(ServiceConsumers, service);
+                ServiceConsumers.Add(id, new ServiceConsumer<Tin, Tout>(id, service, serviceResponseHandler, out serviceCall, serviceArguments));
+            }
             Send(serviceCall);
             return id;
         }
