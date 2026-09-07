@@ -12,11 +12,9 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import FrontendLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     # Define launch arguments
@@ -44,10 +42,17 @@ def generate_launch_description():
                                     default_value='false',
                                     description='Allow overwrite of existing files (default: false)')
 
-    pkg_rosbridge_server = get_package_share_directory('rosbridge_server')
+    allow_file_url_arg = DeclareLaunchArgument('allow_file_url',
+                                    default_value='false',
+                                    description='Allow read access to "file://" URLs. (default: false)')
 
-    rosbridge_server_launch = PathJoinSubstitution(
-        [pkg_rosbridge_server, 'launch', 'rosbridge_websocket_launch.xml'])
+    allow_file_url_root_arg = DeclareLaunchArgument('allow_file_url_root',
+                                    default_value='/opt/ros/',
+                                    description='"file://" URLs are restricted to this root. (default: /opt/ros/)')
+
+    log_level_arg = DeclareLaunchArgument('log_level',
+                                    default_value='info',
+                                    description='Log level for rosbridge (default: info)')
 
     return LaunchDescription([
         port_arg,
@@ -56,15 +61,28 @@ def generate_launch_description():
         max_message_size_arg,
         allow_save_arg,
         allow_overwrite_arg,
+        allow_file_url_arg,
+        allow_file_url_root_arg,
+        log_level_arg,
 
-        IncludeLaunchDescription(
-            FrontendLaunchDescriptionSource([rosbridge_server_launch]),
-            launch_arguments={
+
+        Node(
+            package='rosbridge_server',
+            executable='rosbridge_websocket',
+            name='rosbridge_websocket',
+            ros_arguments=['--log-level', LaunchConfiguration('log_level')],
+            parameters=[{
                 'port': LaunchConfiguration('port'),
                 'fragment_timeout': LaunchConfiguration('fragment_timeout'),
                 'unregister_timeout': LaunchConfiguration('unregister_timeout'),
-                'max_message_size': LaunchConfiguration('max_message_size')
-            }.items()
+                'max_message_size': LaunchConfiguration('max_message_size'),
+            }]
+        ),
+
+        Node(
+            package='rosapi',
+            executable='rosapi_node',
+            name='rosapi',
         ),
         
         Node(
@@ -73,9 +91,10 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'allow_save': LaunchConfiguration('allow_save')},
-                {'allow_overwrite': LaunchConfiguration('allow_overwrite')}
+                {'allow_overwrite': LaunchConfiguration('allow_overwrite')},
+                {'allow_file_url': LaunchConfiguration('allow_file_url')},
+                {'allow_file_url_root': LaunchConfiguration('allow_file_url_root')}
             ]
         )
-        
     ])
 
