@@ -45,7 +45,7 @@ namespace RosSharp.RosBridgeClientTest
             RosSocket rosSocket = new RosSocket(webSocketNetProtocol);
 
             // Publication:
-            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotNameParameter, urdfFilePath, "<package_name_to_be_exported>"); //urdf_export_test
+            UrdfTransferToRos transferor = new UrdfTransferToRos(rosSocket, "Robot", robotNameParameter, urdfFilePath, "<package_name_to_be_exported>", new Log(x => Console.WriteLine(x))); //urdf_export_test
             transferor.Transfer();
 
             transferor.Status["robotNamePublished"].WaitOne();

@@ -27,7 +27,7 @@ namespace RosSharp.RosBridgeClient.MessageTypes.Rosapi
         public GetParamRequest(string name, string @default)
         {
             this.name = name;
-            this.@default = default;
+            this.@default = @default;
         }
     }
 }

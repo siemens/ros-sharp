@@ -21,6 +21,9 @@ limitations under the License.
 * The 'Reset to Default' button now behaves according to the selected ROS version (from the RosConnector component). 
 * Added GUI hints for parameter syntax. 
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
+
+* Fix ROS-version-specific default robot name parameters.
+* Fix ROS-version-specific default URDF paths.
 */
 
 using System.IO;
@@ -40,12 +43,14 @@ namespace RosSharp.RosBridgeClient
         private static string defaultRosPackage = "urdf_export_test:param_name";
 
 #if ROS2
-        private static string defautRobotNameParameter = "r2d2:file_server2";
-        private static string hintRobotNameParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\n<robot_name>:<package_name>";
+        private static string defautRobotNameParameter = "file_server2:robot_name";
+        private static string hintRobotNameParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\npkg_name:robot_name";
+        private static string defaultUrdfPath = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath("."), "Assets"), "Urdf"), "r2d2", "r2d2.urdf");
         
 #else
         private static string defautRobotNameParameter = "/robot/name";
         private static string hintRobotNameParameter = "Syntax:\n<param_name>\nExample usage:\n/robot/name";
+        private static string defaultUrdfPath = Path.Combine(Path.Combine(Path.GetFullPath("."), "Assets"), "Urdf");
 #endif
 
         [MenuItem("RosBridgeClient/Transfer URDF to ROS...", false, 51)]
@@ -162,7 +167,7 @@ namespace RosSharp.RosBridgeClient
 
             urdfPath = (EditorPrefs.HasKey("UrdfPublisherUrdfPath") ?
                 EditorPrefs.GetString("UrdfPublisherUrdfPath") :
-                Path.Combine(Path.Combine(Path.GetFullPath("."), "Assets"), "Urdf"));
+                defaultUrdfPath);
 
             rosPackage = (EditorPrefs.HasKey("UrdfPublisherRosPackage") ?
                 EditorPrefs.GetString("UrdfPublisherRosPackage") :

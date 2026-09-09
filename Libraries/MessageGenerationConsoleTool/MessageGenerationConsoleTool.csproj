@@ -1,24 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-		<TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>RosMsgGen</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;ROS2</Configurations>
   </PropertyGroup>
+
   <PropertyGroup>
     <StartupObject>RosSharp.RosBridgeClient.MessageGenerationConsoleTool.RosMsgGen</StartupObject>
     <AssemblyTitle>MessageGenerationConsoleTool</AssemblyTitle>
     <Description>Console tool for generating C# source code for ROS message/service/action.</Description>
     <Company>Siemens AG</Company>
     <Product>ROS#</Product>
-    <Copyright>Copyright © 2025</Copyright>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <Copyright>Copyright © 2026</Copyright>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\MessageGeneration\MessageGeneration.csproj" />
+    <ProjectReference Include="../MessageGeneration/MessageGeneration.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />

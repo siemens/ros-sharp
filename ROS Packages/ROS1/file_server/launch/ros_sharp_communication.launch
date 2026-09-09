@@ -12,19 +12,30 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Add new security parameters to the file_server node to allow or 
+disallow saving files, overwriting files, and allowing file:// urls.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 -->
 
 <launch>
 
 	<arg name="port" default="9090" />
+	<arg name="allow_save" default="false" />
+	<arg name="allow_overwrite" default="false" />
+	<arg name="allow_file_url" default="false" />
+	<arg name="allow_file_url_root" default="/opt/ros" />
 
+	<!-- TODO: if needed, add other params: fragment_timeout, unregister_timeout, max_message_size -->
 	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-		<arg name="port" value="9090" />
+		<arg name="port" value="$(arg port)" />
 	</include>
 
 	<node pkg="file_server" type="file_server" name="file_server" output="screen">
-		<param name="allow_save"      value="false"/>
-		<param name="allow_overwrite" value="false"/>
+		<param name="allow_save" value="$(arg allow_save)"/>
+		<param name="allow_overwrite" value="$(arg allow_overwrite)"/>
+		<param name="allow_file_url" value="$(arg allow_file_url)"/>
+		<param name="allow_file_url_root" value="$(arg allow_file_url_root)"/>
   	</node>
 
 </launch>

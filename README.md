@@ -26,7 +26,7 @@ ROS# can be used with Unity Engine __and/or__ with any compatible .NET project, 
 > For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for Unity](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp). 
 
 * ### For .NET Projects: NuGet Gallery ###
-  1. Head to the [NuGet](https://www.nuget.org/profiles/MartinBischoff) page.
+  1. Head to the [NuGet](https://www.nuget.org/packages?q=Siemens.RosSharp&frameworks=net&includeComputedFrameworks=true&frameworkFilterMode=all&prerel=true&sortby=relevance) page.
   2. Install the required packages individually from NuGet.
 
 > For more installation options, detailed instractions, and __getting started__ see wiki: [Installing and Configuring ROS# for .NET](https://github.com/siemens/ros-sharp/wiki/User_Inst_InstallationROS_sharp_DotNET). 
@@ -66,5 +66,5 @@ Below is an overview of the main directories and their purposes:
 * [Contact the Project Team](mailto:ros-sharp.ct@siemens.com)
 
 ---
-© Siemens AG, 2017-2025
+© Siemens AG, 2017-2026
 

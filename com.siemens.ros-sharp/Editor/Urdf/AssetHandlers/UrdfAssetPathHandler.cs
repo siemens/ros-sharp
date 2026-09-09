@@ -13,6 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Prevent paths outside the Unity Assets folder from being accepted.
+* Add canonical path resolution before validating asset paths.
+* Prevent prefix-confusion paths from bypassing the Assets folder validation.
+* Add support for resolving file:// URDF paths with traversal protection.
+* Add warnings when unsafe or invalid paths are rejected.
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 using System.IO;
 using UnityEditor;
@@ -49,9 +56,17 @@ namespace RosSharp.Urdf.Editor
         
         public static string GetRelativeAssetPath(string absolutePath)
         {
-            var absolutePathUnityFormat = absolutePath.SetSeparatorChar();
-            if (!absolutePathUnityFormat.StartsWith(Application.dataPath.SetSeparatorChar()))
+            // CWE-22: Use GetFullPath to resolve any traversal sequences (../../) before comparing,
+            // and append a separator to the data path to prevent prefix-confusion attacks
+            string normalizedAbsolutePath = Path.GetFullPath(absolutePath).SetSeparatorChar();
+            string normalizedApplicationDataPath = Path.GetFullPath(Application.dataPath).SetSeparatorChar()
+                                                + Path.DirectorySeparatorChar;
+
+            if (!normalizedAbsolutePath.StartsWith(normalizedApplicationDataPath, System.StringComparison.Ordinal))
+            {
+                Debug.LogWarning("Path is outside the Assets folder and cannot be used: " + absolutePath);
                 return null;
+            }
 
             var assetPath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
             return assetPath.SetSeparatorChar();
@@ -65,18 +80,45 @@ namespace RosSharp.Urdf.Editor
 
         public static string GetRelativeAssetPathFromUrdfPath(string urdfPath)
         {
-            if (!urdfPath.StartsWith(@"package://"))
+            if (urdfPath.StartsWith(@"package://"))
             {
-                Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
-                return null;
+                var path = urdfPath.Substring(10).SetSeparatorChar();
+
+                if (Path.GetExtension(path)?.ToLowerInvariant() == ".stl")
+                    path = path.Substring(0, path.Length - 3) + "prefab";
+
+                return Path.Combine(packageRoot, path);
             }
 
-            var path = urdfPath.Substring(10).SetSeparatorChar();
+            if (urdfPath.StartsWith("file://"))
+            {
+                // strip "file://" and normalise separators
+                // (/opt/ros/… -> Assets/urdf/<robot_name>/opt/ros/…)
+                var path = urdfPath.Substring("file://".Length)
+                                   .SetSeparatorChar()
+                                   .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            if (Path.GetExtension(path)?.ToLowerInvariant() == ".stl")
-                path = path.Substring(0, path.Length - 3) + "prefab";
+                // CWE-22: Reject any path component that would escape the package root via
+                // traversal sequences (../../), even after normalisation.
+                var combined = Path.GetFullPath(Path.Combine(
+                    Path.GetFullPath(packageRoot), path));
+                var packageRootFull = Path.GetFullPath(packageRoot)
+                                      + Path.DirectorySeparatorChar;
 
-            return Path.Combine(packageRoot, path);
+                if (!combined.StartsWith(packageRootFull, System.StringComparison.Ordinal))
+                {
+                    Debug.LogWarning("Blocked file:// URI that resolves outside the package root: " + urdfPath);
+                    return null;
+                }
+
+                if (Path.GetExtension(path)?.ToLowerInvariant() == ".stl")
+                    path = path.Substring(0, path.Length - 3) + "prefab";
+
+                return Path.Combine(packageRoot, path);
+            }
+
+            Debug.LogWarning(urdfPath + " is not a valid URDF package file path. Path should start with \"package://\".");
+            return null;
         }
         #endregion
 

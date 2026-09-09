@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # © Siemens AG, 2024 
 # Author: Mehmet Emre Cakal <emre.cakal@siemens.com>
@@ -12,32 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Run from root folder! (ros-sharp\) 
+# Resolve paths relative to the script location instead of the working directory.
+#   (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 
-# Define the source directories
-sourceDirs=("Libraries/MessageGeneration" "Libraries/RosBridgeClient" "Libraries/Urdf")
+set -euo pipefail
 
-# Define the target directory
-targetDir="com.siemens.ros-sharp/Runtime/Libraries"
-packLibraryDir="com.siemens.ros-sharp/Runtime"
+# location: Libraries/PostBuildEvents/UpdateUPM_NonWin.sh
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT"
 
-# Recreate the target directory
-rm -rf "$targetDir"
-mkdir -p "$targetDir"
+source_dirs=(
+  "Libraries/MessageGeneration"
+  "Libraries/RosBridgeClient"
+  "Libraries/Urdf"
+)
 
-# Copy .cs files from the source directories to the target directories, excluding specified folders
-for sourceDir in "${sourceDirs[@]}"; do
-    find "$sourceDir" -type f -name "*.cs" ! -path "*/bin/*" ! -path "*/obj/*" ! -path "*/Properties/*" | while IFS= read -r file; do
-        relativePath="${file#$sourceDir/}"
-        destination="$packLibraryDir/$relativePath"
-        mkdir -p "$(dirname "$destination")"
-        cp "$file" "$destination"
-    done
+target_dir="com.siemens.ros-sharp/Runtime/Libraries"
+pack_library_dir="com.siemens.ros-sharp/Runtime"
+
+# recreate targets
+rm -rf -- "$target_dir"
+mkdir -p -- "$target_dir"
+
+for source_dir in "${source_dirs[@]}"; do
+  find "$REPO_ROOT/$source_dir" \
+    -type d \( -name bin -o -name obj -o -name Properties \) -prune -o \
+    -type f -name '*.cs' -print0 |
+  while IFS= read -r -d '' file; do
+    rel_from_root="${file#"$REPO_ROOT"/}"
+    destination="$pack_library_dir/$rel_from_root"
+
+    mkdir -p -- "$(dirname -- "$destination")"
+    cp -f -- "$file" "$destination"
+  done
 done
 
-# Recursively find and delete folders named "obj" and "Properties"
-foldersToDelete=("obj" "Properties")
-find "$targetDir" -type d -name "obj" -o -name "Properties" -exec rm -rf {} +
-
-# Display the contents of the target directory for verification
-find "$targetDir"
+echo "UPM Updated!"

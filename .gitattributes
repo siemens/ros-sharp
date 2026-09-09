@@ -1,4 +1,12 @@
+*.meta text eol=lf
+*.unity text eol=lf
+*.urdf text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+*.config text eol=crlf
+*.vsconfig text eol=crlf
 *.cs text eol=crlf
 *.csproj text eol=crlf
+*.sln text eol=crlf
 Libraries/RosBridgeClient/MessageTypes/** text eol=lf
 com.siemens.ros-sharp/Runtime/Libraries/RosBridgeClient/MessageTypes/** text eol=lf

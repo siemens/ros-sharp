@@ -13,8 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Add path traversal protection to prevent the export subfolder from escaping the configured export root.
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
+using System;
 using System.IO;
+using UnityEngine;
 
 namespace RosSharp.Urdf
 {
@@ -30,9 +35,23 @@ namespace RosSharp.Urdf
 
         public static void SetExportPath(string root, string subRoot = "")
         {
+            // Prevent a traversal subRoot (e.g. "../../etc") from escaping the export root (CWE-22)
+            string normalizedRoot = Path.GetFullPath(root);
+            string destination = Path.GetFullPath(Path.Combine(root, subRoot ?? string.Empty));
+
+            if (!destination.StartsWith(normalizedRoot + Path.DirectorySeparatorChar, StringComparison.Ordinal)
+                && destination != normalizedRoot)
+            {
+                Debug.LogError("URDF export failed: the export subfolder escapes the export root directory.\n" +
+                               "Root: " + normalizedRoot + "\n" +
+                               "Resolved destination: " + destination);
+                throw new ArgumentException("Export subfolder must be inside the export root directory.");
+            }
+
             exportRoot = root;
             subfolder = subRoot;
 
+            Debug.Log("URDF export destination set to: " + GetExportDestination());
             Directory.CreateDirectory(GetExportDestination());
             Directory.CreateDirectory(Path.Combine(GetExportDestination(), MeshFolderName));
             Directory.CreateDirectory(Path.Combine(GetExportDestination(), ResourceFolderName));

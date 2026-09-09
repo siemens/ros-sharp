@@ -14,6 +14,9 @@ limitations under the License.
 
 - Added ROS1 version switch toggle. (--ros1)
     © Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
+
+- Improved command-line help, status, warning, and error messages.
+    © Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com / m.emrecakal@gmail.com)
 */
 
 using System;
@@ -48,16 +51,16 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
             "Those can be found at the ROS# GitHub repo <https://github.com/siemens/ros-sharp>\n";
 
         private static readonly HashSet<string> validOptions = new HashSet<string>(){
-        "-h", "--help",
-        "-v", "--verbose",
-        "-s", "--service",
-        "-a", "--action",
-        "-r", "--recursive",
-        "-p", "--package",
-        "-n", "--ros-package-name",
-        "-o", "--output",
-        "--ros1"
-    };
+            "-h", "--help",
+            "-v", "--verbose",
+            "-s", "--service",
+            "-a", "--action",
+            "-r", "--recursive",
+            "-p", "--package",
+            "-n", "--ros-package-name",
+            "-o", "--output",
+            "--ros1"
+        };
 
         private static readonly string defaultOutputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "RosSharpMessages");
 
@@ -79,26 +82,27 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
             // Parse Arguments
             if (args.Length == 0)
             {
-                Console.WriteLine("No argument: Display usage");
+                Console.WriteLine("No arguments provided. Displaying usage information.");
                 Console.WriteLine(usage);
                 return;
             }
 
             if (args[0].Equals("--help") || args[0].Equals("-h"))
             {
-                Console.WriteLine("Help: Displays usage");
+                Console.WriteLine("Displaying usage information.");
                 Console.WriteLine(usage);
                 return;
             }
 
-            for (int i = 0; i < args.Length; i++) {
+            for (int i = 0; i < args.Length; i++)
+            {
                 string arg = args[i];
 
                 if (arg.Equals("--ros1"))
                 {
                     if (verbose)
                     {
-                        Console.WriteLine("'--ros1' flag seen. Generating for ROS1");
+                        Console.WriteLine("Detected '--ros1' flag. Generating for ROS1.");
                     }
                     if (action)
                     {
@@ -112,22 +116,29 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                     {
                         MessageAutoGen.isRos2 = false;
                     }
+
                     continue;
                 }
 
-                if (arg.Equals("-s") || arg.Equals("--service")) {
-                    if (action) {
-                        Console.Error.WriteLine("Option '--service' conflict with '--action'.");
+                if (arg.Equals("-s") || arg.Equals("--service"))
+                {
+                    if (action)
+                    {
+                        Console.Error.WriteLine("Option '--service' conflicts with '--action'.");
                         if (verbose)
                         {
-                            Console.Error.WriteLine("Make up your mind!");
+                            Console.Error.WriteLine("Please specify only one of these options.");
                         }
+
                         return;
                     }
+
                     service = true;
-                    if (verbose) {
-                        Console.WriteLine("'--service' flag seen. Expecting *.srv input");
+                    if (verbose)
+                    {
+                        Console.WriteLine("Detected '--service' flag. Expecting '*.srv' input.");
                     }
+
                     continue;
                 }
 
@@ -135,103 +146,127 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                 {
                     if (service)
                     {
-                        Console.Error.WriteLine("Option '--action' conflict with '--service'.");
+                        Console.Error.WriteLine("Option '--action' conflicts with '--service'.");
                         if (verbose)
                         {
-                            Console.Error.WriteLine("Make up your mind!");
+                            Console.Error.WriteLine("Please specify only one of these options.");
                         }
+
                         return;
                     }
+
                     action = true;
                     if (verbose)
                     {
-                        Console.WriteLine("'--action' flag seen. Expecting *.action input");
+                        Console.WriteLine("Detected '--action' flag. Expecting '*.action' input.");
                     }
+
                     continue;
                 }
 
-                if (arg.Equals("-r") || arg.Equals("--recursive")) {
+                if (arg.Equals("-r") || arg.Equals("--recursive"))
+                {
                     if (package)
                     {
-                        Console.Error.WriteLine("Option '--recursive' conflict with '--package'.");
-                        if (verbose) {
-                            Console.Error.WriteLine("Make up your mind!");
-                        }
-                        return;
-                    }
-                    if (recursive)
-                    {
-                        Console.WriteLine("Duplicate flag '--recursive'.");
+                        Console.Error.WriteLine("Option '--recursive' conflicts with '--package'.");
                         if (verbose)
                         {
-                            Console.Error.WriteLine("I got it already!");
+                            Console.Error.WriteLine("Please specify only one of these options.");
+                        }
+
+                        return;
+                    }
+
+                    if (recursive)
+                    {
+                        Console.WriteLine("Duplicate '--recursive' flag detected.");
+                        if (verbose)
+                        {
+                            Console.Error.WriteLine("Option '--recursive' has already been specified.");
                         }
                     }
-                    if (!rosPackageName.Equals("")) {
-                        Console.WriteLine("'--recursive' option enabled, ignoring ROS package name");
+
+                    if (!rosPackageName.Equals(""))
+                    {
+                        Console.WriteLine("'--recursive' option specified; provided ROS package name will be ignored.");
                     }
+
                     recursive = true;
                     continue;
                 }
 
-                if (arg.Equals("-p") || arg.Equals("--package")) {
-                    if (recursive) {
-                        Console.Error.WriteLine("Option '--package' conflict with '--recursive'.");
+                if (arg.Equals("-p") || arg.Equals("--package"))
+                {
+                    if (recursive)
+                    {
+                        Console.Error.WriteLine("Option '--package' conflicts with '--recursive'.");
                         if (verbose)
                         {
-                            Console.Error.WriteLine("Make up your mind!");
+                            Console.Error.WriteLine("Please specify only one of these options.");
                         }
+
                         return;
                     }
-                    if (package) {
-                        Console.WriteLine("Duplicate flag '--package'.");
+
+                    if (package)
+                    {
+                        Console.WriteLine("Duplicate '--package' flag detected.");
                         if (verbose)
                         {
-                            Console.Error.WriteLine("I got it already!");
+                            Console.Error.WriteLine("Option '--package' has already been specified.");
                         }
                     }
+
                     package = true;
                     continue;
                 }
 
-                if (arg.Equals("-n") || arg.Equals("--ros-package-name")) {
+                if (arg.Equals("-n") || arg.Equals("--ros-package-name"))
+                {
                     if (i == args.Length - 1)
                     {
-                        Console.Error.WriteLine("Missing ROS package name. Will get name from path");
+                        Console.Error.WriteLine("Missing ROS package name; will infer package name from the provided path.");
                     }
-                    else if (validOptions.Contains(args[i+1])) {
-                        Console.Error.WriteLine("Missing ROS package name. Will get name from path");
+                    else if (validOptions.Contains(args[i + 1]))
+                    {
+                        Console.Error.WriteLine("Missing ROS package name; will infer package name from the provided path.");
                     }
-                    else if (recursive) {
-                        Console.WriteLine("'--recursive' option enabled, ignoring ROS package name");
+                    else if (recursive)
+                    {
+                        Console.WriteLine("'--recursive' option specified; provided ROS package name will be ignored.");
                     }
                     else
                     {
                         rosPackageName = args[i + 1];
                         i++;
                     }
+
                     continue;
                 }
 
-                if (arg.Equals("-o") || arg.Equals("--output")) {
+                if (arg.Equals("-o") || arg.Equals("--output"))
+                {
                     if (i == args.Length - 1)
                     {
-                        Console.Error.WriteLine("Missing output path. Using default output path.");
+                        Console.Error.WriteLine("Missing output path; using default output path.");
                     }
                     else if (validOptions.Contains(args[i + 1]))
                     {
-                        Console.Error.WriteLine("Missing output path. Using default output path.");
+                        Console.Error.WriteLine("Missing output path; using default output path.");
                     }
-                    else {
+                    else
+                    {
                         outputPath = args[i + 1];
                         outputPath = Path.Combine(outputPath, "RosSharpMessages");
                         i++;
                     }
+
                     continue;
                 }
 
-                if (arg.Equals("-v") || arg.Equals("--verbose")) {
-                    Console.WriteLine("Verbose flag detected. Warning: A huge wave of text incoming!");
+                if (arg.Equals("-v") || arg.Equals("--verbose"))
+                {
+                    Console.WriteLine("Verbose mode enabled. Detailed output will be displayed.");
                     verbose = true;
                     continue;
                 }
@@ -240,11 +275,12 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                 {
                     inputPath = arg;
                 }
-                else {
-                    Console.Error.WriteLine("Ignored invalid argument: " + arg);
+                else
+                {
+                    Console.Error.WriteLine("Ignored unrecognized argument: " + arg);
                     if (verbose)
                     {
-                        Console.Error.WriteLine("Mumble mumble. Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage");
+                        Console.Error.WriteLine("Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage.");
                     }
                 }
             }
@@ -255,23 +291,29 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
             {
                 if (inputPath.Equals(""))
                 {
-                    Console.Error.WriteLine("Please specify input file");
+                    Console.Error.WriteLine("Please specify an input file.");
                     if (verbose)
                     {
-                        Console.Error.WriteLine("Bricks without straw");
+                        Console.Error.WriteLine("Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage.");
                     }
+
                     return;
                 }
-                if (!IsValidPath(inputPath, false)) {
+
+                if (!IsValidPath(inputPath, false))
+                {
                     if (IsValidPath(inputPath, true))
                     {
-                        Console.Error.WriteLine("Input path is a directory. Please use --package or --recursive option");
+                        Console.Error.WriteLine("Input path is a directory. Use '--package' or '--recursive' option.");
                     }
-                    else {
-                        Console.Error.WriteLine("Invalid input path");
+                    else
+                    {
+                        Console.Error.WriteLine("Invalid input path.");
                     }
+
                     return;
                 }
+
                 List<string> warnings;
                 if (service)
                 {
@@ -285,35 +327,42 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                 {
                     warnings = MessageAutoGen.GenerateSingleMessage(inputPath, outputPath, rosPackageName, verbose);
                 }
+
                 PrintWarnings(warnings);
                 return;
             }
+
             // Parse Package Messages
-            if (package) {
+            if (package)
+            {
                 if (inputPath.Equals(""))
                 {
-                    Console.Error.WriteLine("Please specify input package");
+                    Console.Error.WriteLine("Please specify an input package.");
                     if (verbose)
                     {
-                        Console.Error.WriteLine("Bricks without straw");
+                        Console.Error.WriteLine("Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage.");
                     }
+
                     return;
                 }
+
                 if (!IsValidPath(inputPath, true))
                 {
                     if (IsValidPath(inputPath, false))
                     {
-                        Console.Error.WriteLine("Input path is a file. Please drop --package option");
+                        Console.Error.WriteLine("Input path is a file. Remove the '--package' option.");
                     }
                     else
                     {
-                        Console.Error.WriteLine("Invalid input path");
+                        Console.Error.WriteLine("Invalid input path.");
                     }
+
                     return;
                 }
+
                 try
                 {
-                    Console.WriteLine("Working...");
+                    Console.WriteLine("Processing package...");
                     List<string> warnings;
                     if (service)
                     {
@@ -327,40 +376,49 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                     {
                         warnings = MessageAutoGen.GeneratePackageMessages(inputPath, outputPath, rosPackageName, verbose);
                     }
+
                     PrintWarnings(warnings);
                 }
-                catch (DirectoryNotFoundException) {
+                catch (DirectoryNotFoundException)
+                {
                     if (service)
                     {
-                        Console.Error.WriteLine("Didn't find service folder in given package");
+                        Console.Error.WriteLine("Service folder not found in the specified package.");
                     }
                     else
                     {
-                        Console.Error.WriteLine("Didn't find message folder in given package");
+                        Console.Error.WriteLine("Message folder not found in the specified package.");
                     }
+
                     if (verbose)
                     {
-                        Console.Error.WriteLine("Bricks without straw");
+                        Console.Error.WriteLine("Ensure the package directory has the expected structure and try again.");
                     }
                 }
+
                 return;
             }
-            // Parse Directory Message
-            if (recursive) {
+
+            // Parse Directory Messages
+            if (recursive)
+            {
                 if (inputPath.Equals(""))
                 {
-                    Console.Error.WriteLine("Please specify input directory");
+                    Console.Error.WriteLine("Please specify an input directory.");
                     if (verbose)
                     {
-                        Console.Error.WriteLine("Bricks without straw");
+                        Console.Error.WriteLine("Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage.");
                     }
+
                     return;
                 }
+
                 if (!IsValidPath(inputPath, true))
                 {
                     if (IsValidPath(inputPath, false))
                     {
-                        Console.Error.WriteLine("Input path is a file. Consider as base case");
+                        Console.WriteLine("Input path is a file. Processing as a single message.");
+
                         // Parse Single Message
                         List<string> singleMsgWarnings;
                         if (service)
@@ -375,15 +433,18 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                         {
                             singleMsgWarnings = MessageAutoGen.GenerateSingleMessage(inputPath, outputPath, rosPackageName, verbose);
                         }
+
                         PrintWarnings(singleMsgWarnings);
                     }
                     else
                     {
-                        Console.Error.WriteLine("Invalid input path");
+                        Console.Error.WriteLine("Invalid input path.");
                     }
+
                     return;
                 }
-                Console.WriteLine("Working...Checkout xkcd.com/303");
+
+                Console.WriteLine("Processing directory...");
                 List<string> warnings;
                 if (service)
                 {
@@ -397,71 +458,75 @@ namespace RosSharp.RosBridgeClient.MessageGenerationConsoleTool
                 {
                     warnings = MessageAutoGen.GenerateDirectoryMessages(inputPath, outputPath, verbose);
                 }
+
                 PrintWarnings(warnings);
                 return;
             }
 
-            // Otherwise I don't know...
-            Console.Error.WriteLine("Unrecognized combination of arguments.");
+            // Unrecognized combination
+            Console.Error.WriteLine("Unrecognized combination of arguments. Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' for usage.");
             if (verbose)
             {
-                Console.WriteLine("Mumble Mumble. Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage");
+                Console.WriteLine("Run 'RosMsgGen.exe -h' or 'RosMsgGen.exe --help' to see usage.");
             }
         }
 
-        private static string GetFullPath(string s) {
+        private static string GetFullPath(string s)
+        {
             try
             {
                 return Path.GetFullPath(s);
             }
             catch (ArgumentException)
             {
-                Console.Error.WriteLine(s + " is an invalid path");
-                return "";
+                Console.Error.WriteLine(s + " is an invalid path.");
+                return string.Empty;
             }
             catch (SecurityException)
             {
-                Console.Error.WriteLine("Permission Denied to " + s);
-                return "";
+                Console.Error.WriteLine("Permission denied to access: " + s);
+                return string.Empty;
             }
             catch (NotSupportedException)
             {
-                Console.Error.WriteLine("Path cannot contain a ':' that is not part of a volume identifier");
-                return "";
+                Console.Error.WriteLine("Path contains an invalid ':' character.");
+                return string.Empty;
             }
-            catch (PathTooLongException) {
-                Console.Error.WriteLine("Path, filename or extension is too long");
-                return "";
+            catch (PathTooLongException)
+            {
+                Console.Error.WriteLine("Path, filename, or extension is too long.");
+                return string.Empty;
             }
         }
 
-        private static bool IsValidPath(string s, bool isDirectory) {
+        private static bool IsValidPath(string s, bool isDirectory)
+        {
             string path = GetFullPath(s);
-            if (path.Equals(""))
+            if (string.IsNullOrEmpty(path))
             {
                 return false;
             }
-            else {
-                if (isDirectory)
-                {
-                    return Directory.Exists(path);
-                }
-                else {
-                    return File.Exists(path);
-                }
+
+            if (isDirectory)
+            {
+                return Directory.Exists(path);
             }
+
+            return File.Exists(path);
         }
 
-        private static void PrintWarnings(List<string> warnings) {
-            if (warnings != null) {
-                Console.WriteLine("Done.");
-                if (warnings.Count > 0)
+        private static void PrintWarnings(List<string> warnings)
+        {
+            if (warnings == null)
+                return;
+
+            Console.WriteLine("Completed.");
+            if (warnings.Count > 0)
+            {
+                Console.WriteLine("There are " + warnings.Count + " warning(s):");
+                foreach (string w in warnings)
                 {
-                    Console.WriteLine("You have " + warnings.Count + " warnings");
-                    foreach (string w in warnings)
-                    {
-                        Console.WriteLine(w);
-                    }
+                    Console.WriteLine(w);
                 }
             }
         }

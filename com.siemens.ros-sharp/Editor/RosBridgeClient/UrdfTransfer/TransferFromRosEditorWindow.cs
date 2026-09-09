@@ -21,6 +21,14 @@ limitations under the License.
 * The 'Reset to Default' button now behaves according to the selected ROS version (from the RosConnector component). 
 * Added GUI hints for parameter syntax. 
     (C) Siemens AG, 2024, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
+
+* Fix misleading robot name parameter input field.
+* Reorder the status fields to match the order of the transfer process.
+* Add progress bar for resource file import status.
+* Trigger transfer handler to pop final dialog only after the editor window has been repainted, 
+instead of constantly checking for the import complete status in the update loop.
+* Add new input fields for max retries, retry delay, and service timeout.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 */
 
 using System.IO;
@@ -35,6 +43,9 @@ namespace RosSharp.RosBridgeClient
         private static string robotNameParameter;
         private static string urdfParameter;
         private static string assetPath;
+        private static int maxRetries;
+        private static int retryDelayMs;
+        private static int serviceTimeoutMs;
       
         private TransferFromRosHandler transferHandler;
 
@@ -42,16 +53,23 @@ namespace RosSharp.RosBridgeClient
         private bool rosConnectorFound = false;
 
 #if ROS2
-        private static string defautRobotName = "r2d2:file_server2";
+        private static string defaultRobotName = "file_server:robot_name";
         private static string defaultUrdfParameter = "robot_state_publisher:robot_description";
-        private static string hintRobotName = "Syntax:\n<node_name>:<param_name>\nExample usage:\n<robot_name>:<pacakge_name>";
+        private static string hintRobotName = "Syntax:\n<node_name>:<param_name>\nExample usage:\npkg_name:robot_name";
         private static string hintUrdfParameter = "Syntax:\n<node_name>:<param_name>\nExample usage:\nrobot_state_publisher:robot_description";
 #else
-        private static string defautRobotName = "/robot/name";
+        private static string defaultRobotName = "/robot/name";
         private static string defaultUrdfParameter = "/robot_description";
         private static string hintRobotName = "Syntax:\n<param_name>\nExample usage:\n/robot/name";
         private static string hintUrdfParameter = "Syntax:\n<param_name>\nExample usage:\n/robot_description";
 #endif
+        private static int defaultMaxRetries = 3;
+        private static int defaultRetryDelayMs = 200;
+        private static int defaultServiceTimeoutMs = 8000;
+
+        private static string hintMaxRetries = "Maximum number of retries for the service call in case of failure.";
+        private static string hintRetryDelayMs = "Delay in milliseconds between retries for the service call.";
+        private static string hintServiceTimeoutMs = "Timeout in milliseconds for each service call.";
 
         [MenuItem("RosBridgeClient/Transfer URDF from ROS...", false, 50)]
         private static void Init()
@@ -89,6 +107,18 @@ namespace RosSharp.RosBridgeClient
                 EditorGUILayout.BeginHorizontal();
                 assetPath = EditorGUILayout.TextField("Asset Path", assetPath);
                 EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                serviceTimeoutMs = EditorGUILayout.IntField(new GUIContent("Service Timeout (ms)", hintServiceTimeoutMs), serviceTimeoutMs);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                maxRetries = EditorGUILayout.IntField(new GUIContent("Max Retries", hintMaxRetries), maxRetries);
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                retryDelayMs = EditorGUILayout.IntField(new GUIContent("Retry Delay (ms)", hintRetryDelayMs), retryDelayMs);
+                EditorGUILayout.EndHorizontal();
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -107,7 +137,15 @@ namespace RosSharp.RosBridgeClient
             {
                 SetEditorPrefs();
 
-                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(assetPath, urdfParameter, robotNameParameter));
+                Thread rosSocketConnectThread = new Thread(() => transferHandler.TransferUrdf(
+                    assetPath, 
+                    urdfParameter,
+                    robotNameParameter,
+                    maxRetries,
+                    retryDelayMs,
+                    serviceTimeoutMs)
+                );
+
                 rosSocketConnectThread.Start();
             }
             EditorGUILayout.EndHorizontal();
@@ -117,28 +155,48 @@ namespace RosSharp.RosBridgeClient
             EditorGUIUtility.labelWidth = 300;
 
             DrawLabelField("Connected:", "connected");
-            DrawLabelField("Robot Name Received:", "robotNameReceived");
             DrawLabelField("Robot Description Received:", "robotDescriptionReceived");
-            DrawLabelField("Resource Files Received:", "resourceFilesReceived");
+            DrawLabelField("Robot Name Received:", "robotNameReceived");
+            DrawProgressField("Resource Files Received:", transferHandler.ResourceFileImportProgress);
             DrawLabelField("Disconnected:", "disconnected");
             DrawLabelField("Import Complete:", "importComplete");
+
+            // Only notify the handler once this frame has actually been drawn (repainted)
+            if (Event.current.type == EventType.Repaint)
+                transferHandler.NotifyGuiRepainted();
         }
 
         private void DrawLabelField(string label, string stage)
         {
             GUIStyle guiStyle = new GUIStyle(EditorStyles.textField);
+            guiStyle.alignment = TextAnchor.MiddleCenter;
             bool state = transferHandler.StatusEvents[stage].WaitOne(0);
             guiStyle.normal.textColor = state ? Color.green : Color.red;
             EditorGUILayout.LabelField(label, state ? "done" : "open", guiStyle);
+        }
+        private void DrawProgressField(string label, float progress)
+        {
+            Rect rowRect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+            Rect progressRect = EditorGUI.PrefixLabel(rowRect, new GUIContent(label));
+
+            bool failed = progress < 0f;
+            bool notStarted = progress <= 0f && !failed;
+            float clamped = Mathf.Clamp01(progress);
+
+            string statusText = failed ? "failed" : notStarted ? "open" : $"{clamped:P0}";
+
+            Color prevColor = GUI.color;
+            GUI.color = failed ? new Color(0.8f, 0.2f, 0.2f)
+                : notStarted ? new Color(0.6f, 0.15f, 0.15f)
+                : new Color(0.2f, 0.8f, 0.2f);
+                
+            EditorGUI.ProgressBar(progressRect, failed ? 1f : clamped, statusText);
+            GUI.color = prevColor;
         }
 
         private void OnInspectorUpdate()
         {
             Repaint();
-
-            // some methods can only be called from main thread:
-            // We check the status to call the methods at the right step in the process:
-            transferHandler.GenerateModelIfReady();
         }
 
         #region EditorPrefs
@@ -156,6 +214,7 @@ namespace RosSharp.RosBridgeClient
         private void OnDestroy()
         {
             SetEditorPrefs();
+            transferHandler?.Cancel();
         }
 
         private void DeleteEditorPrefs()
@@ -163,6 +222,9 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.DeleteKey("UrdfImporterAssetPath");
             EditorPrefs.DeleteKey("UrdfImporterUrdfParameter");
             EditorPrefs.DeleteKey("UrdfImporterRobotName");
+            EditorPrefs.DeleteKey("UrdfImporterMaxRetries");
+            EditorPrefs.DeleteKey("UrdfImporterRetryDelayMs");
+            EditorPrefs.DeleteKey("UrdfImporterServiceTimeoutMs");
         }
         private void GetEditorPrefs()
         {
@@ -176,7 +238,19 @@ namespace RosSharp.RosBridgeClient
 
             robotNameParameter = (EditorPrefs.HasKey("UrdfImporterRobotName") ?
                 EditorPrefs.GetString("UrdfImporterRobotName") :
-                defautRobotName);
+                defaultRobotName);
+
+            maxRetries = (EditorPrefs.HasKey("UrdfImporterMaxRetries") ?
+                EditorPrefs.GetInt("UrdfImporterMaxRetries") :
+                defaultMaxRetries);
+
+            retryDelayMs = (EditorPrefs.HasKey("UrdfImporterRetryDelayMs") ?
+                EditorPrefs.GetInt("UrdfImporterRetryDelayMs") :
+                defaultRetryDelayMs);
+
+            serviceTimeoutMs = (EditorPrefs.HasKey("UrdfImporterServiceTimeoutMs") ?
+                EditorPrefs.GetInt("UrdfImporterServiceTimeoutMs") :
+                defaultServiceTimeoutMs);
 
         }
         private void SetEditorPrefs()
@@ -184,6 +258,9 @@ namespace RosSharp.RosBridgeClient
             EditorPrefs.SetString("UrdfImporterAssetPath", assetPath);
             EditorPrefs.SetString("UrdfImporterUrdfParameter", urdfParameter);
             EditorPrefs.SetString("UrdfImporterRobotName", robotNameParameter);
+            EditorPrefs.SetInt("UrdfImporterMaxRetries", maxRetries);
+            EditorPrefs.SetInt("UrdfImporterRetryDelayMs", retryDelayMs);
+            EditorPrefs.SetInt("UrdfImporterServiceTimeoutMs", serviceTimeoutMs);
         }
         
         #endregion

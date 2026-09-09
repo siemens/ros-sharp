@@ -13,6 +13,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+* Validate the URDF path before parsing to prevent loading files outside the Unity Assets folder.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/emre.cakal@gmail.com)
 */
 
 using System.Collections.Generic;
@@ -41,13 +44,18 @@ namespace RosSharp.Urdf.Editor
 
         public static void Create(string filename)
         {
-            Robot robot = new Robot(filename);
-
-            if (!UrdfAssetPathHandler.IsValidAssetPath(robot.filename))
+            // Validate the path is inside Assets BEFORE parsing the file to prevent
+            // loading arbitrary files from outside the project (CWE-706).
+            if (!UrdfAssetPathHandler.IsValidAssetPath(filename))
             {
-                Debug.LogError("URDF file and ressources must be placed in Assets Folder:\n" + Application.dataPath);
+                Debug.LogError("URDF import failed: file must be inside the Assets folder.\n" +
+                               "Attempted path: " + filename + "\n" +
+                               "Assets folder: " + Application.dataPath);
                 return;
             }
+
+            Debug.Log("Creating robot from file: " + filename);
+            Robot robot = new Robot(filename);
 
             GameObject robotGameObject = new GameObject(robot.name);
             robotGameObject.AddComponent<UrdfRobot>();

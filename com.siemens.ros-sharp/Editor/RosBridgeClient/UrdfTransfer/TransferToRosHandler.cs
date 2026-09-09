@@ -64,9 +64,14 @@ namespace RosSharp.RosBridgeClient
         /// <param name="robotNameParameter">The parameter name for the robot name.</param>
         public void Transfer(string urdfPath, string rosPackage, string robotNameParameter)
         {
-            RosSocket = RosConnector.ConnectToRos(rosConnector.protocol, rosConnector.RosBridgeServerUrl, OnConnected, OnClose, rosConnector.Serializer);
+            RosSocket = RosConnector.ConnectToRos(
+                rosConnector.protocol,
+                rosConnector.RosBridgeServerUrl,
+                OnConnected, OnClose,
+                rosConnector.Serializer
+            );
 
-            if (!StatusEvents["connected"].WaitOne(rosConnector.SecondsTimeout))
+            if (!StatusEvents["connected"].WaitOne(rosConnector.SecondsTimeout * 1000))
             {
                 Debug.LogError("RosSocket cannot connect to server. Is the file server running?");
                 RosSocket.Close();
@@ -97,7 +102,14 @@ namespace RosSharp.RosBridgeClient
 
             string robotName = Path.GetFileName(urdfPath);
 
-            UrdfTransferToRos urdfTransferToRos = new UrdfTransferToRos(RosSocket, robotName, robotNameParameter, urdfPath, rosPackage);
+            UrdfTransferToRos urdfTransferToRos = new UrdfTransferToRos(
+                RosSocket,
+                robotName,
+                robotNameParameter,
+                urdfPath,
+                rosPackage,
+                new Log(x => Debug.Log(x))
+            );
 
             StatusEvents["robotNamePublished"] = urdfTransferToRos.Status["robotNamePublished"];
             StatusEvents["robotDescriptionPublished"] = urdfTransferToRos.Status["robotDescriptionPublished"];

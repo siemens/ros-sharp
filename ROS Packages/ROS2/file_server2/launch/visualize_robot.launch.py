@@ -12,7 +12,7 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch_ros.actions import Node, SetParameter
+from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
@@ -22,7 +22,7 @@ from tempfile import NamedTemporaryFile
 def generate_launch_description():
     # Declare launch arguments
     gui_arg = DeclareLaunchArgument('gui', default_value='true', description='Whether to show GUI')
-    urdf_file_arg = DeclareLaunchArgument('urdf_file', default_value='robot_description.urdf', description='URDF file name')
+    urdf_file_arg = DeclareLaunchArgument('urdf_file', default_value='r2d2.urdf', description='URDF file name')
     package_name_arg = DeclareLaunchArgument('package_name', default_value='urdf_export_test', description='Package name containing URDF file')
     rviz_config_file_arg = DeclareLaunchArgument('rviz_config_file', default_value='robot_visualization.rviz', description='RViz configuration file')
 
@@ -55,14 +55,6 @@ def launch_setup(context, *args, **kwargs):
         'rviz',
         rviz_config_file
     )
-
-    # Read the RViz config file, replace the placeholder with the actual path, and write to a temporary file
-    with open(rviz_config_file_path, 'r') as infp:
-        rviz_config_content = infp.read().replace('Description File:', 'Description File: ' + urdf_file_path)
-
-    tmp_rviz_config_file = NamedTemporaryFile(delete=False, suffix='.rviz')
-    with open(tmp_rviz_config_file.name, 'w') as outfp:
-        outfp.write(rviz_config_content)
 
     # Define nodes
     joint_state_publisher_node = Node(

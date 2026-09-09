@@ -11,20 +11,32 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+- Add ROS Noetic support to the launch file.
+- Add new security parameters to the file_server node to allow or 
+disallow saving files, overwriting files, and allowing file:// urls.
+    (C) Siemens AG, 2026, Mehmet Emre Cakal (emre.cakal@siemens.com/m.emrecakal@gmail.com)
 -->
 
 <launch>
 
 	<include file="$(find file_server)/launch/ros_sharp_communication.launch">
 		<arg name="port" value="9090" />
-		<arg name="allow_save" value="false" />
-		<arg name="allow_overwrite" value="false" />
+		<arg name="allow_save" default="false" />
+		<arg name="allow_overwrite" default="false" />
+		<arg name="allow_file_url" default="false" />
+		<arg name="allow_file_url_root" default="/opt/ros" />
 	</include>
 
 	<arg name="base" default="$(env TURTLEBOT_BASE)" />
 	<arg name="stacks" default="$(env TURTLEBOT_STACKS)" />
 	<arg name="3d_sensor" default="$(env TURTLEBOT_3D_SENSOR)" />
-	<arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
+
+	<!-- ROS Kinetic/Melodic -->
+    <!-- <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" /> -->
+
+    <!-- ROS Noetic -->
+    <arg name="urdf_file" default="$(find xacro)/xacro $(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro" />
 	
 	<param name="robot/name" value="Turtlebot2" />
 	<param name="robot_description" command="$(arg urdf_file)" />
