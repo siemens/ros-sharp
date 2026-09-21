@@ -68,7 +68,7 @@ namespace RosSharp.RosBridgeClient.Protocols
             Task.Run(() => ConnectAsync());
         }
 
-        public async void ConnectAsync()
+        public async Task ConnectAsync()
         {
             await clientWebSocket.ConnectAsync(uri, cancellationToken);
             IsConnected.Set();
@@ -87,6 +87,11 @@ namespace RosSharp.RosBridgeClient.Protocols
 
         public bool IsAlive()
         {
+            if(clientWebSocket == null)
+            {
+                return false;
+            }
+
             return clientWebSocket.State == WebSocketState.Open;
         }
 
