@@ -7,6 +7,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- Unreleased -->
 
+## [2.3.1] - 08.10.2026
+
+### Security
+
+- **`MessageGeneration/MessageParser`:**:
+    - Fix code-injection vulnerability (CWE-94) in message generation
+    - A crafted .msg/.srv/.action definition could run arbitrary code during generation (in the RosMsgGen tool or the Unity message-generation window).
+    - String constants/defaults and comments are now escaped before being emitted into the generated source.
+
+---
+
 ## [2.3.0] - 09.09.2026
 
 ### Security
