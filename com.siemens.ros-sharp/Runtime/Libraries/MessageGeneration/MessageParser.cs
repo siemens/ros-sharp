@@ -14,6 +14,10 @@ limitations under the License.
 
 Note: This file is a refactored version of the original MessageParser.cs
     written by Sifan Ye, © Siemens AG, 2019
+
+* Fix code injection (CWE-94) via crafted .msg/.srv/.action definitions.
+* String constants/defaults and comments are now escaped before being emitted as C#.
+    © Siemens AG 2026, Mehmet Emre Cakal, emre.cakal@siemens.com/m.emrecakal@gmail.com
 */
 
 using System;
@@ -141,7 +145,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 var tokenType = token.type;
                 if (tokenType == MessageTokenType.Comment)
                 {
-                    body += $"{MsgAutoGenUtilities.TWO_TABS}// {token.content}\n";
+                    body += $"{MsgAutoGenUtilities.TWO_TABS}// {SanitizeComment(token.content)}\n";
                 }
                 else if (tokenType == MessageTokenType.BuiltInType ||
                          tokenType == MessageTokenType.DefinedType ||
@@ -267,7 +271,7 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
             // Check for comment, if there is one: split it and keep the value part.
             var commentSplit = declaration.Split('#', 2);
             var valueContent = commentSplit[0].Trim();
-            var comment = commentSplit.Length > 1 ? $"//  {commentSplit[1]}" : "";
+            var comment = commentSplit.Length > 1 ? $"//  {SanitizeComment(commentSplit[1])}" : "";
 
             // Check if this is a bounded array
             if (declaration.Contains("["))
@@ -320,9 +324,89 @@ namespace RosSharp.RosBridgeClient.MessageGeneration
                 "ulong" => ulong.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
                 "float" => float.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
                 "double" => double.TryParse(value, out _) ? value : throw new MessageParserException($"Invalid value: {value}"),
-                "string" => $"\"{value.Trim('"')}\"",
+                "string" => ToCSharpStringLiteral(value.Trim('"')),
                 _ => throw new MessageParserException($"Unsupported or invalid constant type: {type}")
             };
+        }
+
+        // line terminators (NEL, LINE/PARAGRAPH SEPARATOR).
+        private static bool IsHighLineSeparator(char c) =>
+            c == '\u0085' || c == '\u2028' || c == '\u2029';
+
+        // everything the C# lexer ends a line on.
+        private static bool IsCSharpNewLine(char c) =>
+            c == '\n' || c == '\r' || IsHighLineSeparator(c);
+
+        // C0 Control chars (c < 0x20) NUL, bell, escape, form feed, vertical tab, etc.
+        private static bool RequiresUnicodeEscape(char c) =>
+            c < 0x20 || IsHighLineSeparator(c);
+
+        private static bool NeedsEscape(char c) =>
+            c == '"' || c == '\\' || RequiresUnicodeEscape(c);
+
+        /// <summary>
+        /// Render <paramref name="value"/> as a valid, self-contained C# string literal.
+        /// </summary>
+        private static string ToCSharpStringLiteral(string value)
+        {
+            // if nothing to escape 
+            bool clean = true;
+            for (int i = 0; i < value.Length; i++)
+                if (NeedsEscape(value[i]))
+                    { 
+                        clean = false;
+                        break;
+                    }
+
+            // just wrap in quotes
+            if (clean) return string.Concat("\"", value, "\"");
+
+            var sb = new System.Text.StringBuilder(value.Length + 8);
+            sb.Append('"');
+            foreach (char c in value)
+            {
+                switch (c)
+                {
+                    case '\\': sb.Append("\\\\"); break;
+                    case '"':  sb.Append("\\\""); break;
+                    case '\0': sb.Append("\\0");  break;
+                    case '\a': sb.Append("\\a");  break;
+                    case '\b': sb.Append("\\b");  break;
+                    case '\f': sb.Append("\\f");  break;
+                    case '\n': sb.Append("\\n");  break;
+                    case '\r': sb.Append("\\r");  break;
+                    case '\t': sb.Append("\\t");  break;
+                    case '\v': sb.Append("\\v");  break;
+                    default:
+                        if (RequiresUnicodeEscape(c))
+                            sb.Append("\\u").Append(((int)c).ToString("X4"));
+                        else
+                            sb.Append(c);
+                        break;
+                }
+            }
+            sb.Append('"');
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Strip the characters the C# lexer treats as line terminators so comment
+        /// text cannot break out of its <c>//</c> single-line comment.
+        /// </summary>
+        private static string SanitizeComment(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+
+            // nothing to escape
+            int i = 0;
+            while (i < text.Length && !IsCSharpNewLine(text[i])) i++;
+            if (i == text.Length) return text;
+
+            var sb = new System.Text.StringBuilder(text.Length);
+            foreach (char c in text)
+                sb.Append(IsCSharpNewLine(c) ? ' ' : c);
+
+            return sb.ToString();
         }
         #endregion
         #region CONSTRUCTORS
