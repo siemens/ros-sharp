@@ -1,4 +1,4 @@
-﻿/*
+/*
 © Siemens AG, 2017-2018
 Author: Dr. Martin Bischoff (martin.bischoff@siemens.com)
 
@@ -148,7 +148,14 @@ namespace RosSharp.RosBridgeClient.Protocols
 
                 } while (!result.EndOfMessage);
 
-                OnReceive?.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
+                try
+                {
+                    OnReceive?.Invoke(this, new MessageEventArgs(memoryStream.ToArray()));
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine("WebSocketNetProtocol: Error in OnReceive. " + ex);
+                }
             }
         }
     }
